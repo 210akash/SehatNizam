@@ -1,0 +1,138 @@
+<form [formGroup]="userForm">
+  <mat-card>
+
+    <mat-card-header>
+      <div class="header-container">
+        <mat-card-title>User Form</mat-card-title>
+        <mat-slide-toggle matTooltip="Active" formControlName="isActive" color="primary"></mat-slide-toggle>
+      </div>
+    </mat-card-header>
+
+    <mat-divider></mat-divider>
+
+    <mat-card-content>
+
+      <input type="hidden" formControlName="userName">
+      <div class="row">
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label> First Name </mat-label>
+            <input matInput formControlName="firstName" type="text">
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label> Last Name </mat-label>
+            <input matInput formControlName="lastName" type="text">
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label> Phone Number </mat-label>
+            <input matInput formControlName="phoneNumber" type="text">
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label> Title </mat-label>
+            <input matInput formControlName="title" type="text">
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label> Email </mat-label>
+            <input matInput formControlName="email" type="text" [inputMask]="this.emailInputMask" [readonly]="isEditMode">
+          </mat-form-field>
+        </div>
+        <div class="col-md-6" *ngIf="!isEditMode">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label> Password </mat-label>
+            <input matInput formControlName="password" [type]="PasswordNew ? 'text' : 'password'">
+            <mat-icon matSuffix (click)="PasswordVisibilityNew()">
+              {{PasswordNew?'visibility':'visibility_off'}}
+            </mat-icon>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Role</mat-label>
+            <mat-select placeholder="Roles" formControlName="roleId" [(value)]="selectedRolls" multiple (selectionChange)="checkRole($event)">
+              <mat-option *ngFor="let roles of rolesList" [value]="roles.id">{{roles.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6" *ngIf="!isAdmin">
+          <mat-form-field appearance="outline" class="form-field" >
+            <mat-label>Company</mat-label>
+            <mat-select formControlName="companyId" (selectionChange)="getDepartmentList();getStoreList()">
+              <mat-option *ngFor="let company of companyList" [value]="company.id">
+                {{ company.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6" *ngIf="!isAdmin">
+          <mat-form-field appearance="outline" class="form-field" >
+            <mat-label>Department</mat-label>
+            <mat-select formControlName="departmentId">
+              <mat-option *ngFor="let department of departmentList" [value]="department.id">
+                {{ department.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6" *ngIf="!isAdmin">
+          <mat-form-field appearance="outline" class="form-field" >
+            <mat-label>Store</mat-label>
+            <mat-select formControlName="storeId">
+              <mat-option *ngFor="let store of storeList" [value]="store.id">
+                {{ store.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-12" *ngIf="userForm.get('password')?.value.length > 0">
+          <div id="message">
+            <h3>Password must contain the following:</h3>
+            <p id="letter"
+              [ngClass]="{'valid': passwordRequirements.hasLowerCase, 'invalid': !passwordRequirements.hasLowerCase}">
+              A <b>lowercase</b> letter
+            </p>
+            <p id="capital"
+              [ngClass]="{'valid': passwordRequirements.hasUpperCase, 'invalid': !passwordRequirements.hasUpperCase}">
+              A <b>capital (uppercase)</b> letter
+            </p>
+            <p id="number"
+              [ngClass]="{'valid': passwordRequirements.hasNumber, 'invalid': !passwordRequirements.hasNumber}">
+              A <b>number</b>
+            </p>
+            <p id="special"
+              [ngClass]="{'valid': passwordRequirements.hasSpecialCharacter, 'invalid': !passwordRequirements.hasSpecialCharacter}">
+              A <b>special character</b>
+            </p>
+            <p id="length"
+              [ngClass]="{'valid': passwordRequirements.hasMinimumLength, 'invalid': !passwordRequirements.hasMinimumLength}">
+              Minimum <b>9 characters</b>
+            </p>
+          </div>
+        </div>
+
+      </div>
+      <mat-divider></mat-divider>
+      <div class="button-container">
+        <button mat-flat-button color="success" type="button" (click)="SaveData()">
+          <span class="mat-button-wrapper">Save</span>
+        </button>
+        <button mat-flat-button color="default" [mat-dialog-close]="true">
+          <span class="mat-button-wrapper">Close</span>
+        </button>
+      </div>
+
+    </mat-card-content>
+  </mat-card>
+</form>

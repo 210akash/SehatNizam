@@ -1,0 +1,86 @@
+<div class="header-container">
+  <h2>GST</h2>
+  <button mat-mini-fab aria-label="Add" color="success" (click)="openGSTDialog(null)" matTooltip="Add GST">
+    <mat-icon>add</mat-icon>
+  </button>
+</div>
+
+<div class="body-container">
+  <form [formGroup]="GSTFilterForm">
+    <div class="row">
+    
+      <!-- <div class="col-md-6">
+        <div class="mt-2">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Name</mat-label>
+            <input matInput formControlName="name" (keyup)="filterData()">
+          </mat-form-field>
+        </div>
+      </div> -->
+    </div>
+  </form>
+
+  <div class="mat-elevation-z8 table-responsive mt-2">
+
+    <table mat-table [dataSource]="dataSource" matSort>
+
+      <!-- Columns -->
+
+      <ng-container matColumnDef="fDate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> From Date </th>
+        <td mat-cell *matCellDef="let element" class="tbl_name"> {{ element.fDate | date : 'shortDate' }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="tDate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> From Date </th>
+        <td mat-cell *matCellDef="let element" class="tbl_name"> {{ element.tDate | date : 'shortDate' }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="gstPer">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> GST Percentage </th>
+        <td mat-cell *matCellDef="let element" class="tbl_name"> {{ element.gstPer}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="createdBy">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Created By </th>
+        <td mat-cell *matCellDef="let element" class="tbl_created"> {{ element.createdBy?.firstName + ' ' + element.createdBy?.lastName }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="company">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Company </th>
+        <td mat-cell *matCellDef="let element" class="tbl_compny"> {{ element.company?.name }} </td>
+      </ng-container>
+
+      <!-- Actions column definition -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef style="width: 11%;"> Actions </th>
+        <td mat-cell *matCellDef="let element">
+          <div class="action_btns">
+          <button mat-mini-fab matTooltip="Edit" color="primary" (click)="openGSTDialog(element)">
+            <mat-icon aria-label="Edit" >edit</mat-icon>
+          </button>
+
+          <button mat-mini-fab matTooltip="View" color="dark" (click)="viewGSTDialog(element)">
+            <mat-icon aria-label="View" >visibility</mat-icon>
+          </button>
+
+          <button mat-mini-fab matTooltip="Delete" color="warn" (click)="deleteGSTDialog(element)">
+            <mat-icon aria-label="Delete" >delete</mat-icon>
+          </button>
+        </div>
+        </td>
+      </ng-container>
+
+      <!-- Table rows -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <!-- <mat-divider></mat-divider> -->
+    <!-- Paginator -->
+    <mat-paginator #paginator [length]="totalRows" [pageIndex]="currentPage" [pageSize]="take"
+      [pageSizeOptions]="pageSizeOptions" (page)="pageChanged($event)" aria-label="Select page">
+    </mat-paginator>
+
+  </div>
+</div>

@@ -1,0 +1,126 @@
+  <mat-card>
+    <mat-card-header>
+      <div class="header-container">
+        <mat-card-title>Delete Purchase Demand</mat-card-title>
+        <span class="badge badge-created" matTooltip="Status">{{this.data.element.status.title }}</span>
+      </div>
+    </mat-card-header>
+    <mat-divider></mat-divider>
+    <mat-card-content>
+      <div class="row">
+        <div class="col-md-2 col-lg-1">
+          <mat-form-field >
+            <mat-label>Demand No.</mat-label>
+            <input matInput [value]="this.data.element.code" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-2 col-lg-1">
+          <mat-form-field>
+            <mat-label>Demand Date</mat-label>
+            <input matInput [value]="this.data.element.createdDate| date : 'shortDate'" tabindex="-1" readonly>
+        </mat-form-field>
+        </div>
+
+        <div class="col-md-2 col-lg-2">
+          <mat-form-field class="form-field" >
+            <mat-label>Request No.</mat-label>
+            <input matInput [value]="this.data.element.requestNo" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-2 col-lg-2">
+          <mat-form-field class="form-field">
+            <mat-label>Request Date</mat-label>
+            <input matInput [value]="this.data.element.requestDate| date : 'shortDate'" tabindex="-1" readonly>
+        </mat-form-field>
+        </div>
+
+        <div class="col-md-2 col-lg-2">
+          <mat-form-field  class="form-field">
+            <mat-label>Priority</mat-label>
+            <input matInput [value]="this.data.element.priority.name" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-2 col-lg-2">
+          <mat-form-field  class="form-field">
+            <mat-label>Indent Type</mat-label>
+            <input matInput [value]="this.data.element.indentType.name" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+      <div class="col-md-2 col-lg-2">
+        <mat-form-field  class="form-field">
+          <mat-label>Delivered To</mat-label>
+          <input matInput [value]="this.data.element.location.name" tabindex="-1" readonly>
+        </mat-form-field>
+    </div>
+  </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Sr.#</th>
+                  <th>Item</th>
+                  <th>UOM</th>
+                  <th>Demand (Qty)</th>
+                  <th>Required Date</th>
+                  <th>Project</th>
+                  <th>Department</th>
+                  <th>Remarks</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let detail of this.data.element.purchaseDemandDetail; let i = index">
+                <!-- UOM Column -->
+                        <td style="width: 10px;">
+                            {{i + 1}}
+                        </td>
+                  <!-- Item Column -->
+                  <td>
+                    {{detail.item.code + ' : '+ detail.item.name}}
+                  </td>
+            
+                  <!-- UOM Column -->
+                  <td>
+                    {{detail.item.uom.name}}
+                  </td>
+                  <td>
+                    {{detail.demandQty}}
+                  </td>
+                  <!-- Required Date Column -->
+                  <td>
+                      {{detail.requiredDate  | date : 'shortDate'}}
+                  </td>
+                  <td>
+                    {{detail.project.name}}
+                  </td>
+                  <td>
+                    {{detail.department.name}}
+                  </td>
+                      <!-- Remarks Column -->
+                      <td>
+                        {{detail.description}}
+                      </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <mat-form-field class="form-field" >
+            <mat-label>Remarks</mat-label>
+            <input matInput [value]="this.data.element.remarks" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="button-container">
+        <button mat-flat-button color="danger" type="button" (click)="delete()">
+          <span class="mat-button-wrapper">Delete</span>
+        </button>
+        <button mat-flat-button color="default" [mat-dialog-close]="true">
+          <span class="mat-button-wrapper">Close</span>
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>

@@ -1,0 +1,253 @@
+  <mat-card>
+    <mat-card-header>
+      <div class="header-container">
+        <mat-card-title>Process Indent Request</mat-card-title>
+        <span class="badge badge-created" matTooltip="Status">{{this.data.element.status.title}}</span>
+      </div>
+    </mat-card-header>
+    <mat-divider></mat-divider>
+    <mat-card-content>
+      <div class="row w-100">
+        <div class="col-md-3">
+          <table class="text-left mb-4 shipto">
+            <colgroup>
+              <col span="1" style="width: 100px;">
+              <col span="1" style="width: 200px;">
+            </colgroup>
+            <tr>
+              <th>PO No. :</th>
+              <td>{{this.data.element.code}}</td>
+            </tr>
+            <tr>
+              <th>PO Date :</th>
+              <td>{{this.data.element.createdDate | date : 'shortDate'}}</td>
+            </tr>
+          </table>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field class="form-field">
+            <mat-label>Vendor</mat-label>
+            <input matInput [value]="this.data.element.vendor.name" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <table class="text-left mb-4 shipto">
+            <colgroup>
+              <col span="1" style="width: 150px;">
+              <col span="1" style="width: 200px;">
+              <col span="1" style="width: 100px;">
+              <col span="1" style="width: 200px;">
+            </colgroup>
+            <tr>
+              <th>Credit Days :</th>
+              <td> {{this.data.element.vendor?.creditDays}}</td>
+              <th>NTN :</th>
+              <td> {{this.data.element.vendor?.ntn}}</td>
+            </tr>
+            <tr>
+              <th>Phone :</th>
+              <td> {{this.data.element.vendor?.phone}}</td>
+              <th>Address :</th>
+              <td> {{this.data.element.vendor?.address}}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+       <div class="row mt-4">
+
+        <div class="col-md-3">
+          <mat-form-field class="form-field">
+            <mat-label>Payment Mode</mat-label>
+            <input matInput [value]="this.data.element.paymentMode.name" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-2">
+          <mat-form-field class="form-field">
+            <mat-label>Currency</mat-label>
+            <input matInput [value]="this.data.element.currency.name +' ' + this.data.element.currency.symbol  " tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-2">
+          <mat-form-field class="form-field">
+            <mat-label>Ref #</mat-label>
+            <input matInput [value]="this.data.element.refNo" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-2">
+          <mat-form-field>
+            <mat-label>Delivery Date</mat-label>
+            <input matInput [value]="this.data.element.deliveryDate | date : 'shortDate'" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field class="form-field">
+            <mat-label>Shipment Mode</mat-label>
+            <input matInput [value]="this.data.element.shipmentMode?.name" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field class="form-field">
+            <mat-label>Delivery Term</mat-label>
+            <input matInput [value]="this.data.element.deliveryTerms?.name" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-2">
+          <mat-form-field class="form-field">
+            <mat-label>Delivery Charges</mat-label>
+            <input matInput [value]="this.data.element.deliveryCharges" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-2">
+          <mat-form-field class="form-field">
+            <mat-label>Other Charges</mat-label>
+            <input matInput [value]="this.data.element.otherCharges" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-2">
+          <mat-radio-group matTooltip="Discount Type" [(ngModel)]="this.data.element.isFixDiscount" aria-label="Select an option" disabled >
+            <mat-radio-button  [value]="true">Fix</mat-radio-button>
+            <mat-radio-button  [value]="false">Percent</mat-radio-button>
+          </mat-radio-group>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field class="form-field">
+            <mat-label>Discount</mat-label>
+            <input matInput [value]="this.data.element.discount" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+        <div class="card mt-2 mb-2" *ngFor="let detail of this.data.element.purchaseOrderDetail; let i = index">
+          <div class="card-body m-0">
+            <div class="row">
+              <div class="col-md-1">
+                <div class="action_btns">
+                  <span class="items_nmbr" matTooltip="Sr.#" style="cursor: pointer;">{{i + 1}}</span>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="row m-0 align-items-center">
+                  <mat-form-field class="form-field">
+                    <mat-label>Demand #</mat-label>
+                    <input matInput [value]="detail.purchaseDemandDetail?.purchaseDemand?.code" tabindex="-1" readonly>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <mat-form-field class="form-field">
+                  <mat-label>Item</mat-label>
+                  <input matInput [value]="detail.purchaseDemandDetail?.item?.code + ':' + detail.purchaseDemandDetail?.item?.name" tabindex="-1" readonly>
+               
+                </mat-form-field>
+              </div>
+              <div class="col-md-5">
+                <div class="selected_val">
+                  UOM : <span>{{detail.purchaseDemandDetail?.item?.uom?.name || ''}}</span>
+                  Pending Qty : <span>{{ detail.purchaseDemandDetail?.item?.demandQty}}</span>
+                  Project : <span>{{detail.purchaseDemandDetail?.project?.name || ''}}</span>
+                </div>
+                <div class="selected_val">
+                  Department : <span>{{detail.purchaseDemandDetail?.department?.name || ''}}</span>
+                  Description : <span>{{detail.purchaseDemandDetail?.description || ''}}</span>
+                </div>
+              </div>
+              <div class="col-md-1">
+              </div>
+              <div class="col-md-2">
+                <mat-form-field class="form-field m-0 mb_input">
+                  <mat-label>Quantity</mat-label>
+                  <input matInput [value]="detail.quantity" tabindex="-1" readonly>
+                </mat-form-field>
+              </div>
+              <div class="col-md-2">
+                <mat-form-field class="form-field m-0 mb_input">
+                  <mat-label>Rate</mat-label>
+                  <input matInput [value]="detail.unitRate" tabindex="-1" readonly>
+                </mat-form-field>
+              </div>
+              <div class="col-md-2">
+                <mat-form-field class="form-field m-0 mb_input">
+                  <mat-label>Amount</mat-label>
+                  <input matInput [value]="detail.value" tabindex="-1" readonly>
+                </mat-form-field>
+              </div>
+              <div class="col-md-3">
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">
+                      <mat-slide-toggle matTooltip="GST" [ngModel]="detail.gst == 0 ? false : true" color="primary"
+                      tabindex="-1" disabled></mat-slide-toggle>
+                    </span>
+                  </div>
+                  <input matInput class="form-control" [value]="detail.gst" tabindex="-1" readonly>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <mat-form-field class="form-field m-0 mb_input">
+                  <mat-label>FED</mat-label>
+                  <input matInput [value]="detail.fed" tabindex="-1" readonly>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+        </div>
+      <div class="row">
+        <div class="col-md-12">
+          <mat-form-field class="form-field">
+            <mat-label>Remarks</mat-label>
+            <input matInput [value]="this.data.element.Remarks" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-2">
+          <mat-form-field class="form-field">
+            <mat-label>Total Amount</mat-label>
+            <input matInput type="text" [value]="this.tAmount" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-2">
+          <mat-form-field class="form-field">
+            <mat-label>Total Discount</mat-label>
+            <input matInput type="text" [value]="this.tDiscount" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-2">
+          <mat-form-field class="form-field">
+            <mat-label>Total Expense</mat-label>
+            <input matInput type="text" [value]="this.tExpense" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-2">
+          <mat-form-field class="form-field">
+            <mat-label>Total SaleTax</mat-label>
+            <input matInput type="text" [value]="this.tSaleTax" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-2">
+          <mat-form-field class="form-field">
+            <mat-label>Party Amount</mat-label>
+            <input matInput type="text" [value]="this.partyAmount" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-2">
+          <mat-form-field class="form-field">
+            <mat-label>Net Amount</mat-label>
+            <input matInput type="text" [value]="this.netAmount" readonly>
+          </mat-form-field>
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="button-container">
+        <button mat-flat-button color="success" type="button" (click)="process()" tabindex="-1">
+          <span class="mat-button-wrapper">Process</span>
+        </button>
+        <button mat-flat-button color="default" [mat-dialog-close]="true">
+          <span class="mat-button-wrapper">Close</span>
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>

@@ -1,0 +1,105 @@
+  <div class="mat-elevation-z8 table-responsive">
+    <table mat-table [dataSource]="dataSource" matSort>
+
+      <!-- Columns -->
+
+      <ng-container matColumnDef="itemType">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>  Transaction Type </th>
+        <td mat-cell *matCellDef="let element"> {{ element.itemType.code }} : {{ element.itemType.name }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="code">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Code </th>
+        <td mat-cell *matCellDef="let element"> {{ element.code }} </td>
+      </ng-container>
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Date </th>
+        <td mat-cell *matCellDef="let element"> {{ element.date | date : 'shortDate' }} </td>
+      </ng-container>
+      <ng-container matColumnDef="referenceNumber">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Reference No. </th>
+        <td mat-cell *matCellDef="let element"> {{ element.referenceNumber }} </td>
+      </ng-container>
+      <ng-container matColumnDef="createdDate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Prepared Date </th>
+        <td mat-cell *matCellDef="let element"> {{ element.createdDate | date : 'short' }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="processedDate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Processed Date </th>
+        <td mat-cell *matCellDef="let element"> {{ element.processedDate | date : 'short' }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="approvedDate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Approved Date </th>
+        <td mat-cell *matCellDef="let element"> {{ element.approvedDate | date : 'short' }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="createdBy">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Prepared By</th>
+        <td mat-cell *matCellDef="let element"> {{ element.createdBy?.firstName + ' ' + element.createdBy?.lastName }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="processedBy">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Processed By</th>
+        <td mat-cell *matCellDef="let element"> {{ element.processedBy?.firstName + ' ' + element.processedBy?.lastName }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="approvedBy">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Approved By</th>
+        <td mat-cell *matCellDef="let element"> {{ element.approvedBy?.firstName + ' ' + element.approvedBy?.lastName }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="issuedBy">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Issued By</th>
+        <td mat-cell *matCellDef="let element"> {{ element.createdBy?.firstName + ' ' + element.createdBy?.lastName }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
+        <td mat-cell *matCellDef="let element"> {{ element.status?.title }} </td>
+      </ng-container>
+
+      <!-- Actions column definition -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef style="width: 11%;"> Actions </th>
+        <td mat-cell *matCellDef="let element">
+          <div class="action_btns">
+          <button mat-mini-fab matTooltip="Edit" color="primary" *ngIf="element.statusId == 1" (click)="openTransactionDialog(element)">
+            <mat-icon aria-label="Edit" >edit</mat-icon>
+          </button>
+          
+          <button mat-mini-fab matTooltip="View" color="dark" (click)="viewTransactionDialog(element)">
+            <mat-icon aria-label="View" >visibility</mat-icon>
+          </button>
+
+          <button mat-mini-fab matTooltip="Delete" color="warn" *ngIf="element.statusId == 1" (click)="deleteTransactionDialog(element)">
+            <mat-icon aria-label="Delete" >delete</mat-icon>
+          </button>
+
+          <button mat-mini-fab matTooltip="Process To Manager" *ngIf="element.statusId == 1" color="success" (click)="processTransactionDialog(element)">
+            <mat-icon aria-label="Delete" >send</mat-icon>
+          </button>
+
+          <button mat-mini-fab matTooltip="Approve" *ngIf="element.statusId == 2 && roleList?.includes('accounts manager')" color="success" (click)="approveTransactionDialog(element)">
+            <mat-icon aria-label="Delete" >send</mat-icon>
+          </button>
+
+          <button mat-mini-fab matTooltip="Print" *ngIf="element.statusId == 3" color="pink" (click)="printTransactionDialog(element)">
+            <mat-icon aria-label="Delete" >print</mat-icon>
+          </button>
+
+        </div>
+        </td>
+      </ng-container>
+
+      <!-- Table rows -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+    <mat-divider></mat-divider>
+    <!-- Paginator -->
+    <mat-paginator #paginator [length]="totalRows" [pageIndex]="currentPage" [pageSize]="take"
+      [pageSizeOptions]="pageSizeOptions" (page)="pageChanged($event)" aria-label="Select page">
+    </mat-paginator>
+  </div>

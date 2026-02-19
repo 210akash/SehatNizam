@@ -1,0 +1,65 @@
+.container{
+  width: 100%;
+  max-width: 100%;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  display: inline-flex;
+  justify-content: center;
+  height: 100vh;
+  background: url(/assets/Files/bg.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.card-wrapper {
+    display: inline-block;
+    width: 100%;
+    max-width: 425px;
+    margin: 100px 0;
+    border-radius:var(--border-radius);
+}
+
+mat-card-title,
+mat-card-content {
+  display: flex;
+  justify-content: center;
+  min-height: 150px;
+  align-items: center;
+}
+mat-card-title{
+  background: #fff;
+  flex-direction: column;
+  border-radius: var(--mdc-elevated-card-container-shape) var(--mdc-elevated-card-container-shape) 0 0;
+  border-bottom: 1px solid var(--primary-color);
+}
+.lock_icon{
+  width: 50px;
+  height: 50px;
+  background:var(--primary-color);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  margin-bottom: 10px;
+}
+.lock_icon mat-icon{
+  line-height: unset;
+}
+.heading{
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.remember-me-container {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 15px;
+}
+
+.remember-me-container mat-checkbox {
+  margin-left: 0;
+}
+.loginbtn.mat-mdc-unelevated-button:not(:disabled) {
+  color: var(--white-color) !important;
+  background-color: var(--primary-color) !important;
+  height: 35px;
+}

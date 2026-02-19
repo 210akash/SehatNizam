@@ -1,0 +1,157 @@
+<form [formGroup]="comparativestatementForm">
+  <mat-card>
+    <mat-card-header>
+      <div class="header-container">
+        <mat-card-title>Comparative Statement Form</mat-card-title>
+        <span class="badge badge-created" matTooltip="Status">{{ this.isEditMode == true ?
+          this.data.element.status.title
+          : this.comparativestatementForm.get('statusName')?.value}}</span>
+      </div>
+    </mat-card-header>
+    <mat-divider></mat-divider>
+    <mat-card-content>
+      <input type="hidden" formControlName="id" />
+      <div class="row">
+        <div class="col-md-2">
+          <mat-form-field>
+            <mat-label>CS No.</mat-label>
+            <input matInput value="{{this.comparativestatementForm.get('code')?.value}}" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-2">
+          <mat-form-field>
+            <mat-label>CS Date</mat-label>
+            <input matInput value="{{this.comparativestatementForm.get('createdDate')?.value | date : 'shortDate'}}"
+              tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field class="form-field">
+            <mat-label>Demand No.</mat-label>
+            <mat-select formControlName="purchaseDemandId" (selectionChange)="getPendingDemandItems()">
+              <mat-option value="">--Select--</mat-option>
+              <mat-option *ngFor="let demand of demandList" [value]="demand.id">
+                {{ demand.code }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+      <div  formArrayName="comparativeStatementDetail">
+        <div class="card" *ngFor="let detail of comparativeStatementDetail.controls; let i = index" [formGroupName]="i">
+          <div class="card-header">
+            <div class="row">
+              <input type="hidden" formControlName="id" />
+              <input type="hidden" formControlName="comparativeStatementId" />
+              <div class="col-md-8">
+                <div class="row m-0 align-items-center">
+                  <span class="items_nmbr">{{i + 1}}</span>
+                  <mat-form-field class="form-field m-0" style="width: 90%;">
+                    <mat-select formControlName="purchaseDemandDetailId">
+                      <mat-option value="">--Select--</mat-option>
+                      <mat-option *ngFor="let purchaseDemandDetail of itemList" [value]="purchaseDemandDetail.id"
+                        (onSelectionChange)="onOptionSelected($event, i)">
+                        {{ purchaseDemandDetail.item.code }} : {{ purchaseDemandDetail.item.name }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <b>UOM : </b> <span style="color:red"> {{this.getIndexValue(i)?.item?.uom?.name || ''}} </span>
+                <b>Quantity :</b> <span style="color:red"> {{this.getIndexValue(i)?.demandQty|| ''}} </span>
+              </div>
+              <div class="col-md-1 pl">
+                <div class="action_btns">
+                  <button mat-mini-fab matTooltip="Add Item" color="success" type="button"
+                    (click)="addComparativeStatementDetail(i)">
+                    <mat-icon aria-label="Edit">add</mat-icon>
+                  </button>
+                  <button mat-mini-fab matTooltip="Delete Item" color="warn" type="button"
+                    (click)="removeComparativeStatementDetail(i)">
+                    <mat-icon aria-label="Delete">delete</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-bordered">
+
+                <thead>
+                  <tr>
+                    <th>Sr.#</th>
+                    <th>Vendor</th>
+                    <th>Term & Condition</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                  </tr>
+                </thead>
+                <tbody formArrayName="comparativeStatementVendor">
+                  <tr *ngFor="let vendor of comparativeStatementVendor(i).controls; let j = index"
+                    [formGroupName]="j">
+                    <td style="width: 10px;">
+                      <div class="action_btns">
+                        <span>&#40;{{j + 1}}&#41;</span>
+                        <mat-icon aria-label="Edit" class="icons add" (click)="addComparativeStatementVendor(j,i)">add</mat-icon>
+                        <mat-icon aria-label="Delete" class="icons delete" (click)="removeComparativeStatementVendor(j,i)">delete</mat-icon>
+                      </div>
+                    </td>
+                    <input type="hidden" formControlName="id" />
+                    <input type="hidden" formControlName="comparativeStatementDetailId" />
+                    <td style="width: 100px;">
+                      <mat-form-field  class="form-field">
+                        <mat-select formControlName="vendorId">
+                          <mat-option value="">--Select--</mat-option>
+                          <mat-option *ngFor="let vendor of vendorList" [value]="vendor.id"
+                          (onSelectionChange)="onVendorSelected($event, j,i)">
+                          {{ vendor.name }}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </td>
+                    <td style="width: 300px;">
+                      <ul class="m-0 text-left p-0">
+                        <li *ngFor="let tc of this.getIndexValueVendor(j,i).termsConditions?.split('.')" style="list-style: none;">
+                            {{tc}}
+                            </li>
+                    </ul>
+                    </td>
+                    <td style="width: 100px;">
+                      <mat-form-field class="form-field" style="width: 120px;">
+                        <input matInput formControlName="price" type="number">
+                      </mat-form-field>
+                    </td>
+                    <td style="width: 100px;">
+                      <mat-form-field class="form-field" style="width: 120px;">
+                        <input matInput formControlName="price" type="number">
+                      </mat-form-field>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-2">
+      <div class="col-md-12">
+      <mat-form-field>
+        <mat-label>Remarks</mat-label>
+        <input matInput formControlName="remarks" type="text">
+      </mat-form-field>
+    </div>
+  </div>
+      <mat-divider></mat-divider>
+      <div class="button-container">
+        <button mat-flat-button color="success" type="button" (click)="SaveData()">
+          <span class="mat-button-wrapper">Save</span>
+        </button>
+        <button mat-flat-button color="default" [mat-dialog-close]="true">
+          <span class="mat-button-wrapper">Close</span>
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</form>

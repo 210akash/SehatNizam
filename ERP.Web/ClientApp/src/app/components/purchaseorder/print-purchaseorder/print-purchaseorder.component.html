@@ -1,0 +1,212 @@
+
+<div class="card">
+    <div class="card-header">
+        <div class="header-container">
+            <div class="card-title">Print Purchase Order</div>
+            <div>
+                <button  mat-flat-button color="primary" type="button" class="print-button mr-2" (click)="printDocument()">
+                    <span class="mat-button-wrapper">Print</span>
+                </button>
+                <button mat-flat-button color="default" [mat-dialog-close]="true">
+                    <span class="mat-button-wrapper">Close</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="card-body" id="printDoc">
+        <div class="container printCont">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="row m-0 mb-5" style="align-items: center;">
+                            <div class="col-md-4">
+                                <div class="logo mb-2">
+                                    <img [src]="this.data.element.createdBy.department.company.logo" width="70px" height="70px" alt="SocietyImage">
+                                    <span>{{this.data.element.createdBy.department.company.name}}</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="col-md-12 text-center">
+                                    <h2 style="font-weight: 600;"> <span style="border-bottom: 2px solid;">Purchase Order</span> </h2>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <table class="top_right text-left">
+                                    <tr>
+                                        <th>PO No: {{this.data.element.code}}</th>
+                                        <th>P.O Date: {{this.data.element.createdDate | date : 'shortDate'}}</th>
+                                    </tr>
+                                    <tr>
+                                        <th>Credit Days: {{this.data.element.vendor.creditDays}}</th>
+                                        <th>Currency: {{this.data.element.currency.name}}</th>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="col-md-12 p-0">
+                            <table class="table_one mb-3 text-left">
+                                <colgroup>
+                                    <col span="1" style="width: 300px;">
+                                    <col span="1" style="width: 300px;">
+                                    <col span="1" style="width: 300px;">
+                                </colgroup>
+                                <tr>
+                                    <th>Vendor</th>
+                                    <th class="no_border"></th>
+                                    <th>Ship To</th>
+                                </tr>
+                                <tr>
+                                    <td class="no_border"><b>{{this.data.element.vendor?.name}}</b></td>
+                                    <td class="no_border"></td>
+                                    <td class="no_border"><b>{{this.data.element.createdBy?.department?.company?.name}}</b></td>
+                                </tr>
+                                <tr>
+                                    <td class="no_border">{{this.data.element.vendor?.address}}</td>
+                                    <td class="no_border"></td>
+                                    <td class="no_border">{{this.data.element.createdBy?.department?.company?.address}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="no_border"><b>P: </b>{{this.data.element.vendor?.phone}}</td>
+                                    <td class="no_border"></td>
+                                    <td class="no_border"><b>P: </b>{{this.data.element.createdBy?.department?.company?.phone}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="no_border"><b>E: </b>{{this.data.element.vendor?.email}}</td>
+                                    <td class="no_border"></td>
+                                    <td class="no_border"><b>E: </b></td>
+                                </tr>
+                                <tr>
+                                    <td class="no_border"><b>NTN: </b>{{this.data.element.vendor?.ntn}}</td>
+                                    <td class="no_border"></td>
+                                    <td class="no_border"><b>NTN: </b>{{this.data.element.createdBy?.department?.company?.ntn}}</td>
+                                </tr>
+                            </table>
+                            <table class="table_ship mb-3 text-center">
+                                <tr style="background-color:#d9d9d9;color: #000;">
+                                    <th>Shipment Mode</th>
+                                    <th>Payment Mode</th>
+                                    <th>Ref #</th>
+                                    <th>Delivery Terms</th>
+                                    <th>Delivery Date</th>
+                                </tr>
+                                <tr>
+                                    <td>{{this.data.element.shipmentMode.name}}</td>
+                                    <td>{{this.data.element.paymentMode.name}}</td>
+                                    <td>{{this.data.element.refNo}}</td>
+                                    <td>{{this.data.element?.deliveryTerms.name}}</td>
+                                    <td>{{this.data.element?.deliveryDate | date : 'shortDate'}}</td>
+                                </tr>
+                            </table>
+                            <table class="table_ship mb-3 text-center">
+                                <tr style="background-color:#d9d9d9;color: #000;">
+                                    <th>S/N</th>
+                                    <th>Code</th>
+                                    <th>Description</th>
+                                    <th>Project</th>
+                                    <th>Department</th>
+                                    <th>Unit</th>
+                                    <th>QTY</th>
+                                    <th>Unit Rate</th>
+                                    <th>Value</th>
+                                    <th>FED</th>
+                                </tr>
+                                <tr class="table_fed" *ngFor="let detail of this.data.element.purchaseOrderDetail; let i = index;">
+                                    <td>{{i + 1}}</td>
+                                    <td>{{detail.purchaseDemandDetail.item.code}}</td>
+                                    <td>{{detail.purchaseDemandDetail.item.name}}</td>
+                                    <td>{{detail.purchaseDemandDetail.project.name}}</td>
+                                    <td>{{detail.purchaseDemandDetail.department.name}}</td>
+                                    <td>{{detail.purchaseDemandDetail.item.uom.name}}</td>
+                                    <td>{{detail.quantity}}</td>
+                                    <td>{{detail.unitRate}}</td>
+                                    <td>{{detail.value}}</td>
+                                    <td>{{detail.fed}}</td>
+                                </tr>
+                                <tr *ngFor="let blank of [].constructor(15 - this.data.element.purchaseOrderDetail.length); let j = index">
+                                    <td>
+                                        {{this.data.element.purchaseOrderDetail.length + j + 1}}
+                                    </td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="7" rowspan="4" class="no_border text-left" style="vertical-align: baseline;"><b>NOTE:</b></td>
+                                    <td class="fw-bold">GST</td>
+                                    <td colspan="2">{{this.tSaleTax}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">FED</td>
+                                    <td colspan="2">{{this.tfed}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">Delivery Charges</td>
+                                    <td colspan="2">{{this.tExpense}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">Grand Total</td>
+                                    <td  colspan="2">{{this.netAmount}}</td>
+                                </tr>
+                            </table>
+                            <div class="remarks mb-3">
+                                <div><b>REMARK</b></div>
+                                <ul class="m-0">
+                                    <li *ngFor="let vendor of this.data.element.vendor.termsConditions.split('.')" style="list-style: none;">
+                                        {{vendor}}
+                                    </li>
+                                </ul>
+                                
+                            </div>
+                            <div class="note mb-5">
+                                <div>Amount In Words:</div>
+                                <span style="border-bottom: 2px solid;font-weight:500 ;">{{ convertNumberToWords(this.netAmount) }}</span>
+                            </div>
+                            <div class="sign_wrap mt-2">
+                                <div class="col-md-4 text-left">
+                                    <div class="signed_by">
+                                        <div style="text-transform: capitalize;">{{this.data.element.createdBy?.firstName + ' ' +this.data.element.createdBy?.lastName}}</div>
+                                        <div class="heading fw-bold">Prepared By</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 text-center">
+                                    <div class="signed_by">
+                                        <div></div>
+                                        <div class="heading fw-bold">Checked By</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 text-right">
+                                    <div class="signed_by">
+                                        <div></div>
+                                        <div class="heading fw-bold">Approved By</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="print_date mt-3">
+                                <div><b>Print Date:</b></div>
+                                <div>{{currentDate}}</div>
+                                <div><b>Print Time:</b></div>
+                                <div>{{currentTime}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer">
+        <div class="button-container m-0">
+            <button mat-flat-button color="default" [mat-dialog-close]="true">
+              <span class="mat-button-wrapper">Close</span>
+            </button>
+          </div>
+    </div>
+</div>
+

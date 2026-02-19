@@ -1,0 +1,96 @@
+﻿@model CRM.BusinessModels.ParameterVM.EmailModel
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Fonts CSS -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <title>Sensyrtech - Email</title>
+</head>
+<style type="text/css">
+    body {
+        background: #F5F6FA;
+        font-family: 'Inter', sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    footer {
+        width: 600px;
+        margin: 30px auto;
+        text-align: center;
+    }
+
+        footer ul {
+            list-style: none;
+            padding: 0px;
+            margin-bottom: 25px;
+        }
+
+            footer ul li a {
+                margin: 0px 5px;
+            }
+
+        footer p {
+            font-size: 12px;
+            color: #7070A5;
+            margin: 5px 0px;
+            line-height: 20px;
+        }
+</style>
+<body>
+    <!-- Page Body Starts -->
+    <section style="width: 600px; margin: 30px auto; background: #FFFFFF; border: 0.5px solid #F5F5FC; box-shadow: 0 2px 8px 0 rgba(112,112,165,0.14); border-radius: 8px;">
+
+        <!-- Header Starts -->
+        <header style="text-align: center; margin-bottom: 20px; padding: 25px;">
+            <a href="http://app.sensyrtech.com/"><img src="https://sensortech.blob.core.windows.net/sensortech/images/Logo/emailer_logo.svg" style="max-width: 140px;"></a>
+        </header>
+        <!-- Header Ends -->
+        <!-- Email Body Starts -->
+        <section style="background-image: linear-gradient(180deg, #F2EFFA 0%, #FFFFFF 100%); border-radius: 100px 20px 0 0; transform: skewY(-8deg); transform-origin: top left; margin-top: 75px;">
+            <div style="padding: 25px 25px 0px; transform: skewY(8deg);">
+                <div style="text-align: center;">
+                    <h4 style="font-size: 16px; font-weight: normal; color: #404179; line-height: 26px; margin: 0px;">
+                        @if (!string.IsNullOrEmpty(Model.MessageSubject))
+                        {
+                            <span>@Model.MessageSubject,</span><br>
+                        }
+                    </h4>
+                    <h1 style="font-size: 24px; color: #404179; line-height: 32px; font-weight: bold; margin: 20px auto 40px; max-width: 90%;">
+                        @Model.Body
+                    </h1>
+                    <h4 style="font-size: 14px; text-transform: uppercase; color: #7070A5; line-height: 22px;">MORE DETAILS ABOUT THE ALARM</h4>
+                </div>
+                @if (Model.EmailButtons != null)
+                {
+            <div>
+                <h5 style="font-size: 14px; text-transform: uppercase; color: #7070A5; line-height: 22px;">
+                    @Model.EmailButtons[0].BtnName <br />
+                    @Model.EmailButtons[0].BtnBgColor @Model.EmailButtons[0].BtnLink.<br /> Resolve Here  
+                </h5>
+            </div>
+                }
+            </div>
+        </section>
+        <!-- Email Body Ends -->
+    </section>
+    <!-- Page Body Ends -->
+    <!-- Footer Starts -->
+    <footer>
+        <ul>
+            <li>
+                <a href=""><img src="https://sensortech.blob.core.windows.net/sensortech/images/Logo/youtube.svg" alt="social image"></a>
+                <a href="#"><img src="https://sensortech.blob.core.windows.net/sensortech/images/Logo/twitter.svg" alt="social image"></a>
+                <a href="#"><img src="https://sensortech.blob.core.windows.net/sensortech/images/Logo/linkedin.svg" alt="social image"></a>
+            </li>
+        </ul>
+        <p>Copyright © @System.DateTime.UtcNow.Year Sensyrtech, All rights reserved.</p>
+    </footer>
+    <!-- Footer Ends -->
+</body>
+</html>

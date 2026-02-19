@@ -1,0 +1,194 @@
+<form [formGroup]="purchasedemandForm">
+<mat-card>
+  <mat-card-header>
+    <div class="header-container">
+      <mat-card-title>Purchase Demand Form</mat-card-title>
+      <span class="badge badge-created" matTooltip="Status">{{ this.isEditMode == true ? this.data.element.status.title
+       : this.purchasedemandForm.get('statusName')?.value}}</span>
+    </div>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+      <input type="hidden" formControlName="id" />
+      <div class="row">
+        <div class="col-md-3 col-lg-3">
+          <mat-form-field >
+            <mat-label>Demand No.</mat-label>
+            <input matInput value="{{this.purchasedemandForm.get('code')?.value}}" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3 col-lg-3">
+          <mat-form-field>
+            <mat-label>Demand Date</mat-label>
+            <input matInput value="{{this.purchasedemandForm.get('createdDate')?.value | date : 'shortDate'}}" tabindex="-1" readonly>
+        </mat-form-field>
+        </div>
+
+        <div class="col-md-3 col-lg-3">
+          <mat-form-field class="form-field" >
+            <mat-label>Request No.</mat-label>
+            <input matInput  formControlName="requestNo" type="text">
+          </mat-form-field>
+        </div>
+        <div class="col-md-3 col-lg-3">
+          <mat-form-field class="form-field">
+            <mat-label>Request Date</mat-label>
+            <input matInput [matDatepicker]="requestDate" formControlName="requestDate">
+            <mat-datepicker-toggle matIconSuffix [for]="requestDate"></mat-datepicker-toggle>
+            <mat-datepicker #requestDate></mat-datepicker>
+        </mat-form-field>
+        </div>
+
+        <div class="col-md-3 col-lg-3">
+          <mat-form-field  class="form-field">
+            <mat-label>Priority</mat-label>
+            <mat-select formControlName="priorityId">
+              <mat-option *ngFor="let priority of priorityList" [value]="priority.id">
+                 {{ priority.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3 col-lg-3">
+          <mat-form-field  class="form-field">
+            <mat-label>Indent Type</mat-label>
+            <mat-select formControlName="indentTypeId">
+              <mat-option *ngFor="let indentType of indentTypeList" [value]="indentType.id">
+                 {{ indentType.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      <div class="col-md-3 col-lg-3">
+        <mat-form-field  class="form-field">
+          <mat-label>Delivered To</mat-label>
+          <mat-select formControlName="locationId">
+            <mat-option *ngFor="let location of locationList" [value]="location.id">
+               {{ location.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+    </div>
+  </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="table-responsive">
+            <table class="table table-bordered">
+           
+              <thead>
+                <tr>
+                  <th>Sr.#</th>
+                  <th>Item</th>
+                  <th>UOM</th>
+                  <th>Demand (Qty)</th>
+                  <th>Required Date</th>
+                  <th>Project</th>
+                  <th>Department</th>
+                  <th>Remarks</th>
+                </tr>
+              </thead>
+              <tbody formArrayName="purchaseDemandDetail">
+                <tr *ngFor="let detail of purchaseDemandDetail.controls; let i = index" [formGroupName]="i">
+                  <td class="text-center" style="width: 60px;">
+                      <div class="action_btns">
+                        <span>&#40;{{i + 1}}&#41;</span>
+                        <mat-icon aria-label="Edit" class="icons add" (click)="addPurchaseDemandDetail(i)">add</mat-icon>
+                        <mat-icon aria-label="Delete" class="icons delete" (click)="removePurchaseDemandDetail(i)">delete</mat-icon>
+                      </div>
+                  </td>
+                  <input type="hidden" formControlName="id" />
+                  <input type="hidden" formControlName="purchaseDemandId" />
+                  <td style="width: 300px;">
+                    <mat-form-field class="form-field">
+                      <input matInput formControlName="itemName"
+                             [matAutocomplete]="auto" 
+                             (keyup)="getItemList($event);" 
+                             class="form-control"
+                             (input)="onInputCleared($event, i)" 
+                             type="search"
+                             [matTooltip]="detail?.get('item.name')?.value"
+                              />
+                      <mat-autocomplete #auto="matAutocomplete"  class="cstm_auto"
+                                        (optionSelected)="onOptionSelected($event,i)" 
+                                        >
+                        <mat-option *ngFor="let item of itemList" [value]="item">
+                          {{ item.code }} : {{ item.name }}
+                            <div class="selected_val m-0">
+                              Size :  <span >{{ item.height + '*' + item.width  }}</span> 
+                              Make :  <span > {{ item.make }}  </span>
+                            </div>
+                        </mat-option>
+                      </mat-autocomplete>
+                    </mat-form-field>
+                    <div *ngIf="this.getIndexValue(i).item?.height != undefined">
+                      <div class="selected_val">
+                        Size :  <span >{{ this.getIndexValue(i).item.height + '*' + this.getIndexValue(i).item.width  }}</span> 
+                        Make :  <span > {{ this.getIndexValue(i).item.make }}  </span>
+                      </div>
+                    </div>
+                  </td>
+                  <td  style="width: 50px;" class="text-center">
+                     {{this.getIndexValue(i).item?.uom?.name || ''}}
+                  </td>
+                  <td style="width: 100px;">
+                    <mat-form-field style="width: 100px;">
+                      <input matInput formControlName="demandQty" type="number" min="0"> 
+                    </mat-form-field>
+                  </td>
+            
+                  <td style="width: 150px;">
+                    <mat-form-field style="width: 150px;">
+                      <input matInput [matDatepicker]="requiredDate" formControlName="requiredDate">
+                      <mat-datepicker-toggle matIconSuffix [for]="requiredDate"></mat-datepicker-toggle>
+                      <mat-datepicker #requiredDate></mat-datepicker>
+                  </mat-form-field>
+                  </td>
+                  <td style="width: 150px;">
+                  <mat-form-field  style="width: 130px;">
+                    <mat-select formControlName="projectId">
+                      <mat-option *ngFor="let project of projectList" [value]="project.id">
+                         {{ project.name }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </td>
+                <td style="width: 150px;">
+                  <mat-form-field  style="width: 130px;">
+                    <mat-select formControlName="departmentId">
+                      <mat-option *ngFor="let department of departmentList" [value]="department.id">
+                         {{ department.name }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </td>
+                  <td style="width: 150px;">
+                    <mat-form-field style="width: 190px;">
+                      <input matInput formControlName="description">
+                    </mat-form-field>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+       
+      </div>
+
+      <div class="col-md-12">
+        <mat-form-field class="form-field" >
+          <mat-label>Remarks</mat-label>
+          <input matInput  formControlName="remarks" type="text">
+        </mat-form-field>
+      </div>
+        </div>
+      <mat-divider></mat-divider>
+      <div class="button-container">
+        <button mat-flat-button color="success" type="button" (click)="SaveData()">
+          <span class="mat-button-wrapper">Save</span>
+        </button>
+        <button mat-flat-button color="default" [mat-dialog-close]="true">
+          <span class="mat-button-wrapper">Close</span>
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</form>

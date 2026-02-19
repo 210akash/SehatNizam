@@ -1,0 +1,163 @@
+
+<div class="card">
+    <div class="card-header">
+        <div class="header-container">
+            <div class="card-title">Print Bank Receipt Voucher</div>
+            <div>
+                <button  mat-flat-button color="primary" type="button" class="print-button mr-2" (click)="printDocument()">
+                    <span class="mat-button-wrapper">Print</span>
+                </button>
+                <button mat-flat-button color="default" [mat-dialog-close]="true">
+                    <span class="mat-button-wrapper">Close</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="card-body" id="printDoc">
+        <div class="container printCont">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="row m-0 mb-3" style="align-items: center;">
+                            <div class="col-md-3 left_side">
+                                <div class="logo mb-2">
+                                    <img [src]="this.data.element.company.logo" width="70px" height="70px" alt="SocietyImage">
+                                    <span>{{this.data.element.company.name}}</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 text-center">
+                                <div class="col-md-12">
+                                    <h2 style="font-weight: 600;"> <span style="border-bottom: 2px solid;">Bank Receipt Voucher</span> </h2>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <table class="top_right text-left">
+                                    <tr>
+                                        <th>Voucher No.:</th>
+                                        <td>{{this.data.element.code}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Voucher Date:</th>
+                                        <td>{{this.data.element.createdDate | date : 'shortDate'}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Reference Number:</th>
+                                        <td>{{this.data.element.referenceNumber}}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="col-md-12 p-0">
+                            <table class="table_one">
+                                <tr>
+                                    <th colspan="5" style="background: #cecece;">Cheque Information</th>
+                                </tr>
+                                <tr style="background-color:#d9d9d9;">
+                                    <th>Cheque Date</th>
+                                    <th>Cheque Number</th>
+                                    <th>Cheque Title</th>
+                                    <th>Clearing Date</th>
+                                    <th>Received By</th>
+                                </tr>
+                                <tr>
+                                    <td>{{this.data.element.chequeDate  | date : 'shortDate'}}</td>
+                                     <td>{{this.data.element.chequeNo}}</td>
+                                     <td>{{this.data.element.chequeTitle}}</td>
+                                     <td>{{this.data.element.chequeClearDate  | date : 'shortDate'}}</td>
+                                     <td>{{this.data.element.paidReceiveBy}}</td>
+                                </tr>
+                            </table>
+                    </div>
+                </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="col-md-12 p-0">
+                            <table class="table_one mt-3">
+                                <tr>
+                                    <th colspan="7" style="background: #cecece;">Voucher Details</th>
+                                </tr>
+                                <tr style="background-color:#d9d9d9;">
+                                    <th>Sr. #</th>
+                                    <th>Account Code</th>
+                                    <th>Account Title</th>
+                                    <th>Project</th>
+                                    <th>Department</th>
+                                    <th>Debit</th>
+                                    <th>Crerdit</th>
+                                </tr>
+                                <tr *ngFor="let detail of this.data.element.transactionDetails; let i = index">
+                                    <td>{{i + 1}}</td>
+                                    <td>{{detail.account.code}}</td>
+                                    <td>{{detail.account.name}}</td>
+                                    <td>{{detail.project.name}}</td>
+                                    <td>{{detail.department.name}}</td>
+                                    <td>{{detail.debitAmount}}</td>
+                                    <td>{{detail.creditAmount}}</td>
+                                </tr>
+                            </table>
+                            <div class="remarks mt-3">
+                                <span class="fw-bold">Remarks: </span>
+                                <span>{{this.data.element.remarks}}</span>
+                            </div>
+                            <div class="note mt-3">
+                                <div>
+                                    <b>Rupees:</b>
+                                    <span style="border-bottom: 2px solid;font-weight:500;min-width: 50px;display: inline-block;padding: 0 5px;">{{ convertNumberToWords(this.tDebit) }}</span>
+                                </div>
+                            </div>
+                            <table class="mt-3 text-center">
+                                <tr class="dates">
+                                    <td style="background-color:#d9d9d9;">
+                                        <p style="color: rgb(0, 0, 0); font-weight: 600;">Prepared By</p>
+                                    </td>
+                                    <td style="background-color:#d9d9d9;">
+                                        <p style="color: rgb(0, 0, 0); font-weight: 600;">Checked By</p>
+                                    </td>
+                                    <td style="background-color:#d9d9d9;">
+                                        <p style="color: rgb(0, 0, 0); font-weight: 600;">Approved By (Manager Accounts)</p>
+                                    </td>
+                                </tr>
+                                <tr class="sign">
+                                    <td class="text-capitalize">{{this.data.element.createdBy?.firstName}} {{this.data.element.createdBy?.lastName}}</td>
+                                    <td class="text-capitalize">{{this.data.element.processedBy?.firstName}} {{this.data.element.processedBy?.lastName}}</td>
+                                    <td class="text-capitalize">{{this.data.element.approvedBy?.firstName}} {{this.data.element.approvedBy?.lastName}}</td>
+                                </tr>
+                            </table>
+                            <table class="mt-3 text-center">
+                                <tr class="dates">
+                                    <td style="background-color:#d9d9d9;">
+                                        <p style="color: rgb(0, 0, 0); font-weight: 600;">Audited By</p>
+                                    </td>
+                                    <td style="background-color:#d9d9d9;">
+                                        <p style="color: rgb(0, 0, 0); font-weight: 600;">Received By</p>
+                                    </td>
+                                </tr>
+                                <tr class="sign">
+                                    <td class="text-capitalize"></td>
+                                    <td class="text-capitalize"></td>
+                                </tr>
+                            </table>
+                            <div class="print_date mt-3">
+                                <div><b>Print By:</b></div>
+                                <div>{{this.currentUser?.firstName}} {{this.currentUser?.lastName}}</div>
+                                <div><b>Print Date:</b></div>
+                                <div>{{currentDate}}</div>
+                                <div><b>Print Time:</b></div>
+                                <div>{{currentTime}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer">
+        <div class="button-container m-0">
+            <button mat-flat-button color="default" [mat-dialog-close]="true">
+              <span class="mat-button-wrapper">Close</span>
+            </button>
+          </div>
+    </div>
+</div>
+

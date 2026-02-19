@@ -1,0 +1,101 @@
+﻿@model CRM.BusinessModels.ParameterVM.EmailModel
+    <!doctype html>
+    <html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- Fonts CSS -->
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+
+        <title>Sensyrtech - Email</title>
+    </head>
+    <body style="-webkit-font-smoothing: antialiased; font-smoothing: antialiased;">
+        <table width="600" cellpadding="0" cellspacing="0" bgcolor="#f8f9fe" style="margin: auto; position: relative;">
+            <thead>
+                <tr>
+                    <th style="background: #404179; padding: 32px 0;" valign="top">
+                        <!-- Logo -->
+                        <img src="https://i.ibb.co/4gJYfRF/emailer-logo.png" alt="emailer-logo" border="0" width="127">
+                    </th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td>
+                        <table style="background: #ffffff; border-radius: 8px; box-shadow: 0px 2px 8px 0px rgba(112, 112, 165, 0.14); line-height: 1.6; max-width: 95%; margin: 12px auto 0;">
+                            <tr>
+                                <td>
+                                    <h1 style="color: rgb(64, 65, 121); font-size: 32px; font-family: 'Inter', sans-serif; font-weight: bold; text-align: center; padding: 24px 0; margin: 0; border-bottom: 1px solid rgba(112, 112, 165, 0.14);">
+                                        Your One Time Password(OTP)
+                                    </h1>
+
+                                    <table>
+                                        <tr>
+                                            <td style="color: rgb(64, 65, 121); font-family: 'Inter', sans-serif; font-size: 16px; font-weight: normal; padding: 32px; line-height: 1.6;">
+                                                Hi @Model.EmailButtons[0].BtnName,<br /><br />
+
+                                                Your confirmation code is below. Please enter it in your open browser window and we'll help you get signed in.
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td align="center" style="padding: 32px; padding-top: 0px;">
+                                                <div style="background: rgb(245, 246, 250); border-radius: 8px; padding: 16px; font-family: 'Inter', sans-serif; font-weight: bold; font-size: 32px; text-align: center;">@Model.EmailButtons[0].BtnLink</div>
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td style="padding: 32px; padding-top: 0px;">
+                                                <p style="color: rgb(64, 65, 121); font-size: 16px; font-family: 'Inter', sans-serif;">Sensyrtech is an end-to-end IoT package: complete with ultra-long range, wireless sensors, data visualization, and intelligent insights into your facility's health. No matter what you are, stay on top of your operations.</p>
+                                                <br /><br />
+                                                      <p style="color: rgb(64, 65, 121); font-size: 16px; font-family: 'Inter', sans-serif;">The transferTeam</p>
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td style="background: rgb(245, 246, 250); border-radius: 0px 0px 8px 8px; padding: 16px; text-align: center; font-family: 'Inter', sans-serif; color: rgb(112, 112, 165); font-size: 14px;">
+                                                In case of difficulty please contact us: <a href="mailto:support@sensyrtech.com">support@sensyrtech.com</a>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+
+
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+
+            <tfoot>
+                <tr>
+                    <td style="padding: 32px;">
+                        <ul style="list-style: none; padding-left: 0; display: block; text-align: center;">
+                            <li style="display: inline-block; vertical-align: middle; margin-right: 10px;">
+                                <a href="#">
+                                    <img src="https://i.ibb.co/B6t60YX/linkedin.png" alt="linkedin" border="0" width="35">
+                                </a>
+                            </li>
+                            <li style="display: inline-block; vertical-align: middle; margin-right: 10px;">
+                                <a href="#">
+                                    <img src="https://i.ibb.co/N30txjF/twitter.png" alt="twitter" border="0" width="35">
+                                </a>
+                            </li>
+                            <li style="display: inline-block; vertical-align: middle;">
+                                <a href="#">
+                                    <img src="https://i.ibb.co/Yh5P3rj/youtube.png" alt="youtube" border="0" width="35">
+                                </a>
+                            </li>
+                        </ul>
+
+                        <p style="color: rgb(112, 112, 165); text-align: center; font-size: 12px; font-family: 'Inter', sans-serif;">Copyright &copy; @System.DateTime.UtcNow.Year Sensyrtech, All rights reserved.</p>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </body>
+</html>

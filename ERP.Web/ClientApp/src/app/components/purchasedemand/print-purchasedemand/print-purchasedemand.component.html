@@ -1,0 +1,178 @@
+
+<div class="card">
+    <div class="card-header">
+        <div class="header-container">
+            <div class="card-title">Print Purchase Demand</div>
+            <div>
+                <button  mat-flat-button color="primary" type="button" class="print-button mr-2" (click)="printDocument()">
+                    <span class="mat-button-wrapper">Print</span>
+                </button>
+                <button mat-flat-button color="default" [mat-dialog-close]="true">
+                    <span class="mat-button-wrapper">Close</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="card-body" id="printDoc">
+        <div class="container printCont">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="row m-0 mb-3">
+                            <div class="col-md-4 left_side">
+                                <div class="logo mb-2">
+                                    <img [src]="this.data.element.createdBy.department.company.logo" width="70px" height="70px" alt="SocietyImage">
+                                    <span>{{this.data.element.createdBy.department.company.name}}</span>
+                                </div>
+                                <table class="top_left">
+                                    <colgroup>
+                                        <col span="1" style="width:50px;">
+                                        <col style="width:150px;">
+                                      </colgroup>
+                                    <tr>
+                                        <th>Indent Type:</th>
+                                        <td>{{this.data.element.indentType.name}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Priority:</th>
+                                        <td>{{this.data.element.priority.name}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Store:</th>
+                                        <td>{{this.data.element.store.name}}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="col-md-12">
+                                    <h2 style="font-weight: 600;"> <span style="border-bottom: 2px solid;">Purchase Demand</span> </h2>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <table class="top_right">
+                                    <tr>
+                                        <th>Printed By:</th>
+                                        <td colspan="3">{{this.data.element.createdBy.firstName + ' ' + this.data.element.createdBy.lastName }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Demand No.:</th>
+                                        <td>{{this.data.element.code}}</td>
+                                        <th>Demand Date:</th>
+                                        <td>{{this.data.element.createdDate | date : 'shortDate'}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Request No.:</th>
+                                        <td>{{this.data.element.requestNo}}</td>
+                                        <th>Request Date:</th>
+                                        <td>{{this.data.element.requestDate | date : 'shortDate'}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Delivered To:</th>
+                                        <td colspan="3">{{this.data.element.location.name}}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="col-md-12 p-0">
+                            <table class="table_one">
+                                <tr>
+                                    <th class="upper" colspan="6">
+                                        Item
+                                    </th>
+                                    <th class="upper" colspan="4">
+                                        Requirements
+                                    </th>
+                                    <th class="upper" rowspan="2">
+                                        Remarks
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th>Sr.#</th>
+                                    <th>Code</th>
+                                    <th>Item</th>
+                                    <th>Size</th>
+                                    <th>Make</th>
+                                    <th>UOM</th>
+                                    <th>Quantity</th>
+                                    <th>Req Date</th>
+                                    <th>Project</th>
+                                    <th>Department</th>
+                                </tr>
+                                <tr *ngFor="let detail of this.data.element.purchaseDemandDetail; let i = index">
+                                    <td>
+                                        {{i + 1}}
+                                    </td>
+                                    <td>{{detail.item.code}}</td>
+                                    <td>{{detail.item.name}}</td>
+                                    <td>{{detail.item.height + ' * ' + detail.item.width}}</td>
+                                    <td>{{detail.item.make}}</td>
+                                    <td>{{detail.item.uom.name}}</td>
+                                    <td>{{detail.demandQty}}</td>
+                                    <td>{{detail.requiredDate  | date : 'shortDate'}}</td>
+                                    <td>{{detail.project.name}}</td>
+                                    <td>{{detail.department.name}}</td>
+                                    <td>{{detail.description}}</td>
+                                </tr>
+                                <tr *ngFor="let blank of [].constructor(11 - this.data.element.purchaseDemandDetail.length); let j = index">
+                                    <td>
+                                        {{this.data.element.purchaseDemandDetail.length + j + 1}}
+                                    </td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </table>
+                            <div class="remarks mb-2">
+                                <b>Remarks:</b>
+                                <span>{{this.data.element.remarks}}</span>
+                            </div>
+                            <div class="sign_wrap mt-5">
+                                <div class="col-md-4 text-left">
+                                    <div class="signed_by">
+                                        <div></div>
+                                        <div class="heading fw-bold">Prepared By</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 text-center">
+                                    <div class="signed_by">
+                                        <div></div>
+                                        <div class="heading fw-bold">Checked By</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 text-right">
+                                    <div class="signed_by">
+                                        <div></div>
+                                        <div class="heading fw-bold">Approved By</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="print_date mt-4">
+                                <div><b>Print Date:</b></div>
+                                <div>{{currentDate}}</div>
+                                <div><b>Print Time:</b></div>
+                                <div>{{currentTime}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer">
+        <div class="button-container m-0">
+            <button mat-flat-button color="default" [mat-dialog-close]="true">
+              <span class="mat-button-wrapper">Close</span>
+            </button>
+          </div>
+    </div>
+</div>
+

@@ -1,0 +1,156 @@
+
+<div class="card">
+    <div class="card-header">
+        <div class="header-container">
+            <div class="card-title">Print Comparative Statement</div>
+            <div>
+                <button  mat-flat-button color="primary" type="button" class="print-button mr-2" (click)="printDocument()">
+                    <span class="mat-button-wrapper">Print</span>
+                </button>
+                <button mat-flat-button color="default" [mat-dialog-close]="true">
+                    <span class="mat-button-wrapper">Close</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="card-body" id="printDoc" printCont>
+        <div class="container printCont">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="row m-0 mb-3">
+                            <div class="col-md-4 left_side">
+                                <div class="logo mb-2">
+                                    <img [src]="this.data.element.createdBy.department.company.logo" width="70px" height="70px" alt="SocietyImage">
+                                    <span>{{this.data.element.createdBy.department.company.name}}</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <h2 style="font-weight: 600;font-size: 1.5rem;"> <span style="border-bottom: 2px solid;">Comparative Statement</span> </h2>
+                            </div>
+                            <div class="col-md-4">
+                                <table class="top_right">
+                                    <tr>
+                                        <th>Printed By:</th>
+                                        <td colspan="3">{{this.data.element.createdBy.firstName + ' ' + this.data.element.createdBy.lastName }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>CS#:</th>
+                                        <td>{{this.data.element.purchaseDemand.code}}</td>
+                                        <th>CS Date:</th>
+                                        <td>{{this.data.element.createdDate | date : 'shortDate'}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Demand No.:</th>
+                                        <td colspan="3">{{this.data.element.code}}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="col-md-12 p-0">
+                            <table class="table_one mb-4">
+                                <tr> 
+                                    <th class="no_border" colspan="4"></th>
+                                    <th colspan="2" *ngFor="let vendor of uniqueVendors">
+                                        {{ vendor.vendor?.name }}
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th>Sr #</th>
+                                    <th>Item Description</th>
+                                    <th>UOM</th>
+                                    <th>Qty</th>
+                                    <ng-container *ngFor="let vendor of uniqueVendors">
+                                        <th>
+                                            Negotiated Price
+                                        </th>
+                                        <th>
+                                            Total
+                                        </th>
+                                    </ng-container>
+                                </tr>
+                                <tr *ngFor="let detail of this.data.element.comparativeStatementDetail; let i = index;">
+                                    <td>{{i + 1}}</td>
+                                    <td>{{detail.purchaseDemandDetail.item.code + ' ' + detail.purchaseDemandDetail.item.name}}</td>
+                                    <td>{{detail.purchaseDemandDetail.item.uom.name}}</td>
+                                    <td>{{detail.purchaseDemandDetail.demandQty}}</td>
+                                    <ng-container *ngFor="let vendor of uniqueVendors">
+                                        <td>
+                                            {{this.getVendorDetail(i,vendor.vendor?.id).price || ''}}
+                                        </td>
+                                        <td>
+                                            {{this.getVendorDetail(i,vendor.vendor?.id).price * detail.purchaseDemandDetail.demandQty  || ''}}
+                                        </td>
+                                    </ng-container>
+                                </tr>
+                                <!-- <tr>
+                                    <td colspan="4" class="text-right"><b>Grand Total:</b></td>
+                                    <ng-container *ngFor="let totals of grandTotals">
+                                      <td colspan="2" *ngFor="let total of totals">
+                                        {{ total || '' }}
+                                      </td>
+                                    </ng-container>
+                                  </tr> -->
+                                <tr>
+                                    <td class="no_border" colspan="4"></td>
+                                    <td colspan="2" *ngFor="let vendor of uniqueVendors"><b>Term & Condition</b></td>
+                                </tr>
+                                <tr>
+                                    <td class="no_border" colspan="4"></td>
+                                    <td style="text-align: justify;" colspan="2" *ngFor="let vendor of uniqueVendors">
+                                        <ul class="m-0 text-left p-0">
+                                            <li *ngFor="let tc of vendor.vendor?.termsConditions.split('.')" style="list-style: none;">
+                                                {{tc}}
+                                                </li>
+                                        </ul>
+                                      
+                                    </td>
+                                </tr>
+                            </table>
+                            <div class="note mb-5">
+                                <div>Remarks:</div>
+                                <span style="border-bottom: 2px solid;">{{this.data.element.remarks}}</span>
+                            </div>
+                            <div class="sign_wrap mt-5">
+                                <div class="col-md-4 text-center">
+                                    <div class="signed_by">
+                                        <div></div>
+                                        <div class="heading fw-bold">Prepared By</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 text-center">
+                                    <div class="signed_by">
+                                        <div></div>
+                                        <div class="heading fw-bold">Checked By</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 text-center">
+                                    <div class="signed_by">
+                                        <div></div>
+                                        <div class="heading fw-bold">Approved By</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="print_date mt-4">
+                                <div><b>Print Date:</b></div>
+                                <div>{{currentDate}}</div>
+                                <div><b>Print Time:</b></div>
+                                <div>{{currentTime}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer">
+        <div class="button-container m-0">
+            <button mat-flat-button color="default" [mat-dialog-close]="true">
+              <span class="mat-button-wrapper">Close</span>
+            </button>
+          </div>
+    </div>
+</div>
+

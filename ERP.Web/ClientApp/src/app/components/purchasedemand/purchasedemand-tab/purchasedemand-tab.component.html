@@ -1,0 +1,62 @@
+
+<div class="header-container">
+  <h2>Purchase Demand</h2>
+  <button mat-mini-fab aria-label="Add" color="success" (click)="openpurchasedemandDialog(null)"
+  matTooltip="Add Purchase Demand">
+    <mat-icon>add</mat-icon>
+  </button>
+</div>
+<div class="body-container">
+        <form [formGroup]="purchasedemandFilterForm">
+          <div class="row">
+            <div class="col-lg-2 col-md-3">
+              <div class="mt-2">
+                <mat-form-field appearance="outline" class="form-field">
+                  <mat-label>From Date</mat-label>
+                  <input matInput [matDatepicker]="fdate" formControlName="fdate" (dateChange)="filterData()">
+                  <mat-datepicker-toggle matIconSuffix [for]="fdate"></mat-datepicker-toggle>
+                  <mat-datepicker #fdate></mat-datepicker>
+                </mat-form-field>
+              </div> 
+            </div> 
+            <div class="col-lg-2 col-md-3">
+              <div class="mt-2">
+                <mat-form-field appearance="outline" class="form-field">
+                  <mat-label>To Date</mat-label>
+                  <input matInput [matDatepicker]="tdate" formControlName="tdate" (dateChange)="filterData()">
+                  <mat-datepicker-toggle matIconSuffix [for]="tdate"></mat-datepicker-toggle>
+                  <mat-datepicker #tdate></mat-datepicker>
+                </mat-form-field>
+              </div> 
+            </div> 
+            <div class="col-lg-2 col-md-3">
+              <div class="mt-2">
+                <mat-form-field appearance="outline" class="form-field" style="width:80%;">
+                  <mat-label>Code</mat-label>
+                  <input matInput formControlName="code" (keyup)="filterData()"> 
+                </mat-form-field>
+                <button mat-mini-fab color="primary"
+                matTooltip="Reset Filters" 
+                (click)="resetForm()">
+                  <mat-icon>refresh</mat-icon>
+                </button>
+              </div> 
+            </div> 
+          </div> 
+        </form>
+        <mat-divider></mat-divider>
+        <div class="table-responsive mt-3">
+          <mat-tab-group [selectedIndex]="selected.value" (selectedIndexChange)="selected.setValue($event)" (selectedTabChange)="changeTab($event)">
+              <mat-tab *ngFor="let tab of tabs; let index = index" [label]="tab.posessionStatusValues" value="tab.id">
+              <ng-template style="padding-top: 8px; padding-left: 3px;" mat-tab-label>
+                <span id="tabHeading">
+                  {{tab.posessionStatusValues}}  <span id="spn_pCounts">({{tab.pCount}})</span>
+                </span>
+              </ng-template>
+            </mat-tab>
+          </mat-tab-group>
+      
+          <app-purchasedemand-list (onPopupClose)="onPopupClose()" (getLeadsCount)="getpurchasedemandCount()"></app-purchasedemand-list>
+        </div>
+</div>
+

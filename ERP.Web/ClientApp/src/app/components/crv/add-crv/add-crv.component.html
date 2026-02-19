@@ -1,0 +1,279 @@
+<form [formGroup]="transactionForm">
+  <mat-card>
+    <mat-card-header>
+      <div class="header-container">
+        <mat-card-title>Add Cash Receipt Voucher</mat-card-title>
+        <span class="badge badge-created" matTooltip="Status">{{ this.isEditMode == true ?
+          this.data.element.status.title
+          : this.transactionForm.get('statusName')?.value}}</span>
+      </div>
+    </mat-card-header>
+    <mat-divider></mat-divider>
+    <mat-card-content>
+      <input type="hidden" formControlName="id" />
+      <div class="row">
+        <div class="col-md-2">
+          <mat-form-field>
+            <mat-label>Voucher No.</mat-label>
+            <input matInput value="{{this.transactionForm.get('code')?.value}}" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-2">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Voucher Date.</mat-label>
+            <input matInput [matDatepicker]="date" formControlName="date" tabindex="-1">
+            <mat-datepicker-toggle matIconSuffix [for]="date"></mat-datepicker-toggle>
+            <mat-datepicker #date></mat-datepicker>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-2">
+          <mat-form-field>
+            <mat-label>Ref No.</mat-label>
+            <input matInput formControlName="referenceNumber" type="text">
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field>
+            <mat-label>Received By</mat-label>
+            <input matInput formControlName="paidReceiveBy" type="text">
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th colspan="4">Account Transaction</th>
+                  <th colspan="2">Amount</th>
+                </tr>
+                <tr>
+                  <th>Sr.#</th>
+                  <th>Account</th>
+                  <th>Project</th>
+                  <th>Department</th>
+                  <th>Debit</th>
+                  <th>Credit</th>
+                </tr>
+              </thead>
+              <tbody formArrayName="transactionDetails">
+                <tr *ngFor="let detail of transactionDetails.controls; let i = index" [formGroupName]="i">
+                  <!-- UOM Column -->
+                  <td class="text-center" style="width: 60px;">
+                    <div class="action_btns">
+                      <span>&#40;{{i + 1}}&#41;</span>
+                      <mat-icon matTooltip="Add" class="icons add" (click)="addTransactionDetail(i)">add</mat-icon>
+                      <mat-icon matTooltip="Delete" class="icons delete"
+                        (click)="removeTransactionDetail(i)">delete</mat-icon>
+                    </div>
+                  </td>
+                  <!-- Item Column -->
+                  <input type="hidden" formControlName="id" />
+                  <input type="hidden" formControlName="transactionId" />
+                  <td>
+                    <mat-form-field style="width: 430px;">
+                      <input matInput formControlName="accountName" [matAutocomplete]="auto"
+                        (keyup)="getAccountList($event);" class="form-control" (input)="onInputCleared($event, i)"
+                        type="search"
+                        [matTooltip]="detail?.get('account')?.value ? detail.get('account')?.value.code + ' : ' + detail.get('account')?.value.name : 'No Account Selected'" />
+                      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionSelected($event,i)">
+                        <mat-option *ngFor="let account of accountList" [value]="account">
+                          {{ account?.code }} : {{ account?.name }}
+                        </mat-option>
+                      </mat-autocomplete>
+                    </mat-form-field>
+                    <button style="margin-left: 5px;" mat-mini-fab color="primary"
+                    matTooltip="Search Account" 
+                    (click)="SearchAccount(i, searchaccount)">
+                      <mat-icon>search</mat-icon>
+                    </button>
+                    <div *ngIf="detail?.get('account')?.value?.code != undefined">
+                      <div class="selected_val">
+                        Account Type :  <span >{{ detail?.get('account')?.value?.accountType?.name  }}</span> 
+                      </div>
+                    </div>
+                  </td>
+                  <td style="width: 150px;">
+                    <mat-form-field style="width: 130px;">
+                      <mat-select formControlName="projectId">
+                        <mat-option *ngFor="let project of projectList" [value]="project.id">
+                          {{ project.name }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </td>
+                  <td>
+                    <mat-form-field style="width: 130px;">
+                      <mat-select formControlName="departmentId">
+                        <mat-option *ngFor="let department of departmentList" [value]="department.id">
+                          {{ department.name }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </td>
+
+                  <!-- debitAmount Column -->
+                  <td>
+                    <mat-form-field style="width: 150px;">
+                      <input matInput formControlName="debitAmount" type="number" min="0" (change)="changeDrCr('dr',i)">
+                    </mat-form-field>
+                  </td>
+                  <!-- creditAmount Column -->
+                  <td>
+                    <mat-form-field style="width: 150px;">
+                      <input matInput formControlName="creditAmount" type="number" min="0"
+                        (change)="changeDrCr('cr',i)">
+                    </mat-form-field>
+                  </td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr [ngStyle]="{ color: tDebit !== tCredit ? 'red' : 'green' }">
+                  <th colspan="4">Total Amount : </th>
+                  <th colspan="1">{{this.tDebit}}</th>
+                  <th colspan="1">{{this.tCredit}}</th>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+
+        </div>
+        <div class="col-md-12">
+          <mat-form-field class="form-field">
+            <mat-label>Remarks</mat-label>
+            <input matInput formControlName="remarks" type="text">
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-md-2">
+          <div class="btn btn-rose btn-file text-center">
+            <span class="fileinput-new">Select Documents</span>
+            <input type="file" formControlName="file" name="" accept=".pdf, .jpeg, .jpg, .png"
+              (change)="onFileBrowse($event)" multiple>
+          </div>
+        </div>
+      </div>
+      <div class="row media_wrap mt-2 mb-2">
+        <div class="uploaded_doc_wrap col-md-2" *ngFor="let media of uploadedMedia; let i = index">
+          <div class="file_upload text-center doucment_wrap">
+            <i class="fa fa-remove remove_btn" (click)="removeImage(i)"></i>
+            <div class="w-100 d-inline-block" (click)="GetDocument($event, media.FileName, documentView)">
+              <div class="fa fa-file-text-o fa-2x"></div>
+              <div class="" style="font-size: 12px; font-weight: 900;word-break: break-all;margin-top: 5px;">
+                {{ media.FileName }}
+              </div>
+              <div [ngStyle]="{ 'width.%': media.FileProgress }" class="second-progress"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="button-container">
+        <button mat-flat-button color="success" type="button" (click)="SaveData()">
+          <span class="mat-button-wrapper">Save</span>
+        </button>
+        <button mat-flat-button color="default" [mat-dialog-close]="true">
+          <span class="mat-button-wrapper">Close</span>
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</form>
+
+<ng-template #documentView>
+  <mat-card>
+    <mat-card-header>
+      <div class="header-container">
+        <mat-card-title>Voucher Documents</mat-card-title>
+      </div>
+      <div class="button-container">
+        <button mat-mini-fab color="warn" [mat-dialog-close]="true">
+          <mat-icon class="m-0">close</mat-icon>
+        </button>
+      </div>
+    </mat-card-header>
+    <mat-divider></mat-divider>
+    <mat-card-content>
+      <iframe width="100%" height="600px" frameBorder="0" [src]="urlSafe"></iframe>
+      <mat-divider></mat-divider>
+      <div class="button-container">
+        <button mat-flat-button color="warn" [mat-dialog-close]="true">
+          <span class="mat-button-wrapper">Close</span>
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</ng-template>
+
+<ng-template #searchaccount>
+  <mat-card>
+    <mat-card-header>
+      <div class="header-container">
+        <mat-card-title>Search Account</mat-card-title>
+      </div>
+      <div class="button-container">
+        <button mat-mini-fab color="warn" [mat-dialog-close]="true">
+          <mat-icon class="m-0">close</mat-icon>
+        </button>
+      </div>
+    </mat-card-header>
+    <mat-divider></mat-divider>
+    <mat-card-content>
+      <form [formGroup]="accountSearchForm">
+      <div class="row"> 
+        <div class="col-md-6">
+          <mat-form-field  class="form-field">
+            <mat-label>Category</mat-label>
+            <mat-select formControlName="accountCategoryId" (selectionChange)="getsubcategoryList()">
+              <mat-option *ngFor="let category of categoryList" [value]="category.id">
+                {{ category.code }} : {{ category.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field  class="form-field">
+            <mat-label>Sub Category</mat-label>
+            <mat-select formControlName="accountSubCategoryId" (selectionChange)="getAccountTypeList()">
+              <mat-option *ngFor="let subcategory of subcategoryList" [value]="subcategory.id">
+                {{ subcategory.code }} : {{ subcategory.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-12">
+          <mat-form-field  class="form-field">
+            <mat-label>Account Type</mat-label>
+            <mat-select formControlName="accountTypeId" (selectionChange)="changeAccountTypeList()">
+              <mat-option *ngFor="let accountType of accountTypeList" [value]="accountType.id">
+                {{ accountType.code }} : {{ accountType.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-12">
+          <mat-form-field>
+            <input matInput formControlName="accountNameSearch" [matAutocomplete]="auto"
+              (keyup)="getAccountSearchList($event);" class="form-control" (input)="onInputCleared($event, this.selectedIndexSearch)"
+              type="search" />
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionSelectedSearch($event,this.selectedIndexSearch)">
+              <mat-option *ngFor="let account of accountSearchList" [value]="account">
+                {{ account.code }} : {{ account.name }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        </div>
+      </div>
+    </form>
+      <mat-divider></mat-divider>
+      <div class="button-container">
+        <button mat-flat-button color="warn" [mat-dialog-close]="true">
+          <span class="mat-button-wrapper">Close</span>
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</ng-template>

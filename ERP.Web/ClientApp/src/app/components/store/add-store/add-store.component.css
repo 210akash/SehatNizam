@@ -1,0 +1,4 @@
+.header-container {
+    justify-content: space-between; /* Align buttons to the right */
+    width: 100%;
+  }

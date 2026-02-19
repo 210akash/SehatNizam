@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title id="title">ERP - BGC-IGC</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link id="favicon" rel="icon" type="image/x-icon" href="assets/Files/erp.jpg">
+  <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,300|Material+Icons' rel='stylesheet' type='text/css'>
+</head>
+<body>
+  <script>
+    
+    const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+
+    if (currentUser?.department?.company?.logo) {
+      const faviconElement = document.getElementById('favicon');
+      faviconElement.href = currentUser.department?.company.logo;
+
+      const titleElement = document.getElementById('title');
+      titleElement.text = 'ERP - ' + currentUser.department?.company.name;
+      
+
+      const companyColor = currentUser.department.company.color;
+      document.documentElement.style.setProperty('--primary-color', companyColor);
+
+    }
+  </script>
+  <app-root></app-root>
+</body>
+</html>

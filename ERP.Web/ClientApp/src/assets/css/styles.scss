@@ -1,0 +1,21 @@
+@use '@angular/material' as mat;
+
+@include mat.core();
+
+$my-theme: mat.define-theme((
+  density:(
+    scale : -4
+  ),
+  
+));
+
+html {
+  @include mat.all-component-themes($my-theme);
+}
+
+
+
+
+
+
+

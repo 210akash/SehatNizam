@@ -1,0 +1,166 @@
+<form [formGroup]="indentrequestForm">
+<mat-card>
+  <mat-card-header>
+    <div class="header-container">
+      <mat-card-title>Indent Request Form</mat-card-title>
+      <span class="badge badge-created" matTooltip="Status">{{ this.isEditMode == true ? this.data.element.status.title
+       : this.indentrequestForm.get('statusName')?.value}}</span>
+    </div>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+      <input type="hidden" formControlName="id" />
+      <div class="row justify-content-center">
+        <div class="col-md-2">
+          <mat-form-field >
+            <mat-label>Indent No.</mat-label>
+            <input matInput value="{{this.indentrequestForm.get('code')?.value}}" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-2">
+          <mat-form-field>
+            <mat-label>Indent Date</mat-label>
+            <input matInput value="{{this.indentrequestForm.get('createdDate')?.value | date : 'shortDate'}}" tabindex="-1" readonly>
+        </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field>
+            <mat-label>Required Date</mat-label>
+            <input matInput [matDatepicker]="requiredDate" formControlName="requiredDate">
+            <mat-datepicker-toggle matIconSuffix [for]="requiredDate"></mat-datepicker-toggle>
+            <mat-datepicker #requiredDate></mat-datepicker>
+        </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field  class="form-field">
+            <mat-label>Indent Type</mat-label>
+            <mat-select formControlName="indentTypeId">
+              <mat-option *ngFor="let indentType of indentTypeList" [value]="indentType.id">
+                 {{ indentType.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field  class="form-field">
+            <mat-label>Store</mat-label>
+            <mat-select formControlName="storeId">
+              <mat-option *ngFor="let store of storeList" [value]="store.id">
+               {{ store.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="table-responsive">
+            <table class="table table-bordered">
+           
+              <thead>
+                <tr>
+                  <th>Sr.#</th>
+                  <th>Item</th>
+                  <th>UOM</th>
+                  <th>Required (Qty)</th>
+                  <th>Description</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody formArrayName="indentRequestDetail">
+                <tr *ngFor="let detail of indentRequestDetail.controls; let i = index" [formGroupName]="i">
+                <!-- UOM Column -->
+                        <td style="width: 10px;">
+                            {{i + 1}}
+                        </td>
+                  <!-- Item Column -->
+                  <input type="hidden" formControlName="id" />
+                  <input type="hidden" formControlName="indentRequestId" />
+                  <td>
+                    <!-- <mat-form-field style="width: 445px;">
+                      <input matInput formControlName="itemId"
+                             [matAutocomplete]="auto" 
+                             (keyup)="getItemList($event);" 
+                             class="form-control"
+                             (input)="onInputCleared($event, i)" 
+                             type="search"
+                             [matTooltip]="detail?.get('item.name')?.value"
+                              />
+                      <mat-autocomplete #auto="matAutocomplete" 
+                                        (optionSelected)="onOptionSelected($event,i)" 
+                                     
+                                        >
+                        <mat-option *ngFor="let item of itemList" [value]="item">
+                          {{ item.code }} : {{ item.name }}
+                        </mat-option>
+                      </mat-autocomplete>
+                    </mat-form-field> -->
+                    <mat-form-field style="width: 445px;">
+                      <input matInput formControlName="itemName"
+                             [matAutocomplete]="auto" 
+                             (keyup)="getItemList($event);" 
+                             class="form-control"
+                             (input)="onInputCleared($event, i)" 
+                             type="search"
+                             [matTooltip]="detail?.get('item.name')?.value"
+                              />
+                      <mat-autocomplete #auto="matAutocomplete" 
+                                        (optionSelected)="onOptionSelected($event,i)" 
+                                        >
+                        <mat-option *ngFor="let item of itemList" [value]="item">
+                          {{ item.code }} : {{ item.name }}
+                        </mat-option>
+                      </mat-autocomplete>
+                    </mat-form-field>
+                  </td>
+            
+                  <!-- UOM Column -->
+                  <td  style="width: 100px;" class="text-center">
+                     {{this.getuomValue(i)}}
+                  </td>
+            
+                  <!-- Required Column -->
+                  <td>
+                    <mat-form-field  style="width: 100px;">
+                      <input matInput formControlName="required" type="number" min="0" > 
+                    </mat-form-field>
+                  </td>
+            
+                  <!-- Description Column -->
+                  <td>
+                    <mat-form-field style="width: 195px;">
+                      <input matInput formControlName="description">
+                    </mat-form-field>
+                  </td>
+            
+                  <!-- Actions Column -->
+                  <td>
+                      <div class="action_btns"  style="width: 55px;">
+                        <button  mat-mini-fab  matTooltip="Add Item" color="success" type="button" (click)="addIndentRequestDetail(i)">
+                          <mat-icon aria-label="Edit" >add</mat-icon>
+                        </button>
+                        <button mat-mini-fab matTooltip="Delete Item" color="warn" type="button" (click)="removeIndentRequestDetail(i)">
+                          <mat-icon aria-label="Delete" >delete</mat-icon>
+                        </button>
+                      </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+       
+      </div>
+        </div>
+   
+      <mat-divider></mat-divider>
+      <div class="button-container">
+        <button mat-flat-button color="success" type="button" (click)="SaveData()">
+          <span class="mat-button-wrapper">Save</span>
+        </button>
+        <button mat-flat-button color="default" [mat-dialog-close]="true">
+          <span class="mat-button-wrapper">Close</span>
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</form>

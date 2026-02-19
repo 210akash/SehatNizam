@@ -1,0 +1,81 @@
+<mat-card>
+  <mat-card-header>
+    <div class="header-container">
+      <mat-card-title>Delete IGP</mat-card-title>
+      <span class="badge badge-created" matTooltip="Status">{{this.data.element.status.title }}</span>
+    </div>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+    <div class="row">
+      <div class="col-md-2 col-lg-2">
+        <mat-form-field>
+          <mat-label>IGP No.</mat-label>
+          <input matInput [value]="this.data.element.code" tabindex="-1" readonly>
+        </mat-form-field>
+      </div>
+      <div class="col-md-2 col-lg-2">
+        <mat-form-field>
+          <mat-label>IGP Date</mat-label>
+          <input matInput [value]="this.data.element.createdDate| date : 'shortDate'" tabindex="-1" readonly>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-2 col-lg-2">
+        <mat-form-field class="form-field">
+          <mat-label>P. Order #</mat-label>
+          <input matInput [value]="this.data.element.purchaseOrder?.code" tabindex="-1" readonly>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Sr.#</th>
+                <th>Item</th>
+                <th>Ordered Quantity</th>
+                <th>Received Quantity</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let detail of this.data.element.igpDetails; let i = index">
+                <td style="width: 10px;">
+                  {{i + 1}}
+                </td>
+                <td style="width: 300px;">
+                  {{detail.purchaseOrderDetail?.purchaseDemandDetail?.item?.name || ''}}
+                </td>
+                <td>
+                  {{detail.purchaseOrderDetail?.quantity || ''}}
+                </td>
+                <td>
+                  {{detail.received || ''}}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-2">
+      <div class="col-md-12">
+        <mat-form-field>
+          <mat-label>Remarks</mat-label>
+          <input matInput [value]="this.data.element.remarks" type="text" readonly tabindex="-1">
+        </mat-form-field>
+      </div>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="button-container">
+      <button mat-flat-button color="danger" type="button" (click)="delete()">
+        <span class="mat-button-wrapper">Delete</span>
+      </button>
+      <button mat-flat-button color="default" [mat-dialog-close]="true">
+        <span class="mat-button-wrapper">Close</span>
+      </button>
+    </div>
+  </mat-card-content>
+</mat-card>

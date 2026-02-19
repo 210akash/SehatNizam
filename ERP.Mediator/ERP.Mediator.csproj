@@ -1,0 +1,50 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Mediator\TransferRequest\Command\AuthorityCommand.cs" />
+    <Compile Remove="Mediator\TransferRequest\Command\DealerCommand.cs" />
+    <Compile Remove="Mediator\TransferRequest\Command\MemberCommand.cs" />
+    <Compile Remove="Mediator\TransferRequest\Command\SaveTransferCommand.cs" />
+    <Compile Remove="Mediator\TransferRequest\Command\SocietyCommand.cs" />
+    <Compile Remove="Mediator\TransferRequest\Command\TransferSellerBuyerInfoCommand.cs" />
+    <Compile Remove="Mediator\TransferRequest\Command\TransferSellerBuyerPictureCommand.cs" />
+    <Compile Remove="Mediator\TransferRequest\Handler\GetDealerHandler.cs" />
+    <Compile Remove="Mediator\TransferRequest\Handler\GetFileHandler.cs" />
+    <Compile Remove="Mediator\TransferRequest\Handler\GetSellerBuyerByIdHandler.cs" />
+    <Compile Remove="Mediator\TransferRequest\Handler\GetSellerBuyerHandler.cs" />
+    <Compile Remove="Mediator\TransferRequest\Handler\GetSocietiesHandler.cs" />
+    <Compile Remove="Mediator\TransferRequest\Handler\SaveTransferHandler.cs" />
+    <Compile Remove="Mediator\TransferRequest\Query\GetDealerQuery.cs" />
+    <Compile Remove="Mediator\TransferRequest\Query\GetFileQuery.cs" />
+    <Compile Remove="Mediator\TransferRequest\Query\GetSellerBuyerByIdQuery.cs" />
+    <Compile Remove="Mediator\TransferRequest\Query\GetSellerBuyerQuery.cs" />
+    <Compile Remove="Mediator\TransferRequest\Query\GetSocietiesQuery.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation.AspNetCore" Version="10.3.0" />
+    <PackageReference Include="MediatR" Version="9.0.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
+    <PackageReference Include="Polybioz.HtmlRenderer.PdfSharp.Core" Version="1.0.0" />
+
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.12.1" />
+    <PackageReference Include="Stripe.net" Version="39.63.0" />
+    <PackageReference Include="Twilio" Version="5.65.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ERP.Core\ERP.Core.csproj" />
+    <ProjectReference Include="..\ERP.Entities\ERP.Entities.csproj" />
+    <ProjectReference Include="..\ERP.Services\ERP.Services.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Mediator\Email\Command\" />
+    <Folder Include="Mediator\User\Validator\" />
+  </ItemGroup>
+
+</Project>

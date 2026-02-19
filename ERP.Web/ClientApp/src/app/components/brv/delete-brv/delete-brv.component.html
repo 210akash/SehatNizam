@@ -1,0 +1,187 @@
+  <mat-card>
+    <mat-card-header>
+      <div class="header-container">
+        <mat-card-title>Delete Bank Payment Voucher</mat-card-title>
+        <span class="badge badge-created" matTooltip="Status">{{this.data.element.status.title }}</span>
+      </div>
+    </mat-card-header>
+    <mat-divider></mat-divider>
+    <mat-card-content>
+      <div class="row">
+        <div class="col-md-2">
+          <mat-form-field>
+            <mat-label>Voucher No.</mat-label>
+            <input matInput [value]="this.data.element.code" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-2">
+          <mat-form-field>
+            <mat-label>Voucher Date.</mat-label>
+            <input matInput [value]="this.data.element.date | date : 'shortDate'" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-2">
+          <mat-form-field>
+            <mat-label>Ref No.</mat-label>
+            <input matInput [value]="this.data.element.referenceNumber" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-2">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Cheque Date</mat-label>
+            <input matInput  [value]="this.data.element.chequeDate | date : 'shortDate'" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field>
+            <mat-label>Cheque No.</mat-label>
+            <input matInput   [value]="this.data.element.chequeNo" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field>
+            <mat-label>Cheque Title</mat-label>
+            <input matInput  [value]="this.data.element.chequeTitle" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-2">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Cheque Clearing Date</mat-label>
+            <input matInput   [value]="this.data.element.chequeClearDate | date : 'shortDate'" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field>
+            <mat-label>Received By</mat-label>
+            <input matInput  [value]="this.data.element.paidReceiveBy" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+      </div>
+       <div class="row">
+        <div class="col-md-12">
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th colspan="4">Account Transaction</th>
+                  <th colspan="2">Amount</th>
+                </tr>
+                <tr>
+                  <th>Sr.#</th>
+                  <th>Account</th>
+                  <th>Project</th>
+                  <th>Department</th>
+                  <th>Debit</th>
+                  <th>Credit</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let detail of this.data.element.transactionDetails; let i = index">
+                  <td class="text-center" style="width: 60px;">
+                    <div class="action_btns">
+                      <span>{{i + 1}}</span>
+                    </div>
+                </td>
+                  <!-- Item Column -->
+                  <td [matTooltip]="detail.account.code + ' : ' + detail.account.name" >
+                    {{detail.account.code + ' : ' + detail.account.name}}
+                    <div class="selected_val">
+                      Account Type :  <span >{{ detail.account?.accountType?.code + ' : ' + detail.account?.accountType?.name  }}</span> 
+                    </div>
+                  </td>
+            
+                  <!-- UOM Column -->
+                  <td>
+                    {{detail.project.name}}
+                  </td>
+
+                    <!-- UOM Column -->
+                    <td>
+                      {{detail.department.name}}
+                    </td>
+            
+                  <!-- Description Column -->
+                  <td>
+                    {{detail.debitAmount}}
+                  </td>
+
+                    <!-- Description Column -->
+                    <td>
+                      {{detail.creditAmount}}
+                    </td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr [ngStyle]="{ color: tDebit !== tCredit ? 'red' : 'green' }">
+                  <th colspan="4">Total Amount : </th>
+                  <th colspan="1">{{this.tDebit}}</th>
+                  <th colspan="1">{{this.tCredit}}</th>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+        <div class="col-md-12 mb-4 justify-content-center">
+         <b>Remarks : </b>
+        {{this.data.element.remarks}}
+        </div>
+      </div>
+      <div class="floor" *ngIf="this.data.element.transactionDocuments.length > 0">
+        <h2>Documents</h2>
+        <div class="row  mt-4">
+          <div class="col-md-2 col-sm-3" *ngFor="let item of this.data.element.transactionDocuments; let i = index">
+            <div class="media_wrap">
+              <div class="uploaded_doc_wrap">
+                <div class="file_upload text-center doucment_wrap">
+                  <div class="w-100 d-inline-block" (click)="GetDocument($event, item.path, documentView)"
+                    >
+                    <div class="fa fa-file-text-o fa-3x" [ngClass]="{'primary-doc': i === this.data.element.transactionDocuments.length - 1, 'rejected-doc': i !== this.data.element.transactionDocuments.length - 1}"></div>
+                    <div class="doc-label" style="font-size: 14px; font-weight: 900;word-break: break-all;margin-top: 5px;">
+                      Doc {{i + 1}}
+                    </div>
+                    <div [ngStyle]="{ 'width.%': 100 }" class="second-progress"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="button-container">
+        <button mat-flat-button color="danger" type="button" (click)="delete()">
+          <span class="mat-button-wrapper">Delete</span>
+        </button>
+        <button mat-flat-button color="default" [mat-dialog-close]="true">
+          <span class="mat-button-wrapper">Close</span>
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+
+  
+  <ng-template #documentView>
+    <mat-card>
+      <mat-card-header>
+        <div class="header-container">
+          <mat-card-title>Voucher Documents</mat-card-title>
+        </div>
+        <div class="button-container">
+          <button mat-mini-fab color="warn" [mat-dialog-close]="true">
+            <mat-icon class="m-0">close</mat-icon>
+          </button>
+        </div>
+      </mat-card-header>
+      <mat-divider></mat-divider>
+      <mat-card-content>
+        <iframe width="100%" height="600px" frameBorder="0" [src]="urlSafe"></iframe>
+        <mat-divider></mat-divider>
+        <div class="button-container">
+          <button mat-flat-button color="warn" [mat-dialog-close]="true">
+            <span class="mat-button-wrapper">Close</span>
+          </button>
+        </div>
+      </mat-card-content>
+      </mat-card>
+  </ng-template>

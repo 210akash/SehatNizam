@@ -1,0 +1,847 @@
+<mat-toolbar class="mat-elevation-z8 top_nav_bar">
+  <div class="d-inline-flex align-items-center">
+    <button mat-icon-button (click)="sidenav.toggle()" class="menu_btn">
+      <mat-icon *ngIf="!sidenav.opened"> menu </mat-icon>
+      <mat-icon *ngIf="sidenav.opened"> close </mat-icon>
+    </button>
+    <div class="avatar top_logo" *ngIf="this.currentUser.department?.company?.logo != null">
+      <img src="{{this.currentUser.department?.company?.logo}}" alt="company Image"> 
+    </div>
+    <span class="brand_name">ERP - {{this.currentUser.department?.company?.name || 'BGC - IGC'}}</span>
+    <div class="top_menu_list">
+      
+      <ul class="menu">
+        <li>
+          <a class="menu-item" *ngIf="hasRequiredRole(['admin', 'store manager', 'store issuer', 'purchase manager','purchaser'])" routerLink="/home" [ngClass]="{ 'active': isActive('/home') }">Home</a>
+        </li>
+        <li class="menu-item" mat-button [matMenuTriggerFor]="gl" *ngIf="hasRequiredRole(['accounts manager','accounts assistant','admin'])">
+          <div class="menu-header" (click)="toggleSubMenu('menu1')">
+            <div class="d-inline-flex align-items-center justify-content-between w-100">
+              <span>GL</span>
+              <mat-icon [style.transform]="isSubMenuVisible['menu1'] ? 'rotate(180deg)' : 'rotate(0deg)'">
+                keyboard_arrow_down
+              </mat-icon>
+            </div>
+          </div>
+          <mat-menu #gl="matMenu">
+            <button mat-menu-item [matMenuTriggerFor]="setup" class="menu-button cstmMenu">Setup</button>
+            <button mat-menu-item [matMenuTriggerFor]="receipt" class="menu-button cstmMenu">Receipt Voucher</button>
+            <button mat-menu-item [matMenuTriggerFor]="payment" class="menu-button cstmMenu">Payment Voucher</button>
+            <button mat-menu-item [matMenuTriggerFor]="othervch" class="menu-button cstmMenu">Other Vouchers</button>
+            <button mat-menu-item [matMenuTriggerFor]="reports" class="menu-button cstmMenu">Reports</button>
+          </mat-menu>
+          <mat-menu #setup="matMenu" [ngClass]="{'slide-down': isSubMenuVisible['menu1'], 'slide-up': !isSubMenuVisible['menu1']}">
+            <div *ngIf="hasRequiredRole(['admin'])">
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/roles" [ngClass]="{ 'active': isActive('/roles') }">
+                <span>Roles</span>
+              </button>
+            </div>
+            
+            <div *ngIf="hasRequiredRole(['admin'])">
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/users" [ngClass]="{ 'active': isActive('/users') }">
+                <span>Users</span>
+              </button>
+            </div>
+            
+            <div *ngIf="hasRequiredRole(['admin'])">
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/companies" [ngClass]="{ 'active': isActive('/companies') }">
+                <span>Companies</span>
+              </button>
+            </div>
+            
+            <div *ngIf="hasRequiredRole(['admin','accounts manager','accounts assistant'])">
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/departments" [ngClass]="{ 'active': isActive('/departments') }">
+                <span>Departments</span>
+              </button>
+            </div>
+            
+            <div *ngIf="hasRequiredRole(['admin'])">
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/location" [ngClass]="{ 'active': isActive('/location') }">
+                <span>Locations</span>
+              </button>
+            </div>
+
+            <div *ngIf="hasRequiredRole(['admin','accounts manager','accounts assistant'])">
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/project" [ngClass]="{ 'active': isActive('/project') }">
+                <span>Projects</span>
+              </button>
+            </div>
+            
+            <div *ngIf="hasRequiredRole(['admin'])">
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/store" [ngClass]="{ 'active': isActive('/store') }">
+                <span>Stores</span>
+              </button>
+            </div>
+            
+            <div *ngIf="hasRequiredRole(['store manager','store issuer'])">
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/uoms" [ngClass]="{ 'active': isActive('/uoms') }">
+                <span>UOM</span>
+              </button>
+            </div>
+            
+            <div *ngIf="hasRequiredRole(['store manager','store issuer'])">
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/indenttype" [ngClass]="{ 'active': isActive('/indenttype') }">
+                <span>Indent Type</span>
+              </button>
+            </div>
+            
+            <div *ngIf="hasRequiredRole(['store manager','store issuer'])">
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/priority" [ngClass]="{ 'active': isActive('/priority') }">
+                <span>Priority</span>
+              </button>
+            </div>
+            
+            <div *ngIf="hasRequiredRole(['store manager','store issuer'])">
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/category" [ngClass]="{ 'active': isActive('/category') }">
+                <span>Category</span>
+              </button>
+            </div>
+            
+            <div *ngIf="hasRequiredRole(['store manager','store issuer'])">
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/subcategory" [ngClass]="{ 'active': isActive('/subcategory') }">
+                <span>Sub Category</span>
+              </button>
+            </div>
+            
+            <div *ngIf="hasRequiredRole(['store manager','store issuer'])">
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/itemtype" [ngClass]="{ 'active': isActive('/itemtype') }">
+                <span>Item Types</span>
+              </button>
+            </div>
+            
+            <div *ngIf="hasRequiredRole(['store manager','store issuer'])">
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/items" [ngClass]="{ 'active': isActive('/items') }">
+                <span>Items</span>
+              </button>
+            </div>
+            
+            <div *ngIf="hasRequiredRole(['store manager','store issuer'])">
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/chartitems" [ngClass]="{ 'active': isActive('/chartitems') }"> 
+                <span>Chart Items</span>
+              </button>
+            </div>
+            
+            <div *ngIf="hasRequiredRole(['purchase manager','purchaser'])">
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/currency" [ngClass]="{ 'active': isActive('/currency') }"> 
+                <span>Currency</span>
+              </button>
+            </div>
+            
+            <div *ngIf="hasRequiredRole(['purchase manager','purchaser'])">
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/shipmentmode" [ngClass]="{ 'active': isActive('/shipmentmode') }"> 
+                <span>Shipment Mode</span>
+              </button>
+            </div>
+            
+            <div *ngIf="hasRequiredRole(['purchase manager','purchaser'])">
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/paymentmode" [ngClass]="{ 'active': isActive('/paymentmode') }"> 
+                <span>Payment Mode</span>
+              </button>
+            </div>
+            
+            <div *ngIf="hasRequiredRole(['purchase manager','purchaser'])">
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/deliveryterms" [ngClass]="{ 'active': isActive('/deliveryterms') }"> 
+                <span>Delivery Terms</span>
+              </button>
+            </div>
+            
+            <div *ngIf="hasRequiredRole(['purchase manager','purchaser'])">
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/gst" [ngClass]="{ 'active': isActive('/gst') }"> 
+                <span>GST</span>
+              </button>
+            </div>
+            
+            <div *ngIf="hasRequiredRole(['purchase manager','purchaser'])">
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/vendors" [ngClass]="{ 'active': isActive('/vendors') }">
+                <span>Vendors</span>
+              </button>
+            </div>
+            
+            <div *ngIf="hasRequiredRole(['accounts manager','accounts assistant'])">
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/accountcategory" [ngClass]="{ 'active': isActive('/accountcategory') }">
+                <span>Account Category</span>
+              </button>
+            </div>
+            
+            <div *ngIf="hasRequiredRole(['accounts manager','accounts assistant'])">
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/accountsubcategory" [ngClass]="{ 'active': isActive('/accountsubcategory') }"> 
+                <span>Account SubCategory</span>
+              </button>
+            </div>
+            
+            <div *ngIf="hasRequiredRole(['accounts manager','accounts assistant'])">
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/accounttype" [ngClass]="{ 'active': isActive('/accounttype') }">
+                <span>Account Type</span>
+              </button>
+            </div>
+            
+            <div *ngIf="hasRequiredRole(['accounts manager','accounts assistant'])">
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/account" [ngClass]="{ 'active': isActive('/account') }">
+                <span>Account</span>
+              </button>
+            </div>
+
+            <div *ngIf="hasRequiredRole(['accounts manager','accounts assistant'])">
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/accountchart" [ngClass]="{ 'active': isActive('/accountchart') }">
+                <span>Account Char</span>
+              </button>
+            </div>
+          </mat-menu>
+          <mat-menu #receipt="matMenu">
+            <div *ngIf="hasRequiredRole(['accounts manager','accounts assistant'])">
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/crv" [ngClass]="{ 'active': isActive('/crv') }">
+                <span>Cash Receipt Voucher
+                </span>
+              </button>
+            </div>
+
+            <div *ngIf="hasRequiredRole(['accounts manager','accounts assistant'])">
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/brv" [ngClass]="{ 'active': isActive('/brv') }">
+                <span>Bank Receipt Voucher
+                </span>
+              </button>
+            </div>
+          </mat-menu>
+          <mat-menu #payment="matMenu">
+            <div *ngIf="hasRequiredRole(['accounts manager','accounts assistant'])">
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/cpv" [ngClass]="{ 'active': isActive('/cpv') }">
+                <span>Cash Payment Voucher
+                </span>
+              </button>
+            </div>
+
+            <div *ngIf="hasRequiredRole(['accounts manager','accounts assistant'])">
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/bpv" [ngClass]="{ 'active': isActive('/bpv') }">
+                <span>Bank Payment Voucher
+                </span>
+              </button>
+            </div>
+          </mat-menu>
+          <mat-menu #othervch="matMenu">
+            <div *ngIf="hasRequiredRole(['accounts manager','accounts assistant'])">
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/jv" [ngClass]="{ 'active': isActive('/jv') }">
+                <span>Journal Voucher
+                </span>
+              </button>
+            </div>
+          </mat-menu>
+          <mat-menu #reports="matMenu">
+            <div *ngIf="hasRequiredRole(['accounts manager','accounts assistant'])">
+              <button mat-menu-item class="menu-button cstmMenu" (click)="redirectTochartofaccount()" [ngClass]="{ 'active': isActive('/account') }">
+                <span>Chart Of Accounts</span>
+              </button>
+            </div>
+            <div *ngIf="hasRequiredRole(['accounts manager','accounts assistant'])">
+              <button mat-menu-item class="menu-button cstmMenu" (click)="redirectTotrailbalance()" [ngClass]="{ 'active': isActive('/account') }">
+                <span>Trial Balance</span>
+              </button>
+            </div>
+            <div *ngIf="hasRequiredRole(['accounts manager','accounts assistant'])">
+              <button mat-menu-item class="menu-button cstmMenu" (click)="redirectToaccountledger()" [ngClass]="{ 'active': isActive('/account') }">
+                <span>Account Ledger</span>
+              </button>
+            </div>
+          </mat-menu>
+          <!-- <ul class="sub-menu" [ngClass]="{'slide-down': isSubMenuVisible['menu1'], 'slide-up': !isSubMenuVisible['menu1']}">
+  
+            <li class="sub-menu-item" *ngIf="hasRequiredRole(['admin'])">
+              <button mat-button class="menu-button cstmMenu" routerLink="/roles" [ngClass]="{ 'active': isActive('/roles') }" (click)="closeSubMenu('menu1')">
+                <span>Roles</span>
+              </button>
+            </li>
+  
+            <li class="sub-menu-item" *ngIf="hasRequiredRole(['admin'])">
+              <button mat-button class="menu-button cstmMenu" routerLink="/users" [ngClass]="{ 'active': isActive('/users') }" (click)="closeSubMenu('menu1')">
+                <span>Users</span>
+              </button>
+            </li>
+  
+  
+            <li class="sub-menu-item" *ngIf="hasRequiredRole(['admin'])">
+              <button mat-button class="menu-button cstmMenu" routerLink="/companies" [ngClass]="{ 'active': isActive('/companies') }" (click)="closeSubMenu('menu1')">
+                <span>Companies</span>
+              </button>
+            </li>
+  
+            <li class="sub-menu-item" *ngIf="hasRequiredRole(['admin'])">
+              <button mat-button class="menu-button cstmMenu" routerLink="/departments" [ngClass]="{ 'active': isActive('/departments') }" (click)="closeSubMenu('menu1')">
+                <span>Departments</span>
+              </button>
+            </li>
+  
+            <li class="sub-menu-item" *ngIf="hasRequiredRole(['admin'])">
+              <button mat-button class="menu-button cstmMenu" routerLink="/location" [ngClass]="{ 'active': isActive('/location') }" (click)="closeSubMenu('menu1')">
+                <span>Locations</span>
+              </button>
+            </li>
+  
+            <li class="sub-menu-item" *ngIf="hasRequiredRole(['admin'])">
+              <button mat-button class="menu-button cstmMenu" routerLink="/project" [ngClass]="{ 'active': isActive('/project') }" (click)="closeSubMenu('menu1')">
+                <span>Projects</span>
+              </button>
+            </li>
+  
+            <li class="sub-menu-item" *ngIf="hasRequiredRole(['admin'])">
+              <button mat-button class="menu-button cstmMenu" routerLink="/store" [ngClass]="{ 'active': isActive('/store') }" (click)="closeSubMenu('menu1')">
+                <span>Stores</span>
+              </button>
+            </li>
+  
+            <li class="sub-menu-item" *ngIf="hasRequiredRole(['store manager','store issuer'])">
+              <button mat-button class="menu-button cstmMenu" routerLink="/uoms" [ngClass]="{ 'active': isActive('/uoms') }" (click)="closeSubMenu('menu1')">
+                <span>UOM</span>
+              </button>
+            </li>
+
+            <li class="sub-menu-item" *ngIf="hasRequiredRole(['store manager','store issuer'])">
+              <button mat-button class="menu-button cstmMenu" routerLink="/indenttype" [ngClass]="{ 'active': isActive('/indenttype') }" (click)="closeSubMenu('menu1')">
+                <span>Indent Type</span>
+              </button>
+            </li>
+  
+            <li class="sub-menu-item" *ngIf="hasRequiredRole(['store manager','store issuer'])">
+              <button mat-button class="menu-button cstmMenu" routerLink="/priority" [ngClass]="{ 'active': isActive('/priority') }" (click)="closeSubMenu('menu1')">
+                <span>Priority</span>
+              </button>
+            </li>
+            
+            <li class="sub-menu-item" *ngIf="hasRequiredRole(['store manager','store issuer'])">
+              <button mat-button class="menu-button cstmMenu" routerLink="/category" [ngClass]="{ 'active': isActive('/category') }" (click)="closeSubMenu('menu1')">
+                <span>Category</span>
+              </button>
+            </li>
+  
+            <li class="sub-menu-item" *ngIf="hasRequiredRole(['store manager','store issuer'])">
+              <button mat-button class="menu-button cstmMenu" routerLink="/subcategory" [ngClass]="{ 'active': isActive('/subcategory') }" (click)="closeSubMenu('menu1')">
+                <span>Sub Category</span>
+              </button>
+            </li>
+  
+            <li class="sub-menu-item" *ngIf="hasRequiredRole(['store manager','store issuer'])">
+              <button mat-button class="menu-button cstmMenu" routerLink="/itemtype" [ngClass]="{ 'active': isActive('/itemtype') }" (click)="closeSubMenu('menu1')">
+                <span>Item Types</span>
+              </button>
+            </li>
+  
+            <li class="sub-menu-item" *ngIf="hasRequiredRole(['store manager','store issuer'])">
+              <button mat-button class="menu-button cstmMenu" routerLink="/items" [ngClass]="{ 'active': isActive('/items') }" (click)="closeSubMenu('menu1')">
+                <span>Items</span>
+              </button>
+            </li>
+            
+  
+            <li class="sub-menu-item" *ngIf="hasRequiredRole(['store manager','store issuer'])">
+              <button mat-button class="menu-button cstmMenu" routerLink="/chartitems" [ngClass]="{ 'active': isActive('/chartitems') }" (click)="closeSubMenu('menu1')"> 
+                <span>Chart Items</span>
+              </button>
+            </li>
+
+            <li class="sub-menu-item" *ngIf="hasRequiredRole(['purchase manager','purchaser'])">
+              <button mat-button class="menu-button cstmMenu" routerLink="/currency" [ngClass]="{ 'active': isActive('/currency') }" (click)="closeSubMenu('menu1')"> 
+                <span>Currency</span>
+              </button>
+            </li>
+
+            <li class="sub-menu-item" *ngIf="hasRequiredRole(['purchase manager','purchaser'])">
+              <button mat-button class="menu-button cstmMenu" routerLink="/shipmentmode" [ngClass]="{ 'active': isActive('/shipmentmode') }" (click)="closeSubMenu('menu1')"> 
+                <span>Shipment Mode</span>
+              </button>
+            </li>
+
+            <li class="sub-menu-item" *ngIf="hasRequiredRole(['purchase manager','purchaser'])">
+              <button mat-button class="menu-button cstmMenu" routerLink="/paymentmode" [ngClass]="{ 'active': isActive('/paymentmode') }" (click)="closeSubMenu('menu1')"> 
+                <span>Payment Mode</span>
+              </button>
+            </li>
+
+            <li class="sub-menu-item" *ngIf="hasRequiredRole(['purchase manager','purchaser'])">
+              <button mat-button class="menu-button cstmMenu" routerLink="/deliveryterms" [ngClass]="{ 'active': isActive('/deliveryterms') }" (click)="closeSubMenu('menu1')"> 
+                <span>Delivery Terms</span>
+              </button>
+            </li>
+
+            <li class="sub-menu-item" *ngIf="hasRequiredRole(['purchase manager','purchaser'])">
+              <button mat-button class="menu-button cstmMenu" routerLink="/gst" [ngClass]="{ 'active': isActive('/gst') }" (click)="closeSubMenu('menu1')"> 
+                <span>GST</span>
+              </button>
+            </li>
+
+            <li class="sub-menu-item" *ngIf="hasRequiredRole(['purchase manager','purchaser'])">
+              <button mat-button class="menu-button cstmMenu" routerLink="/vendors" [ngClass]="{ 'active': isActive('/vendors') }">
+                <span>Vendors</span>
+              </button>
+            </li>
+
+            <li class="sub-menu-item" *ngIf="hasRequiredRole(['accounts manager','accounts assistant'])">
+              <button mat-button class="menu-button cstmMenu" routerLink="/accountcategory" [ngClass]="{ 'active': isActive('/accountcategory') }">
+                <span>Account Category</span>
+              </button>
+            </li>
+
+            <li class="sub-menu-item" *ngIf="hasRequiredRole(['accounts manager','accounts assistant'])">
+              <button mat-button class="menu-button cstmMenu" routerLink="/accountsubcategory" [ngClass]="{ 'active': isActive('/accountsubcategory') }">
+                <span>Account SubCategory</span>
+              </button>
+            </li>
+
+            <li class="sub-menu-item" *ngIf="hasRequiredRole(['accounts manager','accounts assistant'])">
+              <button mat-button class="menu-button cstmMenu" routerLink="/accounttype" [ngClass]="{ 'active': isActive('/accounttype') }">
+                <span>Account Type</span>
+              </button>
+            </li>
+
+            <li class="sub-menu-item" *ngIf="hasRequiredRole(['accounts manager','accounts assistant'])">
+              <button mat-button class="menu-button cstmMenu" routerLink="/account" [ngClass]="{ 'active': isActive('/account') }">
+                <span>Account</span>
+              </button>
+            </li>
+            
+            <li class="sub-menu-item" *ngIf="hasRequiredRole(['accounts manager','accounts assistant'])">
+              <button mat-button class="menu-button cstmMenu" routerLink="/accountchart" [ngClass]="{ 'active': isActive('/accountchart') }">
+                <span>Account Chart</span>
+              </button>
+            </li>
+            
+          </ul>
+        </li>
+  
+        <li class="menu-item" [matMenuTriggerFor]="requisition" *ngIf="hasRequiredRole(['manager', 'assistant'])">
+          <div class="menu-header" (click)="toggleSubMenu('menu2')">
+            <div class="d-inline-flex align-items-center justify-content-between w-100">
+              <span>Requisition</span>
+              <mat-icon [style.transform]="isSubMenuVisible['menu2'] ? 'rotate(180deg)' : 'rotate(0deg)'">
+                keyboard_arrow_down
+              </mat-icon>
+            </div>
+          </div>
+          <mat-menu #requisition="matMenu" [ngClass]="{'slide-down': isSubMenuVisible['menu2'], 'slide-up': !isSubMenuVisible['menu2']}">
+            <div>
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/indentrequest" [ngClass]="{ 'active': isActive('/indentrequest') }">
+                <span>Indent Request</span>
+              </button>
+            </div>
+           </mat-menu> 
+          <!-- <ul class="sub-menu" [ngClass]="{'slide-down': isSubMenuVisible['menu2'], 'slide-up': !isSubMenuVisible['menu2']}">
+            <li class="sub-menu-item">
+              <button 
+                mat-button 
+                class="menu-button cstmMenu" 
+                routerLink="/indentrequest" 
+                [ngClass]="{ 'active': isActive('/indentrequest') }"
+                (click)="closeSubMenu('menu2')"
+              >
+                <span>Indent Request</span>
+              </button>
+            </li>
+          </ul> -->
+        </li>
+
+        <!-- <li class="menu-item" [matMenuTriggerFor]="reports" *ngIf="hasRequiredRole(['accounts manager','accounts assistant'])">
+          <div class="menu-header" (click)="toggleSubMenu('menu8')">
+            <div class="d-inline-flex align-items-center justify-content-between w-100">
+              <span>Reports</span>
+              <mat-icon [style.transform]="isSubMenuVisible['menu8'] ? 'rotate(180deg)' : 'rotate(0deg)'">
+                keyboard_arrow_down
+              </mat-icon>
+            </div>
+          </div>
+          <mat-menu #reports="matMenu">
+            <div *ngIf="hasRequiredRole(['accounts manager','accounts assistant'])">
+              <button mat-menu-item class="menu-button cstmMenu" (click)="redirectTochartofaccount()" [ngClass]="{ 'active': isActive('/account') }">
+                <span>Chart Of Accounts</span>
+              </button>
+            </div>
+          </mat-menu>
+        </li> -->
+
+        <li class="menu-item" mat-button [matMenuTriggerFor]="demand" *ngIf="hasRequiredRole(['store manager', 'store issuer'])">
+          <div class="menu-header" (click)="toggleSubMenu('menu3')">
+            <div class="d-inline-flex align-items-center justify-content-between w-100">
+              <span>Demand / Issue</span>
+              <mat-icon [style.transform]="isSubMenuVisible['menu3'] ? 'rotate(180deg)' : 'rotate(0deg)'">
+                keyboard_arrow_down
+              </mat-icon>
+            </div>
+          </div>
+          <mat-menu #demand="matMenu">
+            <button mat-menu-item [matMenuTriggerFor]="setup" class="menu-button cstmMenu">Setup</button>
+            <button 
+            mat-menu-item
+            class="menu-button cstmMenu" 
+            routerLink="/purchasedemand" 
+            [ngClass]="{ 'active': isActive('/purchasedemand') }"
+            (click)="closeSubMenu('menu3')"
+          >
+            <span>Purchase Demand</span>
+          </button>
+          </mat-menu>
+          <mat-menu #setup="matMenu" [ngClass]="{'slide-down': isSubMenuVisible['menu4'], 'slide-up': !isSubMenuVisible['menu4']}">
+          
+            <div *ngIf="hasRequiredRole(['store manager','store issuer'])">
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/uoms" [ngClass]="{ 'active': isActive('/uoms') }">
+                <span>UOM</span>
+              </button>
+            </div>
+            
+            <div *ngIf="hasRequiredRole(['store manager','store issuer'])">
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/indenttype" [ngClass]="{ 'active': isActive('/indenttype') }">
+                <span>Indent Type</span>
+              </button>
+            </div>
+            
+            <div *ngIf="hasRequiredRole(['store manager','store issuer'])">
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/priority" [ngClass]="{ 'active': isActive('/priority') }">
+                <span>Priority</span>
+              </button>
+            </div>
+            
+            <div *ngIf="hasRequiredRole(['store manager','store issuer'])">
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/category" [ngClass]="{ 'active': isActive('/category') }">
+                <span>Category</span>
+              </button>
+            </div>
+            
+            <div *ngIf="hasRequiredRole(['store manager','store issuer'])">
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/subcategory" [ngClass]="{ 'active': isActive('/subcategory') }">
+                <span>Sub Category</span>
+              </button>
+            </div>
+            
+            <div *ngIf="hasRequiredRole(['store manager','store issuer'])">
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/itemtype" [ngClass]="{ 'active': isActive('/itemtype') }">
+                <span>Item Types</span>
+              </button>
+            </div>
+            
+            <div *ngIf="hasRequiredRole(['store manager','store issuer'])">
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/items" [ngClass]="{ 'active': isActive('/items') }">
+                <span>Items</span>
+              </button>
+            </div>
+            
+            <div *ngIf="hasRequiredRole(['store manager','store issuer'])">
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/chartitems" [ngClass]="{ 'active': isActive('/chartitems') }"> 
+                <span>Chart Items</span>
+              </button>
+            </div>
+            
+          </mat-menu>
+          <!-- <mat-menu #demand="matMenu" [ngClass]="{'slide-down': isSubMenuVisible['menu3'], 'slide-up': !isSubMenuVisible['menu3']}">
+            <div>
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/purchasedemand" [ngClass]="{ 'active': isActive('/purchasedemand') }">
+                <span>Purchase Demand</span>
+              </button>
+            </div>
+           </mat-menu>  -->
+          <!-- <ul class="sub-menu" [ngClass]="{'slide-down': isSubMenuVisible['menu3'], 'slide-up': !isSubMenuVisible['menu3']}">
+            <li class="sub-menu-item">
+              <button 
+                mat-button 
+                class="menu-button cstmMenu" 
+                routerLink="/purchasedemand" 
+                [ngClass]="{ 'active': isActive('/purchasedemand') }"
+                (click)="closeSubMenu('menu3')"
+              >
+                <span>Purchase Demand</span>
+              </button>
+            </li>
+          </ul> -->
+        </li>
+
+        <!-- <li class="menu-item" *ngIf="hasRequiredRole(['purchase manager','purchaser'])">
+          <div class="menu-header" (click)="toggleSubMenu('menu4')">
+            <div class="d-inline-flex align-items-center justify-content-between w-100">
+              <span>Purchase</span>
+              <mat-icon [style.transform]="isSubMenuVisible['menu4'] ? 'rotate(180deg)' : 'rotate(0deg)'">
+                keyboard_arrow_down
+              </mat-icon>
+            </div>
+          </div>
+          <ul class="sub-menu" [ngClass]="{'slide-down': isSubMenuVisible['menu4'], 'slide-up': !isSubMenuVisible['menu4']}">
+            <li class="sub-menu-item">
+              <button 
+                mat-button 
+                class="menu-button cstmMenu" 
+                routerLink="/comparativestatement" 
+                [ngClass]="{ 'active': isActive('/comparativestatement') }"
+                (click)="closeSubMenu('menu4')"
+              >
+                <span>Comparative Statement</span>
+              </button>
+            </li>
+            <li class="sub-menu-item">
+              <button 
+                mat-button 
+                class="menu-button cstmMenu" 
+                routerLink="/purchaseorder" 
+                [ngClass]="{ 'active': isActive('/purchaseorder') }"
+                (click)="closeSubMenu('menu4')"
+              >
+                <span>Purchase Order</span>
+              </button>
+            </li>
+            <li class="sub-menu-item">
+              <button 
+                mat-button 
+                class="menu-button cstmMenu" 
+                routerLink="/igp" 
+                [ngClass]="{ 'active': isActive('/igp') }"
+                (click)="closeSubMenu('menu4')"
+              >
+                <span>IGP</span>
+              </button>
+            </li>
+            
+          </ul>
+        </li> -->
+
+        <li class="menu-item" mat-button [matMenuTriggerFor]="purchase" *ngIf="hasRequiredRole(['purchase manager','purchaser'])">
+          <div class="menu-header" (click)="toggleSubMenu('menu4')">
+            <div class="d-inline-flex align-items-center justify-content-between w-100">
+              <span>Purchase</span>
+              <mat-icon [style.transform]="isSubMenuVisible['menu4'] ? 'rotate(180deg)' : 'rotate(0deg)'">
+                keyboard_arrow_down
+              </mat-icon>
+            </div>
+          </div>
+          <mat-menu #purchase="matMenu">
+            <button mat-menu-item [matMenuTriggerFor]="setup" class="menu-button cstmMenu">Setup</button>
+            <button mat-menu-item
+                  class="menu-button cstmMenu" 
+                  routerLink="/comparativestatement" 
+                  [ngClass]="{ 'active': isActive('/comparativestatement') }">
+                  <span>Comparative Statement</span>
+            </button>
+            <button mat-menu-item 
+                  class="menu-button cstmMenu" 
+                  routerLink="/purchaseorder" 
+                  [ngClass]="{ 'active': isActive('/purchaseorder') }">
+                  <span>Purchase Order</span>
+            </button>
+            <button mat-menu-item
+                  class="menu-button cstmMenu" 
+                  routerLink="/igp" 
+                  [ngClass]="{ 'active': isActive('/igp') }">
+                  <span>IGP</span>
+            </button>
+          </mat-menu>
+          <mat-menu #setup="matMenu" [ngClass]="{'slide-down': isSubMenuVisible['menu4'], 'slide-up': !isSubMenuVisible['menu4']}">
+            <div *ngIf="hasRequiredRole(['admin'])">
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/location" [ngClass]="{ 'active': isActive('/location') }">
+                <span>Locations</span>
+              </button>
+            </div>
+
+            <div *ngIf="hasRequiredRole(['purchase manager','purchaser'])">
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/currency" [ngClass]="{ 'active': isActive('/currency') }"> 
+                <span>Currency</span>
+              </button>
+            </div>
+            
+            <div *ngIf="hasRequiredRole(['purchase manager','purchaser'])">
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/shipmentmode" [ngClass]="{ 'active': isActive('/shipmentmode') }"> 
+                <span>Shipment Mode</span>
+              </button>
+            </div>
+            
+            <div *ngIf="hasRequiredRole(['purchase manager','purchaser'])">
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/paymentmode" [ngClass]="{ 'active': isActive('/paymentmode') }"> 
+                <span>Payment Mode</span>
+              </button>
+            </div>
+            
+            <div *ngIf="hasRequiredRole(['purchase manager','purchaser'])">
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/deliveryterms" [ngClass]="{ 'active': isActive('/deliveryterms') }"> 
+                <span>Delivery Terms</span>
+              </button>
+            </div>
+            
+            <div *ngIf="hasRequiredRole(['purchase manager','purchaser'])">
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/gst" [ngClass]="{ 'active': isActive('/gst') }"> 
+                <span>GST</span>
+              </button>
+            </div>
+            
+            <div *ngIf="hasRequiredRole(['purchase manager','purchaser'])">
+              <button mat-menu-item class="menu-button cstmMenu" routerLink="/vendors" [ngClass]="{ 'active': isActive('/vendors') }">
+                <span>Vendors</span>
+              </button>
+            </div>
+            
+          </mat-menu>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="row m-0 text-white" style="gap: 10px;">
+    <div class="user_name" style="text-transform: capitalize;font-size: 14px;">{{this.currentUser.firstName}} {{this.currentUser.lastName}}</div>
+    <button mat-icon-button (click)="logout()" class="text-white">
+      <mat-icon> power_settings_new </mat-icon>
+    </button>
+  </div>
+</mat-toolbar>
+
+<mat-sidenav-container>
+  <mat-sidenav #sidenav="matSidenav" class="mat-elevation-z8 cstm_menu">
+
+    <div class="user_details">
+      <div class="avatar" *ngIf="this.currentUser.office != null">
+        <img src="{{this.currentUser.office?.logo}}" alt="company Image"> 
+      </div>
+      <div class="designation"  matTooltip="Name" >
+        <b>
+          {{this.currentUser.firstName}} {{this.currentUser.lastName}}
+        </b>
+      </div>
+      <div class="designation" style="color:purple" matTooltip="Role">
+        <i class="fa fa-user" style="margin-right: 5px;"></i>
+        <b>
+          <span class="role">{{this.currentUser.role.replace(',','')}}
+            </span>
+        </b>
+      </div>
+      <div class="team" *ngIf="this.currentUser.company != null"  matTooltip="Team">
+        <i class="fa fa-users" style="margin-right: 5px;"></i>
+        <b>{{this.currentUser.company?.name}}</b>
+      </div>
+    </div>
+    <mat-divider></mat-divider>
+
+    <button mat-button class="menu-button cstmMenu" routerLink="/home" [ngClass]="{ 'active': isActive('/home') }">
+      <span>Home</span>
+    </button>
+
+    <ul class="menu">
+
+      <li class="menu-item" *ngIf="hasRequiredRole(['admin', 'store manager', 'store issuer'])">
+        <div class="menu-header" (click)="toggleSubMenu('menu1')">
+          <div class="d-inline-flex align-items-center justify-content-between w-100">
+            <span>Setup</span>
+            <mat-icon [style.transform]="isSubMenuVisible['menu1'] ? 'rotate(180deg)' : 'rotate(0deg)'">
+              keyboard_arrow_down
+            </mat-icon>
+          </div>
+        </div>
+        <ul class="sub-menu"
+          [ngClass]="{'slide-down': isSubMenuVisible['menu1'], 'slide-up': !isSubMenuVisible['menu1']}">
+
+          <li class="sub-menu-item" *ngIf="hasRequiredRole(['admin'])">
+            <button mat-button class="menu-button cstmMenu" routerLink="/roles" [ngClass]="{ 'active': isActive('/roles') }">
+              <span>Roles</span>
+            </button>
+          </li>
+
+          <li class="sub-menu-item" *ngIf="hasRequiredRole(['admin'])">
+            <button mat-button class="menu-button cstmMenu" routerLink="/users" [ngClass]="{ 'active': isActive('/users') }">
+              <span>Users</span>
+            </button>
+          </li>
+
+
+          <li class="sub-menu-item" *ngIf="hasRequiredRole(['admin'])">
+            <button mat-button class="menu-button cstmMenu" routerLink="/companies" [ngClass]="{ 'active': isActive('/companies') }">
+              <span>Companies</span>
+            </button>
+          </li>
+
+          <li class="sub-menu-item" *ngIf="hasRequiredRole(['admin','accounts manager','accounts assistant'])">
+            <button mat-button class="menu-button cstmMenu" routerLink="/departments" [ngClass]="{ 'active': isActive('/departments') }">
+              <span>Departments</span>
+            </button>
+          </li>
+
+          <li class="sub-menu-item" *ngIf="hasRequiredRole(['admin'])">
+            <button mat-button class="menu-button cstmMenu" routerLink="/location" [ngClass]="{ 'active': isActive('/location') }">
+              <span>Locations</span>
+            </button>
+          </li>
+          <li class="sub-menu-item" *ngIf="hasRequiredRole(['admin','accounts manager','accounts assistant'])">
+            <button mat-button class="menu-button cstmMenu" routerLink="/project" [ngClass]="{ 'active': isActive('/project') }">
+              <span>Projects</span>
+            </button>
+          </li>
+
+          <li class="sub-menu-item" *ngIf="hasRequiredRole(['admin'])">
+            <button mat-button class="menu-button cstmMenu" routerLink="/store" [ngClass]="{ 'active': isActive('/store') }">
+              <span>Stores</span>
+            </button>
+          </li>
+
+          
+        
+          
+          <li class="sub-menu-item" *ngIf="hasRequiredRole(['store manager','store issuer'])">
+            <button mat-button class="menu-button cstmMenu" routerLink="/uoms" [ngClass]="{ 'active': isActive('/uoms') }">
+              <span>UOM</span>
+            </button>
+          </li>
+
+          <li class="sub-menu-item" *ngIf="hasRequiredRole(['store manager','store issuer'])">
+            <button mat-button class="menu-button cstmMenu" routerLink="/category" [ngClass]="{ 'active': isActive('/category') }">
+              <span>Category</span>
+            </button>
+          </li>
+
+          <li class="sub-menu-item" *ngIf="hasRequiredRole(['store manager','store issuer'])">
+            <button mat-button class="menu-button cstmMenu" routerLink="/subcategory" [ngClass]="{ 'active': isActive('/subcategory') }">
+              <span>Sub Category</span>
+            </button>
+          </li>
+
+          <li class="sub-menu-item" *ngIf="hasRequiredRole(['store manager','store issuer'])">
+            <button mat-button class="menu-button cstmMenu" routerLink="/itemtype" [ngClass]="{ 'active': isActive('/itemtype') }">
+              <span>Item Types</span>
+            </button>
+          </li>
+
+          <li class="sub-menu-item" *ngIf="hasRequiredRole(['store manager','store issuer'])">
+            <button mat-button class="menu-button cstmMenu" routerLink="/items" [ngClass]="{ 'active': isActive('/items') }">
+              <span>Items</span>
+            </button>
+          </li>
+          
+          <li class="sub-menu-item" *ngIf="hasRequiredRole(['store manager','store issuer'])">
+            <button mat-button class="menu-button cstmMenu" routerLink="/indentrequest" [ngClass]="{ 'active': isActive('/indentrequest') }">
+              <span>Indent Request</span>
+            </button>
+          </li>
+
+          <li class="sub-menu-item" *ngIf="hasRequiredRole(['store manager','store issuer'])">
+            <button mat-button class="menu-button cstmMenu" routerLink="/chartitems" [ngClass]="{ 'active': isActive('/chartitems') }">
+              <span>Chart Items</span>
+            </button>
+          </li>
+
+          
+    
+
+        </ul>
+      </li>
+
+      <li class="menu-item" *ngIf="hasRequiredRole(['admin', 'store manager', 'store issuer'])" >
+        <div class="menu-header" (click)="toggleSubMenu('menu2')">
+          <div class="d-inline-flex align-items-center justify-content-between w-100">
+            <span>Requisition</span>
+            <mat-icon [style.transform]="isSubMenuVisible['menu2'] ? 'rotate(180deg)' : 'rotate(0deg)'">
+              keyboard_arrow_down
+            </mat-icon>
+          </div>
+        </div>
+        <ul class="sub-menu"  [ngClass]="{'slide-down': isSubMenuVisible['menu2'], 'slide-up': !isSubMenuVisible['menu2']}">
+          <li class="sub-menu-item">
+            <button mat-button class="menu-button cstmMenu" routerLink="/indentrequest" [ngClass]="{ 'active': isActive('/indentrequest') }">
+              <span>Indent Request</span>
+            </button>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <div class="content mat-elevation-z8">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+
+</mat-sidenav-container>

@@ -1,38 +1,63 @@
-<div class="container text-center">
-  <div class="card-wrapper">
-    <mat-card>
-      <mat-card-title>
-        <div class="lock_icon"><mat-icon>lock</mat-icon></div>
-        <div class="heading">ERP - BGC-IGC</div>
-      </mat-card-title>
-      <mat-card-content>
-        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-          <div class="card-body p-0">
-            <div class="row justify-content-center">
-              <div class="col-md-12">
-            <mat-form-field>
-              <mat-label>Email</mat-label>
-              <input matInput formControlName="email" type="text">
-            </mat-form-field>
-          </div>
-          <div class="col-md-12">
-            <mat-form-field>
-              <mat-label>Password</mat-label>
-              <input matInput formControlName="password" type="password">
-            </mat-form-field>
-          </div>
-          <div class="col-md-12">
-            <div class="remember-me-container">
-              <mat-checkbox formControlName="isRemember" color="primary">Remember me</mat-checkbox>
-            </div>
-          </div>
-          <div class="col-md-12">
-            <button mat-flat-button color="primary" class="loginbtn" type="submit" style="width: 100%;">
-              <span class="mat-button-wrapper">Login</span>
-            </button>
-          </div>
-          </div>
+<div class="login-wrapper">
+  <div class="login-left">
+    <div class="branding">
+      <div class="logo-container">
+        <mat-icon class="hospital-icon">local_hospital</mat-icon>
+      </div>
+      <h1 class="system-title">Sehat Nizam</h1>
+      <p class="system-subtitle">Hospital Management System</p>
+      <div class="features">
+        <div class="feature">
+          <mat-icon>security</mat-icon>
+          <span>Secure Access</span>
         </div>
+        <div class="feature">
+          <mat-icon>speed</mat-icon>
+          <span>Fast Processing</span>
+        </div>
+        <div class="feature">
+          <mat-icon>verified</mat-icon>
+          <span>Reliable</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="login-right">
+    <mat-card class="login-card">
+      <mat-card-content>
+        <div class="login-header">
+          <h2>Sign In</h2>
+          <p>Welcome back to your healthcare management portal</p>
+        </div>
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
+          <mat-form-field appearance="outline" class="login-field">
+            <mat-label>Email Address</mat-label>
+            <input matInput formControlName="email" type="email" autocomplete="username" placeholder="user@hospital.com" />
+            <mat-icon matPrefix>email</mat-icon>
+            <mat-error *ngIf="submitted && f['email'].errors">Valid email is required</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="login-field">
+            <mat-label>Password</mat-label>
+            <input matInput formControlName="password" type="password" autocomplete="current-password" />
+            <mat-icon matPrefix>lock</mat-icon>
+            <mat-error *ngIf="submitted && f['password'].errors">Password is required</mat-error>
+          </mat-form-field>
+
+          <div class="login-options">
+            <mat-checkbox formControlName="isRemember" class="remember-check">Keep me signed in</mat-checkbox>
+            <a class="forgot-link" routerLink="/forgot-password">Forgot password?</a>
+          </div>
+
+          <button mat-flat-button color="primary" class="loginbtn" type="submit" style="width: 100%;">
+            <span class="mat-button-wrapper">Login</span>
+          </button>
+
+          <div class="footer-text">
+            <p>For technical support, contact IT helpdesk</p>
+          </div>
         </form>
       </mat-card-content>
     </mat-card>

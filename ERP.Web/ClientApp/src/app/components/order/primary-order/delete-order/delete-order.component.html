@@ -1,0 +1,40 @@
+<div class="card">
+  <div class="card-header">
+    <h4 class="card-title">Delete Order</h4>
+  </div>
+  <form [formGroup]="deleteOrderForm">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="mb-3">
+            <mat-form-field class="example-full-width">
+              <input matInput placeholder="Name" formControlName="name" readonly />
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div class="mb-3">
+            <mat-form-field class="example-full-width">
+              <textarea matInput placeholder="Description" rows="4" formControlName="description" readonly>
+              </textarea>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div>
+            <mat-form-field class="example-full-width">
+              <textarea matInput placeholder="Coordinates" rows="4" formControlName="coordinates" readonly>
+              </textarea>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <button class="btn btn-danger mr-3" data-bs-dismiss="modal" (click)="delete()">Delete</button>
+      <button [mat-dialog-close]="true" class="btn btn-warning" data-bs-dismiss="modal">
+        Close
+      </button>
+    </div>
+  </form>
+</div>

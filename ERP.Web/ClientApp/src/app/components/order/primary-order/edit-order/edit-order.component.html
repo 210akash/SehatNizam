@@ -1,0 +1,175 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Edit Primary Order Form</mat-card-title>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+    <form [formGroup]="createOrderForm">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-9">
+            <div class="row">
+              <div class="col-md-3">
+                <mat-form-field class="form-field">
+                  <mat-label> Date</mat-label>
+                  <input matInput [matDatepicker]="date" formControlName="createdDate" readonly>
+                  <mat-datepicker-toggle matIconSuffix [for]="date"></mat-datepicker-toggle>
+                  <mat-datepicker #date></mat-datepicker>
+                </mat-form-field>
+              </div>
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <!-- <mat-form-field>
+                    <mat-label>Distributor</mat-label>
+                    <mat-select formControlName="dealershipId" (selectionChange)="onDealershipChange()">
+                      <mat-option [value]=0>-- Select --</mat-option>
+                      <mat-option *ngFor="let option of dealershipList" [value]="option.id">{{option.name}}</mat-option>
+                    </mat-select>
+                  </mat-form-field> -->
+                  <mat-form-field>
+                    <mat-label>Distributor</mat-label>
+                    <input matInput formControlName="dealershipName" [matAutocomplete]="auto"
+                      (keyup)="getDealershipsList($event);" class="form-control" (input)="onInputCleared($event)"
+                      type="search" />
+                    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionDealershipSelected($event)">
+                      <mat-option *ngFor="let distributor of dealershipList" [value]="distributor">
+                        {{ distributor?.name }} | {{distributor?.dealershipType.name}} | {{ distributor?.territory?.name
+                        }} | {{ distributor?.address }}
+                      </mat-option>
+                    </mat-autocomplete>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="col-md-5" *ngIf="this.createOrderForm.get('territory')?.value">
+                <div class="mb-3">
+                  <mat-form-field class="example-full-width">
+                    <mat-label>Territory</mat-label>
+                    <input matInput placeholder="Territory" readonly formControlName="territory" />
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="col-md-12" *ngIf="this.createOrderForm.get('dealershipId')?.value">
+                <div class="mb-3">
+                  <mat-form-field class="example-full-width">
+                    <mat-label>Address</mat-label>
+                    <input matInput placeholder="Address" readonly formControlName="dealershipAddress" />
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="col-md-12" *ngIf="createOrderForm.get('orderItemsList')?.value?.length > 0">
+              <div class="order_container">
+                <div class="file_upload">
+                  <div class="image_container">
+                    <div class="image_upload_wrap img_seller_lh1" data-toggle="tooltip" title="Choose File"
+                      *ngIf="documents.length == 0" [ngClass]="{ 'is-invalid': documents.length == 0}">
+                      <input class="file_upload_input input1_seller" type="file"
+                        (change)="onDocumentSourceChange($event)" accept="image/*" />
+                      <div class="drag_text">
+                        <div> <i class="fa fa-picture-o fa-2x"></i> </div>
+                        <div>Select or Drag and drop a file here</div>
+                      </div>
+                    </div>
+                    <div class="file_upload_content text-center" *ngIf="documents.length > 0">
+                      <img class="file_upload_image" [src]="documents[0]?.fileSource" alt="" />
+                      <div class="image_title_wrap">
+                        <button type="button" class="remove_image" (click)="onDocumentSourceRemove()"
+                          data-toggle="tooltip" title="Remove">
+                          <span class="fa fa-trash image_title title1_seller"></span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12" *ngIf="createOrderForm.get('orderItemsList')?.value?.length > 0">
+            <div formArrayName="orderItemsList">
+              <div class="table-responsive p-0">
+                <table class="table table-bordered table-striped datatable text-center">
+                  <thead>
+                    <tr class="mat-header-row">
+                      <th>Product</th>
+                      <th>Quantity In Pack</th>
+                      <th>D.P</th>
+                      <th>Total Price</th>
+                      <th *ngIf="this.isEditMode">Qty In Stock</th>
+                      <th>Quantity</th>
+                    </tr>
+                  </thead>
+                  <tr *ngFor="let productControl of orderItemsList.controls; let i = index" [formGroupName]="i">
+                    <td>
+                      <div class="product_container">
+                        <img class="product-image" [src]="productControl.get('image')?.value" alt="{{productControl.get('itemName')?.value  }}" />
+                        <mat-form-field class="form-field">
+                          <mat-select formControlName="itemId" (selectionChange)="onProductSelected($event, i)">
+                            <mat-option *ngFor="let product of productList" [value]="product.id">
+                              <div class="option-content">
+                                <img [src]="product.image" alt="{{ product.name }}" class="product-image option_image" />
+                                <span>{{ product.name }}</span>
+                              </div>
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                    </td>
+                    <td>{{ productControl.get('quantityInPack')?.value }} Pcs</td>
+                    <td>{{ productControl.get('distributorPrice')?.value }} Rs</td>
+                    <td>
+                      {{ productControl.get('billPrice')?.value }}
+                      </td>
+                    <td *ngIf="this.isEditMode">
+                        {{ productControl.get('leftQuantity')?.value }}
+                     </td>
+                    <td><input type="number" min="0" class="form-control text-center" formControlName="quantity"
+                        (ngModelChange)="updateTotals();updatePrice(i)" />
+                      </td>
+                  </tr>
+                  <tr>
+                    <th colspan="3" class="text-right">
+                      Total
+                    </th>
+                    <th>
+                      {{ billingAmount }}
+                    </th>
+                    <th *ngIf="this.isEditMode">
+                      {{ totalStockQuantity }}
+                    </th>
+                    <th>
+                      {{ totalQuantity }}
+                    </th>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="button-container">
+        <button mat-flat-button color="success" type="button" (click)="saveOrder()">
+          <!-- <span *ngIf="!this.isEditMode" class="mat-button-wrapper">Save</span> -->
+          <span *ngIf="this.isEditMode" class="mat-button-wrapper">Validate</span>
+        </button>
+        <button mat-flat-button color="default" [mat-dialog-close]="true" style="margin-left: 10px;">
+          <span class="mat-button-wrapper">Close</span>
+        </button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>
+
+
+<ng-template #documentView>
+  <div class="card">
+    <div class="card-body" style="height: 700px;">
+      <iframe width="100%" height="100%" frameBorder="0" [src]="urlSafe"></iframe>
+    </div>
+    <div class="card-footer">
+      <button class="btn btn-danger" [mat-dialog-close]>Close</button>
+    </div>
+  </div>
+</ng-template>

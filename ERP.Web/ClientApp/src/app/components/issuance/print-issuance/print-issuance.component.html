@@ -1,0 +1,146 @@
+<div class="card">
+    <div class="card-header">
+        <div class="header-container">
+            <div class="card-title">Print Issuance</div>
+            <div>
+                <button mat-flat-button color="primary" type="button" class="print-button mr-2"
+                    (click)="printDocument()">
+                    <span class="mat-button-wrapper">Print</span>
+                </button>
+                <button mat-flat-button color="default" [mat-dialog-close]="true">
+                    <span class="mat-button-wrapper">Close</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="card-body" id="printDoc">
+        <div class="container printCont">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="row m-0 mb-3">
+                            <div class="col-md-4 left_side">
+                                <div class="logo mb-4">
+                                    <img [src]="this.data.element.createdBy?.department?.company?.logo" width="70px"
+                                        height="70px" alt="CompanyImage">
+                                    <span>{{this.data.element.createdBy?.department?.company?.name}}</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="col-md-12">
+                                    <h2 style="font-weight: 600;"> <span
+                                            style="border-bottom: 2px solid;">Issuance</span> </h2>
+                                </div>
+                            </div>
+                            <div class="col-md-4 right_side">
+                                <table class="top_right">
+                                    <tr>
+                                        <th>Issuance No.</th>
+                                        <td>{{this.data.element.code}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Issuance Date</th>
+                                        <td>{{this.data.element.createdDate | date : 'shortDate'}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Indent Requenct Code</th>
+                                        <td>{{this.data.element.indentRequest?.code}}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="col-md-12 p-0">
+                            <table class="table_one mb-4">
+                                <colgroup>
+                                    <col span="1" style="width:10px">
+                                    <col span="1" style="width:230px">
+                                    <col span="1" style="width:190px">
+                                    <col span="1" style="width:80px">
+                                    <col span="1" style="width:80px">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th>Sr.#</th>
+                                        <th>Item</th>
+                                        <th>Warehouse</th>
+                                        <th>Req. Quantity</th>
+                                        <th>Quantity</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let detail of this.data.element.issuanceDetail; let i = index">
+                                        <td>
+                                            {{i + 1}}
+                                        </td>
+                                        <td>
+                                            {{detail.indentRequestDetail?.item?.name}}
+                                        </td>
+                                        <td>
+                                            {{detail.project?.name || ''}}
+                                        </td>
+                                        <td>
+                                            {{detail.indentRequestDetail.required}}
+                                        </td>
+                                        <td>
+                                            {{detail.quantity || ''}}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="note mb-5">
+                                <div>Remarks:</div>
+                                <span style="border-bottom: 2px solid;">{{this.data.element.remarks}}</span>
+                            </div>
+                            <div class="sign_wrap mt-5">
+                                <div class="col-md-4 text-center">
+                                    <div class="signed_by">
+                                        <div style="border-bottom: 2px solid;">{{this.data.element.createdBy?.firstName
+                                            +
+                                            ' ' +
+                                            this.data.element.createdBy?.lastName }}</div>
+                                        <div class="fw-bold">Created By</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 text-center">
+                                    <div class="signed_by">
+                                        <div style="border-bottom: 2px solid;">
+                                            {{this.data.element.processedBy?.firstName
+                                            + ' ' +
+                                            this.data.element.processedBy?.lastName }}</div>
+                                        <div class="fw-bold">Processed By</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 text-center">
+                                    <div class="signed_by">
+                                        <div style="border-bottom: 2px solid;">{{this.data.element.approvedBy?.firstName
+                                            + ' ' +
+                                            this.data.element.approvedBy?.lastName }}</div>
+                                        <div class="fw-bold">Approved By</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="print_date mt-4">
+                                <div><b>Printed By:</b></div>
+                                <div>{{this.data.element.createdBy?.firstName + ' ' +
+                                    this.data.element.createdBy?.lastName }}</div>
+                                <div><b>Print Date:</b></div>
+                                <div>{{currentDate}}</div>
+                                <div><b>Print Time:</b></div>
+                                <div>{{currentTime}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer">
+        <div class="button-container m-0">
+            <button mat-flat-button color="default" [mat-dialog-close]="true">
+                <span class="mat-button-wrapper">Close</span>
+            </button>
+        </div>
+    </div>
+</div>

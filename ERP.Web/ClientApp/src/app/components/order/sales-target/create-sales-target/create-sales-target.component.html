@@ -1,0 +1,110 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Create Sales Target</mat-card-title>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+    <form [formGroup]="createSalesTargetForm">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-3">
+              <mat-form-field>
+                <mat-label>Target Month</mat-label>
+                <input type="month" matInput formControlName="targetMonth" [readonly]="isEditMode" />
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="mb-3">
+              <mat-form-field>
+                <mat-label>Region</mat-label>
+                <mat-select formControlName="regionId"
+                  (selectionChange)="[getZoneByRegionId(), getFilteredData(), getDSFTargetsByTerritoryId()]">
+                  <mat-option [value]=0>-- Select --</mat-option>
+                  <mat-option *ngFor="let option of regionList" [value]="option.id">{{option.name}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="mb-3">
+              <mat-form-field>
+                <mat-label>Zone</mat-label>
+                <mat-select formControlName="zoneId"
+                  (selectionChange)="[getAreaByZoneId(), getFilteredData(), getDSFTargetsByTerritoryId()]">
+                  <mat-option [value]=0>-- Select --</mat-option>
+                  <mat-option *ngFor="let option of zoneList" [value]="option.id">{{option.name}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="mb-3">
+              <mat-form-field>
+                <mat-label>Area</mat-label>
+                <mat-select formControlName="areaId"
+                  (selectionChange)="[getTerritoryByAreaId(), getFilteredData(), getDSFTargetsByTerritoryId()]">
+                  <mat-option [value]=0>-- Select --</mat-option>
+                  <mat-option *ngFor="let option of areaList" [value]="option.id">{{option.name}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="mb-3">
+              <mat-form-field>
+                <mat-label>Territory</mat-label>
+                <mat-select formControlName="territoryId"
+                  (selectionChange)="getFilteredData();getDSFTargetsByTerritoryId()">
+                  <mat-option [value]=0>-- Select --</mat-option>
+                  <mat-option *ngFor="let option of territoryList" [value]="option.id">{{option.name}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="col-md-6" *ngIf="this.filterDistributor">
+            <div class="mb-3">
+              <mat-form-field class="example-full-width">
+                <input matInput placeholder="Distributor" formControlName="distributor" readonly />
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="col-md-12">
+            <div formArrayName="dsfTargetList">
+              <div *ngFor="let dsfControl of dsfTargetList.controls; let i = index" [formGroupName]="i"
+                class="row banner-row">
+                <div class="col-md-8 d-flex align-items-center">
+                  <div class="territory-details ms-3">
+                    <p class="territory-name">{{ dsfControl.get('userName')?.value }}</p>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <mat-form-field appearance="fill" class="w-100">
+                    <mat-label>Target</mat-label>
+                    <input type="number" min="0" matInput formControlName="target" />
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="button-container">
+        <button mat-flat-button color="success" type="button" (click)="saveSalesTarget()">
+          <span class="mat-button-wrapper">Save</span>
+        </button>
+        <button mat-flat-button color="default" [mat-dialog-close]="true">
+          <span class="mat-button-wrapper">Close</span>
+        </button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

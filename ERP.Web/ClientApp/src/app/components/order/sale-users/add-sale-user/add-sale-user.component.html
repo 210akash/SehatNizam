@@ -1,0 +1,339 @@
+<form [formGroup]="userForm">
+  <mat-card>
+
+    <mat-card-header>
+      <div class="header-container">
+        <mat-card-title>Add Sale User Form</mat-card-title>
+        <mat-slide-toggle matTooltip="Active" formControlName="isActive" color="primary"></mat-slide-toggle>
+      </div>
+    </mat-card-header>
+
+    <mat-divider></mat-divider>
+
+    <mat-card-content>
+
+      <input type="hidden" formControlName="userName">
+      <div class="row">
+
+        <div class="col-md-6">
+          <mat-form-field class="form-field">
+            <mat-label> First Name </mat-label>
+            <input matInput formControlName="firstName" type="text">
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field class="form-field">
+            <mat-label> Last Name </mat-label>
+            <input matInput formControlName="lastName" type="text">
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field class="form-field">
+            <mat-label> Phone Number </mat-label>
+            <input matInput [inputMask]="this.phoneNoInputMask" formControlName="phoneNumber" type="text">
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field class="form-field">
+            <mat-label> Emergency Phone Number </mat-label>
+            <input matInput [inputMask]="this.phoneNoInputMask" formControlName="emergencyPhoneNo" type="text">
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field class="form-field">
+            <mat-label> Title </mat-label>
+            <input matInput formControlName="title" type="text">
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field class="form-field">
+            <mat-label> Email </mat-label>
+            <input matInput formControlName="email" type="text" [inputMask]="this.emailInputMask"
+              [readonly]="isEditMode">
+          </mat-form-field>
+        </div>
+   
+        <div class="col-md-6" *ngIf="!isEditMode">
+          <mat-form-field class="form-field">
+            <mat-label> Password </mat-label>
+            <input matInput formControlName="password" [type]="PasswordNew ? 'text' : 'password'">
+            <mat-icon matSuffix (click)="PasswordVisibilityNew()">
+              {{PasswordNew?'visibility':'visibility_off'}}
+            </mat-icon>
+          </mat-form-field>
+        </div>
+
+     
+
+        <div class="col-md-6" *ngIf="this.isDealerRole == true">
+          <mat-form-field>
+            <mat-label>Distributors</mat-label>
+            <mat-select id="dealershipId" name="dealershipId" formControlName="dealershipId">
+              <mat-option *ngFor="let option of dealershipList" [value]="option.id">
+                {{ option.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field class="form-field">
+            <mat-label>Company</mat-label>
+            <mat-select formControlName="companyId" (selectionChange)="getDepartmentList();getStoreList()">
+              <mat-option *ngFor="let company of companyList" [value]="company.id">
+                {{ company.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field class="form-field">
+            <mat-label>Department</mat-label>
+            <mat-select formControlName="departmentId" (selectionChange)="departmentChange()">
+              <mat-option *ngFor="let department of departmentList" [value]="department.id">
+                {{ department.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+         <div class="col-md-6">
+          <mat-form-field class="form-field">
+            <mat-label>Designation</mat-label>
+            <mat-select formControlName="employeeDesignationId">
+              <mat-option *ngFor="let employeeDesignation of employeeDesignationList" [value]="employeeDesignation.id">
+                {{ employeeDesignation.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+  <div class="col-md-6">
+          <mat-form-field class="example-full-width">
+            <mat-label>Join Date</mat-label>
+            <input matInput [matDatepicker]="joinDate" formControlName="joinDate" />
+            <mat-datepicker-toggle matIconSuffix [for]="joinDate"></mat-datepicker-toggle>
+            <mat-datepicker #joinDate></mat-datepicker>
+          </mat-form-field>
+        </div>
+         <div class="col-md-6">
+          <mat-form-field class="example-full-width">
+            <mat-label>Date Of Confirmation</mat-label>
+            <input matInput [matDatepicker]="dateOfConfirmation" formControlName="dateOfConfirmation" />
+            <mat-datepicker-toggle matIconSuffix [for]="dateOfConfirmation"></mat-datepicker-toggle>
+            <mat-datepicker #dateOfConfirmation></mat-datepicker>
+          </mat-form-field>
+        </div>
+           <div class="col-md-6">
+          <mat-form-field class="form-field">
+            <mat-label>Role</mat-label>
+            <mat-select placeholder="Roles" formControlName="roleId" [(value)]="selectedRolls" multiple
+              (selectionChange)="checkRole($event)">
+              <mat-option *ngFor="let roles of rolesList" [value]="roles.id">{{roles.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <!-- <div class="col-md-6">
+          <mat-form-field class="form-field">
+            <mat-label>Store</mat-label>
+            <mat-select formControlName="storeId">
+              <mat-option value="0">---Select---</mat-option>
+              <mat-option *ngFor="let store of storeList" [value]="store.id">
+                {{ store.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div> -->
+
+        <div class="sale_fields" *ngIf="userForm.get('department')?.value === 'Sale'">
+          <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-6">
+                <mat-form-field class="example-full-width">
+                  <mat-label>Weekly Off</mat-label>
+                  <mat-select placeholder="Weekly Off" formControlName="weeklyOff" multiple>
+                    <mat-option *ngFor="let day of days" [value]="day">{{ day }}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+<!-- 
+              <div class="col-md-6">
+                <mat-form-field class="example-full-width">
+                  <mat-label>Date of Birth</mat-label>
+                  <input type="date" matInput placeholder="Date Of Birth" formControlName="dateOfBirth"
+                    (change)="dobCheck()" />
+                </mat-form-field>
+              </div> -->
+
+              <div class="col-md-6">
+                <div class="mt-2">
+                  <mat-form-field class="example-full-width">
+                    <mat-label>Date of Birth</mat-label>
+                    <input matInput [matDatepicker]="dobPicker" formControlName="dateOfBirth" (keyup)="dobCheck()" />
+                    <mat-datepicker-toggle matIconSuffix [for]="dobPicker"></mat-datepicker-toggle>
+                    <mat-datepicker #dobPicker></mat-datepicker>
+                  </mat-form-field>
+                </div>
+              </div>
+
+              
+              <div class="col-md-6">
+                <mat-form-field class="example-full-width">
+                  <mat-label>Shift Time Start</mat-label>
+                  <input type="time" matInput placeholder="Shift Time Start" formControlName="shiftTimeStart"
+                    (change)="shiftTimeCheck()" />
+                </mat-form-field>
+              </div>
+
+              <div class="col-md-6">
+                <mat-form-field class="example-full-width">
+                  <mat-label>Shift Time End</mat-label>
+                  <input type="time" matInput placeholder="Shift Time End" formControlName="shiftTimeEnd"
+                    (change)="shiftTimeCheck()" />
+                </mat-form-field>
+              </div>
+
+              <div class="col-md-6">
+                <mat-form-field class="example-full-width">
+                  <mat-label>Blood Group</mat-label>
+                  <mat-select formControlName="bloodGroup">
+                    <mat-option value="">--Select--</mat-option>
+                    <mat-option value="A+">A+</mat-option>
+                    <mat-option value="A-">A-</mat-option>
+                    <mat-option value="B+">B+</mat-option>
+                    <mat-option value="B-">B-</mat-option>
+                    <mat-option value="AB+">AB+</mat-option>
+                    <mat-option value="AB-">AB-</mat-option>
+                    <mat-option value="O+">O+</mat-option>
+                    <mat-option value="O-">O-</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <div class="col-md-6">
+                <mat-form-field class="example-full-width">
+                  <mat-label>CNIC</mat-label>
+                  <input matInput [inputMask]="this.cnicInputMask" placeholder="CNIC" formControlName="cnic" />
+                </mat-form-field>
+              </div>
+
+              <div class="col-md-6">
+                <mat-form-field>
+                  <mat-label>Address</mat-label>
+                  <textarea matInput placeholder="Address" rows="1" formControlName="address">
+                  </textarea>
+                </mat-form-field>
+              </div>
+
+              <div class="col-md-6" *ngIf="isEditMode && userForm.get('deviceId')?.value">
+                <mat-form-field class="example-full-width">
+                  <mat-label>Device ID</mat-label>
+                  <input matInput placeholder="Device ID" name="deviceId" id="deviceId" name="deviceId"
+                    formControlName="deviceId" readonly />
+                </mat-form-field>
+              </div>
+
+              <div class="col-md-6" *ngIf="isEditMode && userForm.get('deviceId')?.value">
+                <!-- <mat-label>Is Mobile Device Register</mat-label> -->
+                <mat-checkbox formControlName="isMobileDeviceRegister" class="mr-2">
+                  <p>Is Mobile Device Register</p>
+                </mat-checkbox>
+              </div>
+
+              <div class="col-md-6">
+                <!-- <mat-label>Is Mobile User</mat-label> -->
+                <mat-checkbox formControlName="isAvailableForMobile" class="mr-2">
+                  <p>Is Mobile User</p>
+                </mat-checkbox>
+              </div>
+
+              <div class="col-md-6">
+                <!-- <mat-label>Is Web User</mat-label> -->
+                <mat-checkbox formControlName="isAvailableForWeb" class="mr-2">
+                  <p>Is Web User</p>
+                </mat-checkbox>
+              </div>
+              <div class="col-md-6">
+                <!-- <mat-label>Is Distributor Compulsory For Attendance</mat-label> -->
+                <mat-checkbox formControlName="isDistCompForAtten" class="mr-2">
+                  <p>Is Distributor Compulsory For Attendance</p>
+                </mat-checkbox>
+              </div>
+              <div class="col-md-12">
+                <div class="user_container">
+                  <div class="file_upload">
+                    <div class="file_upload_btn"> Image </div>
+                    <div class="image_container">
+                      <div class="image_upload_wrap img_seller_lh1" data-toggle="tooltip" title="Choose File" *ngIf="imageSrc == '' || imageSrc == null"
+                        [ngClass]="{ 'is-invalid': imageSrc == '' ||  imageSrc == null}">
+                        <input class="file_upload_input input1_seller" type="file" (change)="onFileChange($event)"
+                          accept="image/*" />
+                        <div class="drag_text">
+                          <div> <i class="fa fa-picture-o fa-2x"></i> </div>
+                          <div>Select or Drag and drop a file here</div>
+                        </div>
+                      </div>
+                      <div class="file_upload_content text-center"
+                        *ngIf="userForm.get('fileSource')?.value != '' && userForm.get('fileSource')?.value != null">
+                        <img class="file_upload_image" [src]="userForm.get('fileSource')?.value" width="80" alt="" />
+                        <div class="image_title_wrap">
+                          <button type="button" class="remove_image" (click)="onFileSourceRemove(null)"
+                            data-toggle="tooltip" title="Remove">
+                            <span class="fa fa-trash image_title title1_seller">Uploaded Image</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-12" *ngIf="userForm.get('password')?.value?.length > 0">
+          <div id="message">
+            <h3>Password must contain the following:</h3>
+            <p id="letter"
+              [ngClass]="{'valid': passwordRequirements.hasLowerCase, 'invalid': !passwordRequirements.hasLowerCase}">
+              A <b>lowercase</b> letter
+            </p>
+            <p id="capital"
+              [ngClass]="{'valid': passwordRequirements.hasUpperCase, 'invalid': !passwordRequirements.hasUpperCase}">
+              A <b>capital (uppercase)</b> letter
+            </p>
+            <p id="number"
+              [ngClass]="{'valid': passwordRequirements.hasNumber, 'invalid': !passwordRequirements.hasNumber}">
+              A <b>number</b>
+            </p>
+            <p id="special"
+              [ngClass]="{'valid': passwordRequirements.hasSpecialCharacter, 'invalid': !passwordRequirements.hasSpecialCharacter}">
+              A <b>special character</b>
+            </p>
+            <p id="length"
+              [ngClass]="{'valid': passwordRequirements.hasMinimumLength, 'invalid': !passwordRequirements.hasMinimumLength}">
+              Minimum <b>9 characters</b>
+            </p>
+          </div>
+        </div>
+
+      </div>
+      <mat-divider></mat-divider>
+      <div class="button-container">
+        <button mat-flat-button color="success" type="button" (click)="SaveData()">
+          <span class="mat-button-wrapper">Save</span>
+        </button>
+        <button mat-flat-button color="default" [mat-dialog-close]="true">
+          <span class="mat-button-wrapper">Close</span>
+        </button>
+      </div>
+
+    </mat-card-content>
+  </mat-card>
+</form>

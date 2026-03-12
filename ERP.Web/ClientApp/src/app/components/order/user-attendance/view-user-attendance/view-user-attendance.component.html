@@ -1,0 +1,105 @@
+<div class="card">
+  <div class="card-header">
+    <h4 class="card-title">View User Attendance</h4>
+  </div>
+  <form [formGroup]="viewUserattendance">
+    <div class="card-body">
+      <div class="row">
+
+        <div class="col-md-6" *ngIf="this.data.element.dealership?.territory?.area?.zone?.region?.name">
+          <div class="mb-3">
+            <mat-form-field class="example-full-width">
+              <mat-label>Regin</mat-label>
+              <input matInput placeholder="Regin" formControlName="regionName" readonly />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="col-md-6" *ngIf="this.data.element.dealership?.territory?.area?.zone?.name">
+          <div class="mb-3">
+            <mat-form-field class="example-full-width">
+              <mat-label>Zone</mat-label>
+              <input matInput placeholder="Zone" formControlName="zoneName" readonly />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="col-md-6" *ngIf="this.data.element.dealership?.territory?.area?.name">
+          <div class="mb-3">
+            <mat-form-field class="example-full-width">
+              <mat-label>Area</mat-label>
+              <input matInput placeholder="Area" formControlName="areaName" readonly />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="col-md-6" *ngIf="this.data.element.dealership?.territory?.name">
+          <div class="mb-3">
+            <mat-form-field class="example-full-width">
+              <mat-label>Territory</mat-label>
+              <input matInput placeholder="Territory" formControlName="territoryName" readonly />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="col-md-6" *ngIf="this.data.element.dealership?.name">
+          <div class="mb-3">
+            <mat-form-field class="example-full-width">
+              <mat-label>Distributor</mat-label>
+              <input matInput placeholder="Distributor" formControlName="dealershipName" readonly />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="mb-3">
+            <mat-form-field class="example-full-width">
+              <mat-label>User</mat-label>
+              <input matInput placeholder="User" formControlName="user" readonly />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="mb-3">
+            <mat-form-field class="example-full-width">
+              <mat-label>Attendance Date</mat-label>
+              <input matInput placeholder="Attendance Date" formControlName="attendanceDate" readonly />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="mb-3">
+            <mat-form-field class="example-full-width">
+              <mat-label>Attendance</mat-label>
+              <input matInput placeholder="Attendance" formControlName="isPresent" readonly />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="col-md-6" *ngIf="isAbsent">
+          <div class="mb-3">
+            <mat-form-field class="example-full-width">
+              <mat-label>Reason</mat-label>
+              <input matInput placeholder="Reason" formControlName="reason" readonly />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="col-md-6" *ngIf="this.data.element.checkOut">
+          <div class="mb-3">
+            <mat-form-field class="example-full-width">
+              <mat-label>Check Out</mat-label>
+              <input matInput placeholder="Check Out" formControlName="checkoutDate" readonly />
+            </mat-form-field>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="card-footer">
+      <button mat-flat-button color="default" [mat-dialog-close]="true"><span class="mat-button-wrapper">Close</span></button>
+    </div>
+  </form>
+</div>

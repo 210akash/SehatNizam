@@ -1,0 +1,124 @@
+<mat-card>
+  <mat-card-header>
+    <div class="header-container">
+      <mat-card-title>Approve Sale Material</mat-card-title>
+      <span class="badge badge-created" matTooltip="Status">{{ this.data.element.status.title}}</span>
+    </div>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+    <div class="row justify-content-center">
+      <div class="col-md-2">
+        <mat-form-field>
+          <mat-label>Code</mat-label>
+          <input matInput [value]="this.data.element.code" tabindex="-1" readonly>
+        </mat-form-field>
+      </div>
+      <div class="col-md-3">
+        <mat-form-field>
+          <mat-label>Date</mat-label>
+          <input matInput [value]="this.data.element.createdDate | date : 'shortDate'" tabindex="-1" readonly>
+        </mat-form-field>
+      </div>
+      <div class="col-md-7">
+        <mat-form-field class="form-field">
+          <mat-label>Distributor</mat-label>
+          <input matInput [value]="this.data.element.dealership?.name" tabindex="-1" readonly>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-md-12">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Sr.#</th>
+                <th>Item</th>
+                <th>UOM</th>
+                <th>Rate</th>
+                <th>Quantity</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let detail of this.data.element.saleMaterialDetail; let i = index">
+                <!-- UOM Column -->
+                <td style="width: 10px;">
+                  {{i + 1}}
+                </td>
+                <!-- Item Column -->
+                <td>
+                  <mat-form-field style="width: 580px;">
+                    <input matInput [matTooltip]="detail.item.name" [value]="detail.item.name" tabindex="-1" readonly />
+                  </mat-form-field>
+                </td>
+
+                <!-- UOM Column -->
+                <td>
+                  <mat-form-field style="width: 100px;">
+                    <input matInput [value]="detail.item.uom.name" tabindex="-1" readonly />
+                  </mat-form-field>
+                </td>
+                <!-- Required Column -->
+                <td>
+                  <mat-form-field style="width: 100px;">
+                    <input matInput [value]="detail.rate" tabindex="-1" readonly />
+                  </mat-form-field>
+                </td>
+
+                <!-- Required Column -->
+                <td>
+                  <mat-form-field style="width: 100px;">
+                    <input matInput [value]="detail.quantity" tabindex="-1" readonly />
+                  </mat-form-field>
+                </td>
+
+                <!-- Required Column -->
+                <td>
+                  <mat-form-field style="width: 100px;">
+                    <input matInput [value]="detail.rate * detail.quantity | number:'1.2-2'" tabindex="-1" readonly />
+                  </mat-form-field>
+                </td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <th colspan="5">Total Material Cost : </th>
+                <th colspan="1">{{this.TMaterialCost | number:'1.2-2'}}</th>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 mt-2">
+        <mat-form-field>
+          <mat-label>Remarks</mat-label>
+          <input matInput type="text" [value]="this.data.element.remarks" readonly>
+        </mat-form-field>
+      </div>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="button-container">
+      <button mat-flat-button color="success" type="button" (click)="approve()">
+        <span class="mat-button-wrapper">Approve</span>
+      </button>
+       <button mat-flat-button color="danger" type="button" (click)="reject()">
+          <span class="mat-button-wrapper">Reject</span>
+        </button>
+      <button mat-flat-button color="default" [mat-dialog-close]="true">
+        <span class="mat-button-wrapper">Close</span>
+      </button>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<ng-template #confirmationDialog let-dialogRef="dialogRef">
+  <h4 mat-dialog-title>Are you sure you want to approve?</h4>
+  <div mat-dialog-actions>
+    <button mat-flat-button color="default" (click)="dialogRef.close(false)">Cancel</button>
+    <button mat-flat-button color="success" (click)="dialogRef.close(true)">Confirm</button>
+  </div>
+</ng-template>

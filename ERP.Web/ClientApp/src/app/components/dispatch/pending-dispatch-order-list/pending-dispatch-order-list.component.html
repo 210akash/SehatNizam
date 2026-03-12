@@ -1,0 +1,107 @@
+<div class="header-container">
+  <h2>Orders to be Dispatched List..</h2>
+</div>
+<div class="body-container">
+  <form [formGroup]="orderListFilerForm">
+    <div class="row">
+      <div class="col-lg-2 col-md-2">
+        <mat-form-field>
+          <mat-label>From Date</mat-label>
+          <input type="date" matInput placeholder="From Date" formControlName="fdate" (change)="filterData()" />
+        </mat-form-field>
+      </div>
+      <div class="col-lg-2 col-md-2">
+        <mat-form-field>
+          <mat-label>To Date</mat-label>
+          <input type="date" matInput placeholder="To Date" formControlName="tdate" (change)="filterData()" />
+        </mat-form-field>
+      </div>
+      <div class="col-lg-6 col-md-6">
+        <mat-form-field>
+          <mat-label>Distributor</mat-label>
+          <input matInput formControlName="dealershipName" [matAutocomplete]="auto"
+            (keyup)="getDealershipsList($event);" class="form-control" (input)="onInputCleared($event)" type="search" />
+          <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionDealershipSelected($event)">
+            <mat-option *ngFor="let distributor of dealershipList" [value]="distributor">
+              {{ distributor?.name }} | {{distributor?.dealershipType.name}} | {{ distributor?.territory?.name }} | {{
+              distributor?.address }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
+      <div class="col-lg-2 col-md-2">
+        <mat-form-field>
+          <mat-label>Code</mat-label>
+          <input type="text" matInput placeholder="Code" formControlName="code" (keyup)="filterData()" />
+        </mat-form-field>
+      </div>
+    </div>
+  </form>
+  <div class="mat-elevation-z8 table-responsive mt-2">
+    <table mat-table [dataSource]="dataSource">
+
+      <!--Id  Column-->
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef class="text-dark"> Id</th>
+        <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+      </ng-container>
+
+      <!--Distributor  Column-->
+      <ng-container matColumnDef="dealership">
+        <th mat-header-cell *matHeaderCellDef class="text-dark"> Distributor</th>
+        <td mat-cell mat-cell *matCellDef="let element"> {{element.dealership?.name}} <span class="badge badge-warning"
+            *ngIf="element.isPartial">Partial Order</span> </td>
+      </ng-container>
+
+      <!--Zone Column-->
+      <ng-container matColumnDef="zone">
+        <th mat-header-cell *matHeaderCellDef class="text-dark"> Zone</th>
+        <td mat-cell *matCellDef="let element"> {{element.dealership?.territory?.area?.zone?.name}} </td>
+      </ng-container>
+
+      <!--Territory Column-->
+      <ng-container matColumnDef="territory">
+        <th mat-header-cell *matHeaderCellDef class="text-dark"> Territory</th>
+        <td mat-cell *matCellDef="let element"> {{element.dealership?.territory?.name}} </td>
+      </ng-container>
+
+      <!--Status  Column-->
+      <ng-container matColumnDef="orderStatus">
+        <th mat-header-cell *matHeaderCellDef class="text-dark"> Status</th>
+        <td mat-cell *matCellDef="let element"> {{element.orderStatus?.title}} </td>
+      </ng-container>
+
+      <!--Created Date  Column-->
+      <ng-container matColumnDef="createdDate">
+        <th mat-header-cell *matHeaderCellDef class="text-dark"> Created Date</th>
+        <td mat-cell *matCellDef="let element"> {{element.createdDate | date: 'd MMM y h:mm a'}} </td>
+      </ng-container>
+
+      <!-- Actions column definition -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef style="width: 11%;"> Actions </th>
+        <td mat-cell *matCellDef="let element">
+          <div class="action_btns">
+            <button mat-mini-fab matTooltip="View" color="dark"
+              (click)="openViewOrderDialog('3000ms', '1500ms', element)">
+              <mat-icon aria-label="View">visibility</mat-icon>
+            </button>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns;  sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+    </table>
+    <mat-paginator #paginator [length]="totalRows" [pageIndex]="currentPage" [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions" (page)="pageChanged($event)" aria-label="Select page">
+    </mat-paginator>
+  </div>
+  <mat-divider></mat-divider>
+  <div class="button-container">
+    <button mat-flat-button color="default" [mat-dialog-close]="true">
+      <span class="mat-button-wrapper">Close</span>
+    </button>
+  </div>
+</div>

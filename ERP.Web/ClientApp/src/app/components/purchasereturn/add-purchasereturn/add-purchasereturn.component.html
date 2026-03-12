@@ -1,0 +1,147 @@
+<form [formGroup]="purchaseReturnForm">
+  <mat-card>
+    <mat-card-header>
+      <div class="header-container">
+        <mat-card-title>Purchase Return Form</mat-card-title>
+        <span class="badge badge-created" matTooltip="Status">{{ this.isEditMode == true ?
+          this.data.element.status.title
+          : this.purchaseReturnForm.get('statusName')?.value}}</span>
+      </div>
+    </mat-card-header>
+    <mat-divider></mat-divider>
+    <mat-card-content>
+      <input type="hidden" formControlName="id" />
+      <input type="hidden" formControlName="projectId" />
+      <div class="row">
+        <div class="col-md-3">
+          <mat-form-field>
+            <mat-label>Purchase Return No.</mat-label>
+            <input matInput value="{{this.purchaseReturnForm.get('code')?.value}}" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field class="form-field">
+            <mat-label>Purchase Return Date</mat-label>
+            <input matInput [matDatepicker]="date" formControlName="createdDate" tabindex="-1">
+            <mat-datepicker-toggle matIconSuffix [for]="date"></mat-datepicker-toggle>
+            <mat-datepicker #date></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field>
+            <mat-label>GRN #</mat-label>
+            <input matInput formControlName="grnCode" [matAutocomplete]="auto" (keyup)="getPendingGRN($event)"
+              (input)="onGrnInputCleared($event)" type="search" />
+
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onGrnSelected($event)">
+              <mat-option *ngFor="let grn of grnList" [value]="grn">
+                {{ grn?.code }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        </div>
+        <!-- 
+        <div class="col-md-3">
+          <mat-form-field class="form-field">
+            <mat-label>DC #</mat-label>
+            <mat-select formControlName="dispatchGRNId" (selectionChange)="getDispatchedDetails()">
+              <mat-option value="">--Select--</mat-option>
+              <mat-option *ngFor="let dispatchGRN of dispatchGRNList" [value]="dispatchGRN.id">
+                {{ dispatchGRN.dcCode }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div> -->
+
+        <div class="col-md-12" *ngIf="this.purchaseReturnForm.get('grnId')?.value">
+          <table class="text-left mb-4 shipto">
+            <colgroup>
+              <col span="1" style="width: 100px;">
+              <col span="1" style="width: 400px;">
+              <col span="1" style="width: 100px;">
+              <col span="1" style="width: 600px;">
+            </colgroup>
+            <tr>
+              <th>Vendor :</th>
+              <td> {{this.getGRNData()?.inspection?.igp?.purchaseOrder?.vendor?.name}}</td>
+              <th>PO # :</th>
+              <td> {{this.getGRNData()?.inspection?.igp?.purchaseOrder?.code}}</td>
+            </tr>
+          </table>
+        </div>
+
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th colspan="3"></th>
+                <th colspan="2"> Quantity</th>
+              </tr>
+               <tr>
+                <th>Sr.#</th>
+                <th>Item</th>
+                <th>Dispatch</th>
+                <th>Return</th>
+              </tr>
+            </thead>
+            <tbody formArrayName="purchaseReturnDetail">
+              <tr *ngFor="let detail of purchaseReturnDetail.controls; let i = index" [formGroupName]="i">
+                <td style="width: 10px;">
+                  <div class="action_btns">
+                    <span>&#40;{{i + 1}}&#41;</span>
+                    <mat-icon aria-label="Edit" class="icons add" (click)="addPurchaseReturnDetail(i)">add</mat-icon>
+                    <mat-icon aria-label="Delete" class="icons delete"
+                      (click)="removePurchaseReturnDetail(i)">delete</mat-icon>
+                  </div>
+                </td>
+                <input type="hidden" formControlName="id" />
+                <input type="hidden" formControlName="grnDetailId" />
+                <input type="hidden" formControlName="purchaseReturnId" />
+                <td>
+                  <mat-form-field style="width:580px;">
+                    <mat-select formControlName="itemId">
+                      <mat-option value="">--Select--</mat-option>
+                      <mat-option *ngFor="let item of itemList" [value]="item?.inspectionDetail?.igpDetail?.purchaseOrderDetail?.purchaseDemandDetail?.itemId"
+                        (onSelectionChange)="onItemSelected($event, i)">
+                        {{ item?.inspectionDetail?.igpDetail?.purchaseOrderDetail?.purchaseDemandDetail?.item?.name }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </td>
+                <td>
+                  <mat-form-field style="width: 130px;">
+                    <input matInput formControlName="grnedQuantity" type="number" readonly>
+                  </mat-form-field>
+                </td>
+                <td>
+                  <mat-form-field style="width: 130px;">
+                    <input matInput formControlName="quantity" type="number" min="1" (change)="validateQty(i);">
+                  </mat-form-field>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="row mt-2">
+        <div class="col-md-12">
+          <mat-form-field>
+            <mat-label>Remarks</mat-label>
+            <input matInput formControlName="remarks" type="text">
+          </mat-form-field>
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="button-container">
+        <button mat-flat-button color="success" type="button" (click)="SaveData()">
+          <span class="mat-button-wrapper">Save</span>
+        </button>
+        <button mat-flat-button color="default" [mat-dialog-close]="true">
+          <span class="mat-button-wrapper">Close</span>
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</form>

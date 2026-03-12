@@ -1,0 +1,133 @@
+<div class="header-container">
+  <h2>DSF</h2>
+  <button mat-mini-fab aria-label="Add" color="success" (click)="openAddDSFRouteDialog(null)" matTooltip="Add Company">
+      <mat-icon>add</mat-icon>
+  </button>
+</div>
+
+<div class="body-container">
+  <form [formGroup]="dSFListFilerForm" class="form-horizontal form-label-left">
+      <div class="row">
+          <div class="col-md-3">
+              <div class="mt-2">
+                <mat-form-field>
+                  <mat-label>Region</mat-label>
+                  <mat-select formControlName="regionId" (selectionChange)="[getZoneByRegionId(), filterData()]">
+                      <mat-option [value]=0>-- ALL --</mat-option>
+                      <mat-option *ngFor="let option of regionList"
+                          [value]="option.id">{{option.name}}</mat-option>
+                  </mat-select>
+              </mat-form-field>
+              </div>
+          </div>
+          <div class="col-md-3">
+            <div class="mt-2">
+              <mat-form-field>
+                <mat-label>Zone</mat-label>
+                <mat-select formControlName="zoneId" (selectionChange)="[getAreaByZoneId(), filterData()]">
+                    <mat-option [value]=0>-- ALL --</mat-option>
+                    <mat-option *ngFor="let option of zoneList"
+                        [value]="option.id">{{option.name}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="mt-2">
+            <mat-form-field>
+              <mat-label>Area</mat-label>
+              <mat-select formControlName="areaId" (selectionChange)="[getTerritoryByAreaId(), filterData()]">
+                  <mat-option [value]=0>-- ALL --</mat-option>
+                  <mat-option *ngFor="let option of areaList"
+                      [value]="option.id">{{option.name}}</mat-option>
+              </mat-select>
+          </mat-form-field>
+          </div>
+      </div>
+
+        <div class="col-md-3">
+          <div class="mt-2">
+            <mat-form-field>
+              <mat-label>Territory</mat-label>
+              <mat-select formControlName="territoryId" (selectionChange)="filterData()">
+                  <mat-option [value]=0>-- ALL --</mat-option>
+                  <mat-option *ngFor="let option of territoryList"
+                      [value]="option.id">{{option.name}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+      </div>
+      </div>
+  </form>
+
+  <div class="mat-elevation-z8 table-responsive mt-2">
+    <table mat-table [dataSource]="dataSource">
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef class="text-dark"> Name</th>
+        <td mat-cell *matCellDef="let element"> {{element.firstName}} {{element.lastName}} </td>
+    </ng-container>
+
+    <!--Phone No Column-->
+    <ng-container matColumnDef="phoneNo">
+        <th mat-header-cell *matHeaderCellDef class="text-dark"> Phone No</th>
+        <td mat-cell *matCellDef="let element"> {{element.phoneNumber}} </td>
+    </ng-container>
+
+    <!--Email Column-->
+    <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef class="text-dark"> Email</th>
+        <td mat-cell *matCellDef="let element"> {{element.email}} </td>
+    </ng-container>
+
+    <!--Dob Column-->
+    <ng-container matColumnDef="dob">
+        <th mat-header-cell *matHeaderCellDef class="text-dark"> Date of Birth</th>
+        <td mat-cell *matCellDef="let element"> {{element.dateOfBirth | date: 'd MMM y h:mm a'}} </td>
+    </ng-container>
+
+    <!--Role Column-->
+    <ng-container matColumnDef="role">
+        <th mat-header-cell *matHeaderCellDef class="text-dark"> Role</th>
+        <td mat-cell *matCellDef="let element"> {{element.aspNetUserRoles[0]?.role?.name}} </td>
+    </ng-container>
+
+    <!--Shift Time Start Column-->
+    <ng-container matColumnDef="shiftTimeStart">
+        <th mat-header-cell *matHeaderCellDef class="text-dark"> Shift Time Start</th>
+        <td mat-cell *matCellDef="let element"> {{element.shiftTimeStart}} </td>
+    </ng-container>
+
+    <!--Shift Time End Column-->
+    <ng-container matColumnDef="shiftTimeEnd">
+        <th mat-header-cell *matHeaderCellDef class="text-dark"> Shift Time End</th>
+        <td mat-cell *matCellDef="let element"> {{element.shiftTimeEnd}} </td>
+    </ng-container>
+
+    <!--Created Date Column-->
+    <ng-container matColumnDef="createdDate">
+        <th mat-header-cell *matHeaderCellDef class="text-dark"> Created Date</th>
+        <td mat-cell *matCellDef="let element"> {{element.createdDate | date: 'd MMM y h:mm a'}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef style="width: 11%;"> Actions </th>
+      <td mat-cell mat-cell *matCellDef="let element">
+        <div class="action_btns">
+            <button mat-mini-fab matTooltip="Edit" color="primary" (click)="openAddDSFRouteDialog(element)">
+              <mat-icon aria-label="edit">edit</mat-icon>
+            </button>
+
+            <button mat-mini-fab matTooltip="View" color="dark" (click)="openViewDSFDialog('3000ms', '1500ms', element)">
+                <mat-icon aria-label="View">visibility</mat-icon>
+            </button>
+        </div>
+    </td>
+  </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns;  sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+    <mat-paginator #paginator [length]="totalRows" [pageIndex]="currentPage" [pageSize]="pageSize"
+        [pageSizeOptions]="pageSizeOptions" (page)="pageChanged($event)" aria-label="Select page">
+    </mat-paginator>
+  </div>
+</div>

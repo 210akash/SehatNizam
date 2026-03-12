@@ -1,0 +1,153 @@
+<form [formGroup]="warehousetransferForm">
+  <mat-card>
+    <mat-card-header>
+      <div class="header-container">
+        <mat-card-title>Warehouse Transfer Form</mat-card-title>
+        <span class="badge badge-created" matTooltip="Status">{{ this.isEditMode == true ?
+          this.data.element.status.title
+          : this.warehousetransferForm.get('statusName')?.value}}</span>
+      </div>
+    </mat-card-header>
+    <mat-divider></mat-divider>
+    <mat-card-content>
+      <input type="hidden" formControlName="id" />
+      <div class="row">
+        <div class="col-md-2">
+          <mat-form-field>
+            <mat-label>Code #.</mat-label>
+            <input matInput type="text" formControlName="code" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-2">
+          <mat-form-field class="form-field">
+            <mat-label>Date</mat-label>
+            <input matInput [matDatepicker]="date" formControlName="date">
+            <mat-datepicker-toggle matIconSuffix [for]="date"></mat-datepicker-toggle>
+            <mat-datepicker #date></mat-datepicker>
+          </mat-form-field>
+        </div>
+         <div class="col-md-8">
+          <mat-form-field class="form-field">
+            <mat-label>Transfer To</mat-label>
+            <mat-select formControlName="transferToId">
+              <mat-option *ngFor="let project of projectList" [value]="project.id">
+                {{ project.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="table-responsive">
+            <table class="table table-bordered">
+
+              <thead>
+                <tr>
+                  <th>Sr.#</th>
+                  <th>Item</th>
+                  <th>UOM</th>
+                  <th>Batch #</th>
+                  <th>Rate</th>
+                  <th>Stock Qty</th>
+                  <th>Quantity</th>
+                  <th>Amount</th>
+                </tr>
+              </thead>
+              <tbody formArrayName="warehouseTransferDetail">
+                <tr *ngFor="let detail of warehouseTransferDetail.controls; let i = index" [formGroupName]="i">
+                  <!-- UOM Column -->
+                  <td class="text-center" style="width: 60px;">
+                    <div class="action_btns">
+                      <span>&#40;{{i + 1}}&#41;</span>
+                      <mat-icon matTooltip="Add" class="icons add" (click)="addWarehouseTransferDetail(i)">add</mat-icon>
+                      <mat-icon matTooltip="Delete" class="icons delete"
+                        (click)="removeWarehouseTransferDetail(i)">delete</mat-icon>
+                    </div>
+                  </td>
+                  <!-- Item Column -->
+                  <input type="hidden" formControlName="id" />
+                  <input type="hidden" formControlName="warehouseTransferId" />
+                  <td>
+                    <mat-form-field style="width: 320px;">
+                      <input matInput formControlName="itemName" [matAutocomplete]="auto" (keyup)="getItemList($event);"
+                        class="form-control" (input)="onInputCleared($event, i)" type="search"
+                        [matTooltip]="detail?.get('item.name')?.value" />
+                      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionSelected($event,i)">
+                        <mat-option *ngFor="let item of itemList" [value]="item">
+                          {{ item.code }} : {{ item.name }}
+                        </mat-option>
+                      </mat-autocomplete>
+                    </mat-form-field>
+                  </td>
+
+                  <!-- UOM Column -->
+                  <td style="width: 100px;" class="text-center">
+                    {{this.getuomValue(i)?.uom?.name}}
+                  </td>
+                     <td>
+                <mat-form-field class="form-field" style="width: 150px;">
+                  <mat-select placeholder="Cost Sheet" formControlName="costSheetId"
+                   (selectionChange)="onCostSheetSelected($event,i)">
+                    <mat-option [value]="">--Select--</mat-option>
+                    <mat-option *ngFor="let row of this.getIndexValue(i)?.costSheetList" [value]="row.id">{{row.code}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+            </td>
+                  <td>
+                    <mat-form-field style="width: 110px;">
+                      <input matInput formControlName="rate" type="number" min="0" readonly>
+                    </mat-form-field>
+                  </td>
+                   <!-- Left Quatity Column -->
+                  <td>
+                    <mat-form-field style="width: 135px;">
+                      <input matInput formControlName="leftQuantity" type="number" min="0" readonly>
+                    </mat-form-field>
+                  </td>
+                  <!-- Quatity Column -->
+                  <td>
+                    <mat-form-field style="width: 100px;">
+                      <input matInput formControlName="quantity" type="number" min="0" (change)="validateQty(i)">
+                    </mat-form-field>
+                  </td>
+
+                  <td>
+                    <mat-form-field style="width: 130px;">
+                      <input matInput type="number" min="0" formControlName="amount" readonly>
+                    </mat-form-field>
+                  </td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th colspan="6">Total : </th>
+                  <th colspan="1">{{this.Quantity | number:'1.2-2'}}</th>
+                  <th colspan="1">{{this.TMaterialCost | number:'1.2-2'}}</th>
+
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 mt-3">
+          <mat-form-field>
+            <mat-label>Remarks</mat-label>
+            <input matInput type="text" formControlName="remarks">
+          </mat-form-field>
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="button-container">
+        <button mat-flat-button color="success" type="button" (click)="SaveData()">
+          <span class="mat-button-wrapper">Save</span>
+        </button>
+        <button mat-flat-button color="default" [mat-dialog-close]="true">
+          <span class="mat-button-wrapper">Close</span>
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</form>

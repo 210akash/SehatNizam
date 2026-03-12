@@ -1,0 +1,103 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Vehicle Form</mat-card-title>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+    <form [formGroup]="createVehicleForm">
+      <div class="card-body">
+        <div class="row">
+
+          <div class="col-md-12">
+            <div class="mb-3">
+              <mat-form-field class="example-full-width">
+                <mat-label>Vehicle</mat-label>
+                <input matInput placeholder="Vehicle Name" formControlName="vehicleName" />
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="col-md-12">
+            <div class="mb-3">
+              <mat-form-field class="example-full-width">
+                <mat-label>Registration Number</mat-label>
+                <input matInput placeholder="Registration Number" formControlName="registrationNumber"  />
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="col-md-12">
+            <div class="mb-3">
+              <mat-form-field class="example-full-width">
+                <mat-label>Driver Name</mat-label>
+                <input matInput placeholder="Driver Name" formControlName="driverName"/>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="col-md-12">
+            <div class="mb-3">
+              <mat-form-field class="example-full-width">
+                <mat-label>Driver Phone No</mat-label>
+                <input matInput placeholder="Driver Phone No" formControlName="driverPhoneNo" [inputMask]="this.phoneNoInputMask" />
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="col-md-12">
+            <div class="mb-3">
+              <mat-form-field class="example-full-width">
+                <mat-label>Load Capacity (kg)</mat-label>
+                <input matInput placeholder="Load Capacity" formControlName="loadCapacity"/>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="col-md-12">
+            <div class="mb-3">
+              <mat-form-field class="example-full-width">
+                <mat-label>Is Head Office Vehicle</mat-label>
+                <mat-select formControlName="isHeadOfficeVehicle" (selectionChange)="resetDistributorValue()">
+                  <mat-option [value]=0> -- Select --</mat-option>
+                  <mat-option [value]=true>Yes</mat-option>
+                  <mat-option [value]=false>No</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="col-md-12" *ngIf="isHeadOfficeVehicle == false">
+            <div class="mb-3">
+              <mat-form-field>
+                <mat-label>Distributor</mat-label>
+                <mat-select formControlName="dealershipId">
+                  <mat-option [value]=0>-- Select --</mat-option>
+                  <mat-option *ngFor="let option of dealershipList" [value]="option.id">{{option.name}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="col-md-12" *ngIf="isHeadOfficeVehicle == true">
+            <div class="mb-3">
+              <mat-form-field class="example-full-width">
+                <mat-label>Logistic Partner</mat-label>
+                <input matInput placeholder="Logistic Partner" formControlName="logisticPartner"/>
+              </mat-form-field>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="button-container">
+        <button mat-flat-button color="success" type="button" (click)="saveVehicle()">
+          <span class="mat-button-wrapper">Save</span>
+        </button>
+        <button mat-flat-button color="default" [mat-dialog-close]="true">
+          <span class="mat-button-wrapper">Close</span>
+        </button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

@@ -1,0 +1,16 @@
+.full-width-textarea .mat-select-trigger {
+  white-space: normal;
+  line-height: 1.5;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  min-height: 60px;
+}
+
+.full-width-textarea .mat-select-value {
+  display: block;
+  white-space: normal;
+}
+
+.full-width-textarea .mat-form-field-wrapper {
+  padding-bottom: 0;
+}

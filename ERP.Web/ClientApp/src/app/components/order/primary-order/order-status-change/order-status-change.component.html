@@ -1,0 +1,189 @@
+<div class="card">
+    <div class="card-header">
+        <h4>Confirmation</h4>
+        <p>{{this.data.statement}}</p>
+    </div>
+    <div class="card-body">
+        <form [formGroup]="orderStatusChangeForm">
+
+            <div class="col-md-12">
+
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="mb-3">
+                            <mat-form-field>
+                                <mat-label>Order Id</mat-label>
+                                <input matInput placeholder="Order Id" formControlName="id" readonly />
+                            </mat-form-field>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="mb-3">
+                            <mat-form-field>
+                                <mat-label>Order Date</mat-label>
+                                <input matInput placeholder="Order Date"
+                                    value="{{ this.data.element.createdDate | date: 'mediumDate' }}" readonly />
+                            </mat-form-field>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <mat-form-field>
+                                <mat-label>Distributor</mat-label>
+                                <input matInput placeholder="Distributor" formControlName="dealership" readonly />
+                            </mat-form-field>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                        <mat-form-field>
+                            <mat-label>Territory</mat-label>
+                            <input matInput placeholder="Territory" formControlName="territory" readonly />
+                        </mat-form-field>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="mb-3">
+                            <mat-form-field class="example-full-width">
+                                <mat-label>Distributor Address</mat-label>
+                                <input matInput placeholder="Address" formControlName="dealershipAddress" readonly />
+                            </mat-form-field>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-md-12">
+                    <div formArrayName="orderItemsList">
+                        <!-- <div *ngFor="let productControl of orderItemsList.controls; let i = index" [formGroupName]="i"
+                        class="row banner-row">
+                        <div class="col-md-6">
+                            <div class="row align-items-center">
+                                <div class="col-md-6 d-flex align-items-center">
+                                    <img [src]="productControl.get('image')?.value"
+                                        alt="{{ productControl.get('name')?.value }}" class="product-image">
+                                    <div class="product-details ms-3">
+                                        <p class="product-name">{{ productControl.get('name')?.value }}</p>
+                                        <p class="product-volume">{{ productControl.get('volume')?.value }} ml ({{productControl.get('type')?.value }})</p>
+                                        <p class="product-quantity-pack">{{ productControl.get('quantityInPack')?.value }} Pcs</p>
+                                        <p class="product-quantity-pack">D.P {{ productControl.get('distributorPrice')?.value }}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <mat-form-field class="w-100">
+                                        <mat-label>Quantity</mat-label>
+                                        <input type="number" min="0" matInput formControlName="quantity"
+                                            readonly />
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3" *ngIf="this.data.element.orderStatusId > this.statusEnum.Create">
+                            <mat-form-field class="w-100">
+                                <mat-label>Shipped Quantity</mat-label>
+                                <input type="number" min="0" matInput formControlName="shippedQuantity"
+                                    readonly />
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-3" *ngIf="this.data.element.orderStatusId > this.statusEnum.Create">
+                            <mat-form-field class="w-100">
+                                <mat-label>D.P (Shipped)</mat-label>
+                                <input type="number" matInput formControlName="customDistributorPrice" readonly />
+                            </mat-form-field>
+                        </div>
+                    </div> -->
+                        <div class="table-responsive p-0">
+                            <table class="table table-bordered table-striped datatable text-center">
+                                <thead>
+                                    <tr class="mat-header-row">
+                                        <th>Product</th>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Volume</th>
+                                        <th>Quantity In Pack</th>
+                                        <th>D.P</th>
+                                        <th>Total Price</th>
+                                        <th *ngIf="this.data.toStatusId == this.statusEnum.InProcess">Qty In Stock</th>
+                                        <th>Order Qty</th>
+                                        <!-- <th>Shipped Quantity</th> -->
+                                        <!-- <th>D.P (Shipped)</th> -->
+                                    </tr>
+                                </thead>
+                                <tr *ngFor="let productControl of orderItemsList.controls; let i = index"
+                                    [formGroupName]="i">
+                                    <td><img [src]="productControl.get('image')?.value"
+                                            alt="{{ productControl.get('name')?.value }}" class="product-image"></td>
+                                    <td>{{ productControl.get('name')?.value }}</td>
+
+                                    <td> <span class="badge"
+                                            [ngClass]="productControl.get('type')?.value === 'Can' ? 'badge-primary' : productControl.get('type')?.value === 'Bottle' ? 'badge-success' : ''">{{
+                                            productControl.get('type')?.value }}</span> </td>
+
+                                    <td>{{ productControl.get('volume')?.value }} ml</td>
+                                    <td>{{ productControl.get('quantityInPack')?.value }} Pcs</td>
+                                    <td>{{ productControl.get('distributorPrice')?.value }} Rs</td>
+                                    <td><input class="form-control text-center" readonly formControlName="billPrice" />
+                                    </td>
+                                    <td *ngIf="this.data.toStatusId == this.statusEnum.InProcess">{{
+                                        productControl.get('leftQuantity')?.value }}</td>
+                                    <td><input class="form-control text-center" readonly formControlName="quantity" />
+                                    </td>
+
+                                    <!-- <td><input type="number" min="0" class="form-control text-center"
+                                            formControlName="shippedQuantity" /></td>
+
+                                    <td><input class="form-control text-center" readonly
+                                            formControlName="customDistributorPrice" /></td> -->
+                                </tr>
+                                <tr>
+                                    <th colspan="6">
+                                        Total
+                                    </th>
+                                    <th>
+                                        {{ billingAmount }}
+                                    </th>
+                                    <th>
+                                        {{ totalLeftQuantity }}
+                                    </th>
+                                    <th>
+                                        {{ totalQuantity }}
+                                    </th>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mt-3" *ngIf="this.data.toStatusId == this.statusEnum.AccountReviewed">
+                    <div class="mb-3">
+                        <mat-form-field class="example-full-width">
+                            <mat-label>Transaction Id</mat-label>
+                            <input matInput formControlName="transactionId" />
+                        </mat-form-field>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="mb-3">
+                        <mat-form-field class="example-full-width">
+                            <textarea matInput placeholder="Comments" rows="4" formControlName="comments"></textarea>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="card-footer">
+        <!-- <button class="btn btn-primary" (click)="updateOrderStatus()">Confirm</button>
+        <button class="btn btn-danger" [mat-dialog-close]>Close</button> -->
+        <div class="button-container">
+            <button mat-flat-button color="default" [mat-dialog-close]="true" style="margin-right: 5px;">Close</button>
+            <button mat-flat-button color="success" type="button" (click)="updateOrderStatus()">Confirm </button>
+        </div>
+    </div>
+</div>

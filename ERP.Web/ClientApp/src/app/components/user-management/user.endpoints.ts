@@ -1,0 +1,15 @@
+export class UserEndPoints {
+    public readonly register = "/Register"
+    public readonly getAll = "/GetAll"
+    public readonly updateUser = "/UpdateUser"
+    public readonly getAllRoles = "/GetAllRoles"
+    public readonly changePassword = "/ChangeUserPassword"
+    public readonly saveRole = "/SaveRole"
+    public readonly addRole = "/AddRole"
+    public readonly getAllByRole = "/GetAllByRole"
+    public readonly getAllSaleUsers = "/GetAllSaleUsers"
+    public readonly getAllRolesByDepartment = "/GetAllRolesByDepartment"
+    public readonly getById = "/GetById"
+    public readonly getByName = "/GetByName"
+    public readonly registerMobileDevice = "/RegisterMobileDevice"
+}

@@ -1,0 +1,51 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title> View Region  </mat-card-title>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="mb-3">
+          <mat-form-field class="form-field">
+            <mat-label>Name</mat-label>
+            <input matInput  [value]="this.data.element.name" readonly />
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div class="mb-3">
+          <mat-form-field class="form-field">
+            <mat-label>Description</mat-label>
+            <textarea matInput [value]="this.data.element.description" rows="4"  readonly>
+            </textarea>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div>
+          <mat-form-field class="form-field">
+            <mat-label>Coordinates</mat-label>
+            <textarea matInput [value]="this.data.element.coordinates" rows="4" readonly>
+            </textarea>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div class="mb-3">
+          <button mat-flat-button color="success" class="btn btn-primary" data-bs-dismiss="modal" (click)="viewRegion()">
+            <i class="fa fa-map-o"></i> View Region
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="button-container">
+      <button mat-flat-button color="default" [mat-dialog-close]="true">
+        <span class="mat-button-wrapper">Close</span>
+      </button>
+    </div>
+
+  </mat-card-content>
+</mat-card>

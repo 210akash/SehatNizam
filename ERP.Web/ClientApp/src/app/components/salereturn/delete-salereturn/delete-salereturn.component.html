@@ -1,0 +1,112 @@
+<mat-card>
+  <mat-card-header>
+    <div class="header-container">
+      <mat-card-title>Delete Sale Return</mat-card-title>
+      <span class="badge badge-created" matTooltip="Status">{{this.data.element.status.title }}</span>
+    </div>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+    <div class="row">
+      <div class="col-md-2">
+        <mat-form-field>
+          <mat-label>SaleReturn No.</mat-label>
+          <input matInput [value]="this.data.element.code" tabindex="-1" readonly>
+        </mat-form-field>
+      </div>
+      <div class="col-md-3">
+        <mat-form-field>
+          <mat-label>SaleReturn Date</mat-label>
+          <input matInput [value]="this.data.element.createdDate| date : 'shortDate'" tabindex="-1" readonly>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-3">
+        <mat-form-field class="form-field">
+          <mat-label>DC #</mat-label>
+          <input matInput [value]="this.data.element.dispatchOrder?.dcCode" tabindex="-1" readonly>
+        </mat-form-field>
+      </div>
+      <div class="col-md-12">
+        <table class="text-left mb-4 shipto">
+          <colgroup>
+            <col span="1" style="width: 100px;">
+            <col span="1" style="width: 400px;">
+            <col span="1" style="width: 100px;">
+            <col span="1" style="width: 600px;">
+          </colgroup>
+          <tr>
+            <th>Distributor :</th>
+            <td> {{this.data.element.dispatchOrder?.order?.dealership?.name}}</td>
+            <th>Order :</th>
+            <td> {{this.data.element.dispatchOrder?.order?.id}}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Sr.#</th>
+                <th>Item</th>
+                <th>Warehouse</th>
+                <th>Dispatch Quantity</th>
+                <th>Return Quantity</th>
+                <th>Unit Price</th>
+                <th>Total Price</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let detail of this.data.element.saleReturnDetail; let i = index">
+                <td style="width: 10px;">
+                  {{i + 1}}
+                </td>
+                <td style="width: 300px;">
+                  {{detail.dispatchDetail?.orderItem?.item?.name || ''}}
+                </td>
+                <td>
+                  {{detail.dispatchDetail?.quantity || ''}}
+                </td>
+                <td>
+                  {{detail.quantity || ''}}
+                </td>
+                <td>
+                  {{detail.dispatchDetail.orderItem?.retailPrice }}
+                </td>
+                <td>
+                  {{detail.dispatchDetail.orderItem?.retailPrice * detail.quantity | number :
+                  '1.2-2'}}
+                </td>
+              </tr>
+              <tr>
+                <td colspan="4" style="text-align:right;"><strong>Grand Total</strong></td>
+                <td>{{ this.qtyTotals }}</td>
+                <td colspan="3">Rs. {{ this.grandTotals | number:'1.0-0'}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-2">
+      <div class="col-md-12">
+        <mat-form-field>
+          <mat-label>Remarks</mat-label>
+          <input matInput [value]="this.data.element.remarks" type="text" readonly tabindex="-1">
+        </mat-form-field>
+      </div>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="button-container">
+      <button mat-flat-button color="danger" type="button" (click)="delete()">
+        <span class="mat-button-wrapper">Delete</span>
+      </button>
+      <button mat-flat-button color="default" [mat-dialog-close]="true">
+        <span class="mat-button-wrapper">Close</span>
+      </button>
+    </div>
+  </mat-card-content>
+</mat-card>

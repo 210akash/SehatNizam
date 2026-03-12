@@ -1,0 +1,119 @@
+<div class="header-container">
+  <h2>Retail Orders List</h2>
+  <button mat-mini-fab aria-label="Add" color="success" (click)="openCreateRetailOrderDialog(null)"
+    matTooltip="Add Retail Order">
+    <mat-icon>add</mat-icon>
+  </button>
+</div>
+
+<div class="body-container">
+  <form [formGroup]="shopOrderListFilerForm">
+    <div class="row">
+
+      <div class="col-lg-3 col-md-4">
+        <mat-form-field>
+          <mat-label>From Date</mat-label>
+          <input type="date" matInput placeholder="From Date" formControlName="fdate" (change)="filterData()" />
+        </mat-form-field>
+      </div>
+
+      <div class="col-lg-3 col-md-4">
+        <mat-form-field>
+          <mat-label>To Date</mat-label>
+          <input type="date" matInput placeholder="To Date" formControlName="tdate" (change)="filterData()" />
+        </mat-form-field>
+      </div>
+
+      <div class="col-lg-3 col-md-4">
+        <mat-form-field>
+          <mat-label>Order Status</mat-label>
+          <mat-select formControlName="statusId" (selectionChange)="filterData()">
+            <mat-option [value]=0>-- ALL --</mat-option>
+            <mat-option *ngFor="let option of orderStatusList" [value]="option.id">{{option.title}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-lg-3 col-md-4">
+        <mat-form-field>
+          <mat-label>Retail Order #</mat-label>
+          <input type="number" matInput placeholder="Retail Order #" formControlName="retailOrderId"
+            (keyup)="filterData()" />
+        </mat-form-field>
+      </div>
+
+    </div>
+  </form>
+
+  <div class="mat-elevation-z8 table-responsive mt-2">
+    <table mat-table [dataSource]="dataSource">
+
+      <!-- <colgroup>
+        <col style="width: 5%;">
+        <col style="width: 20%;">
+        <col style="width: 15%;">
+        <col style="width: 10%;">
+        <col style="width: 10%;">
+        <col style="width: 20%;">
+        <col style="width: 30%;">
+      </colgroup> -->
+
+      <!--Id Column-->
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef class="text-dark"> Id</th>
+        <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+      </ng-container>
+
+      <!--Retail Column-->
+      <ng-container matColumnDef="shop">
+        <th mat-header-cell *matHeaderCellDef class="text-dark"> Retail</th>
+        <td mat-cell *matCellDef="let element"> {{element.shop?.name}} </td>
+      </ng-container>
+
+      <!--Status Column-->
+      <ng-container matColumnDef="orderStatus">
+        <th mat-header-cell *matHeaderCellDef class="text-dark"> Status</th>
+        <td mat-cell *matCellDef="let element"> {{element.retailOrderStatus?.title}} </td>
+      </ng-container>
+
+      <!--Created Date Column-->
+      <ng-container matColumnDef="createdDate">
+        <th mat-header-cell *matHeaderCellDef class="text-dark"> Created Date</th>
+        <td mat-cell *matCellDef="let element"> {{element.createdDate | date: 'd MMM y h:mm a'}} </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns;  sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;" [ngClass]="getRowClass(row)"></tr>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef class="text-dark">Action</th>
+        <td mat-cell *matCellDef="let element">
+          <div class="action_btns">
+            <button color="primary" mat-mini-fab *ngIf="element.retailOrderStatusId === this.statusEnum.Create"
+              (click)="openCreateRetailOrderDialog(element)" class="btn btn-primary btn-sm"
+              matTooltip="Edit Retail Order"><i class="fa fa-edit"></i></button>
+            <button color="dark" mat-mini-fab (click)="openViewRetailOrderDialog('3000ms', '1500ms', element)"
+              matTooltip="View Retail Order" class="btn btn-success btn-sm ml-2"><i class="fa fa-eye"></i></button>
+            <button color="success" mat-mini-fab *ngIf="element.retailOrderStatusId === this.statusEnum.Create"
+              (click)="openConfirmQuantityDialog(element)" matTooltip="Confirm Retail Order Quantity"
+              class="btn btn-success btn-sm ml-2"><i class="fa fa-th"></i></button>
+            <button color="warn" mat-mini-fab *ngIf="element.retailOrderStatusId === this.statusEnum.Create"
+              (click)="openRetailOrderStatusDialog(element, this.statusEnum.Canceled)" matTooltip="Cancel Retail Order"
+              class="btn btn-danger btn-sm ml-2"><i class="fa fa-times"></i></button>
+            <button color="primary" mat-mini-fab (click)="openRetailOrderHistoryDialog(element)"
+              matTooltip="Retail Order History" class="btn btn-success btn-sm ml-2"><i
+                class="fa fa-history"></i></button>
+            <button color="dark" mat-mini-fab
+              *ngIf="element.retailOrderStatusId >= this.statusEnum.Dispatched && element.retailOrderStatusId !== this.statusEnum.Canceled"
+              (click)="getOrderReceipt(element)" matTooltip="Retail Order Receipt"
+              class="btn btn-success btn-sm ml-2"><i class="fa fa-file"></i></button>
+          </div>
+      </ng-container>
+    </table>
+    <mat-paginator #paginator [length]="totalRows" [pageIndex]="currentPage" [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions" (page)="pageChanged($event)" aria-label="Select page">
+    </mat-paginator>
+  </div>
+
+
+</div>

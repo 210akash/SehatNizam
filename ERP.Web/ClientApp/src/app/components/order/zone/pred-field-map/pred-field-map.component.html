@@ -1,0 +1,120 @@
+<div class="main-content">
+  <div class="body-container">
+    <div class="filter_card">
+      <h2 class="mt-0">Field Map</h2>
+      <form [formGroup]="fieldMapForm">
+        <div class="row" style="flex-direction: column;row-gap: 15px;">
+  
+          <!-- Region -->
+          <div class="col-md-12">
+            <div></div>
+            <mat-form-field class="m-0">
+              <mat-label>Region</mat-label>
+              <mat-select formControlName="regionId" (selectionChange)="getZoneByRegionId()">
+                <mat-option [value]=0>-- ALL --</mat-option>
+                <mat-option *ngFor="let option of dropRegionList" [value]="option.id">{{option.name}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+  
+          <!-- Zone -->
+          <div class="col-md-12">
+            <div class="d-inline-flex align-items-center w-100">
+              <mat-checkbox formControlName="zoneFilterEnabled" class="mr-2"> </mat-checkbox>
+              <mat-form-field class="m-0">
+                <mat-label>Zone</mat-label>
+                <mat-select formControlName="zoneId" (selectionChange)="getAreaByZoneId()">
+                  <mat-option [value]=0>-- ALL --</mat-option>
+                  <mat-option *ngFor="let option of dropZoneList" [value]="option.id">{{option.name}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+  
+          <!-- Area -->
+          <div class="col-md-12">
+            <div class="d-inline-flex align-items-center w-100">
+              <mat-checkbox formControlName="areaFilterEnabled" class="mr-2"> </mat-checkbox>
+              <mat-form-field class="m-0">
+                <mat-label>Area</mat-label>
+                <mat-select formControlName="areaId" (selectionChange)="getTerritoryByAreaId()">
+                  <mat-option [value]=0>-- ALL --</mat-option>
+                  <mat-option *ngFor="let option of dropAreaList" [value]="option.id">{{option.name}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+  
+          <!-- Territory -->
+          <div class="col-md-12">
+            <div class="d-inline-flex align-items-center w-100">
+              <mat-checkbox formControlName="territoryFilterEnabled" class="mr-2"> </mat-checkbox>
+              <mat-form-field class="m-0">
+                <mat-label>Territory</mat-label>
+                <mat-select formControlName="territoryId" (selectionChange)="onTerritoryChange()">
+                  <mat-option [value]=0>-- ALL --</mat-option>
+                  <mat-option *ngFor="let option of dropTerritoryList" [value]="option.id">{{option.name}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+  
+          <!-- Distributor -->
+          <div class="col-md-12">
+            <div class="d-inline-flex align-items-center w-100">
+              <mat-checkbox formControlName="dealershipFilterEnabled" class="mr-2"> </mat-checkbox>
+              <mat-form-field class="m-0">
+                <mat-label>Distributor</mat-label>
+                <mat-select formControlName="dealershipId">
+                  <mat-option [value]=0>-- ALL --</mat-option>
+                  <mat-option *ngFor="let option of dropDealershipList" [value]="option.id">{{option.name}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+  
+          <!-- Shop -->
+          <div class="col-md-12">
+            <div class="d-inline-flex align-items-center w-100">
+              <mat-checkbox formControlName="shopFilterEnabled" class="mr-2"> </mat-checkbox>
+              <mat-form-field class="m-0">
+                <mat-label>Shop</mat-label>
+                <mat-select formControlName="shopId">
+                  <mat-option [value]=0>-- ALL --</mat-option>
+                  <mat-option *ngFor="let option of dropShopList" [value]="option.id">{{option.name}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+  
+        </div>
+      </form>
+      <div class="load_btn">
+        <button mat-flat-button color="success" class="w-100" type="button" data-bs-dismiss="modal" (click)="filter()">
+          <span class="mat-button-wrapper">Load</span>
+        </button>
+      </div>
+    </div>
+    <div class="filter_card filter_card1">
+      <div class="label_wrap">
+        <div class="label_container">
+          <div class="box black-box"></div>
+          <div class="label">Region</div>
+        </div>
+        <div class="label_container">
+          <div class="box green-box"></div>
+          <div class="label">Zone</div>
+        </div>
+        <div class="label_container">
+          <div class="box orange-box"></div>
+          <div class="label">Area</div>
+        </div>
+        <div class="label_container">
+          <div class="box blue-box"></div>
+          <div class="label">Territory</div>
+        </div>
+      </div>
+    </div>
+    <div id="fieldMap"></div>
+  </div>
+</div>

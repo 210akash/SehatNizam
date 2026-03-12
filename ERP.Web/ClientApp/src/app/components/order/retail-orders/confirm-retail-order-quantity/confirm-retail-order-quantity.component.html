@@ -1,0 +1,162 @@
+<div class="card">
+  <div class="card-header">
+    <h4 class="card-title">Confirm Shop Order</h4>
+  </div>
+  <form [formGroup]="shippedShopOrderQuantityForm">
+    <div class="card-body">
+
+      <div class="row">
+
+        <div class="col-md-4">
+          <mat-form-field>
+            <mat-label>Shop</mat-label>
+            <input matInput placeholder="Shop" [value]="this.data.element?.shop?.name" readonly />
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-8">
+          <mat-form-field class="example-full-width">
+            <mat-label>Address</mat-label>
+            <input matInput placeholder="Address" [value]="this.data.element?.shop?.address" readonly />
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-2">
+          <mat-form-field class="example-full-width">
+            <mat-label>Client</mat-label>
+            <input matInput placeholder="Client" [value]="this.data.element?.reference" readonly />
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-2">
+          <div class="mb-3">
+            <mat-form-field class="example-full-width">
+              <mat-label>Department</mat-label>
+              <input matInput placeholder="Department" [value]="this.data.element?.department" readonly />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="col-md-8">
+          <mat-form-field class="example-full-width">
+            <mat-label>Comments</mat-label>
+            <input matInput placeholder="Comments" [value]="this.data.element?.comments" readonly />
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-12">
+
+          <div formArrayName="retailOrderItemsList">
+            <!-- <div *ngFor="let productControl of retailOrderItemsList.controls; let i = index" [formGroupName]="i"
+              class="row banner-row">
+
+              <div class="col-md-8">
+                <div class="row align-items-center">
+                  <div class="col-md-6 d-flex align-items-center">
+                    <img [src]="productControl.get('image')?.value" alt="{{ productControl.get('name')?.value }}"
+                      class="product-image">
+                    <div class="product-details ms-3">
+                      <p class="product-name">{{ productControl.get('name')?.value }}</p>
+                      <p class="product-volume">{{ productControl.get('volume')?.value }} ml
+                        ({{productControl.get('type')?.value }})</p>
+                      <p class="product-quantity-pack">{{ productControl.get('quantityInPack')?.value }} Pcs</p>
+                      <p class="product-quantity-pack">T.P {{productControl.get('tradePrice')?.value }}</p>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <mat-form-field class="w-100">
+                      <mat-label>Quantity</mat-label>
+                      <input type="number" min="0" matInput formControlName="quantity" readonly />
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-2">
+                <mat-form-field class="w-100">
+                  <mat-label>Shipped Quantity</mat-label>
+                  <input type="number" min="0" matInput formControlName="shippedQuantity"
+                    (change)="onShippedQuantityChange(i)" readonly />
+                </mat-form-field>
+              </div>
+
+              <div class="col-md-2">
+                <mat-form-field class="w-100">
+                  <mat-label>Custom Trade Price</mat-label>
+                  <input type="number" min="0" matInput formControlName="customTradePrice"
+                    (ngModelChange)="updateTotals()" readonly />
+                </mat-form-field>
+              </div>
+
+            </div> -->
+
+            <div class="table-responsive p-0">
+              <table class="table table-bordered table-striped datatable text-center">
+                <thead>
+                  <tr class="mat-header-row">
+                    <th>Product</th>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Volume</th>
+                    <th>Quantity In Pack</th>
+                    <th>T.P</th>
+                    <th>Quantity</th>
+                    <th>Shipped Quantity</th>
+                    <th>Custom Trade Price</th>
+                  </tr>
+                </thead>
+                <tr *ngFor="let productControl of retailOrderItemsList.controls; let i = index" [formGroupName]="i">
+                  <td><img [src]="productControl.get('image')?.value" alt="{{ productControl.get('name')?.value }}"
+                      class="product-image"></td>
+                  <td>{{ productControl.get('name')?.value }}</td>
+
+                  <td> <span class="badge"
+                      [ngClass]="productControl.get('type')?.value === 'Can' ? 'badge-primary' : productControl.get('type')?.value === 'Bottle' ? 'badge-success' : ''">{{
+                      productControl.get('type')?.value }}</span> </td>
+
+                  <td>{{ productControl.get('volume')?.value }} ml</td>
+                  <td>{{ productControl.get('quantityInPack')?.value }} Pcs</td>
+                  <td>{{ productControl.get('tradePrice')?.value }} Rs</td>
+                  <td><input class="form-control text-center" readonly formControlName="quantity" /></td>
+                  <td><input class="form-control text-center" readonly formControlName="shippedQuantity" /></td>
+                  <td><input class="form-control text-center" readonly formControlName="customTradePrice" /></td>
+                </tr>
+                <tr>
+                  <th colspan="6">
+                    Total
+                  </th>
+                  <th>
+                    {{ totalQuantity }}
+                  </th>
+                  <th></th>
+                  <th>
+                    {{ billingAmount }}
+                  </th>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- <div class="col-md-12 mt-3">
+          <div class="mb-3">
+            <p>Total Quantity: {{ totalQuantity }}</p>
+            <p>Billing Amount: {{ billingAmount }}</p>
+          </div>
+        </div> -->
+
+      </div>
+
+    </div>
+    <div class="card-footer">
+      <div class="button-container">
+        <button mat-flat-button color="success" class="btn btn-success ml-2" data-bs-dismiss="modal"
+          (click)="openStatusChangeDialog(this.statusEnum.Received)">Save & Dispatch</button>
+        <!-- <button class="btn btn-success ml-2" data-bs-dismiss="modal" (click)="saveShopOrder()">Save</button> -->
+        <button mat-flat-button color="default" [mat-dialog-close]="true" class="btn btn-danger ml-2"
+          data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </form>
+</div>

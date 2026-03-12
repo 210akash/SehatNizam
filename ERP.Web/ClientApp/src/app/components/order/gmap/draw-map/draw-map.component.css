@@ -1,0 +1,81 @@
+/* gmap-viewer.component.css */
+#map {
+    height: 100%;
+    width: 100%;
+    min-height: 500px; /* Set a minimum height for the map */
+  }
+  
+  html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  
+  #coordinates {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background-color: white;
+    padding: 10px;
+    border: 1px solid #ccc;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    max-width: 300px;
+    overflow: auto;
+  }
+  
+  .zone-label {
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 5px;
+    font-size: 12px;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    white-space: nowrap; /* Prevent text wrapping */
+    max-width: 150px; /* Set a maximum width */
+    overflow: hidden; /* Hide overflow */
+    text-overflow: ellipsis; /* Show ellipsis for overflow text */
+  }
+  
+  .card{
+    height: 88vh;
+  }
+
+  .container {
+    display: flex;
+    gap: 20px;
+    margin: 20px;
+  }
+  .box {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  .black-box { background-color: black; }
+  .green-box { background-color: green; }
+  .orange-box { background-color: orange; }
+  .blue-box { background-color: blue; }
+  .label {
+    text-align: center;
+    font-size: 14px;
+  }
+  .label_wrap{
+    display: inline-flex;
+    gap: 25px;
+  }
+  .label_container{
+    display: inline-flex;
+    gap: 5px;
+    border: 1px solid lightgray;
+    padding: 4px 15px;
+    border-radius: 5px;
+    align-items: center;
+  }

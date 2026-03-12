@@ -1,0 +1,273 @@
+<form [formGroup]="dispatchForm">
+  <mat-card>
+    <mat-card-header>
+      <div class="header-container">
+        <mat-card-title>Dispatch Form</mat-card-title>
+        <span class="badge badge-created" matTooltip="Status">{{ this.isEditMode == true ?
+          this.data.element.status.title
+          : this.dispatchForm.get('statusName')?.value}}</span>
+      </div>
+    </mat-card-header>
+    <mat-divider></mat-divider>
+    <mat-card-content>
+      <input type="hidden" formControlName="id" />
+      <div class="row">
+        <div class="col-md-2">
+          <mat-form-field>
+            <mat-label>CS No.</mat-label>
+            <input matInput value="{{this.dispatchForm.get('code')?.value}}" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-2">
+          <mat-form-field class="form-field">
+            <mat-label>CS Date</mat-label>
+            <input matInput [matDatepicker]="date" formControlName="createdDate">
+            <mat-datepicker-toggle matIconSuffix [for]="date"></mat-datepicker-toggle>
+            <mat-datepicker #date></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <!-- <mat-form-field class="form-field">
+            <mat-label>Vehicle</mat-label>
+            <mat-select formControlName="vehicleId" (selectionChange)="getPendingOrder()">
+              <mat-option value="">--Select--</mat-option>
+              <mat-option *ngFor="let vehicle of vehicleList" [value]="vehicle.id">
+                {{ vehicle.vehicleName }} : {{ vehicle.registrationNumber }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field> -->
+          <mat-form-field style="width: 350px;">
+            <mat-label>Vehicle</mat-label>
+            <input matInput formControlName="vehicleName" [matAutocomplete]="auto" (keyup)="getVehiclesList($event);"
+              class="form-control" type="search" />
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onVehicleSelected($event)">
+              <mat-option *ngFor="let vehicle of vehicleList" [value]="vehicle">
+                {{ vehicle?.vehicleName }} : {{ vehicle?.registrationNumber }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        </div>
+        <div class="col-md-2">
+          <mat-form-field>
+            <mat-label>Bilty No.</mat-label>
+            <input min="1" type="number" matInput formControlName="biltyNo">
+          </mat-form-field>
+        </div>
+        <div class="col-md-2">
+          <mat-form-field>
+            <mat-label>Freight Charges</mat-label>
+            <input min="1" type="number" matInput formControlName="freightCharges"
+              (change)="this.calculateFreightForEachOrder()">
+          </mat-form-field>
+        </div>
+      </div>
+      <div formArrayName="dispatchOrder">
+        <div class="card" *ngFor="let dOrder of dispatchOrder.controls; let i = index" [formGroupName]="i">
+          <div class="card-header">
+            <div class="row align-items-center">
+              <input type="hidden" formControlName="id" />
+              <input type="hidden" formControlName="dispatchId" />
+              <div class="col-md-4">
+                <span class="items_nmbr">{{i + 1}}</span>
+                <!-- <mat-form-field >
+                  <mat-label>Order No</mat-label>
+                  <mat-select formControlName="orderId">
+                    <mat-option value="">--Select--</mat-option>
+                    <mat-option *ngFor="let order of orderList" [value]="order.id"
+                      (onSelectionChange)="[onOptionSelected($event, i), getPendingOrderItems(i)]">
+                      {{ order.id }} : {{ order.dealership?.name }} : {{ order.createdDate | date: "mediumDate" }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field> -->
+                <mat-form-field class="form-field m-0" style="width: 90%;">
+                  <mat-label>Order</mat-label>
+                  <input matInput formControlName="orderName" [matAutocomplete]="auto" (keyup)="getPendingOrder($event);"
+                    class="form-control" (input)="onInputCleared($event, i)" type="search" />
+                  <mat-autocomplete #auto="matAutocomplete" (optionSelected)="[onOptionSelected($event, i), getPendingOrderItems(i)]">
+                    <mat-option *ngFor="let order of orderList" [value]="order">
+                        {{ order?.id }} : {{ order?.dealership?.name }} | {{ order?.dealership?.territory?.name }} : {{ order.createdDate | date: "mediumDate" }}
+                    </mat-option>
+                  </mat-autocomplete>
+                </mat-form-field>
+              </div>
+              <!-- <div class="col-md-3">
+                <b>Amount : </b> <span style="color:red"> {{ dOrder.get('totalAmount')?.value }} Rs. </span> <br />
+                <b>Weight : </b> <span style="color:red"> {{ dOrder.get('totalWeight')?.value }} Kg </span>
+              </div> -->
+              <div class="col-md-1">
+                <mat-form-field class="form-field m-0">
+                  <mat-label>Qty</mat-label>
+                  <input matInput type="text" [value]="dOrder.get('totalQuantity')?.value" readonly>
+                </mat-form-field>
+              </div>
+              <div class="col-md-2">
+                <mat-form-field class="form-field m-0">
+                  <mat-label>Amount</mat-label>
+                  <input matInput type="text" [value]="dOrder.get('totalAmount')?.value + ' Rs'" readonly>
+                </mat-form-field>
+              </div>
+              <div class="col-md-2">
+                <mat-form-field class="form-field m-0">
+                  <mat-label>Weight</mat-label>
+                  <input matInput type="text" [value]="dOrder.get('totalWeight')?.value + ' Kg'" readonly>
+                </mat-form-field>
+              </div>
+              <div class="col-md-2">
+                <mat-form-field class="form-field m-0">
+                  <mat-label>Freight</mat-label>
+                  <input matInput type="text" value="{{ dOrder.get('orderFreightCharges')?.value | number:'1.0-0' }}"
+                    readonly>
+                </mat-form-field>
+              </div>
+              <div class="col-md-1 text-right">
+                <div class="action_btns">
+                  <button mat-mini-fab matTooltip="Add Item" color="success" type="button"
+                    (click)="addDispatchOrder(i)">
+                    <mat-icon aria-label="Edit">add</mat-icon>
+                  </button>
+                  <button mat-mini-fab matTooltip="Delete Item" color="danger" type="button"
+                    (click)="removeDispatchOrder(i)">
+                    <mat-icon aria-label="Delete">delete</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Sr.#</th>
+                    <th>Item</th>
+                    <th>Ordered Quantity</th>
+                    <th>Batch #</th>
+                    <th>Batch Stock Qty</th>
+                    <th>Batch Rate</th>
+                    <th>Quantity</th>
+                  </tr>
+                </thead>
+                <tbody formArrayName="dispatchDetail">
+                  <tr *ngFor="let detail of dispatchDetail(i).controls; let j = index" [formGroupName]="j">
+                    <td style="width: 10px;">
+                      <div class="action_btns">
+                        <span>&#40;{{j + 1}}&#41;</span>
+                        <mat-icon aria-label="Edit" class="icons add" (click)="addDispatchDetail(j,i)">add</mat-icon>
+                        <mat-icon aria-label="Delete" class="icons delete"
+                          (click)="removeDispatchDetail(j,i)">delete</mat-icon>
+                      </div>
+                    </td>
+                    <input type="hidden" formControlName="id" />
+                    <input type="hidden" formControlName="dispatchOrderId" />
+                    <td>
+                      <mat-form-field  style="width: 380px;">
+                        <mat-select formControlName="orderItemId">
+                          <mat-option value="">--Select--</mat-option>
+                          <mat-option *ngFor="let item of this.getIndexValueOrder(i)?.itemList" [value]="item.id"
+                            (onSelectionChange)="onItemSelected($event, j, i)">
+                            {{ item.item?.name }}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </td>
+                    <td>
+                      <mat-form-field  style="width: 120px;">
+                        <input matInput formControlName="orderedQuantity" type="number" readonly>
+                      </mat-form-field>
+                    </td>
+                    <td>
+                      <mat-form-field  style="width: 180px;">
+                        <mat-select placeholder="Cost Sheet" formControlName="costSheetId"
+                          (selectionChange)="onCostSheetSelected($event, j, i)">
+                          <mat-option [value]="">--Select--</mat-option>
+                          <mat-option *ngFor="let row of this.getIndexValueDetail(j,i)?.costSheetList"
+                            [value]="row.id">{{row.code}}</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </td>
+                    <td>
+                      <mat-form-field style="width: 120px;">
+                        <input min="0" matInput formControlName="pendingCostSheetQuantity" type="number" readonly>
+                      </mat-form-field>
+                    </td>
+                    <td>
+                      <mat-form-field  style="width: 120px;">
+                        <input min="0" matInput formControlName="rate" type="number" readonly>
+                      </mat-form-field>
+                    </td>
+
+                    <td style="width: 100px;">
+                      <mat-form-field style="width: 120px;">
+                        <input min="0" matInput formControlName="quantity" type="number"
+                          (change)="validateQuantity(i, j)">
+                      </mat-form-field>
+                    </td>
+
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- <div *ngIf="this.grandTotalWeight > 0 && this.grandTotalAmount > 0" class="row mt-2 mb-2 text-right">
+        <div class="col">
+          <b>Grand Total: </b> <span style="color:red"> {{this.grandTotalAmount}} Rs. </span>
+        </div>
+        <div class="col">
+          <b>Total Weight: </b> <span style="color:red"> {{this.grandTotalWeight}} Kg </span><br />
+        </div>
+        <div class="col">
+          <b>Vehicle Load Capacity: </b> <span style="color:red"> {{this.vehicleCapacity?.loadCapacity}} Kg. </span>
+        </div>
+      </div> -->
+
+      <div class="row mt-3">
+        <div class="col-md-3">
+          <mat-form-field class="form-field m-0">
+            <mat-label>Total Quantity</mat-label>
+            <input matInput type="text" [value]="this.grandTotalQuantity" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field class="form-field m-0">
+            <mat-label>Total Amount</mat-label>
+            <input matInput type="text" [value]="this.grandTotalAmount + ' Rs'" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field class="form-field m-0">
+            <mat-label>Total Weight</mat-label>
+            <input matInput type="text" [value]="this.grandTotalWeight + ' Kg'" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field class="form-field m-0">
+            <mat-label>Vehicle Load Capacity</mat-label>
+            <input matInput type="text" [value]="this.vehicleCapacity?.loadCapacity ?? 0 + ' Kg'" readonly>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="row mt-3">
+        <div class="col-md-12">
+          <mat-form-field>
+            <mat-label>Remarks</mat-label>
+            <input matInput formControlName="remarks" type="text">
+          </mat-form-field>
+        </div>
+      </div>
+
+      <mat-divider></mat-divider>
+      <div class="button-container">
+        <button mat-flat-button color="success" type="button" (click)="SaveData()" [disabled]="this.isLoading">
+          <span class="mat-button-wrapper">Save</span>
+        </button>
+        <button mat-flat-button color="default" [mat-dialog-close]="true">
+          <span class="mat-button-wrapper">Close</span>
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</form>

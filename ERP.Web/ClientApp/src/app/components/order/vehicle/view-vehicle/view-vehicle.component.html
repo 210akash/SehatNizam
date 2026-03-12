@@ -1,0 +1,151 @@
+<!-- <div class="card">
+  <div class="card-header">
+    <h4 class="card-title">View Vehicle</h4>
+  </div>
+  <form [formGroup]="viewVehicleForm">
+    <div class="card-body">
+      <div class="row">
+
+        <div class="col-md-12">
+          <div class="mb-3">
+            <mat-form-field class="example-full-width">
+              <input matInput placeholder="Vehicle Name" formControlName="vehicleName" readonly />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="col-md-12">
+          <div class="mb-3">
+            <mat-form-field class="example-full-width">
+              <input matInput placeholder="Registration Number" formControlName="registrationNumber" readonly />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="col-md-12">
+          <div class="mb-3">
+            <mat-form-field class="example-full-width">
+              <input matInput placeholder="Driver Name" formControlName="driverName" readonly />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="col-md-12">
+          <div class="mb-3">
+            <mat-form-field class="example-full-width">
+              <input matInput placeholder="Driver Phone No" formControlName="driverPhoneNo" readonly />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="col-md-12">
+          <div class="mb-3">
+            <mat-form-field class="example-full-width">
+              <input matInput placeholder="Is Head Office Vehicle" formControlName="isHeadOfficeVehicle" readonly />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="col-md-12">
+          <div class="mb-3">
+            <mat-form-field class="example-full-width">
+              <input matInput placeholder="Distributor" formControlName="dealershipId" readonly />
+            </mat-form-field>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="card-footer">
+      <button [mat-dialog-close]="true" class="btn btn-danger" data-bs-dismiss="modal">
+        Close
+      </button>
+    </div>
+  </form>
+</div> -->
+
+
+<mat-card>
+  <mat-card-header>
+    <mat-card-title> View Vehicle  </mat-card-title>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="mb-3">
+          <mat-form-field class="form-field">
+            <mat-label>Name</mat-label>
+            <input matInput  [value]="this.data.element.vehicleName" readonly />
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div class="mb-3">
+          <mat-form-field class="form-field">
+            <mat-label>Registration No</mat-label>
+            <input matInput  [value]="this.data.element.registrationNumber" readonly />
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div class="mb-3">
+          <mat-form-field class="form-field">
+            <mat-label>Load Capacity (kg)</mat-label>
+            <input matInput  [value]="this.data.element.loadCapacity" readonly />
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div class="mb-3">
+          <mat-form-field class="form-field">
+            <mat-label>Driver Name</mat-label>
+            <input matInput  [value]="this.data.element.driverName" readonly />
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="col-md-12">
+        <div class="mb-3">
+          <mat-form-field class="form-field">
+            <mat-label>Driver Phone No</mat-label>
+            <input matInput  [value]="this.data.element.driverPhoneNo" readonly />
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="col-md-12">
+        <div class="mb-3">
+          <mat-form-field class="form-field">
+            <mat-label>Is Head Office Vehicle</mat-label>
+            <input matInput  [value]="this.data.element.isHeadOfficeVehicle ? 'Yes' : 'No'" readonly />
+          </mat-form-field>
+        </div>
+      </div>  
+
+      <div class="col-md-12" *ngIf="this.data.element.isHeadOfficeVehicle == true">
+        <div class="mb-3">
+          <mat-form-field class="form-field">
+            <mat-label>Logistic Partner</mat-label>
+            <input matInput  [value]="this.data.element.logisticPartner" readonly />
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="col-md-12" *ngIf="this.data.element.isHeadOfficeVehicle != true">
+        <div class="mb-3">
+          <mat-form-field class="form-field">
+            <mat-label>Distributor</mat-label>
+            <input matInput  [value]="this.data.element.dealership?.name" readonly />
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="button-container">
+      <button mat-flat-button color="default" [mat-dialog-close]="true">
+        <span class="mat-button-wrapper">Close</span>
+      </button>
+    </div>
+
+  </mat-card-content>
+</mat-card>

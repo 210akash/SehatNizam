@@ -1,0 +1,169 @@
+<div class="card">
+    <div class="card-header">
+        <div class="header-container">
+            <div class="card-title">Print Purchase Return</div>
+            <div>
+                <button mat-flat-button color="primary" type="button" class="print-button mr-2"
+                    (click)="printDocument()">
+                    <span class="mat-button-wrapper">Print</span>
+                </button>
+                <button mat-flat-button color="default" [mat-dialog-close]="true">
+                    <span class="mat-button-wrapper">Close</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="card-body" id="printDoc">
+        <div class="container printCont">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="row m-0 mb-3">
+                            <div class="col-md-5 left_side">
+                                <div class="logo mb-2">
+                                    <img [src]="this.data.element.createdBy?.department?.company?.logo" width="70px"
+                                        height="70px" alt="CompanyImage">
+                                    <span>{{this.data.element.createdBy?.department?.company?.name}}</span>
+                                </div>
+                                <table class="top_left">
+                                      <tr>
+                                        <th>PO #:</th>
+                                        <td><b>{{this.data.element.grn?.inspection?.igp?.purchaseOrder?.code}}</b></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Vendor:</th>
+                                        <td><b>{{this.data.element.grn?.inspection?.igp?.purchaseOrder?.vendor?.name}}</b>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Address:</th>
+                                        <td><b>{{this.data.element.grn?.inspection?.igp?.purchaseOrder?.vendor?.address}}</b>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Contact#</th>
+                                        <td><b>{{this.data.element.grn?.inspection?.igp?.purchaseOrder?.vendor?.phone}}</b>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="col-md-12">
+                                    <h2 style="font-weight: 600; font-size: 1.5rem;">
+                                        <span style="border-bottom: 2px solid;">Purchases Return Invoice</span>
+                                    </h2>
+                                </div>
+                            </div>
+                            <div class="col-md-3 right_side" style="margin-top: 10%;">
+                                <table class="top_right">
+                                    <tr>
+                                        <th>Purchase Return No.</th>
+                                        <td>{{this.data.element.code}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Purchase Return Date</th>
+                                        <td>{{this.data.element.createdDate | date : 'shortDate'}}</td>
+                                    </tr>
+                                        <tr>
+                                        <th>Warehouse</th>
+                                        <td>{{this.data.element.project.name}}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="col-md-12 p-0">
+                            <table class="table_one mb-4">
+                                <colgroup>
+                                    <col span="1" style="width:10px">
+                                    <col span="1" style="width:230px">
+                                    <col span="1" style="width:100px">
+                                    <col span="1" style="width:100px">
+                                    <col span="1" style="width:100px">
+                                    <col span="1" style="width:100px">
+                                    <col span="1" style="width:100px">
+                                    <col span="1" style="width:100px">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th>Sr.#</th>
+                                        <th>Item</th>
+                                        <th>Dispatch Quantity</th>
+                                        <th>Return Quantity</th>
+                                        <th>Rate</th>
+                                        <th>Amount</th>
+                                        <th>Weight Per Unit</th>
+                                        <th>Total Weight</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let detail of this.data.element.purchaseReturnDetail; let i = index">
+                                        <td>
+                                            {{i + 1}}
+                                        </td>
+                                        <td>
+                                            {{detail.grnDetail?.inspectionDetail?.igpDetail?.purchaseOrderDetail?.purchaseDemandDetail?.item?.code
+                                            + ' : ' +
+                                            detail.grnDetail?.inspectionDetail?.igpDetail?.purchaseOrderDetail?.purchaseDemandDetail?.item?.name
+                                            || ''}}
+                                        </td>
+                                        <td>
+                                            {{detail.grnDetail?.received || ''}}
+                                        </td>
+                                        <td>
+                                            {{detail.quantity}}
+                                        </td>
+                                        <td>
+                                            {{detail.grnDetail?.inspectionDetail?.igpDetail?.purchaseOrderDetail?.unitRate
+                                            || '' | number:'1.0-10'}}
+                                        </td>
+                                        <td>
+                                            {{
+                                            (detail.grnDetail?.inspectionDetail?.igpDetail?.purchaseOrderDetail?.unitRate
+                                            * detail.quantity)
+                                            || ''
+                                            | number:'1.0-10'
+                                            }}
+                                        </td>
+
+                                        <td>
+                                            {{detail.grnDetail?.inspectionDetail?.igpDetail?.purchaseOrderDetail?.purchaseDemandDetail?.item?.weight
+                                            || ''}}
+                                        </td>
+                                        <td>
+                                            {{detail.grnDetail?.inspectionDetail?.igpDetail?.purchaseOrderDetail?.purchaseDemandDetail?.item?.weight
+                                            * detail.quantity || ''}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3" style="text-align:right;"><strong>Grand Total</strong></td>
+                                        <td>{{ this.qtyTotals }}</td>
+                                        <td></td>
+                                        <td>{{ this.grandTotals | number:'1.2-2' }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="print_date mt-4">
+                                <div><b>Printed By:</b></div>
+                                <div>{{this.data.element.createdBy.firstName + ' ' +
+                                    this.data.element.createdBy.lastName }}</div>
+                                <div><b>Print Date:</b></div>
+                                <div>{{currentDate}}</div>
+                                <div><b>Print Time:</b></div>
+                                <div>{{currentTime}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer">
+        <div class="button-container m-0">
+            <button mat-flat-button color="default" [mat-dialog-close]="true">
+                <span class="mat-button-wrapper">Close</span>
+            </button>
+        </div>
+    </div>
+</div>

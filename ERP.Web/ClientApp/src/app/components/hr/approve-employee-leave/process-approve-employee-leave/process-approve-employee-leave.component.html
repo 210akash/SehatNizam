@@ -1,0 +1,84 @@
+<mat-card>
+    <mat-card-header>
+    <div class="header-container">
+    <mat-card-title>
+     Approve/Reject Leave Application
+      ({{this.data.element.employeeGroupLeaveTypeDetail?.employeeLeaveType?.name}})
+    </mat-card-title>
+       <span class="badge badge-created" matTooltip="Status" *ngIf="this.data.element.status?.title == 'Created'">Created</span>
+        <span class="badge badge-inprocess" matTooltip="Status" *ngIf="this.data.element.status?.title == 'Processed'">Processed</span>
+        <span class="badge badge-inprocess" matTooltip="Status" *ngIf="this.data.element.status?.title == 'Approved'">Approved By Supervisor</span>
+      <span class="badge badge-done" matTooltip="Status" *ngIf="this.data.element.status?.title == 'HR Approved'">HR Approved</span>
+      <span class="badge badge-closed" matTooltip="Status" *ngIf="this.data.element.status?.title == 'Reject'">Reject</span>
+      </div>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+    <div class="row" style="align-items: center;">
+
+        <div class="col-md-12">
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Leave Type</th>
+                <th>Allotted</th>
+                <th>Used</th>
+                <th>Balance</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of leaveBalance; let i = index">
+                <td>{{ i + 1 }}</td>
+                <td>{{ item.leaveType }}</td>
+                <td>{{ item.allotted }}</td>
+                <td>{{ item.used }}</td>
+                <td>{{ item.balance }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="col-md-6">
+          <mat-label>Start Date</mat-label>
+          <input class="form-control" type="text" [value]="data.element.startDate | date:'MMM d, y'" readonly>
+        </div>
+
+        <div class="col-md-6">
+          <mat-label>End Date</mat-label>
+          <input class="form-control" type="text" [value]="data.element.endDate | date:'MMM d, y'" readonly>
+        </div>
+
+        <div class="col-md-3 mt-3">
+          <mat-checkbox [(ngModel)]="this.data.element.isLastHalfDay" disabled>Last Half</mat-checkbox>
+        </div>
+
+        <div class="col-md-3 mt-3">
+          <mat-checkbox [(ngModel)]="this.data.element.isFirstHalfDay" disabled>First Half</mat-checkbox>
+        </div>
+
+        <div class="col-md-6 mt-4">
+          Days: {{noOfDays}}
+        </div>
+
+        <div class="col-md-12 mt-3">
+          <mat-form-field>
+            <mat-label>Reason</mat-label>
+            <input matInput [value]="this.data.element.reason" type="text" readonly>
+          </mat-form-field>
+        </div>
+      </div>
+    <mat-divider></mat-divider>
+    <div class="button-container">
+      <button mat-flat-button color="success" type="button" (click)="Approve()">
+        <span class="mat-button-wrapper">Approve</span>
+      </button>
+       <button mat-flat-button color="danger" type="button" (click)="Reject()">
+        <span class="mat-button-wrapper">Reject</span>
+      </button>
+      <button mat-flat-button color="default" [mat-dialog-close]="true">
+        <span class="mat-button-wrapper">Close</span>
+      </button>
+    </div>
+  </mat-card-content>
+</mat-card>

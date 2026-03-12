@@ -1,0 +1,113 @@
+<div class="mat-elevation-z8 table-responsive">
+  <table mat-table [dataSource]="dataSource" matSort>
+
+    <!-- Columns -->
+
+    <ng-container matColumnDef="invoiceNo">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Invoice No </th>
+      <td mat-cell *matCellDef="let element"> {{ element.invoiceNo }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="grncode">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> GRN Code </th>
+      <td mat-cell *matCellDef="let element"> {{ element.code }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="vendor">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Vendor </th>
+      <td mat-cell *matCellDef="let element"> {{
+        element.grnDetail[0]?.inspectionDetail?.igpDetail?.purchaseOrderDetail?.purchaseOrder?.vendor?.name}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="invoiceDate">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Invoice Date </th>
+      <td mat-cell *matCellDef="let element"> {{ element.approvedDate | date : 'shortDate' }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="invoiceApprovedDate">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Approved Date </th>
+      <td mat-cell *matCellDef="let element"> {{ element.invoiceApprovedDate | date : 'shortDate' }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="invoiceApprovedBy">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Approved By </th>
+      <td mat-cell *matCellDef="let element"> {{ element.invoiceApprovedBy?.firstName + ' ' +
+        element.invoiceApprovedBy?.lastName }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="invoiceProcessedDate">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Processed Date </th>
+      <td mat-cell *matCellDef="let element"> {{ element.invoiceProcessedDate | date : 'shortDate' }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="invoiceProcessedBy">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Processed By </th>
+      <td mat-cell *matCellDef="let element"> {{ element.invoiceProcessedBy?.firstName + ' ' +
+        element.invoiceProcessedBy?.lastName }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="invoiceAuditVerifiedDate">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Audit Verified Date </th>
+      <td mat-cell *matCellDef="let element"> {{ element.invoiceAuditVerifiedDate | date : 'shortDate' }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="invoiceAuditVerifiedBy">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Audit Verified By </th>
+      <td mat-cell *matCellDef="let element"> {{ element.invoiceAuditVerifiedBy?.firstName + ' ' +
+        element.invoiceAuditVerifiedBy?.lastName }} </td>
+    </ng-container>
+
+    <!-- Actions column definition -->
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef style="width: 11%;"> Actions </th>
+      <td mat-cell *matCellDef="let element">
+        <div class="action_btns">
+
+          <button mat-mini-fab matTooltip="Edit" color="dark"
+            *ngIf="(element.invoiceStatusId == 1 && roleList?.includes('accounts manager') || roleList?.includes('accounts assistant'))"
+            (click)="viewPurchaseInvoiceDialog(element, 1)">
+            <mat-icon aria-label="Edit">edit</mat-icon>
+          </button>
+
+          <button mat-mini-fab matTooltip="View"
+            color="success" (click)="viewPurchaseInvoiceDialog(element, 0)">
+            <mat-icon aria-label="View">visibility</mat-icon>
+          </button>
+
+          <button mat-mini-fab matTooltip="Process"
+            *ngIf="(roleList?.includes('accounts manager') || roleList?.includes('accounts assistant')) && element.invoiceStatusId == 1"
+            color="success" (click)="processPurchaseInvoiceDialog(element)">
+            <mat-icon aria-label="Post">send</mat-icon>
+          </button>
+
+          <button mat-mini-fab matTooltip="Process"
+            *ngIf="(roleList?.includes('audit')) && element.invoiceStatusId == 2"
+            color="success" (click)="processPurchaseInvoiceDialog(element)">
+            <mat-icon aria-label="Post">send</mat-icon>
+          </button>
+
+          <button mat-mini-fab matTooltip="Pending"
+            *ngIf="(roleList?.includes('accounts manager')) && element.invoiceStatusId == 6" color="success"
+            (click)="approvePurchaseInvoiceDialog(element)">
+            <mat-icon aria-label="Post">send</mat-icon>
+          </button>
+
+          <button mat-mini-fab matTooltip="Print" *ngIf="element.invoiceStatusId == 3" color="success"
+            (click)="printPurchaseInvoiceDialog(element)">
+            <mat-icon aria-label="Delete">print</mat-icon>
+          </button>
+
+        </div>
+      </td>
+    </ng-container>
+
+    <!-- Table rows -->
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+  <mat-divider></mat-divider>
+  <!-- Paginator -->
+  <mat-paginator #paginator [length]="totalRows" [pageIndex]="currentPage" [pageSize]="pageSize"
+    [pageSizeOptions]="pageSizeOptions" (page)="pageChanged($event)" aria-label="Select page">
+  </mat-paginator>
+</div>

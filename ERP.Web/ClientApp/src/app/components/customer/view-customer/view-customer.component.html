@@ -1,0 +1,73 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>View Customer</mat-card-title>
+  </mat-card-header>
+
+  <mat-divider></mat-divider>
+
+  <mat-card-content>
+
+    <form [formGroup]="viewCustomerForm">
+      <div class="card-body">
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-3">
+              <mat-form-field class="example-full-width">
+                <mat-label>Customer Name</mat-label>
+                <input matInput placeholder="Customer Name" [value]="this.data.element.name" readonly />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <mat-form-field class="example-full-width">
+                <mat-label>Phone No</mat-label>
+                <input matInput placeholder="Phone No" [value]="this.data.element.phoneNo" readonly />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <mat-form-field class="example-full-width">
+                <mat-label>Secondary Phone No</mat-label>
+                <input matInput placeholder="Secondary Phone No" [value]="this.data.element.secondaryPhoneNo"
+                  readonly />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <mat-form-field class="example-full-width">
+                <mat-label>CNIC</mat-label>
+                <input matInput placeholder="CNIC" [value]="this.data.element.cnic" readonly />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <mat-form-field class="example-full-width">
+                <mat-label>NTN</mat-label>
+                <input matInput placeholder="NTN" [value]="this.data.element.ntn" readonly />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <mat-form-field class="example-full-width">
+                <mat-label>Address</mat-label>
+                <input matInput placeholder="Address" [value]="this.data.element.address" readonly />
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="button-container">
+        <button mat-flat-button color="default" [mat-dialog-close]="true">
+          <span class="mat-button-wrapper">Close</span>
+        </button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

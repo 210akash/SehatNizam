@@ -1,0 +1,76 @@
+<form [formGroup]="createCustomerForm">
+  <mat-card>
+    <mat-card-header>
+      <div class="header-container">
+        <mat-card-title>Create Customer</mat-card-title>
+        <mat-slide-toggle matTooltip="Active" formControlName="isActive" color="primary"></mat-slide-toggle>
+      </div>
+    </mat-card-header>
+
+    <mat-divider></mat-divider>
+
+    <mat-card-content>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mb-3">
+            <mat-form-field class="example-full-width">
+              <mat-label>Customer Name</mat-label>
+              <input matInput placeholder="Customer Name" formControlName="name" />
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mb-3">
+            <mat-form-field class="example-full-width">
+              <mat-label>Phone No</mat-label>
+              <input matInput placeholder="Phone No" formControlName="phoneNo" />
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mb-3">
+            <mat-form-field class="example-full-width">
+              <mat-label>Secondary Phone No</mat-label>
+              <input matInput placeholder="Secondary Phone No" formControlName="secondaryPhoneNo"
+                [inputMask]="this.phoneNoInputMask" />
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mb-3">
+            <mat-form-field class="example-full-width">
+              <mat-label>CNIC</mat-label>
+              <input matInput placeholder="CNIC" formControlName="cnic" [inputMask]="this.cnicInputMask" />
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mb-3">
+            <mat-form-field class="example-full-width">
+              <mat-label>NTN</mat-label>
+              <input matInput placeholder="NTN" formControlName="ntn" />
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div class="mb-3">
+            <mat-form-field class="example-full-width">
+              <mat-label>Address</mat-label>
+              <textarea matInput placeholder="Address" rows="4" formControlName="address">
+              </textarea>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="button-container">
+        <button mat-flat-button color="success" type="button" (click)="saveCustomer()">
+          <span class="mat-button-wrapper">Save</span>
+        </button>
+        <button mat-flat-button color="default" [mat-dialog-close]="true">
+          <span class="mat-button-wrapper">Close</span>
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</form>

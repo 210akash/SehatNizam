@@ -1,0 +1,102 @@
+<form [formGroup]="employeeLeaveGroupForm">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>{{ isEditMode ? 'Edit' : 'Create' }} Leave Group</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="row">
+        <div class="col-md-12">
+          <mat-form-field appearance="outline" style="width: 100%;">
+            <mat-label>Group Name</mat-label>
+            <input matInput formControlName="name" placeholder="Enter group name" readonly />
+          </mat-form-field>
+        </div>
+      </div>
+      <div formArrayName="employeeGroupLeaveType">
+        <div class="card" *ngFor="let group of employeeGroupLeaveType.controls; let i = index" [formGroupName]="i">
+          <div class="card-header">
+            <div class="row align-items-center">
+              <input type="hidden" formControlName="id" />
+              <input type="hidden" formControlName="employeeLeaveGroupId" />
+              <div class="col-md-1">
+                <span class="items_nmbr">{{i + 1}}</span>
+              </div>
+              <div class="col-md-8">
+                <mat-form-field [ariaReadOnly]="isCurrentDateBetween(group.value)">
+                  <mat-label>HR Year</mat-label>
+                  <mat-select formControlName="hrYearId">
+                    <mat-option value="">-- Select --</mat-option>
+                    <mat-option *ngFor="let year of hrYearList" [value]="year.id">{{ year.name }}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-md-2 text-right" *ngIf="isCurrentDateBetween(group.value)">
+                <div class="action_btns">
+                  <button mat-mini-fab matTooltip="Add Year" color="success" type="button" (click)="addTransaction(i)">
+                    <mat-icon aria-label="Edit">add</mat-icon>
+                  </button>
+                  <button mat-mini-fab matTooltip="Delete Year" color="danger" type="button"
+                    (click)="removeTransaction(i)">
+                    <mat-icon aria-label="Delete">delete</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Sr #</th>
+                    <th>Leave Type</th>
+                    <th>No of Leaves</th>
+                  </tr>
+                </thead>
+                <tbody formArrayName="employeeGroupLeaveTypeDetail">
+                  <tr *ngFor="let detail of Detail(i).controls; let j = index" [formGroupName]="j">
+                    <input type="hidden" formControlName="employeeGroupLeaveTypeId" />
+
+                    <td style="width: 10px;">
+                      <div class="action_btns">
+                        <span>&#40;{{j + 1}}&#41;</span>
+                        <mat-icon aria-label="Edit" class="icons add" (click)="addDetail(j,i)" *ngIf="isCurrentDateBetween(group.value)">add</mat-icon>
+                        <mat-icon aria-label="Delete" class="icons delete" (click)="removeDetail(j,i)" *ngIf="isCurrentDateBetween(group.value)">delete</mat-icon>
+                      </div>
+                    </td>
+                    <td>
+                      <mat-form-field style="width: 260px;">
+                        <mat-label>Leave Type</mat-label>
+                        <mat-select formControlName="employeeLeaveTypeId">
+                          <mat-option value="">-- Select --</mat-option>
+                          <mat-option *ngFor="let lt of employeeLeaveTypeList" [value]="lt.id">{{ lt.name
+                            }}</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </td>
+                    <td>
+                      <mat-form-field>
+                        <input matInput type="number" min="0" formControlName="noOfLeaves" />
+                      </mat-form-field>
+                    </td>
+
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <mat-divider></mat-divider>
+      <div class="button-container">
+        <button mat-flat-button color="success" type="button" (click)="SaveData()" [disabled]="this.isLoading">
+          <span class="mat-button-wrapper"> {{ isEditMode ? 'Update' : 'Save' }}</span>
+        </button>
+        <button mat-flat-button color="default" [mat-dialog-close]="true">
+          <span class="mat-button-wrapper">Close</span>
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</form>

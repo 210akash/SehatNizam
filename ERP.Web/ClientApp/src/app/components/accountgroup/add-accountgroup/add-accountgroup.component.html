@@ -1,0 +1,127 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Account Group Form</mat-card-title>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+    <form [formGroup]="accountgroupForm">
+      <input type="hidden" formControlName="id" />
+      <div class="row justify-content-center">
+        <div class="col-md-3">
+          <mat-form-field  style="width: 100%;">
+            <mat-label>Code</mat-label>
+            <input matInput formControlName="code" type="text" readonly class="text-center" tabindex="-1">
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <mat-form-field  class="form-field">
+            <mat-label>Account</mat-label>
+            <mat-select formControlName="accountId" (selectionChange)="getAccountGroupCode()">
+              <mat-option *ngFor="let account of accountList" [value]="account.id">
+                {{ account.code }} : {{ account.name }} ({{account.accountFlow.name}})
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-12" *ngIf="this.accountFlow == 'Customers'">
+          <mat-form-field>
+            <mat-label>Customers</mat-label>
+            <input matInput formControlName="dealershipName" [matAutocomplete]="auto"
+            (keyup)="getCustomersList($event);" class="form-control" (input)="onInputCleared($event, i)"
+            type="search"
+            [required]="this.accountFlow == 'Customers'"
+            />
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionDealershipSelected($event,i)">
+              <mat-option *ngFor="let customer of customersList" [value]="customer">
+              {{ customer?.name }} | {{ customer?.address }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-12" *ngIf="this.accountFlow == 'Suppliers'">
+          <mat-form-field>
+            <mat-label>Vendors</mat-label>
+            <input matInput formControlName="vendorName" [matAutocomplete]="auto"
+            (keyup)="getSupplierList($event);" class="form-control" (input)="onInputCleared($event, i)"
+            type="search"
+            [required]="this.accountFlow == 'Suppliers'"
+            />
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionSupplierSelected($event,i)">
+              <mat-option *ngFor="let vendor of vendorsList" [value]="vendor">
+              {{ vendor?.name }} | {{ vendor?.address }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        </div>
+        <!-- <div class="col-md-12" *ngIf="this.accountFlow == 'Customers'"  >
+          <mat-form-field  class="form-field">
+            <mat-label>Distributors</mat-label>
+            <mat-select formControlName="dealershipId" (valueChange)="setName($event)">
+              <mat-option [value]="''">
+               ---Select---
+               </mat-option>
+              <mat-option *ngFor="let customer of customersList" [value]="customer.id">
+               {{ customer.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div> -->
+
+        <!-- <div class="col-md-12" *ngIf="this.accountFlow == 'Suppliers'" >
+          <mat-form-field  class="form-field">
+            <mat-label>Vendors</mat-label>
+            <mat-select formControlName="vendorId" (valueChange)="setName($event)">
+              <mat-option [value]="''">
+                ---Select---
+                </mat-option>
+              <mat-option *ngFor="let vendor of vendorsList" [value]="vendor.id">
+               {{ vendor.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div> -->
+
+        <div class="col-md-6">
+          <mat-form-field  style="width: 100%;">
+            <mat-label>Name</mat-label>
+            <input matInput formControlName="name" type="text">
+          </mat-form-field>
+        </div>
+          <div class="col-md-3">
+          <mat-form-field  style="width: 100%;">
+            <mat-label>Opening Balance</mat-label>
+            <input matInput formControlName="opening" type="number">
+          </mat-form-field>
+        </div>
+         <div class="col-md-3">
+          <mat-form-field  style="width: 100%;">
+            <mat-label>Credit Limit</mat-label>
+            <input matInput formControlName="creditLimit" type="number">
+          </mat-form-field>
+        </div>
+        <div class="col-md-12">
+          <mat-form-field  style="width: 100%;">
+            <mat-label>Description</mat-label>
+            <textarea matInput rows="2" formControlName="description">
+        </textarea>
+          </mat-form-field>
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="button-container">
+        <button mat-flat-button color="success" type="button" (click)="SaveData()">
+          <span class="mat-button-wrapper">Save</span>
+        </button>
+        <button mat-flat-button color="default" [mat-dialog-close]="true">
+          <span class="mat-button-wrapper">Close</span>
+        </button>
+      </div>
+    </form>
+
+  </mat-card-content>
+
+</mat-card>

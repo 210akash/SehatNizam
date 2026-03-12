@@ -1,0 +1,705 @@
+<div class="erp-layout">
+
+  <!-- Sidebar -->
+  <aside [class.expanded]="isSidebarOpen" [class.collapsed]="!isSidebarOpen" class="erp-sidebar">
+    <!-- Sidebar Header -->
+    <div class="sidebar-header">
+      <div class="logo-container">
+        <div class="logo-icon">
+          <div (click)="goToDashboard()" class="avatar top_logo"
+            *ngIf="this.currentUser.department?.company?.logo != null">
+            <img src="{{this.currentUser.department?.company?.logo}}" alt="company Image" width="50px" height="50px">
+          </div>
+        </div>
+        <div class="logo-text">
+          <h1>HMS System</h1>
+          <p>{{this.currentUser.department?.company?.name}}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Menu -->
+    <nav class="sidebar-nav custom-scrollbar">
+
+      <!-- Dashboard -->
+      <div class="nav-group">
+        <a routerLink="/dashboard" class="nav-link" [class.active-link]="isActive('/dashboard')">
+          <i class="fas fa-th-large"></i>
+          <span>Dashboard</span>
+        </a>
+      </div>
+
+      <!-- Inward Gate Pass -->
+      <div class="nav-group" *ngIf="hasRequiredRole(['gate clerk', 'audit'])">
+        <a routerLink="/igp" class="nav-link" [class.active-link]="isActive('/igp')">
+          <i class="fas fa-truck"></i>
+          <span>Inward Gate Pass</span>
+        </a>
+      </div>
+
+      <!-- Issuance -->
+      <div class="nav-group"
+        *ngIf="hasRequiredRole(['manager','assistant','store manager','store issuer','audit','admin'])">
+        <button (click)="toggleSubMenu('issuance')" class="nav-button">
+          <i class="fas fa-file-export"></i>
+          <span>Issuance</span>
+          <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('issuance')"></i>
+        </button>
+        <div class="submenu" *ngIf="isSubMenuVisible('issuance')">
+          <div *ngIf="hasRequiredRole(['manager','assistant'])">
+            <a routerLink="/indentrequest" class="submenu-link" [class.active-link]="isActive('/indentrequest')">
+              Issuance Request
+            </a>
+          </div>
+          <div *ngIf="hasRequiredRole(['store manager','store issuer','audit','admin'])">
+            <a routerLink="/issuance" class="submenu-link" [class.active-link]="isActive('/issuance')">
+              Material Issuance
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Inspection -->
+      <div class="nav-group" *ngIf="hasRequiredRole(['inspection', 'audit','admin'])">
+        <button (click)="toggleSubMenu('inspection')" class="nav-button">
+          <i class="fas fa-clipboard-check"></i>
+          <span>Inspection</span>
+          <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('inspection')"></i>
+        </button>
+        <div class="submenu" *ngIf="isSubMenuVisible('inspection')">
+          <div *ngIf="hasRequiredRole(['inspection'])">
+            <button (click)="toggleSubMenu('inspectionSetup')" class="submenu-button">
+              <span>Setup</span>
+              <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('inspectionSetup')"></i>
+            </button>
+            <div class="nested-submenu" *ngIf="isSubMenuVisible('inspectionSetup')">
+              <a routerLink="/rejectreason" class="nested-link" [class.active-link]="isActive('/rejectreason')">
+                Reject Reason
+              </a>
+            </div>
+          </div>
+          <a routerLink="/inspection" *ngIf="hasRequiredRole(['inspection', 'audit'])" class="submenu-link"
+            [class.active-link]="isActive('/inspection')">
+            Inspection
+          </a>
+        </div>
+      </div>
+
+      <!-- Accounts Management -->
+      <div class="nav-group" *ngIf="hasRequiredRole(['accounts manager','accounts assistant','admin','audit'])">
+        <button (click)="toggleSubMenu('accounts')" class="nav-button">
+          <i class="fas fa-wallet"></i>
+          <span>Manage Accounts</span>
+          <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('accounts')"></i>
+        </button>
+        <div class="submenu" *ngIf="isSubMenuVisible('accounts')">
+          <!-- Setup -->
+          <button (click)="toggleSubMenu('glsetup')"
+            *ngIf="hasRequiredRole(['accounts manager','accounts assistant','admin','audit'])" class="submenu-button">
+            <span>Setup</span>
+            <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('glsetup')"></i>
+          </button>
+          <div class="nested-submenu" *ngIf="isSubMenuVisible('glsetup')">
+            <a routerLink="/roles" *ngIf="hasRequiredRole(['admin'])" class="nested-link"
+              [class.active-link]="isActive('/roles')">Roles</a>
+            <a routerLink="/users" *ngIf="hasRequiredRole(['admin'])" class="nested-link"
+              [class.active-link]="isActive('/users')">Users</a>
+            <a routerLink="/companies" *ngIf="hasRequiredRole(['admin'])" class="nested-link"
+              [class.active-link]="isActive('/companies')">Companies</a>
+            <a routerLink="/location" *ngIf="hasRequiredRole(['admin'])" class="nested-link"
+              [class.active-link]="isActive('/location')">Locations</a>
+            <a routerLink="/store" *ngIf="hasRequiredRole(['admin'])" class="nested-link"
+              [class.active-link]="isActive('/store')">Stores</a>
+            <a routerLink="/uoms" *ngIf="hasRequiredRole(['store manager','store issuer'])" class="nested-link"
+              [class.active-link]="isActive('/uoms')">UOM</a>
+            <a routerLink="/indenttype" *ngIf="hasRequiredRole(['store manager','store issuer'])" class="nested-link"
+              [class.active-link]="isActive('/indenttype')">Indent Type</a>
+            <a routerLink="/priority" *ngIf="hasRequiredRole(['admin','store manager','store issuer'])"
+              class="nested-link" [class.active-link]="isActive('/priority')">Priority</a>
+            <a routerLink="/category" *ngIf="hasRequiredRole(['admin','store manager','store issuer'])"
+              class="nested-link" [class.active-link]="isActive('/category')">Category</a>
+            <a routerLink="/subcategory" *ngIf="hasRequiredRole(['admin','store manager','store issuer'])"
+              class="nested-link" [class.active-link]="isActive('/subcategory')">Sub Category</a>
+            <a routerLink="/itemtype" *ngIf="hasRequiredRole(['admin','store manager','store issuer'])"
+              class="nested-link" [class.active-link]="isActive('/itemtype')">Item Types</a>
+            <a routerLink="/items" *ngIf="hasRequiredRole(['admin','store manager','store issuer'])" class="nested-link"
+              [class.active-link]="isActive('/items')">Items</a>
+            <a routerLink="/chartitems" *ngIf="hasRequiredRole(['admin','store manager','store issuer'])"
+              class="nested-link" [class.active-link]="isActive('/chartitems')">Chart Items</a>
+            <a routerLink="/currency" *ngIf="hasRequiredRole(['admin','purchase manager','purchaser'])"
+              class="nested-link" [class.active-link]="isActive('/currency')">Currency</a>
+            <a routerLink="/shipmentmode" *ngIf="hasRequiredRole(['admin','purchase manager','purchaser'])"
+              class="nested-link" [class.active-link]="isActive('/shipmentmode')">Shipment Mode</a>
+            <a routerLink="/paymentmode" *ngIf="hasRequiredRole(['admin','purchase manager','purchaser'])"
+              class="nested-link" [class.active-link]="isActive('/paymentmode')">Payment Mode</a>
+            <a routerLink="/deliveryterms" *ngIf="hasRequiredRole(['admin','purchase manager','purchaser'])"
+              class="nested-link" [class.active-link]="isActive('/deliveryterms')">Delivery Terms</a>
+            <a routerLink="/gst" *ngIf="hasRequiredRole(['admin','purchase manager','purchaser'])" class="nested-link"
+              [class.active-link]="isActive('/gst')">GST</a>
+            <a routerLink="/vendors" *ngIf="hasRequiredRole(['admin','purchase manager','purchaser'])"
+              class="nested-link" [class.active-link]="isActive('/vendors')">Vendors</a>
+            <a routerLink="/rejectreason" *ngIf="hasRequiredRole(['admin','purchase manager','purchaser'])"
+              class="nested-link" [class.active-link]="isActive('/rejectreason')">Reject Reason</a>
+            <a routerLink="/accountflow" *ngIf="hasRequiredRole(['admin','accounts manager','accounts assistant'])"
+              class="nested-link" [class.active-link]="isActive('/accountflow')">Account Flow</a>
+            <a routerLink="/accountcategory" *ngIf="hasRequiredRole(['admin','accounts manager','accounts assistant'])"
+              class="nested-link" [class.active-link]="isActive('/accountcategory')">Account Category</a>
+            <a routerLink="/accountsubcategory"
+              *ngIf="hasRequiredRole(['admin','accounts manager','accounts assistant'])" class="nested-link"
+              [class.active-link]="isActive('/accountsubcategory')">Account Subcategory</a>
+            <a routerLink="/accounttype" *ngIf="hasRequiredRole(['admin','accounts manager','accounts assistant'])"
+              class="nested-link" [class.active-link]="isActive('/accounttype')">Account Type</a>
+            <a routerLink="/account" *ngIf="hasRequiredRole(['admin','accounts manager','accounts assistant','audit'])"
+              class="nested-link" [class.active-link]="isActive('/account')">Account</a>
+            <a routerLink="/accountgroup"
+              *ngIf="hasRequiredRole(['admin','accounts manager','accounts assistant','audit'])" class="nested-link"
+              [class.active-link]="isActive('/accountgroup')">Account Group</a>
+            <a routerLink="/accountchart" *ngIf="hasRequiredRole(['admin','accounts manager','accounts assistant'])"
+              class="nested-link" [class.active-link]="isActive('/accountchart')">Account Chart</a>
+          </div>
+
+          <!-- Vouchers -->
+          <button (click)="toggleSubMenu('vouchers')"
+            *ngIf="hasRequiredRole(['accounts manager','accounts assistant','admin','audit'])" class="submenu-button">
+            <span>Vouchers</span>
+            <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('vouchers')"></i>
+          </button>
+          <div class="nested-submenu" *ngIf="isSubMenuVisible('vouchers')">
+            <!-- Receipt Vouchers -->
+            <button (click)="toggleSubMenu('glreceipt')" class="submenu-button">
+              <span>Receipt Vouchers</span>
+              <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('glreceipt')"></i>
+            </button>
+            <div class="nested-submenu" *ngIf="isSubMenuVisible('glreceipt')">
+              <a routerLink="/crv" class="nested-link" [class.active-link]="isActive('/crv')">Cash Receipt Voucher</a>
+              <a routerLink="/brv" class="nested-link" [class.active-link]="isActive('/brv')">Bank Receipt Voucher</a>
+            </div>
+
+            <!-- Payment Vouchers -->
+            <button (click)="toggleSubMenu('glpayment')" class="submenu-button">
+              <span>Payment Vouchers</span>
+              <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('glpayment')"></i>
+            </button>
+            <div class="nested-submenu" *ngIf="isSubMenuVisible('glpayment')">
+              <a routerLink="/cpv" class="nested-link" [class.active-link]="isActive('/cpv')">Cash Payment Voucher</a>
+              <a routerLink="/bpv" class="nested-link" [class.active-link]="isActive('/bpv')">Bank Payment Voucher</a>
+            </div>
+
+            <!-- Other Vouchers -->
+            <button (click)="toggleSubMenu('glothervch')" class="submenu-button">
+              <span>Other Vouchers</span>
+              <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('glothervch')"></i>
+            </button>
+            <div class="nested-submenu" *ngIf="isSubMenuVisible('glothervch')">
+              <a routerLink="/jv" class="nested-link" [class.active-link]="isActive('/jv')">Journal Voucher</a>
+              <a routerLink="/pjv" class="nested-link" [class.active-link]="isActive('/pjv')">Purchase Journal
+                Voucher</a>
+            </div>
+          </div>
+
+          <!-- Review -->
+          <button (click)="toggleSubMenu('glaccount')"
+            *ngIf="hasRequiredRole(['accounts manager','accounts assistant','sales','admin','audit'])"
+            class="submenu-button">
+            <span>Review</span>
+            <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('glaccount')"></i>
+          </button>
+          <div class="nested-submenu" *ngIf="isSubMenuVisible('glaccount')">
+            <a routerLink="/purchaseinvoice" class="nested-link"
+              [class.active-link]="isActive('/purchaseinvoice')">Purchase Invoice (Approval)</a>
+          </div>
+
+          <!-- Reports -->
+          <button (click)="toggleSubMenu('glreports')"
+            *ngIf="hasRequiredRole(['accounts manager','accounts assistant','admin','audit'])" class="submenu-button">
+            <span>Reports</span>
+            <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('glreports')"></i>
+          </button>
+          <div class="nested-submenu" *ngIf="isSubMenuVisible('glreports')">
+            <button (click)="redirectTochartofaccount()" class="submenu-button">Chart Of Accounts</button>
+            <button (click)="redirectTotrailbalance()" class="submenu-button">Trial Balance</button>
+            <a routerLink="/accountledgerRpt" class="nested-link"
+              [class.active-link]="isActive('/accountledgerRpt')">Account Ledger</a>
+            <button (click)="redirectTobanksummary()" class="submenu-button">Bank And Cash Summary</button>
+            <button (click)="redirectTostockbalancebyvalue()" class="submenu-button">Stock Balance By Value</button>
+            <button (click)="redirectToaccounttypeledger()" class="submenu-button">Account Type Ledger</button>
+            <button (click)="redirectToJournal()" class="submenu-button">Journal</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Store Management -->
+      <div class="nav-group" *ngIf="hasRequiredRole(['store manager','store issuer','admin','audit'])">
+        <button (click)="toggleSubMenu('store')" class="nav-button">
+          <i class="fas fa-store"></i>
+          <span>Manage Store</span>
+          <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('store')"></i>
+        </button>
+        <div class="submenu" *ngIf="isSubMenuVisible('store')">
+          <!-- Setup -->
+          <button (click)="toggleSubMenu('storesetup')"
+            *ngIf="hasRequiredRole(['store manager','store issuer','admin','audit'])" class="submenu-button">
+            <span>Setup</span>
+            <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('storesetup')"></i>
+          </button>
+          <div class="nested-submenu" *ngIf="isSubMenuVisible('storesetup')">
+            <a routerLink="/project" *ngIf="hasRequiredRole(['admin','store manager','store issuer'])"
+              class="nested-link" [class.active-link]="isActive('/project')">Projects</a>
+            <a routerLink="/uoms" *ngIf="hasRequiredRole(['store manager','store issuer'])" class="nested-link"
+              [class.active-link]="isActive('/uoms')">UOM</a>
+            <a routerLink="/vehicle" *ngIf="hasRequiredRole(['store manager','store issuer'])" class="nested-link"
+              [class.active-link]="isActive('/vehicle')">Vehicle</a>
+            <a routerLink="/indenttype" *ngIf="hasRequiredRole(['store manager','store issuer'])" class="nested-link"
+              [class.active-link]="isActive('/indenttype')">Indent Type</a>
+            <a routerLink="/priority" *ngIf="hasRequiredRole(['store manager','store issuer'])" class="nested-link"
+              [class.active-link]="isActive('/priority')">Priority</a>
+            <a routerLink="/category" *ngIf="hasRequiredRole(['store manager','store issuer'])" class="nested-link"
+              [class.active-link]="isActive('/category')">Category</a>
+            <a routerLink="/subcategory" *ngIf="hasRequiredRole(['store manager','store issuer'])" class="nested-link"
+              [class.active-link]="isActive('/subcategory')">Sub Category</a>
+            <a routerLink="/itemtype" *ngIf="hasRequiredRole(['store manager','store issuer'])" class="nested-link"
+              [class.active-link]="isActive('/itemtype')">Item Types</a>
+            <a routerLink="/items" *ngIf="hasRequiredRole(['store manager','store issuer'])" class="nested-link"
+              [class.active-link]="isActive('/items')">Items</a>
+            <a routerLink="/chartitems" *ngIf="hasRequiredRole(['store manager','store issuer'])" class="nested-link"
+              [class.active-link]="isActive('/chartitems')">Chart Items</a>
+            <a routerLink="/customer" *ngIf="hasRequiredRole(['store manager','store issuer'])" class="nested-link"
+              [class.active-link]="isActive('/customer')">Customer</a>
+
+            <button (click)="toggleSubMenu('rackManage')" class="submenu-button">
+              <span>Rack Manage</span>
+              <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('rackManage')"></i>
+            </button>
+            <div class="nested-submenu" *ngIf="isSubMenuVisible('rackManage')">
+              <a routerLink="/rack" class="nested-link" [class.active-link]="isActive('/rack')">Rack</a>
+              <a routerLink="/row" class="nested-link" [class.active-link]="isActive('/row')">Row</a>
+              <a routerLink="/section" class="nested-link" [class.active-link]="isActive('/section')">Section</a>
+            </div>
+          </div>
+
+          <!-- Demand -->
+          <button (click)="toggleSubMenu('demand')"
+            *ngIf="hasRequiredRole(['store manager','store issuer','admin','audit'])" class="submenu-button">
+            <span>Demand</span>
+            <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('demand')"></i>
+          </button>
+          <div class="nested-submenu" *ngIf="isSubMenuVisible('demand')">
+            <a routerLink="/purchasedemand" class="nested-link"
+              [class.active-link]="isActive('/purchasedemand')">Purchase Demand</a>
+          </div>
+
+          <!-- Dispatch -->
+          <button (click)="toggleSubMenu('storedispatch')"
+            *ngIf="hasRequiredRole(['store manager','store issuer','admin','audit'])" class="submenu-button">
+            <span>Dispatch</span>
+            <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('storedispatch')"></i>
+          </button>
+          <div class="nested-submenu" *ngIf="isSubMenuVisible('storedispatch')">
+            <a routerLink="/dispatch" class="nested-link" [class.active-link]="isActive('/dispatch')">Dispatch Order</a>
+            <a routerLink="/canceldispatch" class="nested-link" [class.active-link]="isActive('/canceldispatch')">Cancel
+              Dispatch</a>
+          </div>
+
+          <!-- Sale -->
+          <button (click)="toggleSubMenu('storesale')"
+            *ngIf="hasRequiredRole(['store manager','store issuer','admin','audit'])" class="submenu-button">
+            <span>Sale</span>
+            <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('storesale')"></i>
+          </button>
+          <div class="nested-submenu" *ngIf="isSubMenuVisible('storesale')">
+            <a routerLink="/salematerial" class="nested-link" [class.active-link]="isActive('/salematerial')">Sale
+              Material</a>
+          </div>
+
+          <!-- Return -->
+          <button (click)="toggleSubMenu('storereturn')"
+            *ngIf="hasRequiredRole(['store manager','store issuer','admin','audit'])" class="submenu-button">
+            <span>Return</span>
+            <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('storereturn')"></i>
+          </button>
+          <div class="nested-submenu" *ngIf="isSubMenuVisible('storereturn')">
+            <a routerLink="/salereturn" class="nested-link" [class.active-link]="isActive('/salereturn')">Sale
+              Return</a>
+            <a routerLink="/purchasereturn" class="nested-link"
+              [class.active-link]="isActive('/purchasereturn')">Purchase Return</a>
+            <a routerLink="/salematerialreturn" class="nested-link"
+              [class.active-link]="isActive('/salematerialreturn')">Sale Material Return</a>
+          </div>
+
+          <!-- Transfer -->
+          <button (click)="toggleSubMenu('transfer')"
+            *ngIf="hasRequiredRole(['store manager','store issuer','admin','audit'])" class="submenu-button">
+            <span>Transfer</span>
+            <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('transfer')"></i>
+          </button>
+          <div class="nested-submenu" *ngIf="isSubMenuVisible('transfer')">
+            <a routerLink="/warehousetransfer" class="nested-link"
+              [class.active-link]="isActive('/warehousetransfer')">Warehouse Transfer</a>
+          </div>
+
+          <a routerLink="/grn" *ngIf="hasRequiredRole(['store manager','store issuer','admin','audit'])"
+            class="submenu-link" [class.active-link]="isActive('/grn')">GRN</a>
+          <a routerLink="/costsheet" *ngIf="hasRequiredRole(['store manager','store issuer','admin','audit'])"
+            class="submenu-link" [class.active-link]="isActive('/costsheet')">Cost Sheet</a>
+
+          <!-- Reports -->
+          <button (click)="toggleSubMenu('storereports')"
+            *ngIf="hasRequiredRole(['store manager','store issuer','admin','audit','sse','ssm','mto','eds'])"
+            class="submenu-button">
+            <span>Reports</span>
+            <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('storereports')"></i>
+          </button>
+          <div class="nested-submenu" *ngIf="isSubMenuVisible('storereports')">
+            <button (click)="redirectToUserAttendance()" class="submenu-button">User Attendance</button>
+            <button (click)="redirectTochartofitem()" class="submenu-button">Chart Of Items</button>
+            <button (click)="redirectToitemwisestock()" class="submenu-button">Item Wise Stock</button>
+            <button (click)="redirectTostockbalance()" class="submenu-button">Stock Balance</button>
+            <button (click)="redirectTostockbalancebyvalue()" class="submenu-button">Stock Balance By Value</button>
+            <button (click)="redirectTodispatchdetail()" class="submenu-button">Dispatch Detail</button>
+            <button (click)="redirectToorderdetail()" class="submenu-button">Order Detail</button>
+            <button (click)="redirectToorderdetailSupplyChain()" class="submenu-button">Sale Report Vehicle
+              Wise</button>
+            <button (click)="redirectToissuancereport()" class="submenu-button">Issuance Request</button>
+            <button (click)="redirectTomaterialissuance()" class="submenu-button">Material Issuance</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Purchase Management -->
+      <div class="nav-group" *ngIf="hasRequiredRole(['purchase manager','purchaser','audit','admin'])">
+        <button (click)="toggleSubMenu('purchase')" class="nav-button">
+          <i class="fas fa-shopping-cart"></i>
+          <span>Manage Purchase</span>
+          <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('purchase')"></i>
+        </button>
+        <div class="submenu" *ngIf="isSubMenuVisible('purchase')">
+          <!-- Setup -->
+          <button (click)="toggleSubMenu('purchasesetup')" *ngIf="hasRequiredRole(['purchase manager','purchaser'])"
+            class="submenu-button">
+            <span>Setup</span>
+            <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('purchasesetup')"></i>
+          </button>
+          <div class="nested-submenu" *ngIf="isSubMenuVisible('purchasesetup')">
+            <a routerLink="/location" *ngIf="hasRequiredRole(['admin'])" class="nested-link"
+              [class.active-link]="isActive('/location')">Locations</a>
+            <a routerLink="/currency" *ngIf="hasRequiredRole(['purchase manager','purchaser','admin'])"
+              class="nested-link" [class.active-link]="isActive('/currency')">Currency</a>
+            <a routerLink="/shipmentmode" *ngIf="hasRequiredRole(['purchase manager','purchaser','admin'])"
+              class="nested-link" [class.active-link]="isActive('/shipmentmode')">Shipment Mode</a>
+            <a routerLink="/paymentmode" *ngIf="hasRequiredRole(['purchase manager','purchaser','admin'])"
+              class="nested-link" [class.active-link]="isActive('/paymentmode')">Payment Mode</a>
+            <a routerLink="/deliveryterms" *ngIf="hasRequiredRole(['purchase manager','purchaser','admin'])"
+              class="nested-link" [class.active-link]="isActive('/deliveryterms')">Delivery Terms</a>
+            <a routerLink="/gst" *ngIf="hasRequiredRole(['purchase manager','purchaser','admin'])" class="nested-link"
+              [class.active-link]="isActive('/gst')">GST</a>
+            <a routerLink="/vendors" *ngIf="hasRequiredRole(['purchase manager','purchaser','admin'])"
+              class="nested-link" [class.active-link]="isActive('/vendors')">Vendors</a>
+          </div>
+          <a routerLink="/comparativestatement"
+            *ngIf="hasRequiredRole(['purchase manager','purchaser','audit','admin'])" class="submenu-link"
+            [class.active-link]="isActive('/comparativestatement')">Comparative Statement</a>
+          <a routerLink="/purchaseorder" *ngIf="hasRequiredRole(['purchase manager','purchaser','audit','admin'])"
+            class="submenu-link" [class.active-link]="isActive('/purchaseorder')">Purchase Order</a>
+        </div>
+      </div>
+
+      <!-- User Management -->
+      <div class="nav-group" *ngIf="hasRequiredRole(['admin','sales','sse','ssm','mto','eds'])">
+        <button (click)="toggleSubMenu('userManagement')" class="nav-button">
+          <i class="fas fa-users-cog"></i>
+          <span>User Management</span>
+          <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('userManagement')"></i>
+        </button>
+        <div class="submenu" *ngIf="isSubMenuVisible('userManagement')">
+          <a routerLink="/userattendance" class="submenu-link" [class.active-link]="isActive('/userattendance')">User
+            Attendance</a>
+          <a routerLink="/saleuser" class="submenu-link" [class.active-link]="isActive('/saleuser')">User (Sales)</a>
+          <a routerLink="/userterritory" class="submenu-link" [class.active-link]="isActive('/userterritory')">User
+            Territory</a>
+        </div>
+      </div>
+
+      <!-- Area Management -->
+      <div class="nav-group" *ngIf="hasRequiredRole(['admin','sales','sse','ssm','mto','eds','audit','aem'])">
+        <button (click)="toggleSubMenu('areaManagement')" class="nav-button">
+          <i class="fas fa-map-marked-alt"></i>
+          <span>Area Management</span>
+          <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('areaManagement')"></i>
+        </button>
+        <div class="submenu" *ngIf="isSubMenuVisible('areaManagement')">
+          <a routerLink="/region" class="submenu-link" [class.active-link]="isActive('/region')">Region</a>
+          <a routerLink="/area" class="submenu-link" [class.active-link]="isActive('/area')">Area</a>
+          <a routerLink="/zone" class="submenu-link" [class.active-link]="isActive('/zone')">Zone</a>
+          <a routerLink="/territory" class="submenu-link" [class.active-link]="isActive('/territory')">Territory</a>
+          <a routerLink="/distributor" *ngIf="hasRequiredRole(['admin','sales','aem'])" class="submenu-link"
+            [class.active-link]="isActive('/distributor')">Distributor</a>
+          <a routerLink="/route" class="submenu-link" [class.active-link]="isActive('/route')">Route</a>
+          <a routerLink="/shop" *ngIf="hasRequiredRole(['admin','sales','sse','ssm','mto','eds','audit'])"
+            class="submenu-link" [class.active-link]="isActive('/shop')">Shop</a>
+          <a routerLink="/shoptype" class="submenu-link" [class.active-link]="isActive('/shoptype')">Shop Type</a>
+        </div>
+      </div>
+
+      <!-- Order Management -->
+      <div class="nav-group" *ngIf="hasRequiredRole(['admin','sales','audit','sse','ssm','mto','eds'])">
+        <button (click)="toggleSubMenu('orderManagement')" class="nav-button">
+          <i class="fas fa-box-open"></i>
+          <span>Order Management</span>
+          <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('orderManagement')"></i>
+        </button>
+        <div class="submenu" *ngIf="isSubMenuVisible('orderManagement')">
+          <a routerLink="/pricinggroup" *ngIf="hasRequiredRole(['admin','sales','audit'])" class="submenu-link"
+            [class.active-link]="isActive('/pricinggroup')">Pricing Group</a>
+          <a routerLink="/primarysales" *ngIf="hasRequiredRole(['admin','sales','audit','sse','ssm','mto','eds'])"
+            class="submenu-link" [class.active-link]="isActive('/primarysales')">Primary Sales</a>
+          <a routerLink="/shoporders" *ngIf="hasRequiredRole(['admin','sales','sse','ssm','mto','eds'])"
+            class="submenu-link" [class.active-link]="isActive('/shoporders')">Shop Sales</a>
+          <a routerLink="/fieldmap" *ngIf="hasRequiredRole(['admin','sales','sse','ssm','mto','eds'])"
+            class="submenu-link" [class.active-link]="isActive('/fieldmap')">Field Map</a>
+          <a routerLink="/canceldispatch" *ngIf="hasRequiredRole(['admin', 'sales'])" class="submenu-link"
+            [class.active-link]="isActive('/canceldispatch')">Cancel Dispatch (Approval)</a>
+          <a routerLink="/salestarget" *ngIf="hasRequiredRole(['admin','sales'])" class="submenu-link"
+            [class.active-link]="isActive('/salestarget')">Sales Target</a>
+        </div>
+      </div>
+
+      <!-- Reports -->
+      <div class="nav-group"
+        *ngIf="hasRequiredRole(['admin','sales','hr executive','hr manager','audit','sse','ssm','mto','eds'])">
+        <button (click)="toggleSubMenu('salereports')" class="nav-button">
+          <i class="fas fa-chart-bar"></i>
+          <span>Reports</span>
+          <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('salereports')"></i>
+        </button>
+        <div class="submenu" *ngIf="isSubMenuVisible('salereports')">
+          <button (click)="redirectToUserAttendance()"
+            *ngIf="hasRequiredRole(['hr executive','hr manager','sales','audit','sse','ssm','mto','eds'])"
+            class="submenu-button">User Attendance</button>
+          <button (click)="redirectToAttendanceHr()" *ngIf="hasRequiredRole(['hr executive','hr manager','audit'])"
+            class="submenu-button">Employee Wise Attendance</button>
+          <button (click)="redirectToAttendanceRegister()"
+            *ngIf="hasRequiredRole(['hr executive','hr manager','audit'])" class="submenu-button">Attendance
+            Register</button>
+          <button (click)="redirectToEmployeeReport()" *ngIf="hasRequiredRole(['hr executive','hr manager','audit'])"
+            class="submenu-button">Employee Report</button>
+          <button (click)="redirectToEmployeeJoinerAndLeaverReport()"
+            *ngIf="hasRequiredRole(['hr executive','hr manager','audit'])" class="submenu-button">Employee Report
+            (Joiner & Leaver)</button>
+          <button (click)="redirectToLeaveBalanceReport()"
+            *ngIf="hasRequiredRole(['hr executive','hr manager','audit'])" class="submenu-button">Leave Balance</button>
+          <button (click)="redirectTodispatchdetail()"
+            *ngIf="hasRequiredRole(['sales','audit','sse','ssm','mto','eds'])" class="submenu-button">Dispatch
+            Detail</button>
+          <button (click)="redirectToorderdetail()"
+            *ngIf="hasRequiredRole(['store manager','store issuer','sales','audit','sse','ssm','mto','eds'])"
+            class="submenu-button">Order Detail</button>
+          <button (click)="redirectToshopdetail()"
+            *ngIf="hasRequiredRole(['sse','ssm','mto','eds','sales','audit','admin'])" class="submenu-button">Shop
+            Detail</button>
+          <button (click)="redirectTodistributorbalance()" *ngIf="hasRequiredRole(['sales','audit','admin'])"
+            class="submenu-button">Distributor Balance</button>
+        </div>
+      </div>
+
+      <!-- HR Setup -->
+      <div class="nav-group" *ngIf="hasRequiredRole(['hr executive','hr manager','admin'])">
+        <button (click)="toggleSubMenu('hr')" class="nav-button">
+          <i class="fas fa-user-cog"></i>
+          <span>HR Setup</span>
+          <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('hr')"></i>
+        </button>
+        <div class="submenu" *ngIf="isSubMenuVisible('hr')">
+          <a routerLink="/departments" class="submenu-link"
+            [class.active-link]="isActive('/departments')">Departments</a>
+          <a routerLink="/employeedesignation" class="submenu-link"
+            [class.active-link]="isActive('/employeedesignation')">Employee Designation</a>
+          <a routerLink="/employeeeducation" class="submenu-link"
+            [class.active-link]="isActive('/employeeeducation')">Employee Education</a>
+          <a routerLink="/employeegrade" class="submenu-link" [class.active-link]="isActive('/employeegrade')">Employee
+            Grade</a>
+          <a routerLink="/employeeshift" class="submenu-link" [class.active-link]="isActive('/employeeshift')">Employee
+            Shift</a>
+          <a routerLink="/employeetype" class="submenu-link" [class.active-link]="isActive('/employeetype')">Employee
+            Type</a>
+          <a routerLink="/employeebank" class="submenu-link" [class.active-link]="isActive('/employeebank')">Employee
+            Bank</a>
+          <a routerLink="/employeedocumenttype" class="submenu-link"
+            [class.active-link]="isActive('/employeedocumenttype')">Employee Document Type</a>
+          <a routerLink="/employeeovertimerate" class="submenu-link"
+            [class.active-link]="isActive('/employeeovertimerate')">Employee Over Time Rate</a>
+          <a routerLink="/employeeworksitetype" class="submenu-link"
+            [class.active-link]="isActive('/employeeworksitetype')">Employee Work Site Type</a>
+          <a routerLink="/device" class="submenu-link" [class.active-link]="isActive('/device')">Device</a>
+          <a routerLink="/cities" class="submenu-link" [class.active-link]="isActive('/cities')">City</a>
+          <a routerLink="/hryear" class="submenu-link" [class.active-link]="isActive('/hryear')">HR Year</a>
+          <a routerLink="/holiday" class="submenu-link" [class.active-link]="isActive('/holiday')">Holiday</a>
+
+          <button (click)="toggleSubMenu('leaveManage')" class="submenu-button">
+            <span>Leave Quota</span>
+            <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('leaveManage')"></i>
+          </button>
+          <div class="nested-submenu" *ngIf="isSubMenuVisible('leaveManage')">
+            <a routerLink="/employeeleavetype" class="nested-link"
+              [class.active-link]="isActive('/employeeleavetype')">Employee Leave Type</a>
+            <a routerLink="/employeeleavegroup" class="nested-link"
+              [class.active-link]="isActive('/employeeleavegroup')">Employee Leave Group</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Manage HR -->
+      <div class="nav-group" *ngIf="hasRequiredRole(['hr executive','hr manager','admin'])">
+        <button (click)="toggleSubMenu('employee')" class="nav-button">
+          <i class="fas fa-user-tie"></i>
+          <span>Manage HR</span>
+          <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('employee')"></i>
+        </button>
+        <div class="submenu" *ngIf="isSubMenuVisible('employee')">
+          <a routerLink="/employee" class="submenu-link" [class.active-link]="isActive('/employee')">Manage
+            Employees</a>
+          <a routerLink="/manageemployeeleave" class="submenu-link"
+            [class.active-link]="isActive('/manageemployeeleave')">Manage Leave</a>
+          <a routerLink="/interview" class="submenu-link" [class.active-link]="isActive('/interview')">Manage
+            Interviews</a>
+        </div>
+      </div>
+
+      <!-- Retail Reports -->
+      <div class="nav-group" *ngIf="hasRequiredRole(['retailer','admin','audit'])">
+        <button (click)="toggleSubMenu('fpsreports')" class="nav-button">
+          <i class="fas fa-store-alt"></i>
+          <span>Retail Reports</span>
+          <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('fpsreports')"></i>
+        </button>
+        <div class="submenu" *ngIf="isSubMenuVisible('fpsreports')">
+          <button (click)="redirectTosaleSummary()" class="submenu-button">Sale Summary</button>
+          <button (click)="redirectTosaledetail()" class="submenu-button">Sale Detail</button>
+          <button (click)="redirectToitemledgershop()" class="submenu-button">Item Ledger</button>
+        </div>
+      </div>
+
+    </nav>
+
+    <!-- Sidebar Footer -->
+    <div class="sidebar-footer">
+      <div class="user-profile">
+        <div class="user-avatar">
+          {{ currentUser.firstName[0] }}{{ currentUser.lastName[0] }}
+        </div>
+        <div class="user-info">
+          <p class="user-name">{{ currentUser.firstName }} {{ currentUser.lastName }}</p>
+          <p class="user-dept">{{ currentUser.department.name }}</p>
+        </div>
+        <button (click)="logout()" class="logout-btn">
+          <i class="fas fa-power-off"></i>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <div class="erp-main">
+
+    <!-- Top Header -->
+    <header class="top-header">
+      <div class="header-left">
+        <button (click)="toggleSidebar()" class="toggle-btn">
+          <i class="fas fa-bars"></i>
+        </button>
+        <div class="breadcrumb">
+          <span class="breadcrumb-item">ERP</span>
+          <i class="fas fa-chevron-right breadcrumb-separator"></i>
+          <span class="breadcrumb-current">{{ breadcrumbCurrent }}</span>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <!-- <div class="search-container">
+          <i class="fas fa-search search-icon"></i>
+          <input type="text" placeholder="Search..." class="search-input">
+        </div> -->
+
+        <!-- <button class="icon-btn">
+          <i class="fas fa-bell"></i>
+          <span class="notification-dot"></span>
+        </button> -->
+
+        <!-- <div class="header-divider"></div> -->
+
+        <!-- <button class="user-menu-btn">
+          <div class="user-initials">
+            {{ currentUser.firstName[0] }}{{ currentUser.lastName[0] }}
+          </div>
+          <span class="user-menu-name">{{ currentUser.firstName }}</span>
+          <i class="fas fa-chevron-down user-menu-chevron"></i>
+        </button> -->
+
+        <div class="row m-0" style="gap: 5px;flex-wrap: nowrap;">
+          <!-- profile-dropdown.component.html -->
+          <div class="profile-container" *ngIf="this.profile?.isEmployee">
+            <!-- Profile Button with Round Image -->
+            <button mat-icon-button [matMenuTriggerFor]="profileMenu" class="profile-btn">
+              <mat-icon>person_outline</mat-icon>
+            </button>
+
+            <!-- Dropdown Menu -->
+            <mat-menu #profileMenu="matMenu" class="profile-menu">
+              <mat-card class="profile-card">
+
+                <!-- Header -->
+                <div class="profile_wrap">
+                  <div class="profile-header">
+                    <ng-container *ngIf="this.fileSource; else noPhoto">
+                      <img [src]="this.fileSource" alt="Employee Photo" class="photo-img" />
+                    </ng-container>
+                    <ng-template #noPhoto>
+                      <div class="photo-placeholder">
+                        <i class="fa fa-user fa-3x"></i>
+                        <p>No Photo</p>
+                      </div>
+                    </ng-template>
+                  </div>
+                </div>
+                <mat-divider></mat-divider>
+                <!-- Employee -->
+                <div class="profile-actions">
+                  <button class="cstm_btn" routerLink="/employeedashboard"
+                    [ngClass]="{ 'active': isActive('/employeedashboard') }">
+                    <mat-icon>description</mat-icon>
+                    Dashboard
+                  </button>
+                  <button class="cstm_btn" (click)="viewEmployeeDialog()">
+                    <mat-icon>manage_accounts</mat-icon>
+                    Profile
+                  </button>
+                  <button class="cstm_btn" (click)="viewAttendanceDialog()">
+                    <mat-icon>fingerprint</mat-icon>
+                    Attendance
+                  </button>
+                  <button class="cstm_btn" routerLink="/employeeleave"
+                    [ngClass]="{ 'active': isActive('/employeeleave') }">
+                    <mat-icon>description</mat-icon>
+                    Leave Applications
+                  </button>
+                </div>
+
+              </mat-card>
+            </mat-menu>
+          </div>
+
+          <button matTooltip="Change Password" mat-icon-button (click)="openResetDialog(null)">
+            <mat-icon> lock </mat-icon>
+          </button>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="content-viewport custom-scrollbar">
+      <div class="content mat-elevation-z8">
+        <router-outlet></router-outlet>
+      </div>
+    </main>
+  </div>
+</div>

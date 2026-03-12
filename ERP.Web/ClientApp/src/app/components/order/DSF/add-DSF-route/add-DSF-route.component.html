@@ -1,0 +1,108 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>DSF Form</mat-card-title>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+    <form [formGroup]="addDSFRouteForm">
+      <div class="card-body">
+        <div class="row">
+
+          <div class="col-md-4">
+            <div class="mb-3">
+              <mat-form-field>
+                <input matInput placeholder="Designation" formControlName="designation" readonly />
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="mb-3">
+              <mat-form-field>
+                <input matInput placeholder="Name" formControlName="name" readonly />
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="mb-3">
+              <mat-form-field>
+                <input matInput placeholder="Phone No" formControlName="phoneNumber" readonly />
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="mb-3">
+              <mat-form-field class="example-full-width">
+                <input matInput placeholder="Address" formControlName="address" readonly />
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="mb-3">
+              <mat-form-field>
+                <input matInput placeholder="Shift Time Start" formControlName="shiftTimeStart" readonly />
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="mb-3">
+              <mat-form-field class="example-full-width">
+                <input matInput placeholder="Shift Time End" formControlName="shiftTimeend" readonly />
+              </mat-form-field>
+            </div>
+          </div>
+
+        </div>
+
+      <div class="table-responsive">
+        <table mat-table [dataSource]="dataSource" class="table table-bordered table-striped datatable">
+
+          <ng-container matColumnDef="select">
+            <th mat-header-cell *matHeaderCellDef>
+              <mat-checkbox (change)="selectAll($event)"></mat-checkbox>
+            </th>
+            <td mat-cell *matCellDef="let element">
+              <mat-checkbox (change)="toggleCheckbox(element)"
+                [checked]="selection.has(element) || selectedRoutes.has(element.id)"></mat-checkbox>
+            </td>
+          </ng-container>
+
+            <!--Name Column-->
+            <ng-container matColumnDef="name">
+              <th *matHeaderCellDef class="text-dark"> Route Name</th>
+              <td *matCellDef="let element"> {{element.name}} </td>
+            </ng-container>
+
+            <!--Territory Column-->
+            <ng-container matColumnDef="territory">
+              <th *matHeaderCellDef class="text-dark"> Territory</th>
+              <td *matCellDef="let element"> {{element.territory?.name}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="totalShops">
+              <th *matHeaderCellDef class="text-dark"> Total Shops</th>
+              <td *matCellDef="let element"> {{countTotalShops(element)}} </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns;  sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </div>
+
+      </div>
+      <mat-divider></mat-divider>
+      <div class="button-container">
+        <button mat-flat-button color="success" type="button" (click)="saveAddShops()">
+          <span class="mat-button-wrapper">Save</span>
+        </button>
+        <button mat-flat-button color="default" [mat-dialog-close]="true">
+          <span class="mat-button-wrapper">Close</span>
+        </button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

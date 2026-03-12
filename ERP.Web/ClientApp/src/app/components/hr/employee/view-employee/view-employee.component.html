@@ -1,0 +1,283 @@
+<mat-card class="cv-card" id="printDoc">
+  <div class="cv-header">
+    <div class="action_btns print_hide close_btn">
+      <button mat-mini-fab matTooltip="Reset Password" color="danger"  [mat-dialog-close]="true">
+          <mat-icon aria-label="View">close</mat-icon>
+        </button>
+    </div>
+    <div class="header-content">
+      <div class="employee-info">
+        <h1 class="employee-name">{{this.data.element.firstName}} {{this.data.element.middleName}}  {{this.data.element.lastName}} </h1>
+        <p class="employee-title">{{this.data.element.department?.name || 'N/A'}} ({{this.data.element.employeeDesignation?.name || 'N/A'}})</p>
+        <p class="employee-title">{{this.data.element.title || 'N/A'}}</p>
+        <p class="employee-code">Hr Code: {{this.data.element.hrCode || 'N/A'}} {{this.data.element.isEmployee ? ' (Employee)' : ' (Field Worker)'}}</p>
+        <span class="status-badge" [ngClass]="this.data.element.isActive ? 'active' : 'inactive'">
+          {{this.data.element.isActive ? 'Active' : 'Inactive'}}
+        </span>
+      </div>
+      <div class="employee-photo">
+        <ng-container *ngIf="this.fileSource; else noPhoto">
+          <img [src]="this.fileSource" alt="Employee Photo" class="photo-img" />
+        </ng-container>
+        <ng-template #noPhoto>
+          <div class="photo-placeholder">
+            <i class="fa fa-user fa-3x"></i>
+            <p>No Photo</p>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+
+  <mat-card-content class="cv-content">
+    <div class="section">
+      <h2 class="section-title">Personal Information</h2>
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-label">Gender</span>
+          <span class="info-value">{{this.data.element.gender || '-'}}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Date of Birth</span>
+          <span class="info-value">{{this.data.element.dateOfBirth | date: 'mediumDate'}}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Marital Status</span>
+          <span class="info-value">{{this.data.element.maritalStatus || '-'}}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">CNIC</span>
+          <span class="info-value">{{this.data.element.cnic || '-'}}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">CNIC Issuance</span>
+          <span class="info-value">{{this.data.element.cnicIssuanceDate | date: 'mediumDate'}}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">CNIC Expiry</span>
+          <span class="info-value">{{this.data.element.cnicExpiryDate | date: 'mediumDate'}}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Religion</span>
+          <span class="info-value">{{this.data.element.religion || '-'}}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Father/Husband</span>
+          <span class="info-value">{{this.data.element.fatherHusbandName || '-'}}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Mother Name</span>
+          <span class="info-value">{{this.data.element.motherName || '-'}}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Spouse Name</span>
+          <span class="info-value">{{this.data.element.spouseName || '-'}}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Spouse CNIC</span>
+          <span class="info-value">{{this.data.element.spouseCnic || '-'}}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Blood Group</span>
+          <span class="info-value">{{this.data.element.bloodGroup || '-'}}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Children</span>
+          <span class="info-value">
+            {{this.data.element.child1 ? this.data.element.child1 + (this.data.element.child2 ? ', ' + this.data.element.child2 : '') : '-'}}
+            {{!this.data.element.child1 && !this.data.element.child2 ? '-' : ''}}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Official Information</h2>
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-label">Role</span>
+          <span class="info-value">{{this.data.element.role?.name || '-'}}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Company</span>
+          <span class="info-value">{{this.data.element.company?.name || '-'}}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Employee Type</span>
+          <span class="info-value">{{this.data.element.isEmployee ? 'Employee' : 'Field Worker'}}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Department</span>
+          <span class="info-value">{{this.data.element.department?.name || '-'}}</span>
+        </div>
+        <div class="info-item" *ngIf="this.data.element.department?.name === 'Store'">
+          <span class="info-label">Store</span>
+          <span class="info-value">{{this.data.element.store?.name || '-'}}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Designation</span>
+          <span class="info-value">{{this.data.element.employeeDesignation?.name || '-'}}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Sub Department</span>
+          <span class="info-value">{{this.data.element.subDepartment || '-'}}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Join Date</span>
+          <span class="info-value">{{this.data.element.joinDate | date: 'mediumDate'}}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Grade</span>
+          <span class="info-value">{{this.data.element.employeeGrade?.name || '-'}}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Shift</span>
+          <span class="info-value">{{this.data.element.employeeShift?.name || '-'}}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Working Days</span>
+          <span class="info-value">
+            <span *ngFor="let day of this.days; let isLast=last">
+              {{day.label}}{{isLast ? '' : ', '}}
+            </span>
+          </span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Confirmation Date</span>
+          <span class="info-value">{{this.data.element.dateOfConfirmation | date: 'mediumDate'}}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Contact Information</h2>
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-label">Email</span>
+          <span class="info-value">{{this.data.element.email || '-'}}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Phone Number</span>
+          <span class="info-value">{{this.data.element.phoneNumber || '-'}}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Country</span>
+          <span class="info-value">{{this.data.element.country || '-'}}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">City</span>
+          <span class="info-value">{{this.data.element.city?.name || '-'}}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Address</span>
+          <span class="info-value">{{this.data.element.address || '-'}}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Permanent Address</span>
+          <span class="info-value">{{this.data.element.permanentAddress || '-'}}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Emergency Contact</span>
+          <span class="info-value">{{this.data.element.emergencyPersonName || '-'}}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Emergency Number</span>
+          <span class="info-value">{{this.data.element.emergencyPhoneNo || '-'}}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Emergency Relation</span>
+          <span class="info-value">{{this.data.element.emergencyRelation || '-'}}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Financial Information</h2>
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-label">Bank Name</span>
+          <span class="info-value">{{this.data.element.employeeBank?.bankName || '-'}}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Account Holder</span>
+          <span class="info-value">{{this.data.element.accountHolderName || '-'}}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">IBAN</span>
+          <span class="info-value">{{this.data.element.bankAccountIBAN || '-'}}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Account Number</span>
+          <span class="info-value">{{this.data.element.bankAccountNo || '-'}}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Overtime Rate</span>
+          <span class="info-value">{{this.data.element.overTimeAmount || '-'}}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Leave Information</h2>
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-label">Leave Group</span>
+          <span class="info-value">{{this.data.element.employeeLeaveGroup?.name || '-'}}</span>
+        </div>
+        <div class="info-item" *ngIf="this.data.element.employeeLeaveGroup?.employeeLeaveGroupTypes">
+          <span class="info-label">Leave Types</span>
+          <span class="info-value">
+            <span *ngFor="let leave of this.data.element.employeeLeaveGroup.employeeLeaveGroupTypes; let isLast=last">
+              {{leave.employeeLeaveType?.name}}: {{leave.noOfLeaves}} days{{isLast ? '' : ', '}}
+            </span>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Education</h2>
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-label">Highest Qualification</span>
+          <span class="info-value">{{this.data.element.employeeEducation?.name || '-'}}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Documents</h2>
+      <div class="documents-grid" *ngIf="this.data.element.documents?.length; else noDocuments">
+        <mat-card class="document-card" *ngFor="let doc of this.data.element.documents">
+          <mat-card-header>
+            <mat-card-title>{{doc.documentType?.name || 'Document'}}</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <ng-container *ngIf="doc.fileSource as fileSource">
+              <div *ngIf="doc.extension === 'pdf'; else showImage">
+                <a [href]="fileSource" target="_blank" class="document-link">View PDF</a>
+              </div>
+              <ng-template #showImage>
+                <img [src]="fileSource" alt="Document preview" class="document-img" *ngIf="fileSource.startsWith('data:image')" />
+                <a [href]="fileSource" target="_blank" class="document-link" *ngIf="!fileSource.startsWith('data:image')">View File</a>
+              </ng-template>
+            </ng-container>
+            <p *ngIf="!doc.fileSource">No file available</p>
+          </mat-card-content>
+        </mat-card>
+      </div>
+      <ng-template #noDocuments>
+        <p class="no-data">No documents available</p>
+      </ng-template>
+    </div>
+
+    <div class="button-container print_hide">
+    <button  mat-flat-button color="primary" type="button" class="print-button mr-2" (click)="printDocument()">
+                    <span class="mat-button-wrapper">Print</span>
+      </button>
+      <button mat-flat-button color="default" [mat-dialog-close]="true">
+              <span class="mat-button-wrapper">Close</span>
+            </button>
+    </div>
+  </mat-card-content>
+</mat-card>

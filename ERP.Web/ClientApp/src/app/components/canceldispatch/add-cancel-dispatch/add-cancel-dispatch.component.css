@@ -1,0 +1,13 @@
+::ng-deep tr.mat-footer-row {
+    border-top: 2px solid #ccc;
+    font-weight: bold;
+  }
+  
+  ::ng-deep td.mat-footer-cell {
+    border-top: 2px solid #ccc;
+  }
+  
+  .footer-bold {
+    font-weight: bold;
+  }
+  

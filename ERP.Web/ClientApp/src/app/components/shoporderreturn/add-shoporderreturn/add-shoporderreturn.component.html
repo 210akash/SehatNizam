@@ -1,0 +1,111 @@
+<form [formGroup]="shopOrderReturnForm">
+  <mat-card>
+    <mat-card-header>
+      <div class="header-container">
+        <mat-card-title>Return Order Form</mat-card-title>
+        <span class="badge badge-created" matTooltip="Status">{{ this.isEditMode == true ?
+          this.data.element.status.title
+          : this.shopOrderReturnForm.get('statusName')?.value}}</span>
+      </div>
+    </mat-card-header>
+    <mat-divider></mat-divider>
+    <mat-card-content>
+      <input type="hidden" formControlName="id" />
+      <div class="row">
+        <div class="col-md-2">
+          <mat-form-field>
+            <mat-label>Return No.</mat-label>
+            <input matInput value="{{this.shopOrderReturnForm.get('code')?.value}}" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field class="form-field">
+            <mat-label>Return Date</mat-label>
+            <input matInput [matDatepicker]="date" formControlName="createdDate" tabindex="-1">
+            <mat-datepicker-toggle matIconSuffix [for]="date"></mat-datepicker-toggle>
+            <mat-datepicker #date></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field>
+            <mat-label>Order #</mat-label>
+            <input matInput formControlName="orderId" [matAutocomplete]="auto" (keyup)="getPendingOrder($event)"
+              (input)="onOrderInputCleared($event)" type="search" />
+
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOrderSelected($event)">
+              <mat-option *ngFor="let order of orderList" [value]="order">
+                {{ order?.id }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Sr.#</th>
+                <th>Item</th>
+                <th>Sale Quantity</th>
+                <th>Return Quantity</th>
+              </tr>
+            </thead>
+            <tbody formArrayName="shopOrderReturnDetail">
+              <tr *ngFor="let detail of shopOrderReturnDetail.controls; let i = index" [formGroupName]="i">
+                <td style="width: 10px;">
+                  <div class="action_btns">
+                    <span>&#40;{{i + 1}}&#41;</span>
+                    <mat-icon aria-label="Edit" class="icons add" (click)="addShopOrderReturnDetail(i)">add</mat-icon>
+                    <mat-icon aria-label="Delete" class="icons delete"
+                      (click)="removeShopOrderReturnDetail(i)">delete</mat-icon>
+                  </div>
+                </td>
+                <input type="hidden" formControlName="id" />
+                <input type="hidden" formControlName="shopOrderReturnId" />
+                <td>
+                  <mat-form-field style="width: 450px;">
+                    <mat-select formControlName="orderItemsId">
+                      <mat-option value="">--Select--</mat-option>
+                      <mat-option *ngFor="let item of itemList" [value]="item?.id"
+                        (onSelectionChange)="onItemSelected($event, i)">
+                        {{ item?.item?.name }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </td>
+                <td>
+                  <mat-form-field style="width: 150px;">
+                    <input matInput formControlName="orderQuantity" type="number" readonly>
+                  </mat-form-field>
+                </td>
+                <td>
+                  <mat-form-field style="width: 150px;">
+                    <input matInput formControlName="quantity" type="number" min="1" (change)="validateQty(i);">
+                  </mat-form-field>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="row mt-2">
+        <div class="col-md-12">
+          <mat-form-field>
+            <mat-label>Remarks</mat-label>
+            <input matInput formControlName="remarks" type="text">
+          </mat-form-field>
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="button-container">
+        <button mat-flat-button color="success" type="button" (click)="SaveData()">
+          <span class="mat-button-wrapper">Save</span>
+        </button>
+        <button mat-flat-button color="default" [mat-dialog-close]="true">
+          <span class="mat-button-wrapper">Close</span>
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</form>

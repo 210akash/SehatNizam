@@ -1,0 +1,39 @@
+/* gmap-viewer.component.css */
+#map {
+    height: 100%;
+    width: 100%;
+    min-height: 500px; /* Set a minimum height for the map */
+  }
+  
+  html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  
+  #coordinates {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background-color: white;
+    padding: 10px;
+    border: 1px solid #ccc;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    max-width: 300px;
+    overflow: auto;
+  }
+  
+  .zone-label {
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 5px;
+    font-size: 12px;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    white-space: nowrap; /* Prevent text wrapping */
+    max-width: 150px; /* Set a maximum width */
+    overflow: hidden; /* Hide overflow */
+    text-overflow: ellipsis; /* Show ellipsis for overflow text */
+  }
+  

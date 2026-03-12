@@ -1,0 +1,38 @@
+<div class="login-wrapper">
+
+  <div class="login-right">
+    <mat-card class="login-card">
+      <mat-card-content>
+        <div class="login-header">
+          <h2>Sign In</h2>
+          <p>Welcome back to your healthcare management portal</p>
+        </div>
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
+
+          <mat-form-field appearance="outline" class="login-field">
+            <mat-label>Email Address</mat-label>
+            <input matInput formControlName="email" type="email" placeholder="user@hospital.com"/>
+            <mat-icon matPrefix>email</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="login-field">
+            <mat-label>Password</mat-label>
+            <input matInput formControlName="password" type="password"/>
+            <mat-icon matPrefix>lock</mat-icon>
+          </mat-form-field>
+
+          <div class="login-options">
+            <mat-checkbox formControlName="isRemember">Keep me signed in</mat-checkbox>
+          </div>
+
+          <button mat-flat-button color="success" style="width:100%">
+            Login
+          </button>
+
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+</div>

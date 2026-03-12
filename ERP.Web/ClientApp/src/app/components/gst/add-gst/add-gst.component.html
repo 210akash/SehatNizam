@@ -1,0 +1,45 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>GST Form</mat-card-title>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+    <form [formGroup]="gstForm" >
+      <div class="row">
+        <div class="col-md-4">
+          <mat-form-field>
+            <mat-label>From Date</mat-label>
+            <input matInput [matDatepicker]="fDate" formControlName="fDate">
+            <mat-datepicker-toggle matIconSuffix [for]="fDate"></mat-datepicker-toggle>
+            <mat-datepicker #fDate></mat-datepicker>
+        </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field>
+            <mat-label>To Date</mat-label>
+            <input matInput [matDatepicker]="tDate" formControlName="tDate">
+            <mat-datepicker-toggle matIconSuffix [for]="tDate"></mat-datepicker-toggle>
+            <mat-datepicker #tDate></mat-datepicker>
+        </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field>
+            <mat-label>GST %</mat-label>
+            <input matInput formControlName="gSTPer" type="number" min="0" > 
+          </mat-form-field>
+        </div>
+    </div>
+    <mat-divider></mat-divider>
+      <div class="button-container">
+        <button mat-flat-button color="success" type="button" (click)="SaveData()">
+          <span class="mat-button-wrapper">Save</span>
+        </button>
+        <button mat-flat-button color="default" [mat-dialog-close]="true">
+          <span class="mat-button-wrapper">Close</span>
+        </button>
+      </div>
+    </form>
+
+  </mat-card-content>
+
+</mat-card>

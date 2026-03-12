@@ -1,0 +1,35 @@
+<form [formGroup]="userattendanceForm">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Update Attendance Form</mat-card-title>
+       <mat-card-subtitle>{{ data.element.attendanceDate | date:'yyyy-MM-dd' }}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-divider></mat-divider>
+    <mat-card-content>
+      <input type="hidden" formControlName="id" />
+      <div class="row">
+          <div class="col-md-6">
+            <mat-label>In Time</mat-label>
+            <div class="mt-2 mb-2">
+                <input matInput type="datetime-local" formControlName="timeIn"  class="form-control"  (change)="onTimeInChange($event)" [readonly]="this.data.element.timeIn != null">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <mat-label>Out Time</mat-label>
+            <div class="mt-2 mb-2">
+                  <input matInput type="datetime-local" formControlName="timeOut" class="form-control"  (change)="onTimeOutChange($event)" [readonly]="this.data.element.timeOut != null">
+            </div>
+          </div>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="button-container">
+        <button mat-flat-button color="success" type="button" (click)="SaveData()">
+          <span class="mat-button-wrapper">Save</span>
+        </button>
+        <button mat-flat-button color="default" [mat-dialog-close]="true">
+          <span class="mat-button-wrapper">Close</span>
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</form>

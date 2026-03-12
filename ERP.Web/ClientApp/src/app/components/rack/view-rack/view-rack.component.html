@@ -1,0 +1,24 @@
+<mat-card>
+  <mat-card-header>
+    <div class="header-container">
+      <mat-card-title>View Rack</mat-card-title>
+    </div>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+    <div class="row">
+      <div class="col-md-6 col-lg-6">
+        <mat-form-field>
+          <mat-label>Name</mat-label>
+          <input matInput [value]="this.data.element.name" tabindex="-1" readonly>
+        </mat-form-field>
+      </div>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="button-container">
+      <button mat-flat-button color="default" [mat-dialog-close]="true">
+        <span class="mat-button-wrapper">Close</span>
+      </button>
+    </div>
+  </mat-card-content>
+</mat-card>

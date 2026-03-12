@@ -1,0 +1,88 @@
+<div class="mat-elevation-z8 table-responsive">
+  <table mat-table [dataSource]="dataSource" matSort>
+
+    <!-- Columns -->
+
+    <ng-container matColumnDef="code">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> IGP Code </th>
+      <td mat-cell *matCellDef="let element"> {{ element.code }} </td>
+    </ng-container>
+
+        <ng-container matColumnDef="pocode">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> P.O Code </th>
+      <td mat-cell *matCellDef="let element"> {{ element.purchaseOrder?.code }} </td>
+    </ng-container>
+
+   <ng-container matColumnDef="vendor">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Vendor </th>
+      <td mat-cell *matCellDef="let element"> {{ element.purchaseOrder?.vendor?.name }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="date">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Date </th>
+      <td mat-cell *matCellDef="let element"> {{ element.createdDate | date : 'shortDate' }} </td>
+    </ng-container>
+
+       <ng-container matColumnDef="approvedDate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Posted Date </th>
+        <td mat-cell *matCellDef="let element"> {{ element.modifiedDate | date : 'short' }} </td>
+      </ng-container>
+
+    <ng-container matColumnDef="createdBy">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Created By </th>
+      <td mat-cell *matCellDef="let element"> {{ element.createdBy?.firstName + ' ' + element.createdBy?.lastName }}
+      </td>
+    </ng-container>
+
+     <ng-container matColumnDef="approvedBy">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Posted By</th>
+        <td mat-cell *matCellDef="let element"> {{ element.modifiedBy?.firstName + ' ' + element.modifiedBy?.lastName }} </td>
+      </ng-container>
+
+    <!-- Actions column definition -->
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef style="width: 11%;"> Actions </th>
+      <td mat-cell *matCellDef="let element">
+        <div class="action_btns">
+          <button mat-mini-fab matTooltip="Edit" color="primary" *ngIf="element.statusId == 1 && !roleList?.includes('audit')"
+            (click)="openIGPDialog(element)">
+            <mat-icon aria-label="Edit">edit</mat-icon>
+          </button>
+
+          <button mat-mini-fab matTooltip="View" color="dark" (click)="viewIGPDialog(element)">
+            <mat-icon aria-label="View">visibility</mat-icon>
+          </button>
+
+          <button mat-mini-fab matTooltip="Delete" color="warn" *ngIf="element.statusId == 1 && !roleList?.includes('audit')"
+            (click)="deleteIGPDialog(element)">
+            <mat-icon aria-label="Delete">delete</mat-icon>
+          </button>
+
+          <!-- <button mat-mini-fab matTooltip="Process" *ngIf="element.statusId == 1" color="success"
+            (click)="processIGPDialog(element)">
+            <mat-icon aria-label="Process">send</mat-icon>
+          </button> -->
+
+          <button mat-mini-fab matTooltip="Post" *ngIf="element.statusId == 1 && !roleList?.includes('audit')"
+            color="success" (click)="approveIGPDialog(element)">
+            <mat-icon aria-label="Approve">send</mat-icon>
+          </button>
+
+          <button mat-mini-fab matTooltip="Print" *ngIf="element.statusId == 3" color="success"
+            (click)="printIGPDialog(element)">
+            <mat-icon aria-label="Print">print</mat-icon>
+          </button>
+        </div>
+      </td>
+    </ng-container>
+
+    <!-- Table rows -->
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+  <mat-divider></mat-divider>
+  <!-- Paginator -->
+  <mat-paginator #paginator [length]="totalRows" [pageIndex]="currentPage" [pageSize]="pageSize"
+    [pageSizeOptions]="pageSizeOptions" (page)="pageChanged($event)" aria-label="Select page">
+  </mat-paginator>
+</div>

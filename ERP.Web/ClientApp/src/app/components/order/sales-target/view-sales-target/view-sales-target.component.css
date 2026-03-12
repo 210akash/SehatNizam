@@ -1,0 +1,164 @@
+/* Global Styles for the Card */
+.card {
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* margin: 20px; */
+    padding: 20px;
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+}
+
+/* Title and Headers */
+.card-header h4 {
+    font-size: 1.6em;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.card-body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #555;
+}
+
+/* Region Card */
+.region-card {
+    padding: 16px 24px;
+    margin-bottom: 20px;
+    border-left: 5px solid #3a87ad;
+    /* Subtle blue for region */
+    background-color: #f7f9fa;
+}
+
+.region-card h2 {
+    font-size: 1.6em;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.region-card .total-target {
+    font-size: 1.1em;
+    color: #666;
+}
+
+/* Zone Card */
+.zone-card {
+    padding: 16px 24px;
+    margin-left: 30px;
+    margin-bottom: 15px;
+    border-left: 4px solid #8e44ad;
+    /* Deep purple for zone */
+    background-color: #ffffff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.zone-card h3 {
+    font-size: 1.4em;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.zone-card p {
+    font-size: 1.1em;
+    color: #777;
+}
+
+/* Area Card */
+.area-card {
+    padding: 16px 24px;
+    margin-left: 40px;
+    margin-bottom: 15px;
+    border-left: 4px solid #3498db;
+    /* Blue for area */
+    background-color: #f1f9ff;
+}
+
+.area-card h4 {
+    font-size: 1.3em;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.area-card p {
+    font-size: 1.1em;
+    color: #666;
+}
+
+/* Territory Card */
+.territory-card {
+    padding: 16px 24px;
+    margin-left: 50px;
+    margin-bottom: 15px;
+    border-left: 4px solid #e67e22;
+    /* Orange for territory */
+    background-color: #fff8f1;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.territory-card h5 {
+    font-size: 1.2em;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.territory-card p {
+    font-size: 1.1em;
+    color: #777;
+}
+
+/* User List */
+.user-list {
+    margin-left: 20px;
+    margin-top: 10px;
+}
+
+.user-list h6 {
+    font-size: 1.1em;
+    font-weight: 600;
+    color: #333;
+}
+
+.user-list ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.user-list .item {
+    background-color: #ffffff;
+    padding: 12px;
+    margin-bottom: 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease-in-out;
+}
+
+.user-list .item:hover {
+    transform: translateY(-5px);
+}
+
+.user-list .item strong {
+    font-weight: 600;
+    color: #333;
+}
+
+/* Footer Styles (Close Button) */
+.card-footer {
+    text-align: right;
+    margin-top: 20px;
+}
+
+.card-footer .btn {
+    padding: 10px 20px;
+    background-color: #6c757d;
+    /* Gray color */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.card-footer .btn:hover {
+    background-color: #5a6268;
+}

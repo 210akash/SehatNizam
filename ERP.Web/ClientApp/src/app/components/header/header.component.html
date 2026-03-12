@@ -1,0 +1,124 @@
+<mat-sidenav-container>
+  <mat-sidenav #sidenav mode="side" role="navigation">
+  <app-sidemenu></app-sidemenu>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <!-- Main content -->
+<mat-toolbar class="mat-elevation-z8 top_nav_bar">
+  <div class="d-inline-flex align-items-center" fxHide.gt-xs >
+    <button mat-icon-button (click)="sidenav.toggle()"  *ngIf="!sidenav.opened">
+      <mat-icon *ngIf="sidenav.opened"> menu </mat-icon>
+      <mat-icon *ngIf="!sidenav.opened"> close </mat-icon>
+    </button>
+  </div>
+  <span>ERP - BGC-IGC</span>
+<div fxFlex fxLayout fxLayoutAlign="start" fxHide.xs>
+  <ul class="menu" fxLayout fxLayoutGap="15px">
+    <li class="menu-item" *ngIf="hasRequiredRole(['admin', 'store manager', 'store issuer'])">
+      <div class="menu-header" (click)="toggleSubMenu('menu1')">
+        <div class="d-inline-flex align-items-center justify-content-between w-100">
+          <span>Setup</span>
+          <mat-icon [style.transform]="isSubMenuVisible['menu1'] ? 'rotate(180deg)' : 'rotate(0deg)'">
+            keyboard_arrow_down
+          </mat-icon>
+        </div>
+      </div>
+      <ul class="sub-menu"
+        [ngClass]="{'slide-down': isSubMenuVisible['menu1'], 'slide-up': !isSubMenuVisible['menu1']}">
+
+        <li class="sub-menu-item" *ngIf="hasRequiredRole(['admin'])">
+          <button mat-button class="menu-button" routerLink="/roles" [ngClass]="{ 'active': isActive('/roles') }">
+            <span>Roles</span>
+          </button>
+        </li>
+
+        <li class="sub-menu-item" *ngIf="hasRequiredRole(['admin'])">
+          <button mat-button class="menu-button" routerLink="/users" [ngClass]="{ 'active': isActive('/users') }">
+            <span>Users</span>
+          </button>
+        </li>
+
+
+        <li class="sub-menu-item" *ngIf="hasRequiredRole(['admin'])">
+          <button mat-button class="menu-button" routerLink="/companies" [ngClass]="{ 'active': isActive('/companies') }">
+            <span>Companies</span>
+          </button>
+        </li>
+
+        <li class="sub-menu-item" *ngIf="hasRequiredRole(['admin'])">
+          <button mat-button class="menu-button" routerLink="/departments" [ngClass]="{ 'active': isActive('/departments') }">
+            <span>Departments</span>
+          </button>
+        </li>
+
+        <li class="sub-menu-item" *ngIf="hasRequiredRole(['admin'])">
+          <button mat-button class="menu-button" routerLink="/location" [ngClass]="{ 'active': isActive('/location') }">
+            <span>Locations</span>
+          </button>
+        </li>
+
+        <li class="sub-menu-item" *ngIf="hasRequiredRole(['admin'])">
+          <button mat-button class="menu-button" routerLink="/project" [ngClass]="{ 'active': isActive('/project') }">
+            <span>Projects</span>
+          </button>
+        </li>
+
+        <li class="sub-menu-item" *ngIf="hasRequiredRole(['admin'])">
+          <button mat-button class="menu-button" routerLink="/store" [ngClass]="{ 'active': isActive('/store') }">
+            <span>Stores</span>
+          </button>
+        </li>
+
+        
+        <li class="sub-menu-item" *ngIf="hasRequiredRole(['store manager','store issuer'])">
+          <button mat-button class="menu-button" routerLink="/vendors" [ngClass]="{ 'active': isActive('/vendors') }">
+            <span>Vendors</span>
+          </button>
+        </li>
+        
+        <li class="sub-menu-item" *ngIf="hasRequiredRole(['store manager','store issuer'])">
+          <button mat-button class="menu-button" routerLink="/uoms" [ngClass]="{ 'active': isActive('/uoms') }">
+            <span>UOM</span>
+          </button>
+        </li>
+
+        <li class="sub-menu-item" *ngIf="hasRequiredRole(['store manager','store issuer'])">
+          <button mat-button class="menu-button" routerLink="/category" [ngClass]="{ 'active': isActive('/category') }">
+            <span>Category</span>
+          </button>
+        </li>
+
+        <li class="sub-menu-item" *ngIf="hasRequiredRole(['store manager','store issuer'])">
+          <button mat-button class="menu-button" routerLink="/subcategory" [ngClass]="{ 'active': isActive('/subcategory') }">
+            <span>Sub Category</span>
+          </button>
+        </li>
+
+        <li class="sub-menu-item" *ngIf="hasRequiredRole(['store manager','store issuer'])">
+          <button mat-button class="menu-button" routerLink="/itemtype" [ngClass]="{ 'active': isActive('/itemtype') }">
+            <span>Item Types</span>
+          </button>
+        </li>
+
+        <li class="sub-menu-item" *ngIf="hasRequiredRole(['store manager','store issuer'])">
+          <button mat-button class="menu-button" routerLink="/items" [ngClass]="{ 'active': isActive('/items') }">
+            <span>Items</span>
+          </button>
+        </li>
+        
+
+      </ul>
+    </li>
+
+  </ul>
+
+  </div>
+  <div class="">
+    <button mat-icon-button (click)="logout()">
+      <mat-icon> power_settings_new </mat-icon>
+    </button>
+  </div>
+</mat-toolbar>
+</mat-sidenav-content>
+</mat-sidenav-container>

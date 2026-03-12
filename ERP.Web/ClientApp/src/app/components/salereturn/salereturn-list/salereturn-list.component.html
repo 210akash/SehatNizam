@@ -1,0 +1,97 @@
+<div class="mat-elevation-z8 table-responsive">
+  <table mat-table [dataSource]="dataSource" matSort>
+
+    <!-- Columns -->
+
+    <ng-container matColumnDef="code">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Sale Return Code </th>
+      <td mat-cell *matCellDef="let element"> {{ element.code }} </td>
+    </ng-container>
+
+        <ng-container matColumnDef="dcCode">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> DC Code </th>
+      <td mat-cell *matCellDef="let element"> {{ element.dispatchOrder?.dcCode }} </td>
+    </ng-container>
+
+   <ng-container matColumnDef="distributor">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> 	Distributor </th>
+      <td mat-cell *matCellDef="let element"> {{ element.dispatchOrder?.order?.dealership?.name }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="date">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Date </th>
+      <td mat-cell *matCellDef="let element"> {{ element.createdDate | date : 'shortDate' }} </td>
+    </ng-container>
+
+      <ng-container matColumnDef="processedDate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Processed Date </th>
+        <td mat-cell *matCellDef="let element"> {{ element.processedDate | date : 'shortDate' }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="approvedDate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Approved Date </th>
+        <td mat-cell *matCellDef="let element"> {{ element.approvedDate | date : 'shortDate' }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="createdBy">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Created By</th>
+        <td mat-cell *matCellDef="let element"> {{ element.createdBy?.firstName + ' ' + element.createdBy?.lastName }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="processedBy">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Processed By</th>
+        <td mat-cell *matCellDef="let element"> {{ element.processedBy?.firstName + ' ' + element.processedBy?.lastName }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="approvedBy">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Approved By</th>
+        <td mat-cell *matCellDef="let element"> {{ element.approvedBy?.firstName + ' ' + element.approvedBy?.lastName }} </td>
+      </ng-container>
+
+    <!-- Actions column definition -->
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef style="width: 11%;"> Actions </th>
+      <td mat-cell *matCellDef="let element">
+        <div class="action_btns">
+          <button mat-mini-fab matTooltip="Edit" color="primary" *ngIf="element.statusId == 1"
+            (click)="openSaleReturnDialog(element)">
+            <mat-icon aria-label="Edit">edit</mat-icon>
+          </button>
+
+          <button mat-mini-fab matTooltip="View" color="dark" (click)="viewSaleReturnDialog(element)">
+            <mat-icon aria-label="View">visibility</mat-icon>
+          </button>
+
+          <button mat-mini-fab matTooltip="Delete" color="warn" *ngIf="element.statusId == 1"
+            (click)="deleteSaleReturnDialog(element)">
+            <mat-icon aria-label="Delete">delete</mat-icon>
+          </button>
+
+          <button mat-mini-fab matTooltip="Process" *ngIf="element.statusId == 1" color="success"
+            (click)="processSaleReturnDialog(element)">
+            <mat-icon aria-label="Process">send</mat-icon>
+          </button>
+
+          <button mat-mini-fab matTooltip="Approve" *ngIf="element.statusId == 2"
+            color="success" (click)="approveSaleReturnDialog(element)">
+            <mat-icon aria-label="Approve">send</mat-icon>
+          </button>
+
+          <button mat-mini-fab matTooltip="Print" *ngIf="element.statusId == 3" color="success"
+            (click)="printSaleReturnDialog(element)">
+            <mat-icon aria-label="Print">print</mat-icon>
+          </button>
+        </div>
+      </td>
+    </ng-container>
+
+    <!-- Table rows -->
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+  <mat-divider></mat-divider>
+  <!-- Paginator -->
+  <mat-paginator #paginator [length]="totalRows" [pageIndex]="currentPage" [pageSize]="pageSize"
+    [pageSizeOptions]="pageSizeOptions" (page)="pageChanged($event)" aria-label="Select page">
+  </mat-paginator>
+</div>

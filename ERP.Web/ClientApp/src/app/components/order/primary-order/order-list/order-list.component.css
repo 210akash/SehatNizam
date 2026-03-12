@@ -1,0 +1,13 @@
+.cancel {
+    background-color: #b30000 !important;
+}
+
+.cancel td {
+    color: white !important;
+}
+
+.badge{
+    font-size: 10px;
+    text-transform: uppercase;
+    font-weight: 600;
+  }

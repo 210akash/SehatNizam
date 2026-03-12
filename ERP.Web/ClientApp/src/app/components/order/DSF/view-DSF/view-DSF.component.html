@@ -1,0 +1,151 @@
+<mat-card>
+  <mat-card-header>
+      <mat-card-title>View DSF</mat-card-title>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+    <form>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-3">
+              <mat-form-field>
+                <input matInput [value]="this.data.element.firstName" readonly />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <mat-form-field>
+                <input matInput [value]="this.data.element.lastName" readonly />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <mat-form-field>
+                <input matInput [value]="this.data.element.email" readonly />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <mat-form-field>
+                <input matInput [value]="this.data.element.phoneNumber" readonly />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <mat-form-field class="example-full-width">
+                <input matInput [value]="this.data.element.emergencyPhoneNo" readonly />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <mat-form-field class="example-full-width">
+                <input matInput [value]="this.data.element.dateOfBirth | date:'shorDate'" readonly />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <mat-form-field class="example-full-width">
+                <input matInput [value]="this.data.element.shiftTimeStart" readonly />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <mat-form-field class="example-full-width">
+                <input matInput [value]="this.data.element.shiftTimeEnd" readonly />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <mat-form-field class="example-full-width">
+                <input matInput [value]="this.data.element.bloodGroup" readonly />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <mat-form-field class="example-full-width">
+                <input matInput [value]="this.data.element.cnic" readonly />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <mat-form-field class="example-full-width">
+                <input matInput [value]="this.data.element.address" readonly />
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+      <div class="col-md-12">
+        <div class="table-responsive">
+          <h4><strong>DSF Routes</strong></h4>
+          <table mat-table [dataSource]="dataSource" class="table table-bordered table-striped datatable">
+
+            <colgroup>
+              <col style="width: 30%;">
+              <col style="width: 30%;">
+              <col style="width: 30%;">
+            </colgroup>
+
+            <!--Zone Column-->
+            <ng-container matColumnDef="zone">
+              <th *matHeaderCellDef class="text-dark"> Zone Name</th>
+              <td *matCellDef="let element"> {{element.route?.territory?.area?.zone?.name}} </td>
+            </ng-container>
+
+            <!--Territory Column-->
+            <ng-container matColumnDef="territory">
+              <th *matHeaderCellDef class="text-dark"> Territory Name</th>
+              <td *matCellDef="let element"> {{element.route?.territory?.name}} </td>
+            </ng-container>
+
+            <!--Name Column-->
+            <ng-container matColumnDef="name">
+              <th *matHeaderCellDef class="text-dark"> Route Name</th>
+              <td *matCellDef="let element"> {{element.route?.name}} </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns;  sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div class="user_container">
+          <div class="file_upload">
+            <div class="file_upload_btn">
+              Image
+            </div>
+
+            <div class="image_container">
+              <div class="image_upload_wrap img_seller_lh1" data-toggle="tooltip" title="Choose File"
+                *ngIf="imageSrc == '' || imageSrc == null"
+                [ngClass]="{ 'is-invalid': imageSrc == '' ||  imageSrc == null}">
+                <div class="drag_text">
+                  <div>
+                    <i class="fa fa-picture-o fa-2x"></i>
+                  </div>
+                  <div>Select or Drag and drop a file here</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="button-container">
+        <button mat-flat-button color="default" [mat-dialog-close]="true">
+          <span class="mat-button-wrapper">Close</span>
+        </button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

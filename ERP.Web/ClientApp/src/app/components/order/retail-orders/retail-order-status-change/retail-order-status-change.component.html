@@ -1,0 +1,66 @@
+<div class="card">
+    <div class="card-header">
+        <h4>Confirmation</h4>
+        <p>{{this.data.statement}}</p>
+    </div>
+    <div class="card-body">
+        <form [formGroup]="shopOrderStatusChangeForm">
+
+            <div class="col-md-12" *ngIf="this.data.element.retailOrderStatusId === this.statusEnum.Dispatched">
+                <div formArrayName="retailOrderItemsList">
+                    <div *ngFor="let productControl of retailOrderItemsList.controls; let i = index" [formGroupName]="i"
+                        class="row banner-row">
+                        <div class="col-md-6">
+                            <div class="row align-items-center">
+                                <div class="col-md-6 d-flex align-items-center">
+                                    <img [src]="productControl.get('image')?.value"
+                                        alt="{{ productControl.get('name')?.value }}" class="product-image">
+                                    <div class="product-details ms-3">
+                                        <p class="product-name">{{ productControl.get('name')?.value }}</p>
+                                        <p class="product-volume">{{ productControl.get('volume')?.value }} ml ({{productControl.get('type')?.value }})</p>
+                                        <p class="product-quantity-pack">{{ productControl.get('quantityInPack')?.value }} Pcs</p>
+                                        <p class="product-quantity-pack">T.P {{productControl.get('tradePrice')?.value }}</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <mat-form-field class="w-100">
+                                        <mat-label>Quantity</mat-label>
+                                        <input type="number" min="0"  matInput formControlName="quantity"
+                                            readonly />
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3" *ngIf="this.data.element.retailOrderStatusId > this.statusEnum.Create">
+                            <mat-form-field class="w-100">
+                                <mat-label>Quantity</mat-label>
+                                <input type="number" min="0"  matInput formControlName="shippedQuantity"
+                                    readonly />
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-3" *ngIf="this.data.element.retailOrderStatusId > this.statusEnum.Create">
+                            <mat-form-field class="w-100">
+                                <mat-label>W.P (Shipped)</mat-label>
+                                <input type="number" matInput formControlName="customTradePrice" readonly />
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-md-12">
+                <div class="mb-3">
+                    <mat-form-field class="example-full-width">
+                        <textarea matInput placeholder="Comments" rows="4" formControlName="comments">
+                </textarea>
+                    </mat-form-field>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="card-footer">
+        <button class="btn btn-primary" (click)="updateShopOrderStatus()">Confirm</button>
+        <button class="btn btn-danger" [mat-dialog-close]>Close</button>
+    </div>
+</div>

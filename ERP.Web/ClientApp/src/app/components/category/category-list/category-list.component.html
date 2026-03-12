@@ -1,0 +1,79 @@
+<div class="header-container">
+  <h2>Category</h2>
+  <button mat-mini-fab aria-label="Add" color="success" (click)="openCategoryDialog(null)" matTooltip="Add Category">
+    <mat-icon>add</mat-icon>
+  </button>
+</div>
+
+<div class="body-container">
+  <form [formGroup]="CategoryFilterForm">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="mt-2">
+          <mat-form-field  class="form-field">
+            <mat-label>Name</mat-label>
+            <input matInput formControlName="name" (keyup)="filterData()">
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+  </form>
+
+
+  <div class="mat-elevation-z8 table-responsive mt-2">
+
+    <table mat-table [dataSource]="dataSource" matSort>
+
+      <!-- Columns -->
+      <ng-container matColumnDef="code">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Code </th>
+        <td mat-cell *matCellDef="let element"> {{ element.code }} </td>
+      </ng-container>
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
+        <td mat-cell *matCellDef="let element"> {{ element.name }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="createdBy">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Created By </th>
+        <td mat-cell *matCellDef="let element"> {{ element.createdBy?.firstName + ' ' + element.createdBy?.lastName }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="company">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Company </th>
+        <td mat-cell *matCellDef="let element"> {{ element.company?.name }} </td>
+      </ng-container>
+
+      <!-- Actions column definition -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef style="width: 11%;"> Actions </th>
+        <td mat-cell *matCellDef="let element">
+          <div class="action_btns">
+          <button mat-mini-fab matTooltip="Edit" color="primary" (click)="openCategoryDialog(element)">
+            <mat-icon aria-label="Edit" >edit</mat-icon>
+          </button>
+
+          <button mat-mini-fab matTooltip="View" color="dark" (click)="viewCategoryDialog(element)">
+            <mat-icon aria-label="View" >visibility</mat-icon>
+          </button>
+
+          <button mat-mini-fab matTooltip="Delete" color="warn" (click)="deleteCategoryDialog(element)">
+            <mat-icon aria-label="Delete" >delete</mat-icon>
+          </button>
+        </div>
+        </td>
+      </ng-container>
+
+      <!-- Table rows -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <!-- <mat-divider></mat-divider> -->
+    <!-- Paginator -->
+    <!-- <mat-paginator #paginator [length]="totalRows" [pageIndex]="currentPage" [pageSize]="take"
+      [pageSizeOptions]="pageSizeOptions" (page)="pageChanged($event)" aria-label="Select page">
+    </mat-paginator> -->
+
+  </div>
+</div>

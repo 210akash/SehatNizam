@@ -1,0 +1,95 @@
+<mat-card>
+  <mat-card-header>
+    <div class="header-container">
+      <mat-card-title>Process Cancel Dispatch Form</mat-card-title>
+    </div>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+    <div class="col-md-5">
+      <mat-form-field class="form-field">
+        <mat-label>Order</mat-label>
+        <input matInput value="{{this.data.element.order.id}} : {{this.data.element.order.dealership?.name}} : {{this.data.element.order.createdDate | date: 'mediumDate'}}"
+          tabindex="-1" readonly>
+      </mat-form-field>
+    </div>
+
+    <div class="col-md-12 mt-3" *ngIf="this.data.element.cancelDispatchDetail?.length > 0">
+      <h3>Cancel Order Items</h3>
+      <table mat-table [dataSource]="this.data.element.cancelDispatchDetail" class="mat-elevation-z8" style="width: 100%;">
+
+        <ng-container matColumnDef="itemId">
+          <th mat-header-cell *matHeaderCellDef> Item</th>
+          <td mat-cell *matCellDef="let item">
+            <img *ngIf="item?.orderItem?.item?.image" [src]="item?.orderItem?.item?.image" alt="Item Image" width="50" height="50"
+              style="object-fit: contain;" />
+          </td>
+          <td mat-footer-cell *matFooterCellDef></td>
+        </ng-container>
+
+        <ng-container matColumnDef="itemName">
+          <th mat-header-cell *matHeaderCellDef> Item Name </th>
+          <td mat-cell *matCellDef="let item"> {{ item.orderItem?.item?.name }} </td>
+          <td mat-footer-cell *matFooterCellDef class="footer-bold">Total</td>
+        </ng-container>
+
+        <ng-container matColumnDef="quantity">
+          <th mat-header-cell *matHeaderCellDef> Quantity </th>
+          <td mat-cell *matCellDef="let item"> {{ item.quantity }} </td>
+          <td mat-footer-cell *matFooterCellDef class="footer-bold"> {{ totalQuantity }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="distributorPrice">
+          <th mat-header-cell *matHeaderCellDef> Distributor Price </th>
+          <td mat-cell *matCellDef="let item"> {{ item.orderItem?.distributorPrice | number:'1.0-0' }} </td>
+          <td mat-footer-cell *matFooterCellDef></td>
+        </ng-container>
+
+        <ng-container matColumnDef="price">
+          <th mat-header-cell *matHeaderCellDef> Price </th>
+          <td mat-cell *matCellDef="let item">
+            {{ item.orderItem?.distributorPrice * item.quantity | number:'1.0-0' }}
+          </td>
+          <td mat-footer-cell *matFooterCellDef class="footer-bold">
+            {{ totalPrice | number:'1.0-0' }}
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="['itemId', 'itemName', 'quantity', 'distributorPrice', 'price']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['itemId', 'itemName', 'quantity', 'distributorPrice', 'price'];">
+        </tr>
+
+        <tr mat-footer-row *matFooterRowDef="['itemId', 'itemName', 'quantity', 'distributorPrice', 'price']"></tr>
+      </table>
+
+    </div>
+
+    <div class="row mt-3" *ngIf="this.data.element.orderProcess?.length > 0">
+      <div class="col-md-12">
+        <mat-form-field>
+          <mat-label>Last Remarks</mat-label>
+          <input matInput [value]="this.data.element.orderProcess[this.data.element.orderProcess.length - 1]?.comments" type="text" readonly>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="row mt-3" *ngIf="this.data.element.orderProcess?.length > 0">
+      <div class="col-md-12">
+        <mat-form-field>
+          <mat-label>Remarks</mat-label>
+          <input #inputElement matInput type="text">
+        </mat-form-field>
+      </div>
+    </div>
+
+    <mat-divider></mat-divider>
+    <div class="button-container">
+      <button mat-flat-button color="success" (click)="process()">
+        <span class="mat-button-wrapper">Process</span>
+      </button>
+      <button mat-flat-button color="default" [mat-dialog-close]="true">
+        <span class="mat-button-wrapper">Close</span>
+      </button>
+    </div>
+  </mat-card-content>
+</mat-card>

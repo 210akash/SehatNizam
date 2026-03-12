@@ -1,0 +1,181 @@
+<form [formGroup]="grnForm">
+  <mat-card>
+    <mat-card-header>
+      <div class="header-container">
+        <mat-card-title>GRN (Goods Received Note) Form</mat-card-title>
+        <span class="badge badge-created" matTooltip="Status">{{ this.isEditMode == true ?
+          this.data.element.status.title
+          : this.grnForm.get('statusName')?.value}}</span>
+      </div>
+    </mat-card-header>
+    <mat-divider></mat-divider>
+    <mat-card-content>
+      <input type="hidden" formControlName="id" />
+      <div class="row">
+        <div class="col-md-4">
+          <mat-form-field>
+            <mat-label>GRN No.</mat-label>
+            <input matInput value="{{this.grnForm.get('code')?.value}}" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field>
+            <mat-label>GRN Date</mat-label>
+            <input matInput value="{{this.grnForm.get('createdDate')?.value | date : 'shortDate'}}" tabindex="-1"
+              readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field class="form-field">
+            <mat-label>Inspection #</mat-label>
+            <mat-select formControlName="inspectionId" (selectionChange)="getInspectionDetails()">
+              <mat-option value="">--Select--</mat-option>
+              <mat-option *ngFor="let inspection of inspectionList" [value]="inspection.id">
+                {{ inspection.code }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-12">
+          <table class="text-left mb-4 shipto">
+            <colgroup>
+              <col span="1" style="width: 100px;">
+              <col span="1" style="width: 100px;">
+              <col span="1" style="width: 100px;">
+              <col span="1" style="width: 100px;">
+              <col span="1" style="width: 80px;">
+              <col span="1" style="width: 500px;">
+            </colgroup>
+            <tr>
+              <th>IGP Code :</th>
+              <td> {{this.selectedInspection?.igp?.code}}</td>
+              <th>PO Code :</th>
+              <td> {{this.selectedInspection?.igp?.purchaseOrder?.code}}</td>
+              <th>Vendor :</th>
+              <td> {{this.selectedInspection?.igp?.purchaseOrder?.vendor?.name}}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Sr.#</th>
+                <th>Item</th>
+                <th>Quantity (Inspection)</th>
+                <th>Received Quantity</th>
+                <th>Expire Date</th>
+                <th>Batch #</th>
+                <th>Rack</th>
+                <th>Row</th>
+                <th>Section</th>
+              </tr>
+            </thead>
+            <tbody formArrayName="grnDetail">
+              <tr *ngFor="let detail of grnDetail.controls; let i = index" [formGroupName]="i">
+                <td style="width: 10px;">
+                  <div class="action_btns">
+                    <span>&#40;{{i + 1}}&#41;</span>
+                    <mat-icon aria-label="Edit" class="icons add" (click)="addGRNDetail(i)">add</mat-icon>
+                    <mat-icon aria-label="Delete" class="icons delete" (click)="removeGRNDetail(i)">delete</mat-icon>
+                  </div>
+                </td>
+                <input type="hidden" formControlName="id" />
+                <td>
+                  <mat-form-field class="form-field" style="width: 350px;">
+                    <mat-select formControlName="inspectionDetailId">
+                      <mat-option [value]="0">--Select--</mat-option>
+                      <mat-option *ngFor="let item of itemList" [value]="item?.id"
+                        (onSelectionChange)="onItemSelected($event, i)">
+                        {{ item?.igpDetail?.purchaseOrderDetail?.purchaseDemandDetail?.item?.name }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </td>
+                <td>
+                  <mat-form-field class="form-field" style="width: 120px;">
+                    <input matInput formControlName="approved" type="number" readonly>
+                  </mat-form-field>
+                </td>
+                <td>
+                  <mat-form-field class="form-field" style="width: 120px;">
+                    <input matInput formControlName="received" type="number" min="1" (change)="validateQty(i);">
+                  </mat-form-field>
+                </td>
+                <td>
+                  <mat-form-field class="form-field" style="width: 140px;">
+                    <input matInput [matDatepicker]="expireDate" formControlName="expireDate" [min]="yesterday">
+                    <mat-datepicker-toggle matIconSuffix [for]="expireDate"></mat-datepicker-toggle>
+                    <mat-datepicker #expireDate></mat-datepicker>
+                  </mat-form-field>
+                </td>
+                <td>
+                  <mat-form-field class="form-field" style="width: 150px;">
+                    <mat-select placeholder="Cost Sheet" formControlName="costSheetId">
+                      <mat-option [value]="">--Select--</mat-option>
+                      <mat-option *ngFor="let row of this.getIndexValue(i)?.costSheetList"
+                        [value]="row.id">{{row.code}}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </td>
+                <!-- <td>
+                <mat-form-field class="form-field" style="width: 100px;">
+                  <input matInput formControlName="refernace" type="text">
+                </mat-form-field>
+              </td> -->
+                <td>
+                  <mat-form-field class="form-field" style="width: 200px;">
+                    <mat-label>Rack</mat-label>
+                    <mat-select placeholder="Rack" formControlName="rackId" (selectionChange)="getRowListById(i)">
+                      <mat-option [value]="">--Select--</mat-option>
+                      <mat-option *ngFor="let rack of rackList" [value]="rack.id">{{rack.name}}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </td>
+                <td>
+                  <mat-form-field class="form-field" style="width: 200px;">
+                    <mat-label>Row</mat-label>
+                    <mat-select placeholder="Row" formControlName="rowId" (selectionChange)="getSectionListById(i)">
+                      <mat-option [value]="">--Select--</mat-option>
+                      <mat-option *ngFor="let row of this.getIndexValue(i)?.rowList"
+                        [value]="row.id">{{row.name}}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </td>
+                <td>
+                  <mat-form-field class="form-field" style="width: 200px;">
+                    <mat-label>Section</mat-label>
+                    <mat-select placeholder="Section" formControlName="sectionId">
+                      <mat-option [value]="">--Select--</mat-option>
+                      <mat-option *ngFor="let section of this.getIndexValue(i)?.sectionList"
+                        [value]="section.id">{{section.name}}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="row mt-2">
+        <div class="col-md-12">
+          <mat-form-field>
+            <mat-label>Remarks</mat-label>
+            <input matInput formControlName="remarks" type="text">
+          </mat-form-field>
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="button-container">
+        <button mat-flat-button color="success" type="button" (click)="SaveData()">
+          <span class="mat-button-wrapper">Save</span>
+        </button>
+        <button mat-flat-button color="default" [mat-dialog-close]="true">
+          <span class="mat-button-wrapper">Close</span>
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</form>

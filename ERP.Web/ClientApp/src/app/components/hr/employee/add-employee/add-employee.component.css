@@ -1,0 +1,234 @@
+.header-container {
+    justify-content: space-between;
+    /* Align buttons to the right */
+    width: 100%;
+}
+
+#message {
+    font-family: var(--mat-card-title-text-font);
+    display: inline-block;
+    width: 100%;
+    background: #f1f1f1;
+    color: #000;
+    position: relative;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+#message h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+#message p {
+    padding: 5px;
+    font-size: 16px;
+    margin: 0;
+}
+
+.valid {
+    color: green;
+}
+
+.valid:before {
+    position: relative;
+    left: -5px;
+    content: "✔";
+}
+
+.invalid {
+    color: #f44336;
+}
+
+.invalid:before {
+    position: relative;
+    left: -5px;
+    content: "✖";
+}
+
+/* General styling for the container and elements */
+.user_container {
+    width: 100%;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 50px;
+}
+
+.user_container .checkbox-inline {
+    display: inline-flex;
+    justify-content: start;
+    align-items: center;
+    margin: 10px 0 0;
+    width: 100%;
+    gap: 10px;
+    color: #17a2b8;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.file_upload {
+    background-color: #ffffff;
+    width: 100%;
+    padding: 0px;
+    box-shadow: rgb(23 162 184) 0px 1px 3px, rgb(23 162 184) 0px 1px 2px;
+    border-radius: 10px;
+    max-height: 315px;
+    overflow: hidden;
+}
+
+.file_upload_btn {
+    width: 100%;
+    margin: 0;
+    color: #fff;
+    background: #17a2b8;
+    border: none;
+    padding: 10px;
+    border-radius: 4px;
+    transition: all .2s ease;
+    outline: none;
+    font-weight: 700;
+    font-size: 14px;
+    box-sizing: border-box;
+    display: inline-block;
+    text-align: center;
+}
+
+.file_upload_btn:hover {
+    background: #138496;
+    color: #ffffff;
+    transition: all .2s ease;
+    cursor: pointer;
+}
+
+.file_upload_content {
+    text-align: center;
+}
+
+.file_upload_input {
+    position: absolute;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    outline: none;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.image_container {
+    margin-top: 0px;
+    max-height: 150px;
+}
+
+.image_upload_wrap {
+    border: 2px dashed #17a2b8;
+    position: relative;
+    padding: 15px;
+}
+
+.image_dropping,
+.image_upload_wrap:hover {
+    background-color: #17a2b875;
+    border: 2px dashed #138496;
+}
+
+.image_title_wrap {
+    padding: 0 15px 15px 15px;
+    color: #222;
+    text-align: center;
+}
+
+.image_title {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.drag_text {
+    text-align: center;
+}
+
+.drag_text div {
+    font-weight: 100;
+    color: #17a2b8;
+    margin: 10px 0;
+}
+
+.drag_text div:first-child {
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.drag_text div:last-child {
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.file_upload_image {
+    max-height: 200px;
+    max-width: 100%;
+    margin: auto;
+    padding: 0 0 5px 0;
+    margin-top: 10px;
+}
+
+.remove_image {
+    width: 150px;
+    margin: 0;
+    color: #fff;
+    background: #cd4535;
+    border: none;
+    padding: 5px;
+    border-radius: 4px;
+    transition: all .2s ease;
+    outline: none;
+    font-weight: 600;
+}
+
+.remove_image:hover {
+    background: #c13b2a;
+    color: #ffffff;
+    transition: all .2s ease;
+    cursor: pointer;
+}
+
+.remove_image:active {
+    border: 0;
+    transition: all .2s ease;
+}
+
+/* Add any other general styling needed */
+
+.leave-rows {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+  }
+  
+  .leave-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 12px;
+    border-bottom: 1px solid #eee;
+    background-color: #f9f9f9;
+  }
+  
+  .leave-row:nth-child(even) {
+    background-color: #fff;
+  }
+  
+  .leave-type {
+    font-weight: 500;
+    color: #333;
+  }
+  
+  .leave-days {
+    color: #666;
+    font-size: 14px;
+  }
+  

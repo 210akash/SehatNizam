@@ -1,0 +1,112 @@
+<mat-card>
+  <mat-card-header>
+    <div class="header-container">
+      <mat-card-title>Delete Issuance</mat-card-title>
+      <span class="badge badge-created" matTooltip="Status">{{this.data.element.status.title }}</span>
+    </div>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+    <div class="row">
+      <div class="col-md-2 col-lg-2">
+        <mat-form-field>
+          <mat-label>Issuance No.</mat-label>
+          <input matInput [value]="this.data.element.code" tabindex="-1" readonly>
+        </mat-form-field>
+      </div>
+      <div class="col-md-2 col-lg-2">
+        <mat-form-field>
+          <mat-label>Issuance Date</mat-label>
+          <input matInput [value]="this.data.element.createdDate| date : 'shortDate'" tabindex="-1" readonly>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-3 col-lg-3">
+        <mat-form-field class="form-field">
+          <mat-label>Issuance Request #</mat-label>
+          <input matInput [value]="this.data.element.code" tabindex="-1" readonly>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-5 col-lg-5">
+        <div class="row">
+          <div class="col-md-6">
+        <b>Department : </b> <span style="color:red"> {{ this.data.element?.indentRequest?.department?.name }}
+        </span> <br />
+
+        <b>Store : </b> <span style="color:red"> {{ this.data.element?.indentRequest?.store?.name }}
+        </span> <br />
+      </div>
+      <div class="col-md-6">
+        <b>Warehouse : </b> <span style="color:red"> {{ this.data.element?.indentRequest?.project?.name }}
+        </span> <br />
+
+        <b>Request Date : </b> <span style="color:red"> {{ this.data.element?.indentRequest?.createdDate | date:
+          'mediumDate' }}
+        </span>
+      </div>
+    </div>
+    </div>
+
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Sr.#</th>
+                <th>Item</th>
+                <th>Req. Quantity</th>
+                  <th>Rate</th>
+                <th>Quantity</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let detail of this.data.element.issuanceDetail; let i = index">
+                <td style="width: 10px;">
+                  {{i + 1}}
+                </td>
+                <td>
+                  {{detail.indentRequestDetail?.item?.name || ''}}
+                </td>
+                <td>
+                  {{detail?.indentRequestDetail?.required || ''}}
+                </td>
+                  <td>
+                  {{detail.rate || ''}}
+                </td>
+                <td>
+                  {{detail.quantity || ''}}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+     <div class="row mt-2">
+      <div class="col-md-6">
+        <mat-form-field>
+          <mat-label>Voucher Account</mat-label>
+          <input matInput [value]="this.data.element.account?.code  + ' : ' + this.data.element.account?.name" type="text" readonly tabindex="-1">
+        </mat-form-field>
+      </div>
+      <div class="col-md-6">
+        <mat-form-field>
+          <mat-label>Remarks</mat-label>
+          <input matInput [value]="this.data.element.remarks" type="text" readonly tabindex="-1">
+        </mat-form-field>
+      </div>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="button-container">
+      <button mat-flat-button color="danger" type="button" (click)="delete()">
+        <span class="mat-button-wrapper">Delete</span>
+      </button>
+      <button mat-flat-button color="default" [mat-dialog-close]="true">
+        <span class="mat-button-wrapper">Close</span>
+      </button>
+    </div>
+  </mat-card-content>
+</mat-card>

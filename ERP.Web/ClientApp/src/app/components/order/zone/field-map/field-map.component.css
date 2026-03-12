@@ -1,0 +1,7 @@
+#fieldMap {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    height: calc(50vh);
+    margin-top: 70px; 
+}

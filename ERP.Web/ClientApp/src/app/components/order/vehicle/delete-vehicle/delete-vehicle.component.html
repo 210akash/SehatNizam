@@ -1,0 +1,88 @@
+
+<mat-card>
+  <mat-card-header>
+    <mat-card-title> Delete Vehicle  </mat-card-title>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+
+    <div class="row">
+      
+      <div class="col-md-12">
+        <div class="mb-3">
+          <mat-form-field class="form-field">
+            <mat-label>Name</mat-label>
+            <input matInput  [value]="this.data.element.vehicleName" readonly />
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div class="mb-3">
+          <mat-form-field class="form-field">
+            <mat-label>Registration No</mat-label>
+            <input matInput  [value]="this.data.element.registrationNumber" readonly />
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div class="mb-3">
+          <mat-form-field class="form-field">
+            <mat-label>Load Capacity (kg)</mat-label>
+            <input matInput  [value]="this.data.element.loadCapacity" readonly />
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div class="mb-3">
+          <mat-form-field class="form-field">
+            <mat-label>Driver Name</mat-label>
+            <input matInput  [value]="this.data.element.driverName" readonly />
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="col-md-12">
+        <div class="mb-3">
+          <mat-form-field class="form-field">
+            <mat-label>Driver Phone No</mat-label>
+            <input matInput  [value]="this.data.element.driverPhoneNo" readonly />
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="col-md-12">
+        <div class="mb-3">
+          <mat-form-field class="form-field">
+            <mat-label>Is Head Office Vehicle</mat-label>
+            <input matInput  [value]="this.data.element.isHeadOfficeVehicle ? 'Yes' : 'No'" readonly />
+          </mat-form-field>
+        </div>
+      </div>  
+
+      <div class="col-md-12" *ngIf="this.data.element.isHeadOfficeVehicle == true">
+        <div class="mb-3">
+          <mat-form-field class="form-field">
+            <mat-label>Logistic Partner</mat-label>
+            <input matInput  [value]="this.data.element.logisticPartner" readonly />
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="col-md-12" *ngIf="this.data.element.isHeadOfficeVehicle != true">
+        <div class="mb-3">
+          <mat-form-field class="form-field">
+            <mat-label>Distributor</mat-label>
+            <input matInput  [value]="this.data.element.dealership?.name" readonly />
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="button-container">
+      <button mat-flat-button color="danger" type="button" (click)="delete()">
+        <span class="mat-button-wrapper">Delete</span>
+      </button>
+      <button mat-flat-button color="default" [mat-dialog-close]="true">
+        <span class="mat-button-wrapper">Close</span>
+      </button>
+    </div>
+  </mat-card-content>
+</mat-card>

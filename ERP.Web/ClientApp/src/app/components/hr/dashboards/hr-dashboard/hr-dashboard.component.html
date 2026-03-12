@@ -1,0 +1,193 @@
+<div class="p-5">
+
+  <!-- <div class="row">
+    <div class="col-md-12">
+      <div class="section">
+        <h2>Quick Actions</h2>
+        <div class="quick-actions">
+          <button (click)="openEmployeeDialog()">➕ Add Employee</button>
+        </div>
+      </div>
+    </div>
+  </div> -->
+
+  <div class="row">
+    <div class="col-md-5">
+
+      <div class="col-md-12 px-0">
+        <div class="section">
+          <div *ngIf="isLoadingLeaves" class="cstm_loader">
+            <span class="loader"></span>
+          </div>
+          <h2>Pending Leaves</h2>
+          <div *ngIf="!isLoadingLeaves && upcomingLeaves?.length" class="leave-list-compact">
+            <div class="leave-row" *ngFor="let leave of upcomingLeaves">
+              <div class="leave-details">
+                <span class="leave-name">{{ leave.employee?.firstName }} {{ leave.employee?.lastName }}</span>
+                <span class="leave-date">{{ leave.createdDate | date: 'mediumDate' }}</span>
+                <span class="leave-reason">({{ leave.employeeGroupLeaveTypeDetail?.employeeLeaveType?.name }})</span>
+              </div>
+              <div class="leave-actions">
+                <button class="bg-none" (click)="processLeaveDialog(leave)"><mat-icon
+                    class="dept-icon">visibility</mat-icon></button>
+              </div>
+            </div>
+          </div>
+          <p *ngIf="!upcomingLeaves?.length">No Pending Leaves!!!</p>
+        </div>
+      </div>
+
+      <div class="col-md-12 px-0">
+        <div class="section">
+          <div *ngIf="isLoadingHRData" class="cstm_loader">
+            <span class="loader"></span>
+          </div>
+          <h2>Employee Overview</h2>
+          <div *ngIf="!isLoadingHRData" class="dashboard">
+
+            <div class="card small">
+              <mat-icon class="dept-icon">supervisor_account</mat-icon>
+              <div class="value">{{this.hrData?.totalEmployee}}</div>
+              <h3>Total Employees</h3>
+            </div>
+
+            <div class="card small">
+              <mat-icon class="dept-icon">supervisor_account</mat-icon>
+              <div class="value">{{this.hrData?.newThisMonth}}</div>
+              <h3>New This Month</h3>
+            </div>
+
+            <div class="card small">
+              <mat-icon class="dept-icon">supervisor_account</mat-icon>
+              <div class="value">{{this.hrData?.resignedThisMonth}}</div>
+              <h3>Resigned</h3>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-12 px-0">
+        <div class="section">
+          <div *ngIf="isLoadingInterviews" class="cstm_loader">
+            <span class="loader"></span>
+          </div>
+          <h2>Today Interviews</h2>
+          <div *ngIf="!isLoadingInterviews && todayInterviews?.length" class="leave-list-compact">
+            <div class="leave-row" *ngFor="let interview of todayInterviews">
+              <div class="leave-details">
+                <span class="leave-name">{{ interview.name }}</span>
+                <span class="leave-date">{{ getInterviewDate(interview.interviewHistory) | date: 'mediumDate' }}</span>
+                <span class="leave-reason"> <span class="leave-name">Attendees:</span> ({{ getAttendeesString(interview) }})</span>
+              </div>
+              <div class="leave-actions">
+                <button class="bg-none" (click)="processInterviewDialog(interview)"><mat-icon
+                    class="dept-icon">visibility</mat-icon></button>
+              </div>
+            </div>
+          </div>
+          <p *ngIf="!todayInterviews?.length">No Interviews Today!!!</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="col-md-7">
+
+      <div class="col-md-12 px-0">
+        <div class="section">
+          <div *ngIf="isLoadingAttendance" class="cstm_loader">
+            <span class="loader"></span>
+          </div>
+          <h2>Today Attendance</h2>
+          <div *ngIf="!isLoadingAttendance" class="dashboard">
+
+            <div class="card small">
+              <mat-icon class="dept-icon">supervisor_account</mat-icon>
+              <div class="value">{{this.todayAttendance?.present}}</div>
+              <h3>Present</h3>
+            </div>
+
+            <div class="card small">
+              <mat-icon class="dept-icon">supervisor_account</mat-icon>
+              <div class="value">{{this.todayAttendance?.absent}}</div>
+              <h3>Absent</h3>
+            </div>
+
+            <div class="card small">
+              <mat-icon class="dept-icon">supervisor_account</mat-icon>
+              <div class="value">{{this.todayAttendance?.onLeave}}</div>
+              <h3>On Leave</h3>
+            </div>
+
+            <div class="card small">
+              <mat-icon class="dept-icon">supervisor_account</mat-icon>
+              <div class="value">{{this.todayAttendance?.leaveAppliedManager}}</div>
+              <h3>Leave Applied (Manager)</h3>
+            </div>
+
+            <div class="card small">
+              <mat-icon class="dept-icon">supervisor_account</mat-icon>
+              <div class="value">{{this.todayAttendance?.leaveAppliedHR}}</div>
+              <h3>Leave Applied (HR)</h3>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-12 px-0">
+        <div class="section" [class.expanded]="!isLoadingHRData">
+          <div *ngIf="isLoadingHRData" class="cstm_loader">
+            <span class="loader"></span>
+          </div>
+          <h2>Department Overview</h2>
+          <div *ngIf="!isLoadingHRData" class="dashboard">
+            <!-- <div class="card small">
+              <mat-icon class="dept-icon">supervisor_account</mat-icon>
+              <div class="value">{{this.hrData?.saleEmployees}}</div>
+              <h4>Employee (Sales)</h4>
+            </div>
+            <div class="card small">
+              <mat-icon class="dept-icon">supervisor_account</mat-icon>
+              <div class="value">{{this.hrData?.saleFieldWorkers}}</div>
+              <h4>Field Workers (Sales)</h4>
+            </div> -->
+            <div *ngFor="let item of this.hrCardData" class="card small">
+              <mat-icon class="dept-icon">supervisor_account</mat-icon>
+              <div class="value">{{item.count}}</div>
+              <h4>{{item.department}}</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Monthly Attendance -->
+  <!-- <div class="section">
+    <h2>September Attendance</h2>
+    <div class="attendance-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Employee</th>
+            <th *ngFor="let day of days"> {{ day }} </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let employee of attendanceData">
+            <td>{{ employee.name }}</td>
+            <td *ngFor="let present of employee.days">
+              <span [class.present]="present" [class.absent]="!present">
+                {{ present ? '✅' : '❌' }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div> -->
+
+</div>

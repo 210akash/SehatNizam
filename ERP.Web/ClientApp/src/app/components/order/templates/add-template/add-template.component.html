@@ -1,0 +1,98 @@
+<!-- <div class="card custmCard pt-0">
+  <div class="card-header">
+    <h4 class="card-title">Add Template</h4>
+  </div>
+
+  <form [formGroup]="createTemplateForm">
+    <div class="card-body">
+
+      <div class="row">
+
+        <div class="col-md-6">
+          <div class="mb-3">
+            <mat-form-field>
+              <input matInput placeholder="Name" formControlName="name" />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="mb-3">
+            <mat-form-field>
+              <input matInput placeholder="Description" formControlName="description" />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="col-md-12">
+          <div class="mb-3">
+
+            <mat-form-field>
+              <textarea matInput placeholder="Template" formControlName="content" cols="30"
+                rows="20">Template</textarea>
+            </mat-form-field>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="card-footer">
+      <button class="btn btn-success" data-bs-dismiss="modal" (click)="saveTemplate()">Save</button>
+      <button [mat-dialog-close]="true" class="btn btn-danger" data-bs-dismiss="modal"> Close</button>
+    </div>
+  </form>
+</div> -->
+
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Template Form</mat-card-title>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+    <form [formGroup]="createTemplateForm">
+      <div class="card-body">
+
+        <div class="row">
+
+          <div class="col-md-6">
+            <div class="mb-3">
+              <mat-form-field class="form-field">
+                <input matInput placeholder="Name" formControlName="name" />
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="mb-3">
+              <mat-form-field class="form-field">
+                <input matInput placeholder="Description" formControlName="description" />
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="col-md-12">
+            <div class="mb-3">
+
+              <mat-form-field class="form-field">
+                <textarea matInput placeholder="Template" formControlName="content" cols="30"
+                  rows="20">Template</textarea>
+              </mat-form-field>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <mat-divider class="mt-2"></mat-divider>
+      <div class="button-container">
+        <button mat-flat-button color="success" type="button" (click)="saveTemplate()">
+          <span class="mat-button-wrapper">Save</span>
+        </button>
+        <button mat-flat-button color="default" [mat-dialog-close]="true">
+          <span class="mat-button-wrapper">Close</span>
+        </button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

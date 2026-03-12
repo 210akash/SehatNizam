@@ -1,0 +1,181 @@
+<mat-card>
+  <mat-card-header>
+    <div class="header-container">
+      <mat-card-title>Process Dispatch</mat-card-title>
+      <span class="badge badge-created" matTooltip="Status">{{this.data.element.status.title}}</span>
+    </div>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+    <div class="row">
+      <div class="col-md-2 col-lg-2">
+        <mat-form-field>
+          <mat-label>Dispatch No.</mat-label>
+          <input matInput [value]="this.data.element.code" tabindex="-1" readonly>
+        </mat-form-field>
+      </div>
+      <div class="col-md-2 col-lg-2">
+        <mat-form-field>
+          <mat-label>Dispatch Date</mat-label>
+          <input matInput [value]="this.data.element.createdDate| date : 'shortDate'" tabindex="-1" readonly>
+        </mat-form-field>
+      </div>
+      <div class="col-md-4 col-lg-4">
+        <mat-form-field class="form-field">
+          <mat-label>Vehicle</mat-label>
+          <input matInput
+            [value]="this.data.element.vehicle?.vehicleName + ' : ' + this.data.element.vehicle?.registrationNumber"
+            tabindex="-1" readonly>
+        </mat-form-field>
+      </div>
+      <div class="col-md-2 col-lg-2">
+        <mat-form-field>
+          <mat-label>Bilty No</mat-label>
+          <input matInput [value]="this.data.element.biltyNo" tabindex="-1" readonly>
+        </mat-form-field>
+      </div>
+      <div class="col-md-2 col-lg-2">
+        <mat-form-field>
+          <mat-label>Freight Charges</mat-label>
+          <input matInput [value]="this.data.element.freightCharges" tabindex="-1" readonly>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="card" *ngFor="let order of this.data.element.dispatchOrder; let i = index">
+      <div class="card-header">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="row m-0 align-items-center">
+              <span class="items_nmbr">{{i + 1}}</span>
+              <mat-form-field class="form-field m-0" style="width: 90%;">
+                <input matInput
+                  value="{{order.orderId}}  :   {{order.order?.dealership?.name}}  :  {{order.order?.createdDate | date : 'mediumDate'}}"
+                  tabindex="-1" readonly>
+              </mat-form-field>
+            </div>
+          </div>
+          <!-- <div class="col-md-3">
+            <b>Amount : </b> <span style="color:red"> {{ order.totalAmount }} Rs. </span> <br />
+            <b>Weight : </b> <span style="color:red"> {{ order.totalWeight }} Kg </span>
+          </div> -->
+          <div class="col-md-2">
+            <mat-form-field class="form-field m-0">
+              <mat-label>Amount</mat-label>
+              <input matInput type="text" [value]="order.totalAmount + ' Rs'" readonly>
+            </mat-form-field>
+          </div>
+          <div class="col-md-2">
+            <mat-form-field class="form-field m-0">
+              <mat-label>Weight</mat-label>
+              <input matInput type="text" [value]="order.totalWeight + ' Kg'" readonly>
+            </mat-form-field>
+          </div>
+          <div class="col-md-2">
+            <mat-form-field class="form-field m-0">
+              <mat-label>Freight</mat-label>
+              <input matInput type="text" [value]="order.orderFreightCharges + ' Rs'" readonly>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+           <table class="table table-bordered">
+
+            <thead>
+              <tr>
+                <th>Sr.#</th>
+                <th>Item</th>
+                <th>Ordered Quantity</th>
+                <th>Batch #</th>
+               <th>Batch Rate</th>
+                <th>Shipped</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let detail of order.dispatchDetail; let j = index">
+                <td style="width: 10px;">
+                  {{j + 1}}
+                </td>
+                <td style="width: 150px;">
+                  {{detail.orderItem?.item?.name || ''}}
+                </td>
+                <td>
+                  {{detail.orderItem?.quantity || ''}}
+                </td>
+                <td>
+                  {{detail.costSheet?.code}}
+                </td>
+                 <td>
+                  {{detail.costSheet?.costPerPet}}
+                </td>
+                <td>
+                  {{detail.quantity || ''}}
+                </td>
+              
+              </tr>
+            </tbody>
+             <tfoot>
+              <tr>
+                <td colspan="5" class="text-right">Total</td>
+                <td>
+                 {{ getTotalQuantity(order.orderId) }}
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- <div *ngIf="this.grandTotalWeight > 0 && this.grandTotalAmount > 0" class="row mt-2 mb-2 text-right">
+      <div class="col">
+        <b>Grand Total: </b> <span style="color:red"> {{ gElement.grandTotalAmount }} Rs. </span>
+      </div>
+      <div class="col">
+        <b>Total Weight: </b> <span style="color:red"> {{ gElement.grandTotalWeight }} Kg </span><br />
+      </div>
+      <div class="col">
+        <b>Vehicle Load Capacity: </b> <span style="color:red"> {{ gElement.vehicle?.loadCapacity }} Kg. </span>
+      </div>
+    </div> -->
+    <div class="row mt-3">
+      <div class="col-md-4">
+        <mat-form-field class="form-field m-0">
+          <mat-label>Grand Total</mat-label>
+          <input matInput type="text" [value]="gElement.grandTotalAmount + ' Rs'" readonly>
+        </mat-form-field>
+      </div>
+      <div class="col-md-4">
+        <mat-form-field class="form-field m-0">
+          <mat-label>Total Weight</mat-label>
+          <input matInput type="text" [value]="gElement.grandTotalWeight + ' Kg'" readonly>
+        </mat-form-field>
+      </div>
+      <div class="col-md-4">
+        <mat-form-field class="form-field m-0">
+          <mat-label>Vehicle Load Capacity</mat-label>
+          <input matInput type="text" [value]="gElement.vehicle?.loadCapacity + ' Kg'" readonly>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-md-12">
+        <mat-form-field>
+          <mat-label>Remarks</mat-label>
+          <input matInput [value]="this.data.element.remarks" type="text" readonly tabindex="-1">
+        </mat-form-field>
+      </div>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="button-container">
+      <button mat-flat-button color="success" type="button" (click)="process()" tabindex="-1">
+        <span class="mat-button-wrapper">Process</span>
+      </button>
+      <button mat-flat-button color="default" [mat-dialog-close]="true">
+        <span class="mat-button-wrapper">Close</span>
+      </button>
+    </div>
+  </mat-card-content>
+</mat-card>

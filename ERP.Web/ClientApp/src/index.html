@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title id="title">HMS</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link id="favicon" rel="icon" type="image/x-icon" href="assets/Files/khilafatcola.png">
+  <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,300|Material+Icons' rel='stylesheet'
+    type='text/css'>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+
+<body>
+  <script>
+
+    const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+
+    if (currentUser?.department?.company?.logo) {
+      const faviconElement = document.getElementById('favicon');
+      faviconElement.href = currentUser.department?.company.logo;
+
+      const titleElement = document.getElementById('title');
+      titleElement.text = 'HMS - ' + currentUser.department?.company.name;
+
+
+      const companyColor = currentUser.department.company.color;
+      document.documentElement.style.setProperty('--primary-color', companyColor);
+
+    }
+  </script>
+  <app-root></app-root>
+
+  <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCxHGLsKCjMWc4q6oqVhYFvl5YRoqAiP1g&libraries=geometry,drawing&callback=initMap">
+    </script>
+
+</body>
+
+</html>

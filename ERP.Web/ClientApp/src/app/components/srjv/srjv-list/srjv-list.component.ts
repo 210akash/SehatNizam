@@ -1,0 +1,163 @@
+import { Component, EventEmitter, ViewChild, Output } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort'; // Import MatSort and Sort
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { SubcategoryService } from '../../subcategory/subcategory.service';
+import { ConstantService } from '../../../Service/constant.service';
+import { TransactionService } from '../../transaction/transaction.service';
+import { ViewSRJVComponent } from '../view-srjv/view-srjv.component';
+import { PrintSRJVComponent } from '../print-srjv/print-srjv.component';
+
+@Component({
+  selector: 'app-srjv-list',
+  templateUrl: './srjv-list.component.html',
+  styleUrls: ['./srjv-list.component.css'],
+  standalone: false
+})
+
+export class SRJVListComponent {
+  [x: string]: any;
+  @Output() getTransactionCount: EventEmitter<void> = new EventEmitter<void>();
+  TransactionFilterForm!: FormGroup;
+  isLoading = false;
+  currentPage = 0;
+  pageSizeOptions: number[] = [5, 10, 25, 100];
+  displayedColumns: string[] = [];
+  dataSource: any;
+  take = 50;
+  pageSize = 0;
+  totalRows = 0;
+  subcategoryList: any;
+  currentUser: any;
+  currenttab: any;
+  History: any;
+  roleList: string | undefined;
+  dialogRef: any;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort; // ViewChild for MatSort
+
+  constructor(
+    private srjvService: TransactionService,
+    private dialog: MatDialog,
+    private formBuilder: FormBuilder,
+    private subcategoryService: SubcategoryService,
+    private constantService: ConstantService
+  ) { }
+
+  async ngOnInit(): Promise<void> {
+    this.pageSize = this.constantService.defaultItemPerPage;
+    this.TransactionFilterForm = this.formBuilder.group({
+      code: [''],
+      fdate: [],
+      tdate: [],
+      voucherTypeId: [9]
+    });
+    this.currentUser = JSON.parse(localStorage.getItem('currentUser') ?? '{}');
+    this.roleList = this.currentUser.role.toLowerCase().split(',').map((role: string) => role.trim().toLowerCase());
+  }
+
+  async bindData(srjvFilterForm: any, currenttab: number, isFromParent: boolean): Promise<void> {
+
+    if (isFromParent == true) {
+      this.currentPage = 0;
+    }
+
+    this.currenttab = currenttab;
+    if (currenttab == 0) {
+      this.displayedColumns = ['code', 'date', 'createdDate', 'referenceNumber', 'createdBy', 'status', 'actions'];
+    }
+    else if (currenttab == 1) {
+      this.displayedColumns = ['code', 'date', 'processedDate', 'referenceNumber', 'processedBy', 'status', 'actions'];
+    }
+    else if (currenttab == 2) {
+      this.displayedColumns = ['code', 'date', 'approvedDate', 'referenceNumber', 'approvedBy', 'status', 'actions'];
+    }
+
+    return new Promise<void>(async (resolve, reject) => {
+      // Set loading indicator
+      this.isLoading = true;
+      this.TransactionFilterForm = srjvFilterForm;
+
+      const pagingData = {
+        currentPage: this.currentPage,
+        take: this.pageSize
+      };
+
+      srjvFilterForm["PagingData"] = pagingData;
+      let fdate = new Date(srjvFilterForm.fdate);
+      let tdate = new Date(srjvFilterForm.tdate);
+
+      srjvFilterForm['fdate'] = fdate.toLocaleDateString();
+      srjvFilterForm['tdate'] = tdate.toLocaleDateString();
+
+      // Call the service method and subscribe with the observer
+
+      (await this.srjvService.getAllTransactions(srjvFilterForm)).subscribe({
+        next: (data: any) => {
+          // Update data source for MatTable
+          this.dataSource = new MatTableDataSource(data.item1);
+          this.totalRows = data.item2; // Update totalRows
+
+          // Set up sorting
+          this.dataSource.sort = this.sort;
+
+          // If there is data, adjust paginator settings after a short delay
+          if (data.item1.length > 0) {
+            setTimeout(() => {
+              this.paginator.pageIndex = this.currentPage;
+              this.paginator.length = data.item2;
+            });
+          }
+
+          // Reset loading indicator
+          this.isLoading = false;
+        },
+        error: (error: any) => {
+          // Handle errors
+          console.error('Error fetching data:', error);
+          this.isLoading = false;
+        }
+      });
+    });
+  }
+
+  pageChanged(event: PageEvent): void {
+    this.pageSize = event.pageSize;
+    this.currentPage = event.pageIndex;
+    this.bindData(this.TransactionFilterForm, this.currenttab, false); // Re-fetch data on page change
+  }
+
+  viewTransactionDialog(element: any): void {
+    this.dialog.open(ViewSRJVComponent, {
+      data: { element: element },
+      panelClass: 'cstm_width_1300',
+      maxHeight: '90vh',
+      disableClose: true
+    });
+  }
+
+  printTransactionDialog(element: any) {
+    const dialogRef = this.dialog.open(PrintSRJVComponent, {
+      panelClass: 'cstm_width_1100',
+      maxHeight: '90vh',
+      data: {
+        element: element,
+      },
+      disableClose: true
+    });
+  }
+
+  getcategoryList() {
+    this.subcategoryService.getSubcategoryByCompany().subscribe((data: any) => {
+      this.subcategoryList = data;
+    });
+  }
+
+  filterData() {
+    this.bindData(this.TransactionFilterForm, this.currenttab, false);
+  }
+
+
+}

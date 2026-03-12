@@ -1,0 +1,70 @@
+/* Styling the order print container */
+.order-prints-container {
+    margin-top: 20px;
+}
+
+.order-print-item {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    padding: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+    max-width: 470px;
+}
+
+.order-print-item:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.order-dealer-name {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+/* Styling for document wraps */
+.document-wrap {
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.document-wrap:hover {
+    background-color: #f2f2f2;
+    transform: translateY(-5px);
+}
+
+/* Adding icon and text styling */
+.document-icon {
+    color: #0066cc;
+    transition: color 0.3s ease;
+}
+
+.document-wrap:hover .document-icon {
+    color: #004999;
+}
+
+.document-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    margin-top: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Small screen adjustments */
+@media (max-width: 767px) {
+    .order-print-item {
+        padding: 10px;
+    }
+    .document-wrap {
+        padding: 10px;
+    }
+}

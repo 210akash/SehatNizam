@@ -1,0 +1,64 @@
+<mat-card>
+  <mat-card-header>
+     <div mat-card-avatar class="example-header-image">
+              <img [src]="this.data.element.attachments[0]?.imageName" class="photo-img" />
+     </div>
+    <mat-card-title>Employee Attendance Device</mat-card-title>
+    <mat-card-subtitle>{{ data.element.firstName }} {{ data.element.lastName }}</mat-card-subtitle>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+    <form [formGroup]="employeedeviceForm">
+      <div formArrayName="employeeDevices">
+        <div class="row" *ngFor="let deviceGroup of employeeDevices.controls; let i = index" [formGroupName]="i"
+          >
+            <div class="col-md-5">
+              <div class="mt-2">
+                <!-- Device checkbox -->
+                <mat-checkbox formControlName="isChecked">
+                  {{ deviceGroup.get('deviceName')?.value }}
+                  <!-- You can replace this with the device name if available -->
+                </mat-checkbox>
+              </div>
+            </div>
+
+             <div class="col-md-2">
+              <div class="mt-2">
+                <!-- Device checkbox -->
+                <mat-checkbox [checked]="deviceGroup.get('isSyned')?.value"  [disabled]="true">Syned</mat-checkbox>
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <div class="mt-2">
+                <!-- Enrollment No field -->
+                <mat-form-field>
+                  <mat-label>Enrollment No</mat-label>
+                  <input matInput formControlName="enrollmentNo" placeholder="Enter Enrollment No"  [readonly] ="!deviceGroup.get('isChecked')?.value" [required] ="deviceGroup.get('isChecked')?.value" >
+                </mat-form-field>
+              </div>
+            </div>
+             <div class="col-md-1">
+              <div class="mt-2">
+                   <button mat-mini-fab matTooltip="Sync" color="success" *ngIf="deviceGroup.get('isChecked')?.value && !deviceGroup.get('isSyned')?.value">
+              <mat-icon aria-label="Sync">sync</mat-icon>
+            </button>
+              </div>
+            </div>
+        </div>
+      </div>
+        <mat-divider></mat-divider>
+      <div class="button-container">
+
+             <button mat-flat-button matTooltip="Save" color="success" (click)="submit()"  [disabled]="employeedeviceForm.invalid">
+              <span class="mat-button-wrapper">Save</span>
+            </button>
+    
+        <button mat-flat-button matTooltip="Close" color="default" [mat-dialog-close]="true">
+          <span class="mat-button-wrapper">Close</span>
+        </button>
+      </div>
+    </form>
+
+  </mat-card-content>
+</mat-card>

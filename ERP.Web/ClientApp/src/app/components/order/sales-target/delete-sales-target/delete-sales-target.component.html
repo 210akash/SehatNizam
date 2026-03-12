@@ -1,0 +1,44 @@
+<div class="card">
+
+  <div class="card-header">
+    <h4 class="card-title">Delete Sales Target</h4>
+  </div>
+
+  <div class="card-body">
+
+    <div class="container">
+
+      <div class="zone-card">
+        <h2>Zone: {{ salesData.zone }}</h2>
+        <p>Total Target: {{ salesData.target }}</p>
+
+        <div *ngFor="let territory of salesData?.territories" class="territory-card">
+          <h3>Territory: {{ territory.territory }}</h3>
+          <p>Target: {{ territory.target }}</p>
+
+          <div *ngIf="territory.items.length > 0">
+            <h4>DSF List:</h4>
+            <ul>
+              <li *ngFor="let item of territory.items" class="item">
+                <strong>DSF:</strong> {{ item.dsf.firstName }} {{ item.dsf.lastName }} <br>
+                <strong>Email:</strong> {{ item.dsf.email }} <br>
+                <strong>Phone:</strong> {{ item.dsf.phoneNumber }} <br>
+                <strong>Target:</strong> {{ item.target }}
+              </li>
+            </ul>
+          </div>
+          <div *ngIf="territory.items.length === 0">
+            <p>No DSF target set in this territory.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="card-footer">
+    <button class="btn btn-success" data-bs-dismiss="modal" (click)="delete()">Delete</button>
+    <button [mat-dialog-close]="true" class="btn btn-danger ml-2" data-bs-dismiss="modal">Close</button>
+  </div>
+</div>

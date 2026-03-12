@@ -1,0 +1,124 @@
+<div class="header-container">
+  <h2>Territory</h2>
+  <button *appHasRole="['admin', 'sales', 'audit']" mat-mini-fab aria-label="Add" color="success" (click)="openTerritoryDialog(null)" matTooltip="Add Company">
+      <mat-icon>add</mat-icon>
+  </button>
+</div>
+
+<div class="body-container">
+  <form [formGroup]="territoryListFilerForm" class="form-horizontal form-label-left">
+      <div class="row">
+          <div class="col-md-3">
+              <div class="mt-2">
+                <mat-form-field>
+                  <mat-label>Region</mat-label>
+                  <mat-select formControlName="regionId"
+                      (selectionChange)="[getZoneByRegionId(), filterData()]">
+                      <mat-option [value]=0>-- ALL --</mat-option>
+                      <mat-option *ngFor="let option of regionList"
+                          [value]="option.id">{{option.name}}</mat-option>
+                  </mat-select>
+              </mat-form-field>
+              </div>
+          </div>
+          <div class="col-md-3">
+            <div class="mt-2">
+              <mat-form-field>
+                <mat-label>Zone</mat-label>
+                <mat-select formControlName="zoneId"
+                    (selectionChange)="[getAreaByZoneId(), filterData()]">
+                    <mat-option [value]=0>-- ALL --</mat-option>
+                    <mat-option *ngFor="let option of zoneList"
+                        [value]="option.id">{{option.name}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="mt-2">
+            <mat-form-field>
+                <mat-label>Area</mat-label>
+                <mat-select formControlName="areaId" (selectionChange)="filterData()">
+                    <mat-option [value]=0>-- ALL --</mat-option>
+                    <mat-option *ngFor="let option of areaList"
+                        [value]="option.id">{{option.name}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+          </div>
+      </div>
+      </div>
+  </form>
+
+  <div class="mat-elevation-z8 table-responsive mt-2">
+    <table mat-table [dataSource]="dataSource">
+      <ng-container matColumnDef="code">
+        <th mat-header-cell *matHeaderCellDef class="text-dark"> Code</th>
+        <td mat-cell *matCellDef="let element"> T{{element.id}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="region">
+        <th mat-header-cell *matHeaderCellDef class="text-dark"> Region</th>
+        <td mat-cell  *matCellDef="let element"> {{element.area?.zone?.region?.name}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="zone">
+        <th mat-header-cell *matHeaderCellDef class="text-dark"> Zone</th>
+        <td mat-cell  *matCellDef="let element"> {{element.area?.zone?.name}} </td>
+    </ng-container>
+
+    <!--Zone Column-->
+    <ng-container matColumnDef="area">
+        <th mat-header-cell *matHeaderCellDef class="text-dark"> Area</th>
+        <td mat-cell  *matCellDef="let element"> {{element.area?.name}} </td>
+    </ng-container>
+
+    <!--Name Column-->
+    <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef class="text-dark"> Territory</th>
+        <td mat-cell  *matCellDef="let element"> {{element.name}} </td>
+    </ng-container>
+
+    <!--Description Column-->
+    <ng-container matColumnDef="description">
+        <th mat-header-cell *matHeaderCellDef class="text-dark"> Description</th>
+        <td mat-cell  *matCellDef="let element"> {{element.description}} </td>
+    </ng-container>
+
+    <!--Sale Model Column-->
+    <ng-container matColumnDef="saleModel">
+        <th mat-header-cell *matHeaderCellDef class="text-dark"> Sale Model</th>
+        <td mat-cell  *matCellDef="let element"> {{element.saleModel}} </td>
+    </ng-container>
+
+    <!--Created Date Column-->
+    <ng-container matColumnDef="createdDate">
+        <th mat-header-cell *matHeaderCellDef class="text-dark"> Created Date</th>
+        <td mat-cell  *matCellDef="let element"> {{element.createdDate | date: 'd MMM y h:mm a'}} </td>
+    </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef style="width: 11%;"> Actions </th>
+        <td mat-cell *matCellDef="let element">
+            <div class="action_btns">
+                <button *appHasRole="['admin', 'sales', 'audit']" mat-mini-fab matTooltip="Edit" color="primary" (click)="openTerritoryDialog(element)">
+                    <mat-icon aria-label="Edit">edit</mat-icon>
+                </button>
+
+                <button mat-mini-fab matTooltip="View" color="dark" (click)="viewTerritory(element)">
+                    <mat-icon aria-label="View">visibility</mat-icon>
+                </button>
+
+                <button *appHasRole="['admin', 'sales', 'audit']" mat-mini-fab matTooltip="Delete" color="warn" (click)="openDeleteDialog(element)">
+                    <mat-icon aria-label="Delete">delete</mat-icon>
+                </button>
+            </div>
+        </td>
+    </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns;  sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+    <mat-paginator #paginator [length]="totalRows" [pageIndex]="currentPage" [pageSize]="pageSize"
+        [pageSizeOptions]="pageSizeOptions" (page)="pageChanged($event)" aria-label="Select page">
+    </mat-paginator>
+  </div>
+</div>

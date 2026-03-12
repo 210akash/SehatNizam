@@ -1,0 +1,37 @@
+import { Component, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
+import { NotificationsService } from '../../../Service/notification.service';
+import { AccountTypeService } from '../accounttype.service';
+
+@Component({
+    selector: 'app-delete-accounttype',
+    templateUrl: './delete-accounttype.component.html',
+    styleUrl: './delete-accounttype.component.css',
+    standalone: false
+})
+
+export class DeleteAccountTypeComponent {
+  isLoading = false;
+  isEditMode: boolean = false;
+
+  constructor(private dialog: MatDialog,  private notificationsService: NotificationsService, private accountTypeService: AccountTypeService, @Inject(MAT_DIALOG_DATA) public data: { element: any }) { }
+
+  ngOnInit(): void {
+  }
+  async delete() {
+    (await this.accountTypeService.deleteAccounttype(this.data.element.id)).subscribe({
+      next: (data) => {
+        if (data == true) {
+          this.isLoading = false;
+          this.notificationsService.showNotification(data.Data, 'snack-bar-success');
+          this.dialog.closeAll();
+        }
+      },
+      error: (error) => {
+        console.log(error);
+        this.notificationsService.showNotification(error, 'snack-bar-danger');
+        this.isLoading = false;
+      }
+    });
+  }
+}

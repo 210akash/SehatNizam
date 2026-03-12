@@ -1,0 +1,69 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title> View User Territory </mat-card-title>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="mb-3">
+          <mat-form-field class="form-field">
+            <mat-label>Role</mat-label>
+            <input matInput [value]="this.data.element?.user?.aspNetUserRoles[0]?.role?.name" readonly />
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div class="mb-3">
+          <mat-form-field class="form-field">
+            <mat-label>User</mat-label>
+            <input matInput [value]="this.data.element?.user?.firstName + ' ' + this.data.element?.user?.lastName"
+              readonly />
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="col-md-12" *ngIf="this.data.element.region?.name">
+        <div class="mb-3">
+          <mat-form-field class="form-field">
+            <mat-label>Region</mat-label>
+            <input matInput [value]="this.data.element.region?.name" readonly />
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="col-md-12" *ngIf="this.data.element.zone?.name">
+        <div class="mb-3">
+          <mat-form-field class="form-field">
+            <mat-label>Zone</mat-label>
+            <input matInput [value]="this.data.element.zone?.name" readonly />
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="col-md-12" *ngIf="this.data.element.area?.name">
+        <div class="mb-3">
+          <mat-form-field class="form-field">
+            <mat-label>Area</mat-label>
+            <input matInput [value]="this.data.element.area?.name" readonly />
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="col-md-12" *ngIf="this.data.element.territory?.name">
+        <div class="mb-3">
+          <mat-form-field class="form-field">
+            <mat-label>Territory</mat-label>
+            <input matInput [value]="this.data.element.territory?.name" readonly />
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <div class="button-container">
+      <button mat-flat-button color="default" [mat-dialog-close]="true">
+        <span class="mat-button-wrapper">Close</span>
+      </button>
+    </div>
+
+  </mat-card-content>
+</mat-card>

@@ -1,0 +1,48 @@
+<div class="card">
+  <div class="card-header">
+    <h4 class="card-title">Delete Route</h4>
+  </div>
+  <form [formGroup]="deleteRouteForm">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="mb-3">
+            <mat-form-field>
+              <mat-label>Zone</mat-label>
+              <input matInput placeholder="Zone" formControlName="zone" readonly />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="col-md-12">
+          <div class="mb-3">
+            <mat-form-field>
+              <mat-label>Territory</mat-label>
+              <input matInput placeholder="Territory" formControlName="territory" readonly />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="col-md-12">
+          <div class="mb-3">
+            <mat-form-field class="example-full-width">
+              <mat-label>Route Name</mat-label>
+              <input matInput placeholder="Route Name" formControlName="name" readonly />
+            </mat-form-field>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="card-footer">
+      <div class="button-container">
+        <button mat-flat-button color="success" class="btn btn-danger" color="danger" data-bs-dismiss="modal"
+          (click)="delete()">Delete</button>
+
+        <button mat-flat-button color="default" [mat-dialog-close]="true">
+          <span class="mat-button-wrapper">Close</span>
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

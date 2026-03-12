@@ -1,0 +1,92 @@
+<form [formGroup]="employeeLeaveForm">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Apply Leave Application</mat-card-title>
+    </mat-card-header>
+    <mat-divider></mat-divider>
+    <mat-card-content>
+      <input type="hidden" formControlName="id" />
+      <div class="row" style="align-items: center;">
+
+        <div class="col-md-12">
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Leave Type</th>
+                <th>Allotted</th>
+                <th>Used</th>
+                <th>Balance</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of leaveBalance; let i = index">
+                <td>{{ i + 1 }}</td>
+                <td>{{ item.leaveType }}</td>
+                <td>{{ item.allotted }}</td>
+                <td>{{ item.used }}</td>
+                <td>{{ item.balance }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="col-md-3 mt-2 mb-3">
+          <label class="form-label"><strong>Select Leave Type</strong></label>
+        </div>
+        <div class="col-md-9 mt-2 mb-3" *ngIf="leaveBalance?.length">
+          <div class="d-flex flex-wrap">
+            <div class="row pl-3 align-items-center">
+              <div *ngFor="let balance of leaveBalance" class="form-check form-check-inline me-3 mb-2">
+                <input type="radio" [value]="balance.id" formControlName="employeeGroupLeaveTypeDetailId" />
+                <label class="form-check-label">
+                  {{ balance.leaveType }}
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <mat-label>Start Date</mat-label>
+          <input class="form-control" type="date" formControlName="startDate">
+        </div>
+
+        <div class="col-md-6">
+          <mat-label>End Date</mat-label>
+          <input class="form-control" type="date" formControlName="endDate">
+        </div>
+
+        <div class="col-md-3 mt-3">
+          <mat-checkbox formControlName="isFirstHalfDay">First Half</mat-checkbox>
+        </div>
+
+        <div class="col-md-3 mt-3">
+          <mat-checkbox formControlName="isLastHalfDay">Last Half</mat-checkbox>
+        </div>
+
+        <div class="col-md-6 mt-3">
+          Days: {{this.employeeLeaveForm.get('noOfDays')?.value}}
+        </div>
+
+        <div class="col-md-12 mt-3">
+          <mat-form-field>
+            <mat-label>Reason</mat-label>
+            <input matInput formControlName="reason" type="text">
+          </mat-form-field>
+        </div>
+
+      </div>
+      <mat-divider></mat-divider>
+      <div class="button-container">
+        <button mat-flat-button color="success" type="button" (click)="SaveData()"
+          [disabled]="employeeLeaveForm.invalid">
+          <span class="mat-button-wrapper">Save</span>
+        </button>
+        <button mat-flat-button color="default" [mat-dialog-close]="true">
+          <span class="mat-button-wrapper">Close</span>
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</form>

@@ -1,0 +1,61 @@
+<div class="card">
+  <div class="card-header">
+    <h4 class="card-title">Cancel Dispatch History</h4>
+  </div>
+
+  <div class="card-body">
+
+    <div class="table-responsive">
+      <table mat-table [dataSource]="dataSource" class="table table-bordered table-striped datatable">
+
+        <!--From Status Column-->
+        <ng-container matColumnDef="fromStatus">
+          <th *matHeaderCellDef class="text-dark"> From Status</th>
+          <td *matCellDef="let element"> {{element.fromStatus?.title}} </td>
+        </ng-container>
+
+        <!--To Status Column-->
+        <ng-container matColumnDef="toStatus">
+          <th *matHeaderCellDef class="text-dark"> To Status</th>
+          <td *matCellDef="let element"> {{element.toStatus?.title}} </td>
+        </ng-container>
+
+        <!--Comments Column-->
+        <ng-container matColumnDef="comments">
+          <th *matHeaderCellDef class="text-dark"> Comments</th>
+          <td *matCellDef="let element"> {{element.comments}} <span *ngIf="element.transactionId != 0 && element.transactionId != null"> </span> </td>
+        </ng-container>
+
+        <!--Is Reject Column-->
+        <ng-container matColumnDef="isReject">
+          <th *matHeaderCellDef class="text-dark"> Is Reject</th>
+          <td *matCellDef="let element">
+            <span *ngIf="element.isReject === true"> Yes </span> <span *ngIf="element.isReject === false || element.isReject === null"> No </span>
+          </td>
+        </ng-container>
+
+        <!--User Column-->
+        <ng-container matColumnDef="user">
+          <th *matHeaderCellDef class="text-dark"> User</th>
+          <td *matCellDef="let element"> {{element.createdBy?.firstName}} </td>
+        </ng-container>
+
+        <!--Created Date  Column-->
+        <ng-container matColumnDef="createdDate">
+          <th *matHeaderCellDef class="text-dark"> Date</th>
+          <td *matCellDef="let element"> {{element.createdDate | date: 'd MMM y h:mm a'}} </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns;  sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+
+  </div>
+  <mat-divider></mat-divider>
+  <div class="button-container">
+    <button mat-flat-button color="default" [mat-dialog-close]="true" style="margin: 0 10px 10px 0;">
+      <span class="mat-button-wrapper">Close</span>
+    </button>
+  </div>
+</div>

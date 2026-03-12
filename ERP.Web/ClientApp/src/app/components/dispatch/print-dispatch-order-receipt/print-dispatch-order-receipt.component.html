@@ -1,0 +1,182 @@
+<div class="card">
+    <div class="card-header">
+        <div class="header-container">
+            <div class="card-title">Print Delivery Challan</div>
+            <div>
+                <button mat-flat-button color="primary" type="button" class="print-button mr-2"
+                    (click)="printDocument()">
+                    <span class="mat-button-wrapper">Print</span>
+                </button>
+                <button mat-flat-button color="default" [mat-dialog-close]="true">
+                    <span class="mat-button-wrapper">Close</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="card-body" id="printDoc">
+        <div class="container printCont">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="row m-0 mb-3">
+                            <div class="col-md-5 left_side">
+                                <div class="logo mb-2">
+                                    <img [src]="this.data.element.createdBy?.department?.company?.logo" width="70px"
+                                        height="70px" alt="CompanyImage">
+                                    <span>{{this.data.element.createdBy?.department?.company?.name}}</span>
+                                </div>
+                                <table class="top_left">
+                                    <tr>
+                                        <th>Distributor:</th>
+                                        <td><b>{{this.gOrder.dealership?.name}}</b></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Territory:</th>
+                                        <td><b>{{this.gOrder.dealership?.territory?.name}}</b></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Contact#</th>
+                                        <td><b>{{this.gOrder.dealership?.phoneNo}}</b></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Address:</th>
+                                        <td><b>{{this.gOrder.dealership?.address}}</b></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-md-2">
+                                <h2 style="font-weight: 600;font-size: 1.5rem;"> <span
+                                        style="border-bottom: 2px solid;">Delivery Challan</span> </h2>
+                            </div>
+                            <div class="col-md-5">
+                                <table class="top_right">
+                                    <tr>
+                                        <th>Dispatch#:</th>
+                                        <td>{{this.data.element.code}}</td>
+                                        <th>Dispatch Date:</th>
+                                        <td>{{this.data.element.createdDate | date : 'shortDate'}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Sale Order#:</th>
+                                        <td>{{this.gOrder.id}}</td>
+                                        <th>Sale Order Date:</th>
+                                        <td>{{this.gOrder.createdDate | date : 'shortDate'}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Bilty#:</th>
+                                        <td>{{this.data.element.biltyNo}}</td>
+                                        <th>Freight Charges:</th>
+                                        <td>{{this.data.element.freightCharges}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Vehicle:</th>
+                                        <td>{{this.data.element.vehicle.vehicleName}}</td>
+                                        <th>Vehicle Reg#</th>
+                                        <td>{{this.data.element.vehicle.registrationNumber}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Driver:</th>
+                                        <td>{{this.data.element.vehicle.driverName}}</td>
+                                        <th>Driver#</th>
+                                        <td>{{this.data.element.vehicle.driverPhoneNo}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Delivery Note#:</th>
+                                        <td colspan="3">{{this.gDispatchOrder.dcCode}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Warehouse:</th>
+                                        <td colspan="3">{{this.data.element.project?.name}}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="col-md-12 p-0">
+                            <table class="table_one mb-4">
+                                <tr>
+                                    <th>Sr #</th>
+                                    <th>Item Description</th>
+                                    <th>UOM</th>
+                                    <th>Qty</th>
+                                    <th>Unit Price</th>
+                                    <th>Total Price</th>
+                                </tr>
+                                <tr *ngFor="let item of groupedItems; let i = index;">
+                                    <td>{{ i + 1 }}</td>
+                                    <td>{{ item.code + ' ' + item.name }}</td>
+                                    <td>{{ item.uom }}</td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td>Rs. {{ item.unitPrice }}</td>
+                                    <td>Rs. {{ item.totalPrice }}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" style="text-align:right;"><strong>Grand Total</strong></td>
+                                    <td> {{ getTotalQty() }}</td>
+                                    <td></td>
+                                    <td> Rs. {{ getTotalPrice() }}</td>
+                                </tr>
+                            </table>
+                            <div class="note mb-2">
+                                <div>Remarks:</div>
+                                <span style="border-bottom: 2px solid;">{{this.data.element.remarks}}</span>
+                            </div>
+                            <div class="note">
+                                 <div>Total Weight:</div>
+                                <span style="border-bottom: 2px solid;">{{getTotalWeight()}} Kg</span>
+                            </div>
+                            <div class="sign_wrap mt-5">
+                                <div class="col-md-4 text-center">
+                                    <div class="signed_by">
+                                        <div style="border-bottom: 2px solid;">{{this.data.element.createdBy.firstName +
+                                            ' ' +
+                                            this.data.element.createdBy.lastName }}</div>
+                                        <div class="fw-bold">Created By</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 text-center">
+                                    <div class="signed_by">
+                                        <div style="border-bottom: 2px solid;">{{this.data.element.processedBy.firstName
+                                            + ' ' +
+                                            this.data.element.processedBy.lastName }}</div>
+                                        <div class="fw-bold">Processed By</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 text-center">
+                                    <div class="signed_by">
+                                        <div style="border-bottom: 2px solid;">{{this.data.element.approvedBy.firstName
+                                            + ' ' +
+                                            this.data.element.approvedBy.lastName }}</div>
+                                        <div class="fw-bold">Approved By</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="print_date mt-4">
+                                <div><b>Document Status:</b>
+                                    <!-- {{this.data.element.dispatchOrder[0].printDate ? 'Duplicate' : 'Original'}} -->
+                                    {{this.gDispatchOrder.printDate ? 'Duplicate' : 'Original'}}
+                                </div>
+
+                                <div><b>Printed By:</b></div>
+                                <div>{{this.data.element.createdBy.firstName + ' ' +
+                                    this.data.element.createdBy.lastName }}</div>
+                                <div><b>Print Date:</b></div>
+                                <div>{{currentDate}}</div>
+                                <div><b>Print Time:</b></div>
+                                <div>{{currentTime}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer">
+        <div class="button-container m-0">
+            <button mat-flat-button color="default" [mat-dialog-close]="true">
+                <span class="mat-button-wrapper">Close</span>
+            </button>
+        </div>
+    </div>
+</div>

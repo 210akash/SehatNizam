@@ -1,0 +1,79 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Delete AccountGroup</mat-card-title>
+  </mat-card-header>
+
+  <mat-divider></mat-divider>
+  <mat-card-content>
+      <input type="hidden" formControlName="id" />
+      <div  class="row justify-content-center">
+        <div class="col-md-3">
+      <mat-form-field  style="width: 100%;">
+        <mat-label>Code</mat-label>
+        <input matInput [value]="this.data.element.code" type="text" readonly class="text-center">
+      </mat-form-field>
+    </div>
+  </div>
+      
+  <div class="row"> 
+    <div class="col-md-12">
+      <mat-form-field  class="form-field">
+        <mat-label>Account</mat-label>
+        <input matInput [value]="this.data.element.account.code + ' : ' + this.data.element.account.name" type="text" readonly>
+      </mat-form-field>
+    </div>
+    <div class="col-md-12" *ngIf="this.accountFlow == 'Customers'">
+      <mat-form-field  class="form-field">
+        <mat-label>Customers</mat-label>
+        <input matInput [value]="this.data.element.dealership?.name + ' | ' + this.data.element.dealership?.address" type="text" readonly >
+      </mat-form-field>
+    </div>
+    <div class="col-md-12"  *ngIf="this.accountFlow == 'Suppliers'">
+      <mat-form-field  class="form-field">
+        <mat-label>Vendors</mat-label>
+        <input matInput [value]="this.data.element.vendor?.name + ' | ' + this.data.element.vendor?.address" type="text" readonly>
+      </mat-form-field>
+    </div>
+  
+    <div class="col-md-6">
+      <mat-form-field  style="width: 100%;">
+        <mat-label>Name</mat-label>
+        <input matInput [value]="this.data.element.name" type="text" readonly>
+      </mat-form-field>
+    </div>
+   <div class="col-md-3">
+      <mat-form-field  style="width: 100%;">
+        <mat-label>Opening Balance</mat-label>
+        <input matInput [value]="this.data.element.opening" type="number" readonly>
+      </mat-form-field>
+    </div>
+     <div class="col-md-3">
+      <mat-form-field  style="width: 100%;">
+        <mat-label>Credit Limit</mat-label>
+        <input matInput [value]="this.data.element.creditLimit" type="number" readonly>
+      </mat-form-field>
+    </div>
+    <div class="col-md-12">
+      <mat-form-field  style="width: 100%;">
+        <mat-label>Description</mat-label>
+        <input matInput [value]="this.data.element.description" type="text" readonly>
+      </mat-form-field>
+    </div>
+    <div class="col-md-12">
+      <mat-form-field  style="width: 100%;">
+        <mat-label>Description</mat-label>
+        <input matInput [value]="this.data.element.description" type="text" readonly>
+      </mat-form-field>
+    </div>
+  </div>
+    <mat-divider></mat-divider>
+      <div class="button-container">
+        <button mat-flat-button color="danger" type="button" (click)="delete()">
+          <span class="mat-button-wrapper">Delete</span>
+        </button>
+        <button mat-flat-button color="default" [mat-dialog-close]="true">
+          <span class="mat-button-wrapper">Close</span>
+        </button>
+      </div>
+  </mat-card-content>
+</mat-card>

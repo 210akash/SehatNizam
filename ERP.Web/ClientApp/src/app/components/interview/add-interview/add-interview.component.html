@@ -1,0 +1,261 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Interview Form</mat-card-title>
+  </mat-card-header>
+  <mat-divider class="m-0"></mat-divider>
+
+  <mat-card-content>
+    <form [formGroup]="interviewForm">
+      <input type="hidden" formControlName="id" />
+
+      <!-- SECTION: Personal Information -->
+      <h3 class="section-title m-0">Personal Information</h3>
+      <mat-divider></mat-divider>
+      <div class="row">
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+            <mat-label>Candidate Code</mat-label>
+            <input matInput formControlName="code" placeholder="Enter candidate code" readonly />
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+            <mat-label>Full Name</mat-label>
+            <input matInput formControlName="name" placeholder="Enter full name" />
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+            <mat-label>Mobile Number</mat-label>
+            <input matInput formControlName="mobile" placeholder="Enter mobile number" />
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+            <mat-label>Email Address</mat-label>
+            <input matInput formControlName="email" placeholder="Enter email address" />
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-12">
+          <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+            <mat-label>Personal Details</mat-label>
+            <textarea matInput formControlName="personalDetail" rows="3"
+              placeholder="Write a short personal detail"></textarea>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- SECTION: Education & Experience -->
+      <h3 class="section-title">Education & Experience</h3>
+      <mat-divider></mat-divider>
+      <div class="row">
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+            <mat-label>Education</mat-label>
+            <mat-select formControlName="employeeEducationId" placeholder="Select education">
+              <mat-option *ngFor="let education of employeeEducationList" [value]="education.id">
+                {{ education.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+            <mat-label>Experience (Years)</mat-label>
+            <input matInput formControlName="experience" type="number" placeholder="e.g. 2.5" />
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- SECTION: Job Details -->
+      <h3 class="section-title">Job Details</h3>
+      <mat-divider></mat-divider>
+      <div class="row">
+        <!-- <div class="col-md-6">
+          <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+            <mat-label>Company</mat-label>
+            <mat-select formControlName="companyId" (selectionChange)="getDepartmentByCompany()"
+              placeholder="Select company">
+              <mat-option *ngFor="let company of companyList" [value]="company.id">
+                {{ company.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div> -->
+
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+            <mat-label>Department</mat-label>
+            <mat-select formControlName="departmentId" placeholder="Select department">
+              <mat-option *ngFor="let dept of departmentList" [value]="dept.id">
+                {{ dept.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+            <mat-label>Designation</mat-label>
+            <mat-select formControlName="employeeDesignationId" placeholder="Select designation">
+              <mat-option *ngFor="let desig of employeeDesignationList" [value]="desig.id">
+                {{ desig.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <!-- <div class="col-md-6">
+          <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+            <mat-label>Interview Date</mat-label>
+            <input matInput type="date" formControlName="interviewDate" placeholder="Select interview date" />
+          </mat-form-field>
+        </div> -->
+
+        <!-- <div class="col-md-6">
+          <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+            <mat-label>Join After Days</mat-label>
+            <input matInput type="number" formControlName="joinAfterDays" placeholder="Number of days to join" />
+          </mat-form-field>
+        </div> -->
+
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+            <mat-label>Expected Join Date</mat-label>
+            <input matInput type="date" formControlName="joinDate" placeholder="Select join date" />
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- SECTION: Salary & Reference -->
+      <h3 class="section-title">Salary & Reference</h3>
+      <mat-divider></mat-divider>
+      <div class="row">
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+            <mat-label>Current Salary</mat-label>
+            <input matInput formControlName="currentSalary" type="number" placeholder="e.g. 35000" />
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+            <mat-label>Expected Salary</mat-label>
+            <input matInput formControlName="expectedSalary" type="number" placeholder="e.g. 50000" />
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+            <mat-label>Reference</mat-label>
+            <input matInput formControlName="reference" placeholder="Enter reference name or source" />
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+            <mat-label>Reason for Change</mat-label>
+            <input matInput formControlName="reason" placeholder="Why are they changing jobs?" />
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- SECTION: Interview Panel -->
+      <!-- <h3 class="section-title">Interview Panel</h3>
+      <mat-divider></mat-divider>
+      <div class="row">
+        <div class="col-md-12">
+          <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+            <mat-label>Select Interview Attendees</mat-label>
+            <mat-select formControlName="interviewAttendees" multiple placeholder="Choose panel members">
+              <mat-option *ngFor="let user of interviewAttendeesList" [value]="user.id">
+                {{ user.firstName }} {{ user.lastName }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div> -->
+
+      <!-- SECTION: Comments -->
+      <!-- <h3 class="section-title">Additional Comments</h3>
+      <mat-divider></mat-divider>
+      <div class="row">
+        <div class="col-md-12">
+          <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+            <mat-label>Comments</mat-label>
+            <textarea matInput formControlName="comments" rows="3" placeholder="Any notes or comments"></textarea>
+          </mat-form-field>
+        </div>
+      </div> -->
+
+      <!-- SECTION: Upload Picture -->
+      <h3 class="section-title">Documents</h3>
+      <mat-divider></mat-divider>
+      <div class="row">
+        <div class="col-md-12 text-center">
+          <input hidden type="file" #fileInput (change)="onFileBrowse($event)" multiple
+            accept="image/*,.pdf,.doc,.docx,.txt" />
+          <button mat-flat-button color="success" (click)="fileInput.click()">
+            Upload Documents <span class="required">*</span>
+          </button>
+        </div>
+
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-2" *ngFor="let media of documents; let i = index">
+              <div class="uploaded_doc_wrap" (click)="GetDocument($event, i, documentView)">
+                <div class="file_upload text-center">
+                  <i class="fa fa-remove remove_btn" (click)="removeImage(i)"></i>
+                  <!-- <img [src]="media.imageName ?? media.filePath" class="previewimg" /> -->
+
+                   <img 
+                    *ngIf="isImage(media.imageName || media.filePath); else fileIcon"
+                    [src]="media.imageName || media.filePath"
+                    class="previewimg" 
+                  />
+                  <ng-template #fileIcon>
+                    <!-- Show PDF icon if PDF, otherwise generic file icon -->
+                    <i
+                      [ngClass]="{
+                        'fa fa-file-pdf': isPdf(media.filePath),
+                        'fa fa-file': !isPdf(media.filePath)
+                      }"
+                      class="file-icon"
+                    ></i>
+                  </ng-template>
+
+                  <div class="progress-bar" [style.width.%]="media.FileProgress"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACTION BUTTONS -->
+      <mat-divider></mat-divider>
+      <div class="button-container text-center mt-3">
+        <button mat-flat-button color="success" type="button" (click)="SaveData()">Save</button>
+        <button mat-flat-button color="default" [mat-dialog-close]="true">Close</button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>
+
+<ng-template #documentView>
+  <div class="card">
+    <div class="card-body" style="height: 680px;">
+      <iframe width="100%" height="100%" frameBorder="0" [src]="urlSafe"></iframe>
+    </div>
+    <div class="card-footer">
+      <button mat-flat-button color="default" [mat-dialog-close]="true">
+        <span class="mat-button-wrapper">Close</span>
+      </button>
+    </div>
+  </div>
+</ng-template>

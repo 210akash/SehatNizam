@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="UnitOfWork\IUnitOfWorkCommon.cs" />
+    <Compile Remove="UnitOfWork\UnitOfWorkCommon.cs" />
+    <Compile Remove="UnitOfWork\UnitOfWorkCommons.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.0.90" />
+    <PackageReference Include="Dapper.Contrib" Version="2.0.78" />
+
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ERP.Entities\ERP.Entities.csproj" />
+  </ItemGroup>
+
+</Project>

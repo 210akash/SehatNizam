@@ -1,0 +1,187 @@
+<div class="card">
+    <div class="card-header">
+        <div class="header-container">
+            <div class="card-title">Print Sale Return</div>
+            <div>
+                <button mat-flat-button color="primary" type="button" class="print-button mr-2"
+                    (click)="printDocument()">
+                    <span class="mat-button-wrapper">Print</span>
+                </button>
+                <button mat-flat-button color="default" [mat-dialog-close]="true">
+                    <span class="mat-button-wrapper">Close</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="card-body" id="printDoc">
+        <div class="container printCont">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="row m-0 mb-3">
+                            <div class="col-md-5 left_side">
+                                <div class="logo mb-2">
+                                    <img [src]="this.data.element.createdBy?.department?.company?.logo" width="70px"
+                                        height="70px" alt="CompanyImage">
+                                    <span>{{this.data.element.createdBy?.department?.company?.name}}</span>
+                                </div>
+                                <table class="top_left">
+                                    <tr>
+                                        <th>Distributor:</th>
+                                        <td><b>{{this.data.element.dispatchOrder?.order?.dealership?.name}}</b></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Delivery Note Ref:</th>
+                                        <td><b>{{this.data.element.dispatchOrder?.dcCode}}</b></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Address:</th>
+                                        <td><b>{{this.data.element.dispatchOrder?.order?.dealership?.address}}</b></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Contact#</th>
+                                        <td><b>{{this.data.element.dispatchOrder?.order?.dealership?.phoneNo}}</b></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="col-md-12">
+                                    <h2 style="font-weight: 600; font-size: 1.5rem;"> 
+                                        <span style="border-bottom: 2px solid;">Sales Return Invoice</span>
+                                    </h2>
+                                </div>
+                            </div>
+                            <div class="col-md-4 right_side" style="margin-top: 10%;">
+                                <table class="top_right">
+                                    <tr>
+                                        <th>Sale Return No.</th>
+                                        <td>{{this.data.element.code}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Sale Return Date</th>
+                                        <td>{{this.data.element.createdDate | date : 'shortDate'}}</td>
+                                    </tr>
+                                      <tr>
+                                        <th>Warehouse</th>
+                                        <td>{{this.data.element.project?.name}}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="col-md-12 p-0">
+                            <table class="table_one mb-4">
+                                <colgroup>
+                                    <col span="1" style="width:10px">
+                                    <col span="1" style="width:230px">
+                                    <col span="1" style="width:100px">
+                                    <col span="1" style="width:100px">
+                                    <col span="1" style="width:100px">
+                                    <col span="1" style="width:100px">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th>Sr.#</th>
+                                        <th>Item</th>
+                                        <th>Dispatch Quantity</th>
+                                        <th>Return Quantity</th>
+                                        <th>Unit Price</th>
+                                        <th>Total Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let detail of this.data.element.saleReturnDetail; let i = index">
+                                        <td>
+                                            {{i + 1}}
+                                        </td>
+                                        <td>
+                                            {{detail.dispatchDetail?.orderItem?.item?.name}}
+                                        </td>
+                                        <td>
+                                            {{detail.dispatchDetail?.quantity}}
+                                        </td>
+                                        <td>
+                                            {{detail.quantity}}
+                                        </td>
+                                        <td>
+                                            {{detail.dispatchDetail.orderItem?.retailPrice }}
+                                        </td>
+                                        <td>
+                                            {{detail.dispatchDetail.orderItem?.retailPrice * detail.quantity | number :
+                                            '1.2-2'}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3" style="text-align:right;"><strong>Grand Total</strong></td>
+                                        <td>{{ this.qtyTotals }}</td>
+                                        <td colspan="2">Rs. {{ this.grandTotals | number:'1.0-0'}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                <div class="row m-0">
+                                    <div class="col-md-5 left_side">
+                                    </div>
+                                    <div class="col-md-2">
+                                    </div>
+                                    <div class="col-md-5 left_side">                                
+                                        <table class="top_left bottom_right">
+                                            <colgroup>
+                                                <col span="1" style="width:100px">
+                                                <col span="1" style="width:230px">
+                                            </colgroup>
+                                            <tbody>
+                                                <tr>
+                                                    <th>Distributor Margin:</th>
+                                                    <td><b>Rs. {{ this.distributorMarginTotals  | number:'1.0-0'   }}</b></td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Trade Margin:</th>
+                                                    <td><b>Rs. {{ this.tradeMarginTotals  | number:'1.0-0' }}</b></td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Trade Promo:</th>
+                                                    <td><b>Rs. {{ this.tradePromoTotals  | number:'1.0-0' }}</b></td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Grand Total:</th>
+                                                    <td><b>Rs. {{this.tgrandTotals  | number:'1.2-2'}}</b></td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Rounded Total:</th>
+                                                    <td><b>Rs. {{this.tgrandTotals | number:'1.0-0'}}</b></td>
+                                                </tr>
+                                                <tr>
+                                                    <th>In Words:</th>
+                                                    <td style="text-transform: capitalize;"><b>{{this.tgrandTotals    | numberToWords}} Rupees Only</b></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="print_date mt-4">
+                                <div><b>Printed By:</b></div>
+                                <div>{{this.data.element.createdBy.firstName + ' ' +
+                                    this.data.element.createdBy.lastName }}</div>
+                                <div><b>Print Date:</b></div>
+                                <div>{{currentDate}}</div>
+                                <div><b>Print Time:</b></div>
+                                <div>{{currentTime}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer">
+        <div class="button-container m-0">
+            <button mat-flat-button color="default" [mat-dialog-close]="true">
+                <span class="mat-button-wrapper">Close</span>
+            </button>
+        </div>
+    </div>
+</div>

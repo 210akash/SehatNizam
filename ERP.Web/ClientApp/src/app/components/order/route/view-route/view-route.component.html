@@ -1,0 +1,146 @@
+<div class="card">
+  <div class="card-header">
+    <h4 class="card-title">View Route</h4>
+  </div>
+  <div class="card-body">
+    <div class="col-md-12">
+
+      <form [formGroup]="viewRouteForm">
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-3">
+              <mat-form-field>
+                <mat-label>Zone</mat-label>
+                <input matInput placeholder="Zone" formControlName="zone" readonly />
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="mb-3">
+              <mat-form-field>
+                <mat-label>Territory</mat-label>
+                <input matInput placeholder="Territory" formControlName="territory" readonly />
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="mb-3">
+              <mat-form-field class="example-full-width">
+                <mat-label>Route Name</mat-label>
+                <input matInput placeholder="Route Name" formControlName="name" readonly />
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="mb-3">
+              <mat-form-field class="example-full-width">
+                <mat-label>Total Shops</mat-label>
+                <input matInput placeholder="Total Shops" formControlName="totalShops" readonly />
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+
+      </form>
+
+      <div class="col-md-12" *ngIf="dataSource?.length > 0">
+        <div class="table-responsive">
+          <h4><strong>Route Shops</strong></h4>
+          <table mat-table [dataSource]="dataSource" class="table table-bordered table-striped datatable">
+
+            <colgroup>
+              <col style="width: 10%;">
+              <col style="width: 20%;">
+              <col style="width: 60%;">
+              <col style="width: 10%;">
+            </colgroup>
+
+            <!--Sequence Column-->
+            <ng-container matColumnDef="sequenceNo">
+              <th *matHeaderCellDef class="text-dark"> Seq. No</th>
+              <td *matCellDef="let element"> {{element.sequenceNo}} </td>
+            </ng-container>
+
+            <!--Name Column-->
+            <ng-container matColumnDef="name">
+              <th *matHeaderCellDef class="text-dark"> Shop Name</th>
+              <td *matCellDef="let element"> {{element.shop?.name}} </td>
+            </ng-container>
+
+            <!--Address Column-->
+            <ng-container matColumnDef="address">
+              <th *matHeaderCellDef class="text-dark"> Address</th>
+              <td *matCellDef="let element"> {{element.shop?.address}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+              <th *matHeaderCellDef class="text-dark">Action</th>
+              <td *matCellDef="let element">
+                <button (click)="viewPinLocation(element)" class="btn btn-primary btn-sm" matTooltip="Pin Location">
+                  <i class="fa fa-map-marker"></i>
+                </button>
+                <button (click)="openDeleteRouteShopPopup(element, deleteRouteShopTemplate)"
+                  class="btn btn-danger btn-sm" matTooltip="Delete Route Shop">
+                  <i class="fa fa-trash"></i>
+                </button>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns;  sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="col-md-12 schedule-container">
+        <table>
+          <thead>
+            <tr>
+              <th>STORE NAME</th>
+              <th class="uppercase" *ngFor="let day of daysOfWeek">{{ day }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let store of gRoute?.territory?.shop">
+              <td>{{ store.name }}</td>
+              <!-- Loop through the days and create checkboxes for each store -->
+              <td *ngFor="let day of daysOfWeek">
+                <input type="checkbox" [(ngModel)]="storeSchedules[store.id][day]" disabled
+                  name="schedule-{{ store.id }}-{{ day }}" />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+  <div class="card-footer">
+    <div class="button-container">
+      <!-- <button class="btn btn-primary" data-bs-dismiss="modal" (click)="selectRouteShops()">
+        View Route Map
+      </button> -->
+      <button mat-flat-button color="default" [mat-dialog-close]="true">
+        <span class="mat-button-wrapper">Close</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<ng-template #deleteRouteShopTemplate>
+  <div class="card">
+    <div class="card-header">
+      <h4>Delete RouteShop</h4>
+    </div>
+    <div class="card-body">
+      <p>Are you sure you want to delete this RouteShop?</p>
+    </div>
+    <div class="card-footer">
+      <button class="btn btn-primary" (click)="deleteRouteShop()">Delete</button>
+      <button class="btn btn-danger" [mat-dialog-close]>Close</button>
+    </div>
+  </div>
+</ng-template>

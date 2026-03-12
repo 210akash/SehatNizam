@@ -1,0 +1,156 @@
+
+<div class="card">
+    <div class="card-header">
+        <div class="header-container">
+            <div class="card-title">Print Inspection</div>
+            <div>
+                <button  mat-flat-button color="primary" type="button" class="print-button mr-2" (click)="printDocument()">
+                    <span class="mat-button-wrapper">Print</span>
+                </button>
+                <button mat-flat-button color="default" [mat-dialog-close]="true">
+                    <span class="mat-button-wrapper">Close</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="card-body" id="printDoc">
+        <div class="container printCont">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="row m-0 mb-3">
+                            <div class="col-md-4 left_side">
+                                <div class="logo mb-4">
+                                    <img [src]="this.data.element.createdBy.department.company.logo" width="70px" height="70px" alt="CompanyImage">
+                                    <span>{{this.data.element.createdBy.department.company.name}}</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="col-md-12">
+                                    <h2 style="font-weight: 600;"> <span style="border-bottom: 2px solid;">Inspection</span> </h2>
+                                </div>
+                            </div>
+                            <div class="col-md-4 right_side">
+                                <table class="top_right">
+                                    <tr>
+                                        <th>Inspection No.</th>
+                                        <td>{{this.data.element.code}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Inspection Date</th>
+                                        <td>{{this.data.element.createdDate | date : 'shortDate'}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>IGP No.</th>
+                                        <td>{{this.data.element.igp.code}}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="col-md-12 p-0">
+                            <table class="table_one">
+                                <colgroup>
+                                    <col span="1" style="width:10px">
+                                    <col span="1" style="width:230px">
+                                    <col span="1" style="width:20px">
+                                    <col span="1" style="width:20px">
+                                    <col span="1" style="width:100px">
+                                    <col span="1" style="width:100px">
+                                </colgroup>
+                                <thead>
+                                <tr>
+                                    <th>Sr.#</th>
+                                    <th>Item</th>
+                                    <th>Received</th>
+                                    <th>Rejected</th>
+                                    <th>Reason</th>
+                                    <th>Remarks</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr *ngFor="let detail of this.data.element.inspectionDetail; let i = index">
+                                    <td>
+                                        {{i + 1}}
+                                    </td>
+                                    <td>
+                                      {{detail?.igpDetail?.purchaseOrderDetail?.purchaseDemandDetail?.item?.name|| ''}}
+                                    </td>
+                                    <td>
+                                        {{detail?.igpDetail?.received || ''}}
+                                    </td>
+                                    <td>
+                                      {{detail.rejected || ''}}
+                                    </td>
+                                    <td>
+                                      {{detail.rejectReason?.name || ''}}
+                                  </td>
+                                  <td>
+                                    {{detail.remarks || ''}}
+                                </td>
+                                </tr>
+                                <!-- <tr *ngFor="let blank of [].constructor(20 - this.data.element.inspectionDetail.length); let j = index">
+                                    <td>
+                                        {{this.data.element.igpDetails?.purchaseOrderDetail?.purchaseDemandDetail?.length + j + 1}}
+                                    </td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr> -->
+                                </tbody>
+                            </table>
+                            <div class="remarks mt-3">
+                                <span class="fw-bold" style="margin-right: 5px;">Remarks:</span>
+                                <span>{{this.data.element.remarks}}</span>
+                            </div>
+                            <table class="mt-3">
+                                <tbody><tr class="dates">
+                                    <td style="background-color:#d9d9d9;">
+                                        <p style="color: rgb(0, 0, 0); font-weight: 600; text-align: left;;">Prepared By</p>
+                                    </td>
+                                    <td style="background-color:#d9d9d9;">
+                                        <p style="color: rgb(0, 0, 0); font-weight: 600; text-align: left;;">Date</p>
+                                    </td>
+                                </tr>
+                                <tr class="sign">
+                                    <td class="">{{this.data.element.createdBy.firstName + ' ' + this.data.element.createdBy.lastName}}</td>
+                                    <td class="">{{this.data.element.createdDate | date:'shortDate'}}</td>
+                                </tr>
+                                <tr class="dates">
+                                    <td style="background-color:#d9d9d9;">
+                                        <p style="color: rgb(0, 0, 0); font-weight: 600; text-align: left;;">Posted By</p>
+                                    </td>
+                                    <td style="background-color:#d9d9d9;">
+                                        <p style="color: rgb(0, 0, 0); font-weight: 600; text-align: left;;">Date</p>
+                                    </td>
+                                </tr>
+                                <tr class="sign">
+                                  <td class="">{{this.data.element.modifiedBy.firstName + ' ' + this.data.element.modifiedBy.lastName}}</td>
+                                  <td class="">{{this.data.element.modifiedDate | date:'shortDate'}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                            <div class="print_date mt-5">
+                                <div><b>Print Date:</b></div>
+                                <div>{{currentDate}}</div>
+                                <div><b>Print Time:</b></div>
+                                <div>{{currentTime}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer">
+        <div class="button-container m-0">
+            <button mat-flat-button color="default" [mat-dialog-close]="true">
+              <span class="mat-button-wrapper">Close</span>
+            </button>
+          </div>
+    </div>
+</div>
+

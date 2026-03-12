@@ -1,0 +1,185 @@
+  <mat-card>
+    <mat-card-header>
+      <div class="header-container">
+        <mat-card-title>View Item</mat-card-title>
+        <mat-slide-toggle matTooltip="Group" [ngModel]="this.data.element?.isGroupItem" color="primary" [disabled]="true"
+        ></mat-slide-toggle>
+      </div>
+    </mat-card-header>
+    <mat-divider></mat-divider>
+    <mat-card-content>
+      <input type="hidden" formControlName="id" />
+      <div class="row justify-content-center">
+        <div class="col-md-3">
+          <div class="file_upload">
+            <div class="image_container">
+              <div class="file_upload_content text-center" *ngIf="this.data.element?.image != '' && this.data.element?.image != null">
+                <img class="file_upload_image" [src]="this.data.element?.image" alt="" />
+                <div class="image_title_wrap">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Code</mat-label>
+               <input matInput [value]="this.data.element?.code" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field class="form-field">
+            <mat-label>Category</mat-label>
+               <input matInput [value]="this.data.element?.itemType?.subCategory?.category?.code +' : '+  this.data.element?.itemType?.subCategory?.category?.name" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field class="form-field">
+            <mat-label>Sub Category</mat-label>
+               <input matInput [value]="this.data.element?.itemType?.subCategory?.code +' : '+  this.data.element?.itemType?.subCategory?.name" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field class="form-field">
+            <mat-label>Item Type</mat-label>
+               <input matInput [value]="this.data.element?.itemType?.code +' : '+  this.data.element?.itemType?.name" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-10">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Name</mat-label>
+               <input matInput [value]="this.data.element?.name" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-2">
+          <mat-form-field class="form-field">
+            <mat-label>Unit</mat-label>
+               <input matInput [value]="this.data.element?.uom?.name" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-2">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Min. Stock</mat-label>
+               <input matInput [value]="this.data.element?.recordLevel" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-2">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Rate</mat-label>
+               <input matInput [value]="this.data.element?.rate" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-2">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Weight</mat-label>
+               <input matInput [value]="this.data.element?.weight" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-2">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Length</mat-label>
+               <input matInput [value]="this.data.element?.length" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-2">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Height</mat-label>
+               <input matInput [value]="this.data.element?.height" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-2">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Width</mat-label>
+               <input matInput [value]="this.data.element?.width" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-2">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Model</mat-label>
+               <input matInput [value]="this.data.element?.model" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-2">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Make</mat-label>
+               <input matInput [value]="this.data.element?.make" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-2">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Excess Qty %</mat-label>
+               <input matInput [value]="this.data.element?.excessQtyPer" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-2">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Qty In Pack</mat-label>
+               <input matInput [value]="this.data.element?.quantityInPack" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Opening Qty</mat-label>
+               <input matInput [value]="this.data.element?.openingQty" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-12">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Description</mat-label>
+               <input matInput [value]="this.data.element?.description" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="row" *ngIf="this.data.element?.isGroupItem">
+        <div class="col-md-12">
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th colspan="3">Item Group</th>
+                </tr>
+                <tr>
+                  <th>Sr.#</th>
+                  <th>Name</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let detail of this.data.element?.itemGroup; let i = index">
+                  <!-- UOM Column -->
+                  <td class="text-center" style="width: 60px;">
+                    <div class="action_btns">
+                      <span>&#40;{{i + 1}}&#41;</span>
+                    </div>
+                  </td>
+                  <!-- Item Column -->
+                  <td>
+                    <mat-form-field style="width: 100%;">
+                      <mat-label>Name</mat-label>
+                     <input matInput [value]="detail?.name" tabindex="-1" readonly>
+                    </mat-form-field>
+                  </td>
+                  <td>
+                    <mat-form-field style="width: 100%;">
+                      <mat-label>Description</mat-label>
+                     <input matInput [value]="detail?.description" tabindex="-1" readonly>
+                    </mat-form-field>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="button-container">
+        <button mat-flat-button color="default" [mat-dialog-close]="true">
+          <span class="mat-button-wrapper">Close</span>
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>

@@ -1,0 +1,53 @@
+<div class="card">
+  <div class="card-header">
+    <h4 class="card-title">View Sales Target</h4>
+  </div>
+
+  <div class="card-body">
+    <div class="container">
+      <div class="region-card">
+        <h2>Region: {{ salesData?.region }}</h2>
+        <p class="total-target">Total Target: {{ salesData?.target }}</p>
+
+        <div *ngFor="let zone of salesData?.zones" class="zone-card">
+          <div class="node">
+            <h3>Zone: {{ zone?.zone }}</h3>
+            <p>Target: {{ zone?.target }}</p>
+
+            <div *ngFor="let area of zone?.areas" class="area-card">
+              <div class="node">
+                <h4>Area: {{ area?.area }}</h4>
+                <p>Target: {{ area?.target }}</p>
+
+                <div *ngFor="let territory of area?.territories" class="territory-card">
+                  <div class="node">
+                    <h5>Territory: {{ territory?.territory }}</h5>
+                    <p>Target: {{ territory?.target }}</p>
+
+                    <div *ngIf="territory?.items.length > 0" class="user-list">
+                      <h6>User List:</h6>
+                      <ul>
+                        <li *ngFor="let item of territory?.items" class="item">
+                          <strong>DSF:</strong> {{ item.user?.firstName }} {{ item.user?.lastName }} <br>
+                          <strong>Email:</strong> {{ item.user?.email }} <br>
+                          <strong>Phone:</strong> {{ item.user?.phoneNumber }} <br>
+                          <strong>Target:</strong> {{ item.target }}
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-footer">
+    <button [mat-dialog-close]="true" class="btn btn-secondary ml-2" data-bs-dismiss="modal">Close</button>
+  </div>
+</div>

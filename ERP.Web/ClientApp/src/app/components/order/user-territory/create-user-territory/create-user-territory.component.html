@@ -1,0 +1,109 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Map User Territory</mat-card-title>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+    <form [formGroup]="createUserTerritoryForm">
+      <div class="card-body">
+        <div class="row">
+
+          <div class="col-md-12">
+            <div class="mb-3">
+              <mat-form-field>
+                <mat-label>Roles</mat-label>
+                <mat-select formControlName="roleId" (selectionChange)="onRoleChange()">
+                  <mat-option [value]=''>-- Select --</mat-option>
+                  <mat-option *ngFor="let option of rolesList" [value]="option.id">{{option.name}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="col-md-12">
+            <div class="mb-3">
+              <mat-form-field>
+                <mat-label>Users</mat-label>
+                <mat-select formControlName="userId" (selectionChange)="onUserChange()">
+                  <mat-option [value]=''>-- Select --</mat-option>
+                  <mat-option *ngFor="let option of userList" [value]="option.id">{{option.firstName}}
+                    {{option.lastName}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="col-md-12" *ngIf="isRegionalRole">
+            <div class="mb-3">
+              <mat-form-field>
+                <mat-label>Region</mat-label>
+                <mat-select formControlName="regionId" (selectionChange)="getZoneByRegionId()">
+                  <mat-option [value]=0>-- Select --</mat-option>
+                  <mat-option *ngFor="let option of regionList" [value]="option.id">{{option.name}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="col-md-12" *ngIf="isZoneRole">
+            <div class="mb-3">
+              <mat-form-field>
+                <mat-label>Zone</mat-label>
+                <mat-select formControlName="zoneId" (selectionChange)="getAreaByZoneId()">
+                  <mat-option [value]=0>-- Select --</mat-option>
+                  <mat-option *ngFor="let option of zoneList" [value]="option.id">{{option.name}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col-md-12" *ngIf="isAreaRole">
+            <div class="mb-3">
+              <mat-form-field>
+                <mat-label>Area</mat-label>
+                <mat-select formControlName="areaId" (selectionChange)="getTerritoryByAreaId()">
+                  <mat-option [value]=0>-- Select --</mat-option>
+                  <mat-option *ngFor="let option of areaList" [value]="option.id">{{option.name}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="col-md-12" *ngIf="isTerritoryRole">
+            <div class="mb-3">
+              <mat-form-field>
+                <mat-label>Territory</mat-label>
+                <mat-select formControlName="territoryId">
+                  <mat-option [value]=0>-- Select --</mat-option>
+                  <mat-option *ngFor="let option of territoryList" [value]="option.id">{{option.name}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="col-md-12" *ngIf="f['roleId'].value === 'e86b297e-f032-4b74-50e2-08dd09491061' && f['territoryId'].value">
+            <mat-form-field>
+              <mat-label>Shop</mat-label>
+              <input matInput formControlName="shopName" [matAutocomplete]="auto" (keyup)="getShopsList($event);"
+                class="form-control" type="search" />
+              <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onShopSelected($event)">
+                <mat-option *ngFor="let shop of shopList" [value]="shop">
+                  {{ shop?.name }} : {{ shop?.address }}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
+
+        </div>
+      </div>
+      <mat-divider class="mt-2"></mat-divider>
+      <div class="button-container">
+        <button mat-flat-button color="success" type="button" (click)="saveUserTerritory()">
+          <span class="mat-button-wrapper">Save</span>
+        </button>
+        <button mat-flat-button color="default" [mat-dialog-close]="true">
+          <span class="mat-button-wrapper">Close</span>
+        </button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

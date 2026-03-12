@@ -1,0 +1,201 @@
+<ng-template #documentView>
+  <div class="card">
+    <div class="card-body" style="height: 700px;">
+      <iframe width="100%" height="100%" frameBorder="0" [src]="urlSafe"></iframe>
+    </div>
+    <div class="card-footer">
+      <button class="btn btn-danger" [mat-dialog-close]>Close</button>
+    </div>
+  </div>
+</ng-template>
+
+<form [formGroup]="createDealershipForm">
+  <mat-card>
+    <mat-card-header>
+      <div class="header-container">
+        <mat-card-title>Create Distributor</mat-card-title>
+        <mat-slide-toggle matTooltip="Active" formControlName="isActive" color="primary"></mat-slide-toggle>
+      </div>
+    </mat-card-header>
+
+    <mat-divider></mat-divider>
+
+    <mat-card-content>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mb-3">
+            <mat-form-field>
+              <mat-label>Region</mat-label>
+              <mat-select formControlName="regionId" (selectionChange)="[getZoneByRegionId(), getFilteredData()]">
+                <mat-option [value]=0>-- Select --</mat-option>
+                <mat-option *ngFor="let option of regionList" [value]="option.id">{{option.name}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mb-3">
+            <mat-form-field>
+              <mat-label>Zone</mat-label>
+              <mat-select formControlName="zoneId" (selectionChange)="[getAreaByZoneId(), getFilteredData()]">
+                <mat-option [value]=0>-- Select --</mat-option>
+                <mat-option *ngFor="let option of zoneList" [value]="option.id">{{option.name}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mb-3">
+            <mat-form-field>
+              <mat-label>Area</mat-label>
+              <mat-select formControlName="areaId" (selectionChange)="[getTerritoryByAreaId(), getFilteredData()]">
+                <mat-option [value]=0>-- Select --</mat-option>
+                <mat-option *ngFor="let option of areaList" [value]="option.id">{{option.name}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mb-3">
+            <mat-form-field>
+              <mat-label>Territory</mat-label>
+              <mat-select formControlName="territoryId" (selectionChange)="getFilteredData()">
+                <mat-option [value]=0>-- Select --</mat-option>
+                <mat-option *ngFor="let option of territoryList" [value]="option.id">{{option.name}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mb-3">
+            <mat-form-field>
+              <mat-label>Type</mat-label>
+              <mat-select formControlName="dealershipTypeId">
+                <mat-option *ngFor="let option of distributorTypeList" [value]="option.id">{{option.name}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mb-3">
+            <mat-form-field class="example-full-width">
+              <mat-label>Distributor Name</mat-label>
+              <input matInput placeholder="Distributor Name" formControlName="name" />
+            </mat-form-field>
+          </div>
+        </div>
+      
+         <div class="col-md-6">
+          <div class="mb-3">
+            <mat-form-field class="example-full-width">
+              <mat-label>Owner Name</mat-label>
+              <input matInput placeholder="Owner Name" formControlName="ownerName" />
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field class="example-full-width">
+            <mat-label>CNIC</mat-label>
+            <input matInput [inputMask]="this.cnicInputMask" formControlName="cnic" />
+          </mat-form-field>
+        </div>
+         
+          <div class="col-md-6">
+          <div class="mb-3">
+            <mat-form-field class="example-full-width">
+              <mat-label>Phone No</mat-label>
+              <input matInput placeholder="Phone No" formControlName="phoneNo" [inputMask]="this.phoneNoInputMask" />
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mb-3">
+            <mat-form-field class="example-full-width">
+              <mat-label>Secondary Phone No</mat-label>
+              <input matInput placeholder="Secondary Phone No" formControlName="secondaryPhoneNo"
+                [inputMask]="this.phoneNoInputMask" />
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div class="mb-3">
+            <mat-form-field class="example-full-width">
+              <mat-label>Address</mat-label>
+              <textarea matInput placeholder="Address" rows="4" formControlName="address">
+              </textarea>
+            </mat-form-field>
+          </div>
+        </div>
+         <div class="col-md-12">
+          <div class="mb-3">
+            <mat-form-field class="example-full-width">
+              <mat-label>Remarks</mat-label>
+              <textarea matInput placeholder="Remarks" rows="4" formControlName="remarks">
+              </textarea>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div class="mb-3">
+            <mat-form-field class="example-full-width">
+              <mat-label>Landmark</mat-label>
+              <input matInput placeholder="Landmark" formControlName="landmark" />
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div class="mb-3">
+            <mat-form-field class="example-full-width">
+              <mat-label>Pin Location</mat-label>
+              <textarea matInput placeholder="Pin Location" rows="3" formControlName="pinLocation" readonly>
+              </textarea>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div class="mb-3">
+            <button mat-flat-button color="success" class="btn btn-primary" (click)="selectPinLocation()">
+              <i class="fa fa-map-marker"></i> Select Pin Location
+            </button>
+          </div>
+        </div>
+
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-4 mt-5 border-top">
+              <span class="btn btn-rose btn-file w-100">
+                <span class="fileinput-new">Select Images</span>
+                <input type="file" name="" accept=".jpeg, .jpg, .png" multiple
+                  (change)="onDocumentSourceChange($event)">
+              </span>
+            </div>
+            <div class="col-md-12 mt-3">
+              <div class="d-inline-flex flex-wrap w-100">
+                <div class="uploaded_doc_wrap" *ngFor="let document of this.documents; let dIndex = index">
+                  <div class="file_upload text-center doucment_wrap">
+                    <i class="fa fa-remove remove_btn text-danger" (click)="onDocumentSourceRemove($event,dIndex)"></i>
+                    <div class="w-100 d-inline-block" (click)="GetDocument($event, dIndex, documentView)">
+                      <div class="fa fa-file-text-o"></div>
+                      <div class="" style="font-size: 12px; font-weight: 900;margin-left: 10px">
+                        {{document?.id != 0 ? document?.imageName?.split('/assets/Files/')[1] : document?.imageName }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+       <mat-divider></mat-divider>
+      <div class="button-container">
+        <button mat-flat-button color="success" type="button" (click)="saveDealership()">
+          <span class="mat-button-wrapper">Save</span>
+        </button>
+        <button mat-flat-button color="default" [mat-dialog-close]="true">
+          <span class="mat-button-wrapper">Close</span>
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</form>

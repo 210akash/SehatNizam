@@ -1,0 +1,187 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Receive Dispatch List</mat-card-title>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+
+    <div class="col-md-12">
+      <form [formGroup]="receiveDispatchForm">
+        <div class="col-md-12">
+          <h3>Distributor: {{ dispatchList[0]?.order?.dealership?.name }}</h3>
+        </div>
+
+        <div class="col-md-12">
+          <!-- <div class="order-dispatchs-container">
+            <div *ngFor="let dispatchOrder of dispatchList; let formsIndex = index" class="order-dispatch-item">
+              <div class="row">
+
+                <div class="col-md-6">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <b>Order ID: </b>
+                      <p class="m-0" style="color:red"> {{ dispatchOrder.orderId }} </p>
+                    </div>
+                    <div class="col-md-4">
+                      <b>Bilty No: </b>
+                      <p class="m-0" style="color:red"> {{ dispatchOrder.dispatch?.biltyNo }} </p>
+                    </div>
+                    <div class="col-md-4">
+                      <b>Freight Charges: </b>
+                      <p class="m-0" style="color:red"> {{ dispatchOrder.dispatch?.freightCharges }} </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div *ngIf="dispatchOrder.receivedDate != null">Received</div>
+                  <div *ngIf="dispatchOrder.receivedDate == null">
+                    <mat-form-field class="example-full-width">
+                      <input matInput placeholder="Delivery Challan Code" formControlName="deliveryChallanCode" />
+                    </mat-form-field>
+                  </div>
+                </div>
+
+                <div class="col-md-2">
+                  <button color="primary" mat-mini-fab *ngIf="dispatchOrder.receivedDate == null"
+                    (click)="receiveStockConfirm(this.statusEnum.Received)" matTooltip="Receive Dispatch"
+                    class="btn btn-success btn-sm ml-2"><i class="fa fa-download"></i></button>
+                </div>
+
+              </div>
+            </div>
+          </div> -->
+          <div class="order-dispatchs-container">
+            <div *ngFor="let dispatchOrder of dispatchList; let index = index" class="order-dispatch-item">
+              <div class="order-row">
+                <!-- Order Details -->
+                <div>
+                  <b>Order No: </b> <span class="highlight">{{ dispatchOrder.orderId }}</span>
+                </div>
+                <div>
+                  <b>Dispatch No: </b> <span class="highlight">{{ dispatchOrder.dispatchId }}</span>
+                </div>
+                <div>
+                  <b>Dispatch Date: </b> <span class="highlight">{{ dispatchOrder.dispatch?.createdDate | date:
+                    'mediumDate' }}</span>
+                </div>
+                <!-- Delivery Challan Code Input -->
+                <div *ngIf="dispatchOrder.statusId == this.statusEnum.Dispatched">
+                  <input type="text" class="input-box" placeholder="Delivery Challan Code"
+                    formControlName="deliveryChallanCode">
+                </div>
+                <div *ngIf="dispatchOrder.statusId == this.statusEnum.Received" class="received-badge">Received</div>
+
+                <!-- Receive Button -->
+                <button *ngIf="dispatchOrder.statusId == this.statusEnum.Dispatched" (click)="receiveDispatch(dispatchOrder)"
+                  class="receive-btn">
+                  <i class="fa fa-download"></i> Receive
+                </button>
+
+                <button (click)="viewDispatch(dispatchOrder, receiveViewTemplate)" class="receive-btn">
+                  <i class="fa fa-eye"></i> View
+                </button>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <mat-divider></mat-divider>
+        <div class="col-md-12">
+          <div class="button-container">
+            <button mat-flat-button color="default" [mat-dialog-close]="true" style="margin-left: 10px;">
+              <span class="mat-button-wrapper">Close</span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+  </mat-card-content>
+</mat-card>
+
+<ng-template #receiveViewTemplate>
+  <div class="card">
+    <div class="card-header">
+      <h4 class="m-0">View Dispatch</h4>
+    </div>
+    <div class="card-body">
+
+      <!-- Dispatch Details -->
+      <div class="dispatch-info">
+        <div class="info-item">
+          <p class="label">Dispatch No.</p>
+          <span>{{ this.gDispatchOrder.dispatch.code }}</span>
+        </div>
+        <div class="info-item">
+          <p class="label">Dispatch Date</p>
+          <span>{{ this.gDispatchOrder.dispatch.createdDate | date : 'mediumDate' }}</span>
+        </div>
+        <div class="info-item">
+          <p class="label">Vehicle</p>
+          <span>{{ this.gDispatchOrder.dispatch.vehicle?.vehicleName + ' : ' +
+            this.gDispatchOrder.dispatch.vehicle?.registrationNumber }}</span>
+        </div>
+        <div class="info-item">
+          <p class="label">Bilty No</p>
+          <span>{{ this.gDispatchOrder.dispatch.biltyNo }}</span>
+        </div>
+        <div class="info-item">
+          <p class="label">Freight Charges</p>
+          <span>{{ this.gDispatchOrder.dispatch.freightCharges }}</span>
+        </div>
+        <div class="info-item">
+          <p class="label">DC Code</p>
+          <span>{{ this.gDispatchOrder.dcCode }}</span>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="table-container">
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th>Sr.#</th>
+              <th>Item</th>
+              <th>Shipped</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let detail of this.gDispatchOrder.dispatchDetail; let j = index">
+              <td>{{ j + 1 }}</td>
+              <td>{{ detail.orderItem?.item?.name || 'N/A' }}</td>
+              <td>{{ detail.quantity || 'N/A' }}</td>
+            </tr>
+          </tbody>
+           <tfoot>
+              <tr>
+                <td>Total</td>
+                <td></td>
+                <td>
+                 {{ getTotalQuantity() }}
+                </td>
+              </tr>
+            </tfoot>
+        </table>
+      </div>
+
+    </div>
+    <mat-divider></mat-divider>
+    <div class="button-container">
+      <button mat-flat-button color="default" [mat-dialog-close]="true" style="margin: 0 10px 10px 0;">
+        <span class="mat-button-wrapper">Close</span>
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+
+<ng-template #confirmationDialog let-dialogRef="dialogRef">
+  <h3 mat-dialog-title>Are you sure you want to receive?</h3>
+  <div mat-dialog-actions>
+    <button mat-flat-button color="default" (click)="dialogRef.close(false)">Cancel</button>
+    <button mat-flat-button color="success" (click)="dialogRef.close(true)">Confirm</button>
+  </div>
+</ng-template>

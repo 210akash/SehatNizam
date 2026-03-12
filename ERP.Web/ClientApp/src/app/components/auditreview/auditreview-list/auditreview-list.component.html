@@ -1,0 +1,139 @@
+<div class="mat-elevation-z8 table-responsive">
+  <table mat-table [dataSource]="dataSource" matSort>
+
+    <!-- Columns -->
+
+    <ng-container matColumnDef="itemType">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> AuditReview </th>
+      <td mat-cell *matCellDef="let element"> {{ element.itemType.code }} : {{ element.itemType.name }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="code">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Code </th>
+      <td mat-cell *matCellDef="let element"> {{ element.id }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="createdDate">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Created Date </th>
+      <td mat-cell *matCellDef="let element"> {{ element.createdDate | date:'shortDate' }} </td>
+    </ng-container>
+
+
+    <ng-container matColumnDef="distributor">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Distributor </th>
+      <td mat-cell *matCellDef="let element"> {{ element.dealership.name }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="processedDate">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Processed Date </th>
+      <td mat-cell *matCellDef="let element"> {{ getLatestOrderProcessByStatus(element, 15)?.createdDate | date:'short'
+        }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="accountrevieweddate">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Account Reviewed Date </th>
+      <td mat-cell *matCellDef="let element"> {{ getLatestOrderProcessByStatus(element, 20)?.createdDate | date:'short'
+        }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="approvedate">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Approve Date </th>
+      <td mat-cell *matCellDef="let element"> {{ getLatestOrderProcessByStatus(element, 170)?.createdDate | date:'short'
+        }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="confirmdate">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Confirm Date </th>
+      <td mat-cell *matCellDef="let element"> {{ getLatestOrderProcessByStatus(element, 30)?.createdDate | date:'short'
+        }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="processedBy">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Processed By</th>
+      <td mat-cell *matCellDef="let element"> {{ getLatestOrderProcessByStatus(element, 15)?.createdBy?.firstName + ' '
+        + getLatestOrderProcessByStatus(element, 15)?.createdBy?.lastName }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="accountreviewedby">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Account Reviewed By</th>
+      <td mat-cell *matCellDef="let element"> {{ getLatestOrderProcessByStatus(element, 20)?.createdBy?.firstName + ' '
+        + getLatestOrderProcessByStatus(element, 20)?.createdBy?.lastName }} </td>
+    </ng-container>
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
+      <td mat-cell *matCellDef="let element"> {{ element.orderStatus?.title }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="approveby">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Approve By</th>
+      <td mat-cell *matCellDef="let element"> {{ getLatestOrderProcessByStatus(element, 170)?.createdBy?.firstName + ' '
+        + getLatestOrderProcessByStatus(element, 170)?.createdBy?.lastName }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="confirmby">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Confirm By</th>
+      <td mat-cell *matCellDef="let element"> {{ getLatestOrderProcessByStatus(element, 30)?.createdBy?.firstName + ' '
+        + getLatestOrderProcessByStatus(element, 30)?.createdBy?.lastName }} </td>
+    </ng-container>
+
+    <!-- Actions column definition -->
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef style="width: 11%;"> Actions </th>
+      <td mat-cell *matCellDef="let element">
+        <div class="action_btns">
+
+          <!-- <button mat-mini-fab matTooltip="View"  *ngIf="element.orderStatusId == this.statusEnum.Confirm"  color="dark" (click)="viewAuditReviewDialog(element)">
+            <mat-icon aria-label="View">visibility</mat-icon>
+          </button> -->
+
+          <button mat-mini-fab matTooltip="Process"
+            *ngIf="element.orderStatusId == this.statusEnum.InProcess && (roleList?.includes('accounts manager') || roleList?.includes('accounts assistant'))"
+            color="success" (click)="processAuditReviewDialog(element)">
+            <mat-icon aria-label="Post">send</mat-icon>
+          </button>
+
+          <button mat-mini-fab matTooltip="Process"
+            *ngIf="element.orderStatusId == this.statusEnum.AccountReviewed && roleList?.includes('accounts manager')"
+            color="success" (click)="processAuditReviewDialog(element)">
+            <mat-icon aria-label="Post">send</mat-icon>
+          </button>
+
+          <button mat-mini-fab matTooltip="Approve"
+            *ngIf="element.orderStatusId == this.statusEnum.ManagerApproved && roleList?.includes('audit')"
+            color="success" (click)="processAuditReviewDialog(element)">
+            <mat-icon aria-label="Post">send</mat-icon>
+          </button>
+
+
+          <button mat-mini-fab matTooltip="View Order"
+            *ngIf="element.orderStatusId >= 30 && element.orderStatusId <= 50" color="success"
+            (click)="processAuditReviewDialog(element)">
+            <mat-icon aria-label="View">visibility</mat-icon>
+          </button>
+
+          <button color="primary" mat-mini-fab (click)="openOrderHistoryDialog(element)" matTooltip="Order History"
+            class="btn btn-success btn-sm ml-2"><i class="fa fa-history"></i></button>
+
+          <!-- <button mat-mini-fab matTooltip="Approve" *ngIf="element.orderStatusId == this.statusEnum.AccountReviewed && roleList?.includes('store manager')"
+            color="success" (click)="approveAuditReviewDialog(element)">
+            <mat-icon aria-label="Delete">send</mat-icon>
+          </button> -->
+
+          <!-- <button mat-mini-fab matTooltip="Print" *ngIf="element.orderStatusId == 3" color="success"
+            (click)="printAuditReviewDialog(element)">
+            <mat-icon aria-label="Delete">print</mat-icon>
+          </button> -->
+        </div>
+      </td>
+    </ng-container>
+
+    <!-- Table rows -->
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+  <mat-divider></mat-divider>
+  <!-- Paginator -->
+  <mat-paginator #paginator [length]="totalRows" [pageIndex]="currentPage" [pageSize]="take"
+    [pageSizeOptions]="pageSizeOptions" (page)="pageChanged($event)" aria-label="Select page">
+  </mat-paginator>
+</div>

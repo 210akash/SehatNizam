@@ -1,0 +1,289 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title> Delete Interview </mat-card-title>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+
+    <!-- SECTION: Interview History -->
+    <h3 class="section-title m-0">Interview History ({{dataSource.length}})</h3>
+    <mat-divider></mat-divider>
+    <div class="row">
+      <div class="col-md-12 text-center">
+        <div class="mat-elevation-z8 table-responsive">
+
+          <table mat-table [dataSource]="dataSource" matSort>
+
+            <colgroup>
+                <col span="1" style="width: 5%"/>
+                <col span="1" style="width: 15%"/>
+                <col span="1" style="width: 2%"/>
+                <col span="1" style="width: 15%"/>
+                <col span="1" style="width: 7%"/>
+                <col span="1" style="width: 7%"/>
+                <col span="1" style="width: 7%"/>
+            </colgroup>
+
+            <ng-container matColumnDef="interviewDate">
+              <th mat-header-cell *matHeaderCellDef> Interview Date </th>
+              <td mat-cell *matCellDef="let element"> {{ element.interviewDate | date: 'medium' }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="attendees">
+                <th mat-header-cell *matHeaderCellDef> Attendees </th>
+                <td mat-cell *matCellDef="let element"> {{ getAttendeesString(element) }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="joinAfterDays">
+              <th mat-header-cell *matHeaderCellDef> Days </th>
+              <td mat-cell *matCellDef="let element"> {{ element.joinAfterDays }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="comments">
+              <th mat-header-cell *matHeaderCellDef> Comments </th>
+              <td mat-cell *matCellDef="let element"> {{ element.comments }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef> Status </th>
+              <td mat-cell *matCellDef="let element"> {{ element.status?.title }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="createdDate">
+              <th mat-header-cell *matHeaderCellDef> Created Date </th>
+              <td mat-cell *matCellDef="let element"> {{ element.createdDate | date: 'medium' }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="createdBy">
+              <th mat-header-cell *matHeaderCellDef> Created By </th>
+              <td mat-cell *matCellDef="let element"> {{ element.createdBy?.firstName }} {{ element.createdBy?.lastName
+                }} </td>
+            </ng-container>
+
+            <!-- Table rows -->
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+
+          <!-- <mat-divider></mat-divider> -->
+          <!-- Paginator -->
+          <!-- <mat-paginator #paginator [length]="totalRows" [pageIndex]="currentPage" [pageSize]="pageSize"
+            [pageSizeOptions]="pageSizeOptions" (page)="pageChanged($event)" aria-label="Select page">
+          </mat-paginator> -->
+
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION: Personal Information -->
+    <h3 class="section-title">Personal Information</h3>
+    <mat-divider></mat-divider>
+    <div class="row">
+      <div class="col-md-6">
+        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+          <mat-label>Candidate Code</mat-label>
+          <input matInput [value]="this.data.element.code" readonly />
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-6">
+        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+          <mat-label>Full Name</mat-label>
+          <input matInput [value]="this.data.element.name" readonly />
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-6">
+        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+          <mat-label>Mobile Number</mat-label>
+          <input matInput [value]="this.data.element.mobile" readonly />
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-6">
+        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+          <mat-label>Email Address</mat-label>
+          <input matInput [value]="this.data.element.email" readonly />
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-12">
+        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+          <mat-label>Personal Details</mat-label>
+          <textarea matInput [value]="this.data.element.personalDetail" rows="3"></textarea>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- SECTION: Education & Experience -->
+    <h3 class="section-title">Education & Experience</h3>
+    <mat-divider></mat-divider>
+    <div class="row">
+      <div class="col-md-6">
+        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+          <mat-label>Education</mat-label>
+          <input matInput [value]="this.data.element.employeeEducation?.name" readonly />
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-6">
+        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+          <mat-label>Experience (Years)</mat-label>
+          <input matInput [value]="this.data.element.experience" readonly />
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- SECTION: Job Details -->
+    <h3 class="section-title">Job Details</h3>
+    <mat-divider></mat-divider>
+    <div class="row">
+      <div class="col-md-6">
+        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+          <mat-label>Company</mat-label>
+          <input matInput [value]="this.data.element.company?.name" readonly />
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-6">
+        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+          <mat-label>Department</mat-label>
+          <input matInput [value]="this.data.element.department?.name" readonly />
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-6">
+        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+          <mat-label>Designation</mat-label>
+          <input matInput [value]="this.data.element.employeeDesignation?.name" readonly />
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-6">
+        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+          <mat-label>Expected Join Date</mat-label>
+          <input matInput type="date" [value]="this.data.element.joinDate" readonly />
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- SECTION: Salary & Reference -->
+    <h3 class="section-title">Salary & Reference</h3>
+    <mat-divider></mat-divider>
+    <div class="row">
+      <div class="col-md-6">
+        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+          <mat-label>Current Salary</mat-label>
+          <input matInput type="number" [value]="this.data.element.currentSalary" readonly />
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-6">
+        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+          <mat-label>Expected Salary</mat-label>
+          <input matInput type="number" [value]="this.data.element.expectedSalary" readonly />
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-6">
+        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+          <mat-label>Reference</mat-label>
+          <input matInput [value]="this.data.element.reference" readonly />
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-6">
+        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+          <mat-label>Reason for Change</mat-label>
+          <input matInput [value]="this.data.element.reason" readonly />
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- SECTION: Interview Panel -->
+    <!-- <h3 class="section-title">Interview Panel</h3>
+    <mat-divider></mat-divider>
+    <div class="row">
+      <div class="col-md-12">
+        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+          <mat-label>Select Interview Attendees</mat-label>
+          <mat-select formControlName="interviewAttendees" multiple placeholder="Choose panel members">
+            <mat-option *ngFor="let user of interviewAttendeesList" [value]="user.id">
+              {{ user.firstName }} {{ user.lastName }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div> -->
+
+    <!-- SECTION: Comments -->
+    <!-- <h3 class="section-title">Additional Comments</h3>
+    <mat-divider></mat-divider>
+    <div class="row">
+      <div class="col-md-12">
+        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+          <mat-label>Comments</mat-label>
+          <textarea matInput rows="3" [value]="this.data.element.comments"></textarea>
+        </mat-form-field>
+      </div>
+    </div> -->
+
+    <!-- <img src="{{this.data.element.logo}}" class="previewimg"> -->
+
+    <!-- SECTION: Upload Picture -->
+    <h3 class="section-title">Documents</h3>
+    <mat-divider></mat-divider>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-2" *ngFor="let media of documents; let i = index">
+            <div class="uploaded_doc_wrap" (click)="GetDocument($event, i, documentView)">
+              <div class="file_upload text-center">
+                <!-- <img [src]="media.imageName ?? media.filePath" class="previewimg" /> -->
+
+                <img 
+                    *ngIf="isImage(media.imageName || media.filePath); else fileIcon"
+                    [src]="media.imageName || media.filePath"
+                    class="previewimg" 
+                  />
+                  <ng-template #fileIcon>
+                    <!-- Show PDF icon if PDF, otherwise generic file icon -->
+                    <i
+                      [ngClass]="{
+                        'fa fa-file-pdf': isPdf(media.filePath),
+                        'fa fa-file': !isPdf(media.filePath)
+                      }"
+                      class="file-icon"
+                    ></i>
+                  </ng-template>
+
+                <div class="progress-bar" [style.width.%]="media.FileProgress"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <mat-divider></mat-divider>
+    <div class="button-container">
+      <button mat-flat-button color="success" type="button" (click)="delete()">Delete</button>
+      <button mat-flat-button color="default" [mat-dialog-close]="true">
+        <span class="mat-button-wrapper">Close</span>
+      </button>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<ng-template #documentView>
+  <div class="card">
+    <div class="card-body" style="height: 680px;">
+      <iframe width="100%" height="100%" frameBorder="0" [src]="urlSafe"></iframe>
+    </div>
+    <div class="card-footer">
+      <button mat-flat-button color="default" [mat-dialog-close]="true">
+        <span class="mat-button-wrapper">Close</span>
+      </button>
+    </div>
+  </div>
+</ng-template>

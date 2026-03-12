@@ -1,0 +1,30 @@
+<div class="card">
+    <div class="card-header">
+        <h4 class="card-title">{{ this.data.element.caption }}</h4>
+    </div>
+    <div id="map"></div>
+    
+    <div *ngIf="this.selectedMarkers.length > 0" class="route-container">
+        <h5>Selected Route</h5>
+        <ul class="route-list">
+            <li *ngFor="let shop of this.selectedMarkers; let i = index" class="route-item">
+                <div class="route-step">
+                    <span class="route-number">{{ shop.sequence }}</span>
+                    <span class="shop-name">{{ shop.name }}</span>
+                </div>
+                <div *ngIf="i < this.selectedMarkers.length - 1" class="route-arrow">
+                    &#8594; <!-- Right arrow to indicate direction -->
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div class="card-footer">
+        <button *ngIf="this.selectedMarkers.length > 0 && this.data.element?.isViewOnly == false" class="btn btn-success" (click)="SaveData()">
+            Save
+        </button>
+        <button [mat-dialog-close]="false" class="btn btn-danger ml-2">
+            Close
+        </button>
+    </div>
+</div>

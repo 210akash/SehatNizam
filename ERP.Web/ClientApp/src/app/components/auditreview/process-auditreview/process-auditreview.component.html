@@ -1,0 +1,255 @@
+<mat-card>
+  <mat-card-header>
+    <div class="header-container">
+      <mat-card-title>Process Account Review (Sale)</mat-card-title>
+      <span class="badge badge-created" matTooltip="Status">{{this.data.element.orderStatus.title}}</span>
+    </div>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+    <div class="row">
+      <div class="col-md-2 col-lg-2">
+        <mat-form-field>
+          <mat-label>Order No.</mat-label>
+          <input matInput [value]="this.data.element.id" tabindex="-1" readonly>
+        </mat-form-field>
+      </div>
+      <div class="col-md-2 col-lg-2">
+        <mat-form-field>
+          <mat-label>Order Date</mat-label>
+          <input matInput [value]="this.data.element.createdDate | date : 'shortDate'" tabindex="-1" readonly>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-4 col-lg-4">
+        <mat-form-field class="form-field">
+          <mat-label>Distributor</mat-label>
+          <input matInput [value]="this.data.element.dealership?.name" tabindex="-1" readonly>
+        </mat-form-field>
+      </div>
+      <div class="col-md-4 col-lg-4">
+        <mat-form-field class="form-field">
+          <mat-label>Address</mat-label>
+          <input matInput [value]="this.data.element.dealership?.address" tabindex="-1" readonly>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Sr.#</th>
+            <th>Image</th>
+            <th>Item Name</th>
+            <th>Quantity</th>
+            <th>Total Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let detail of this.data.element.orderItems; let i = index">
+            <td style="width: 10px;">
+              {{i + 1}}
+            </td>
+            <td style="width: 10px;">
+              <img [src]="detail.item.image" alt="{{ detail.item.image }}" class="product-image">
+            </td>
+            <td>
+              <p class="product-name">{{ detail.item.name }}</p>
+              <p class="product-volume">{{ detail.item.volume }} ml ({{detail.item.itemType.name }})</p>
+              <p class="product-quantity-pack">{{ detail.item.quantityInPack }} Pcs</p>
+              <p class="product-quantity-pack">D.P {{ detail.distributorPrice }}</p>
+            </td>
+            <td style="width: 50px;">
+              {{detail.quantity || ''}}
+            </td>
+            <td style="width: 70px;">
+              {{detail.distributorPrice * detail.quantity }}
+            </td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <th colspan="3">Total : </th>
+            <th colspan="1">{{this.totalQuantity}}</th>
+            <th colspan="1">{{this.billingAmount}}</th>
+          </tr>
+          <tr style="color:red">
+            <th colspan="3" style="border-right: 0;">Balance : </th>
+            <th colspan="1" style="border-left: 0;"></th>
+            <th colspan="1">{{currentBalance}}</th>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <mat-divider></mat-divider>
+
+
+
+    <form [formGroup]="accountReviewForm">
+      <mat-card>
+        <mat-card-header>
+          <div class="header-container">
+            <mat-card-title>Transaction Details</mat-card-title>
+            <button color="primary" mat-mini-fab (click)="redirectToaccountledger()" matTooltip="Account Ledger"
+              class="btn btn-success btn-sm ml-2"><i class="fa fa-book"></i></button>
+            <!-- <mat-slide-toggle matTooltip="Is Ledger Reflect" (change)="toggleFields()"
+              formControlName="isTransactionLedgerEntry" color="primary"></mat-slide-toggle> -->
+          </div>
+        </mat-card-header>
+        <mat-divider></mat-divider>
+        <mat-card-content>
+          <div class="row mt-2">
+            <div class="col-md-12">
+              <div class="row">
+                <div class="col-md-3">
+                  <div class="d-inline-flex flex-wrap w-100">
+                    <div class="uploaded_doc_wrap" *ngFor="let document of this.documents; let dIndex = index">
+                      <div class="file_upload text-center doucment_wrap">
+                        <div class="w-100 d-inline-block" (click)="GetDocument($event, dIndex, documentView)">
+                          <!-- <div class="fa fa-file-text-o"></div>
+                              <div class="" style="font-size: 12px; font-weight: 900;margin-left: 10px">
+                                {{document?.id != 0 ? document?.imageName?.split('/assets/Files/')[1] : document?.imageName }}
+                              </div> -->
+                          <img style="width: -webkit-fill-available;" src="{{ document?.imageName }}">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- <div class="row" *ngIf="isFieldsVisible">
+
+            <div class="col-md-3">
+              <mat-form-field class="form-field">
+                <mat-label>Bank</mat-label>
+                <mat-select formControlName="bank">
+                  <mat-option *ngFor="let account of bankAccountList" [value]="account.id">
+                    {{ account.code }} : {{ account.name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+            </div>
+
+            <div class="col-md-3">
+              <mat-form-field style="width: 100%;">
+                <mat-label>Transaction ID</mat-label>
+                <input matInput formControlName="transactionId" type="text">
+              </mat-form-field>
+            </div>
+
+
+            <div class="col-md-3">
+              <mat-form-field style="width: 100%;">
+                <mat-label>Amount</mat-label>
+                <input matInput formControlName="amount" type="number" min="0" step="1"
+                  (keydown)="preventDecimal($event)">
+              </mat-form-field>
+            </div>
+          </div> -->
+          <div class="row">
+            <div class="col-md-12 mt-2"
+              *ngIf="this.data.element.orderStatusId == 20 || this.data.element.orderStatusId == 30">
+              <mat-form-field style="width: 100%;">
+                <mat-label>Account Assistant Comments</mat-label>
+                <input matInput [value]="this.getFilteredOrderComments(20)" type="text" readonly>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-12 mt-2" *ngIf="this.data.element.orderStatusId == 30">
+              <mat-form-field style="width: 100%;">
+                <mat-label>Account Manager Comments</mat-label>
+                <input matInput [value]="this.getFilteredOrderComments(30)" type="text" readonly>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-12"
+              *ngIf="this.data.element.orderStatusId == 15 || this.data.element.orderStatusId == 20">
+              <mat-form-field style="width: 100%;">
+                <mat-label>Comments</mat-label>
+                <textarea matInput rows="2" formControlName="description">
+              </textarea>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <mat-divider></mat-divider>
+          <div class="button-container">
+            <button
+              *ngIf="(this.data.element.orderStatusId == this.statusEnum.AccountReviewed || this.data.element.orderStatusId == this.statusEnum.InProcess || this.data.element.orderStatusId == this.statusEnum.ManagerApproved) && this.currentBalance > 0 && this.currentBalance >= this.billingAmount"
+              mat-flat-button color="success" type="button" (click)="SaveData()">
+              <span class="mat-button-wrapper"
+              *ngIf="this.data.element.orderStatusId == this.statusEnum.ManagerApproved">Order Confirm</span>
+              <span class="mat-button-wrapper"
+                *ngIf="this.data.element.orderStatusId == this.statusEnum.AccountReviewed">Manager Approve</span>
+              <span class="mat-button-wrapper"
+                *ngIf="this.data.element.orderStatusId == this.statusEnum.InProcess">Account Review</span>
+            </button>
+            <button *ngIf="this.data.element.orderStatusId == this.statusEnum.InProcess" mat-flat-button color="warning"
+              type="button" (click)="RevokeToSale()">
+              <span class="mat-button-wrapper">Revoke (Back to Sale)</span>
+            </button>
+            <button *ngIf="this.data.element.orderStatusId == this.statusEnum.Confirm" mat-flat-button color="warning"
+              type="button" (click)="revokeToInprocess()">
+              <span class="mat-button-wrapper">Revoke (To Inprocess)</span>
+            </button>
+            <button *ngIf="this.data.element.orderStatusId == this.statusEnum.ManagerApproved" mat-flat-button color="warning"
+              type="button" (click)="revokeToAccountReviewed()">
+              <span class="mat-button-wrapper">Revoke (To Account Reviewed)</span>
+            </button>
+            <button mat-flat-button color="default" [mat-dialog-close]="true">
+              <span class="mat-button-wrapper">Close</span>
+            </button>
+
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </form>
+    <!-- 
+    <div class="button-container">
+      <button mat-flat-button color="success" type="button" (click)="process()" tabindex="-1">
+        <span class="mat-button-wrapper">Process</span>
+      </button>
+      <button mat-flat-button color="default" [mat-dialog-close]="true">
+        <span class="mat-button-wrapper">Close</span>
+      </button>
+    </div> -->
+  </mat-card-content>
+</mat-card>
+
+<ng-template #documentView>
+  <div class="card">
+    <div class="card-body" style="height: 680px;">
+      <iframe width="100%" height="100%" frameBorder="0" [src]="urlSafe"></iframe>
+    </div>
+    <div class="card-footer">
+      <button mat-flat-button color="default" [mat-dialog-close]="true">
+        <span class="mat-button-wrapper">Close</span>
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<!-- Confirmation dialog template for approving the order -->
+<ng-template #confirmationDialog let-dialogRef="dialogRef">
+  <h4 mat-dialog-title>Are you sure you want to Revoke To Inprocess?</h4>
+  <mat-divider></mat-divider>
+  <div class="col-md-12 mt-2">
+    <mat-form-field style="width: 100%;">
+      <mat-label>Revoke Reason</mat-label>
+      <textarea matInput [(ngModel)]="revokeToInprocessComments" type="text" required></textarea>
+    </mat-form-field>
+  </div>
+  <mat-divider></mat-divider>
+  <div mat-dialog-actions class="button-container">
+    <button class="m-0" mat-flat-button color="danger" [disabled]="!revokeToInprocessComments?.trim()"
+      (click)="dialogRef.close(revokeToInprocessComments)">
+      Revoke
+    </button>
+    <button class="m-0" mat-flat-button color="default" (click)="dialogRef.close(false)">Cancel</button>
+  </div>
+</ng-template>

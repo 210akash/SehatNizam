@@ -1,0 +1,75 @@
+/* modern-sidebar.component.css */
+
+:host {
+  display: block;
+  height: 100vh;
+}
+
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #e2e8f0;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #cbd5e1;
+}
+
+/* Active Link Styles */
+.active-link {
+  background-color: #eef2ff !important; /* indigo-50 */
+  color: #4338ca !important; /* indigo-700 */
+  font-weight: 600;
+}
+
+.active-link i {
+  color: #4f46e5 !important; /* indigo-600 */
+}
+
+/* Transitions */
+.transition-all {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+}
+
+/* Menu Item Hover */
+.menu-item-container a:hover i,
+.menu-item-container button:hover i {
+  transform: scale(1.1);
+  transition: transform 0.2s ease;
+}
+
+/* Submenu Animation */
+.overflow-hidden {
+  overflow: hidden;
+}
+
+/* Utility for Font Awesome icons alignment */
+.fas {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 1024px) {
+  aside {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+  }
+  
+  aside:not(.w-0) {
+    width: 288px;
+  }
+}

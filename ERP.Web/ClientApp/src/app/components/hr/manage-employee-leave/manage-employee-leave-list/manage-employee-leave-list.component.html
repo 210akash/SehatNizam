@@ -1,0 +1,146 @@
+<div class="header-container">
+  <h2>Leave Applications</h2>
+  <button mat-mini-fab aria-label="Add" color="success" (click)="openEmployeeLeaveDialog(null)"
+    matTooltip="Apply Leave Application">
+    <mat-icon>add</mat-icon>
+  </button>
+</div>
+
+<div class="body-container">
+  <form [formGroup]="EmployeeLeaveFilterForm">
+    <div class="row">
+      <div class="col-lg-2 col-md-3">
+        <div class="mt-2">
+          <mat-form-field class="form-field">
+            <mat-label>From Date</mat-label>
+            <input matInput [matDatepicker]="fdate" formControlName="fdate" (dateChange)="filterData()" (keyup)="filterData()">
+            <mat-datepicker-toggle matIconSuffix [for]="fdate"></mat-datepicker-toggle>
+            <mat-datepicker #fdate></mat-datepicker>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="col-lg-2 col-md-3">
+        <div class="mt-2">
+          <mat-form-field class="form-field">
+            <mat-label>To Date</mat-label>
+            <input matInput [matDatepicker]="tdate" formControlName="tdate" (dateChange)="filterData()" (keyup)="filterData()">
+            <mat-datepicker-toggle matIconSuffix [for]="tdate"></mat-datepicker-toggle>
+            <mat-datepicker #tdate></mat-datepicker>
+          </mat-form-field>
+        </div>
+      </div>
+        <div class="col-md-3">
+            <div class="mt-2">
+          <mat-form-field class="form-field">
+            <mat-label>Department</mat-label>
+            <mat-select formControlName="departmentId" (selectionChange)="filterData()">
+                <mat-option value=''> ALL </mat-option>
+              <mat-option *ngFor="let department of departmentList" [value]="department.id">
+                {{ department.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          </div>
+        </div>
+      <div class="col-lg-2 col-md-3">
+        <div class="mt-2">
+          <mat-form-field>
+            <mat-label>Status</mat-label>
+            <mat-select formControlName="statusId" (selectionChange)="filterData()">
+              <mat-option [value]=3> Pending </mat-option>
+              <mat-option [value]=160> HR Approved </mat-option>
+              <mat-option [value]=4> Reject </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+  </form>
+  <mat-divider></mat-divider>
+  <div class="mat-elevation-z8 table-responsive ">
+    <table mat-table [dataSource]="dataSource" matSort>
+
+      <!-- Columns -->
+      <ng-container matColumnDef="leaveType">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Leave Type </th>
+        <td mat-cell *matCellDef="let element"> {{ element.employeeGroupLeaveTypeDetail?.employeeLeaveType?.name }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="startDate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> From Date </th>
+        <td mat-cell *matCellDef="let element"> {{ element.startDate | date: 'mediumDate' }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="endDate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> To Date </th>
+        <td mat-cell *matCellDef="let element"> {{ element.endDate | date: 'mediumDate' }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="day">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Half Day </th>
+        <td mat-cell *matCellDef="let element"> {{ element.isFirstHalfDay ? 'First Half' : element.isLastHalfDay ? 'Last Half' : '-' }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
+        <td mat-cell *matCellDef="let element">
+        {{element.status?.title == "Approved"  ? "Pending" : element.status?.title}}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="employeename">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Employee</th>
+        <td mat-cell *matCellDef="let element"> {{ element.employee?.firstName + ' ' + element.employee?.lastName }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="employeedesignation">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Designation</th>
+        <td mat-cell *matCellDef="let element"> {{ element.employee?.employeeDesignation?.name}} </td>
+      </ng-container>
+      <ng-container matColumnDef="department">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Department</th>
+        <td mat-cell *matCellDef="let element"> {{ element.employee?.department?.name}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="reason">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Reason </th>
+        <td mat-cell *matCellDef="let element"> {{ element.reason }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="comments">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Comments </th>
+        <td mat-cell *matCellDef="let element"> {{ element.comments }} </td>
+      </ng-container>
+
+      <!-- Actions column definition -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef style="width: 11%;"> Actions </th>
+        <td mat-cell *matCellDef="let element">
+          <div class="action_btns">
+              <button mat-mini-fab matTooltip="View" color="dark"
+              (click)="viewEmployeeLeaveDialog(element)">
+              <mat-icon aria-label="View">visibility</mat-icon>
+            </button>
+            <button mat-mini-fab matTooltip="Approve" color="success" (click)="processLeaveDialog(element)" *ngIf="element.statusId == 3">
+              <mat-icon aria-label="Approve">send</mat-icon>
+            </button>
+
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Table rows -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <mat-divider></mat-divider>
+    <!-- Paginator -->
+    <mat-paginator #paginator [length]="totalRows" [pageIndex]="currentPage" [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions" (page)="pageChanged($event)" aria-label="Select page">
+    </mat-paginator>
+
+  </div>
+</div>

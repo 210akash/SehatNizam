@@ -1,0 +1,56 @@
+<div class="card">
+  <div class="card-header">
+    <h4 class="card-title">Create Territory Target</h4>
+  </div>
+  <div class="info-row">
+    <span class="label">Zone:</span> <span class="value">{{ this.data.element.zone.name }}</span>
+    <span class="label">Target Month:</span> <span class="value">{{ this.data.element.targetMonth | date: 'MMM, yyyy' }}</span>
+    <span class="label">Target:</span> <span class="value">{{ this.data.element.target }}</span>
+  </div>
+  
+  
+  <form [formGroup]="createTerritoryTargetForm">
+    <div class="card-body">
+      <div class="row">
+
+        <!-- <div class="col-md-6">
+          <div class="mb-3">
+            <mat-form-field>
+              <mat-label>Target Month</mat-label>
+              <input type="month" matInput formControlName="targetMonth"
+                [ngClass]="{ 'is-invalid': f.targetMonth.errors }" />
+            </mat-form-field>
+          </div>
+        </div> -->
+
+        <div class="col-md-12">
+          <div formArrayName="territoriesTargetList">
+            <div *ngFor="let territoryControl of territoriesTargetList.controls; let i = index" [formGroupName]="i"
+              class="row banner-row">
+              <div class="col-md-8 d-flex align-items-center">
+                <div class="territory-details ms-3">
+                  <p class="territory-name">{{ territoryControl.get('territoryName')?.value }}</p>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <mat-form-field appearance="fill" class="w-100">
+                  <mat-label>Target</mat-label>
+                  <input type="number" min="0" matInput formControlName="target" />
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="card-footer">
+      <button class="btn btn-success" data-bs-dismiss="modal" (click)="saveSalesTarget()">
+        Save
+      </button>
+      <button [mat-dialog-close]="true" class="btn btn-danger ml-2" data-bs-dismiss="modal">
+        Close
+      </button>
+    </div>
+  </form>
+</div>

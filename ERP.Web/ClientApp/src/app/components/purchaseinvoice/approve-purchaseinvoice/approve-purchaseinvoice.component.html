@@ -1,0 +1,209 @@
+<mat-card>
+  <mat-card-header>
+    <div class="header-container">
+      <mat-card-title>Approve Purchase Invoice</mat-card-title>
+      <span class="badge badge-created" matTooltip="Status">{{ this.data.element.status.title}}</span>
+    </div>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+    <div class="row">
+      <div class="col-md-2 col-lg-2">
+        <mat-form-field>
+          <mat-label>GRN No.</mat-label>
+          <input matInput [value]="this.data.element.code" tabindex="-1" readonly>
+        </mat-form-field>
+      </div>
+      <div class="col-md-2 col-lg-2">
+        <mat-form-field>
+          <mat-label>GRN Date</mat-label>
+          <input matInput [value]="this.data.element.createdDate | date : 'shortDate'" tabindex="-1" readonly>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-4 col-lg-4">
+        <mat-form-field class="form-field">
+          <mat-label>Supplier Name</mat-label>
+          <input matInput
+            [value]="this.data.element.grnDetail[0]?.inspectionDetail?.igpDetail?.purchaseOrderDetail?.purchaseOrder?.vendor?.name"
+            tabindex="-1" readonly>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-4 col-lg-4">
+        <mat-form-field class="form-field">
+          <mat-label>Contact</mat-label>
+          <input matInput
+            [value]="this.data.element.grnDetail[0]?.inspectionDetail?.igpDetail?.purchaseOrderDetail?.purchaseOrder?.vendor?.phone"
+            tabindex="-1" readonly>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-12 col-lg-12">
+        <mat-form-field class="form-field">
+          <mat-label>Address</mat-label>
+          <input matInput
+            [value]="this.data.element.grnDetail[0]?.inspectionDetail?.igpDetail?.purchaseOrderDetail?.purchaseOrder?.vendor?.address"
+            tabindex="-1" readonly>
+        </mat-form-field>
+      </div>
+
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Sr.#</th>
+                <th>Item</th>
+                <th>Description</th>
+                <th>Received Qty</th>
+                <th>Rejected Qty</th>
+                <th>Rate</th>
+                <th>Amount</th>
+                <th>Weight Per Unit</th>
+                <th>Total Weight</th>
+                <th>Purchase Order</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let detail of this.data.element.grnDetail; let i = index">
+                <td style="width: 10px;">
+                  {{i + 1}}
+                </td>
+                <td style="width: 300px;">
+                  {{detail.inspectionDetail.igpDetail?.purchaseOrderDetail?.purchaseDemandDetail?.item?.name || ''}}
+                </td>
+                <td style="width: 300px;">
+                  {{detail.inspectionDetail.igpDetail?.purchaseOrderDetail?.purchaseDemandDetail?.item?.description ||
+                  ''}}
+                </td>
+                <td>
+                  {{detail.received || 0}}
+                </td>
+                <td>
+                  {{detail.inspectionDetail.rejected || 0}}
+                </td>
+                <td>
+                  {{detail?.inspectionDetail?.igpDetail?.purchaseOrderDetail?.unitRate || 0}}
+                </td>
+                <td>
+                  {{detail.received * detail?.inspectionDetail?.igpDetail?.purchaseOrderDetail?.unitRate || 0  | number:'1.2-2'}}
+                </td>
+                <td>
+                  {{detail.inspectionDetail.igpDetail?.purchaseOrderDetail?.purchaseDemandDetail?.item?.weight || 0}}
+                </td>
+                <td>
+                  {{detail.received *
+                  detail.inspectionDetail.igpDetail?.purchaseOrderDetail?.purchaseDemandDetail?.item?.weight || 0}}
+                </td>
+                <td>
+                  {{detail.inspectionDetail.igpDetail?.purchaseOrderDetail?.purchaseOrder?.code || ''}}
+                </td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr [ngStyle]="{ color: 'green' }">
+                <th colspan="9">Total Amount : </th>
+                <th>{{this.tAmount | number:'1.2-2'}}</th>
+              </tr>
+
+              <tr [ngStyle]="{ color: 'green' }">
+                <th colspan="9">Total GST : </th>
+                <th>{{this.tsaleTax | number:'1.2-2'}}</th>
+              </tr>
+              <tr [ngStyle]="{ color: 'green' }">
+                <th colspan="9">Total Fed : </th>
+                <th>{{this.tfed | number:'1.2-2'}}</th>
+              </tr>
+              <tr [ngStyle]="{ color: 'green' }">
+                <th colspan="9">Grand Total : </th>
+                <th>{{this.tAmount + this.tsaleTax + this.tfed | number:'1.2-2'}}</th>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-2">
+      <div class="col-md-12">
+        <mat-form-field>
+          <mat-label>Remarks</mat-label>
+          <input matInput [value]="this.data.element.remarks" type="text" readonly tabindex="-1">
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="row mt-4">
+      <div class="col-md-12">
+        <form [formGroup]="approvePurchaseInvoiceForm" class="p-4 border rounded shadow-sm bg-white">
+
+          <!-- Checkbox Row -->
+          <div class="form-check mb-3">
+            <mat-checkbox color="primary" [checked]="this.data.element.whtPercentage" [disabled]="true">
+              Apply WHT Tax
+            </mat-checkbox>
+          </div>
+
+          <div class="row" *ngIf="this.data.element.whtPercentage">
+
+            <div class="col-md-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>WHT Percentage</mat-label>
+                <input matInput type="number" placeholder="Enter percentage" [value]="this.data.element.whtPercentage"
+                  (keyup)="calculateWHTAmount()" readonly>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>WHT Amount</mat-label>
+                <input matInput formControlName="wHTAmount" type="number" readonly>
+              </mat-form-field>
+            </div>
+
+          </div>
+
+          <div class="row mt-2" *ngIf="this.data.element.comments">
+
+            <div class="col-md-12">
+              <mat-form-field>
+                <mat-label>Previous Comments</mat-label>
+                <input matInput [value]="this.data.element.comments" type="text" readonly tabindex="-1">
+              </mat-form-field>
+            </div>
+
+          </div>
+
+          <div class="row">
+
+            <div class="col-md-12">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Enter New Comments</mat-label>
+                <input matInput formControlName="comments" type="text">
+              </mat-form-field>
+            </div>
+
+          </div>
+
+        </form>
+      </div>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="button-container">
+      <button mat-flat-button color="danger" type="button" (click)="reject()" tabindex="-1"
+        *ngIf="this.data.element.invoiceStatusId == 6">
+        <span class="mat-button-wrapper">Reject</span>
+      </button>
+      <button mat-flat-button color="success" type="button" (click)="approve()" tabindex="-1"
+        *ngIf="this.data.element.invoiceStatusId == 6">
+        <span class="mat-button-wrapper">Approve</span>
+      </button>
+      <button mat-flat-button color="default" [mat-dialog-close]="true">
+        <span class="mat-button-wrapper">Close</span>
+      </button>
+    </div>
+  </mat-card-content>
+</mat-card>

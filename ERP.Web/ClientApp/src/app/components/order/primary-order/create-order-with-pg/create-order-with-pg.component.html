@@ -1,0 +1,222 @@
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>Create Primary Order With Dynamic Price Group</mat-card-title>
+    </mat-card-header>
+    <mat-divider></mat-divider>
+    <mat-card-content>
+        <form [formGroup]="createOrderForm">
+            <div class="card-body p-0">
+
+                <div class="row">
+                    <div class="col-md-10">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <mat-form-field class="form-field">
+                                <mat-label> Date</mat-label>
+                                    <input matInput [matDatepicker]="date" formControlName="createdDate" readonly>
+                                <mat-datepicker-toggle matIconSuffix [for]="date"></mat-datepicker-toggle>
+                                <mat-datepicker #date></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-md-10">
+                                <div >
+                                    <mat-form-field>
+                                        <mat-label>Price Group</mat-label>
+                                        <mat-select formControlName="priceGroupId"
+                                            (selectionChange)="onPriceGroupChange()">
+                                            <mat-option [value]=0>-- Select --</mat-option>
+                                            <mat-option *ngFor="let option of priceGroupList"
+                                                [value]="option.id">{{option.title}}</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div >
+                                    <!-- <mat-form-field>
+                                        <mat-label>Distributor</mat-label>
+                                        <mat-select formControlName="dealershipId"
+                                            (selectionChange)="onDealershipChange()">
+                                            <mat-option [value]=0>-- Select --</mat-option>
+                                            <mat-option *ngFor="let option of dealershipList"
+                                                [value]="option.id">{{option.name}}</mat-option>
+                                        </mat-select>
+                                    </mat-form-field> -->
+                                    <mat-form-field>
+                                        <mat-label>Distributor</mat-label>
+                                        <input matInput formControlName="dealershipName" [matAutocomplete]="auto"
+                                            (keyup)="getDealershipsList($event);" class="form-control"
+                                            (input)="onInputCleared($event)" type="search" />
+                                        <mat-autocomplete #auto="matAutocomplete"
+                                            (optionSelected)="onOptionDealershipSelected($event)">
+                                            <mat-option *ngFor="let distributor of dealershipList" [value]="distributor">
+                                                {{ distributor?.name }} | {{ distributor?.territory?.name }} | {{ distributor?.address }}
+                                            </mat-option>
+                                        </mat-autocomplete>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="col-md-12" *ngIf="this.createOrderForm.get('dealershipId')?.value">
+                                <div >
+                                    <mat-form-field class="example-full-width">
+                                        <mat-label>Address</mat-label>
+                                        <input matInput placeholder="Address" readonly
+                                            formControlName="dealershipAddress" />
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="col-md-12" *ngIf="createOrderForm.get('orderItemsList')?.value?.length > 0">
+                            <div class="order_container">
+                                <div class="file_upload">
+                                    <div class="image_container">
+                                        <div class="image_upload_wrap img_seller_lh1" data-toggle="tooltip"
+                                            title="Choose File" *ngIf="documents.length == 0"
+                                            [ngClass]="{ 'is-invalid': documents.length == 0}">
+                                            <input class="file_upload_input input1_seller" type="file"
+                                                (change)="onDocumentSourceChange($event)" accept="image/*" />
+                                            <div class="drag_text">
+                                                <div> <i class="fa fa-picture-o fa-2x"></i> </div>
+                                                <div>Select or Drag and drop a file here</div>
+                                            </div>
+                                        </div>
+                                        <div class="file_upload_content text-center" *ngIf="documents.length > 0">
+                                            <img class="file_upload_image" [src]="documents[0]?.fileSource" alt="" />
+                                            <div class="image_title_wrap">
+                                                <button type="button" class="remove_image"
+                                                    (click)="onDocumentSourceRemove()" data-toggle="tooltip"
+                                                    title="Remove">
+                                                    <span class="fa fa-trash image_title title1_seller"></span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12" *ngIf="createOrderForm.get('orderItemsList')?.value?.length > 0">
+
+                        <div formArrayName="orderItemsList">
+                            <!-- <div *ngFor="let productControl of orderItemsList.controls; let i = index" [formGroupName]="i"
+                class="row banner-row">
+                <div class="col-md-4 d-flex align-items-center">
+                  <img [src]="productControl.get('image')?.value" alt="{{ productControl.get('name')?.value }}"
+                    class="product-image">
+                  <div class="product-details ms-3">
+                    <p class="product-name">{{ productControl.get('name')?.value }}</p>
+                    <p class="product-volume">{{ productControl.get('volume')?.value }} ml ({{productControl.get('type')?.value }})</p>
+                    <p class="product-quantity-pack">{{ productControl.get('quantityInPack')?.value }} Pcs</p>
+                    <p class="product-quantity-pack">D.P {{ productControl.get('distributorPrice')?.value }}</p>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <mat-form-field class="w-100">
+                    <mat-label>Total Price</mat-label>
+                    <input type="number" min="0" matInput formControlName="billPrice" readonly/>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-md-2" *ngIf="this.isEditMode">
+                  <mat-form-field class="w-100">
+                    <mat-label>Qty In Stock</mat-label>
+                    <input type="number" matInput formControlName="leftQuantity" readonly />
+                  </mat-form-field>
+                </div>
+                <div class="col-md-3">
+                  <mat-form-field class="w-100">
+                    <mat-label>Quantity</mat-label>
+                    <input type="number" min="0" max="100000" matInput formControlName="quantity"
+                      (ngModelChange)="updateTotals();updatePrice(i)" />
+                  </mat-form-field>
+                </div>
+              </div> -->
+                            <div class="table-responsive p-0">
+                                <table class="table table-bordered table-striped datatable text-center">
+                                    <thead>
+                                        <tr class="mat-header-row">
+                                            <th>Product</th>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Volume</th>
+                                            <th>Quantity In Pack</th>
+                                            <th>D.P</th>
+                                            <th>Total Price</th>
+                                            <th *ngIf="this.isEditMode">Qty In Stock</th>
+                                            <th>Quantity</th>
+                                        </tr>
+                                    </thead>
+                                    <tr *ngFor="let productControl of orderItemsList.controls; let i = index"
+                                        [formGroupName]="i">
+                                        <td><img [src]="productControl.get('image')?.value"
+                                                alt="{{ productControl.get('name')?.value }}" class="product-image">
+                                        </td>
+                                        <td>{{ productControl.get('name')?.value }}</td>
+
+                                        <td> <span class="badge"
+                                                [ngClass]="productControl.get('type')?.value === 'Can' ? 'badge-primary' : productControl.get('type')?.value === 'Bottle' ? 'badge-success' : ''">{{
+                                                productControl.get('type')?.value }}</span> </td>
+
+                                        <td>{{ productControl.get('volume')?.value }} ml</td>
+                                        <td>{{ productControl.get('quantityInPack')?.value }} Pcs</td>
+                                        <td>{{ productControl.get('distributorPrice')?.value }} Rs</td>
+
+                                        <td><input class="form-control text-center" readonly
+                                                formControlName="billPrice" /></td>
+
+                                        <td *ngIf="this.isEditMode"><input class="form-control text-center" readonly
+                                                formControlName="leftQuantity" /></td>
+
+                                        <td><input type="number" min="0" class="form-control text-center"
+                                                formControlName="quantity"
+                                                (ngModelChange)="updateTotals();updatePrice(i)" /></td>
+
+                                    </tr>
+                                    <tr>
+                                        <th colspan="6">
+                                            Total
+                                        </th>
+                                        <th>
+                                            {{ billingAmount }}
+                                        </th>
+                                        <th *ngIf="this.isEditMode">
+                                            {{ totalStockQuantity }}
+                                        </th>
+                                        <th>
+                                            {{ totalQuantity }}
+                                        </th>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <mat-divider></mat-divider>
+            <div class="button-container">
+                <button mat-flat-button color="success" type="button" (click)="saveOrder()">
+                    <span *ngIf="!this.isEditMode" class="mat-button-wrapper">Save</span>
+                    <span *ngIf="this.isEditMode" class="mat-button-wrapper">Validate</span>
+                </button>
+                <button mat-flat-button color="default" [mat-dialog-close]="true" style="margin-left: 10px;">
+                    <span class="mat-button-wrapper">Close</span>
+                </button>
+            </div>
+        </form>
+    </mat-card-content>
+</mat-card>
+
+
+<ng-template #documentView>
+    <div class="card">
+        <div class="card-body" style="height: 700px;">
+            <iframe width="100%" height="100%" frameBorder="0" [src]="urlSafe"></iframe>
+        </div>
+        <div class="card-footer">
+            <button class="btn btn-danger" [mat-dialog-close]>Close</button>
+        </div>
+    </div>
+</ng-template>

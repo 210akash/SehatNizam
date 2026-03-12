@@ -1,0 +1,26 @@
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { map } from 'rxjs/operators';
+import { EmployeeEndPoints } from './employee.endpoints';
+import { environment } from '../../../../environments/environment';
+import { BaseService } from '../../../Service/base.service';
+
+@Injectable({
+    providedIn: 'root'
+})
+
+export class EmployeeService extends BaseService<any> {
+
+    endPointControllerName = "Employee";
+    constructor(httpClient: HttpClient, private http: HttpClient, private employeeEndPoints: EmployeeEndPoints) {
+        super(
+            httpClient,
+            environment.dev_uri
+        );
+    }
+
+    getEmployeeByName(employeeFilterForm: any) {
+        return this.post(employeeFilterForm, this.endPointControllerName + this.employeeEndPoints.getEmployeeByName)
+            .pipe(map((data: any) => data));
+    }
+}

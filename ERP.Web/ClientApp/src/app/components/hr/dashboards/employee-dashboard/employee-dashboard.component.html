@@ -1,0 +1,94 @@
+<div class="container py-3">
+  <!-- Welcome Section -->
+  <div class="mb-4">
+    <h4 class="mb-1">Welcome, {{ this.profile.firstName + ' ' + this.profile.lastName}}</h4>
+    <p class="text-muted mb-0">
+       {{ this.profile.department?.name }}   {{ this.profile.employeeDesignation?.name}}
+    </p>
+  </div>
+
+  <!-- Personal Info Cards -->
+  <!-- <div class="row g-3 mb-4">
+    <div class="col-md-4">
+      <div class="card p-3 text-center">
+        <h6 class="text-muted">Leave Balance</h6>
+        <h4>{{ employeeData.leaveBalance }}</h4>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card p-3 text-center">
+        <h6 class="text-muted">Upcoming Holidays</h6>
+        <ul class="list-unstyled mb-0">
+          <li *ngFor="let holiday of employeeData.upcomingHolidays">{{ holiday }}</li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card p-3 text-center">
+        <h6 class="text-muted">Today's Status</h6>
+        <h4>
+        
+        </h4>
+      </div>
+    </div>
+  </div> -->
+
+  <!-- Attendance Table -->
+  <div class="card p-3">
+    <h1 class="mb-3 text-center">My Attendance</h1>
+      <table mat-table [dataSource]="attendanceData" class="mat-elevation-z8 full-width mt-2">
+        <!-- Date Column -->
+        <ng-container matColumnDef="date">
+          <th mat-header-cell *matHeaderCellDef>Date</th>
+          <td mat-cell *matCellDef="let record">{{ record.attendanceDate | date:'yyyy-MM-dd' }}</td>
+        </ng-container>
+
+        <!-- Check In Column -->
+        <ng-container matColumnDef="timeIn">
+          <th mat-header-cell *matHeaderCellDef>Time In</th>
+          <td mat-cell *matCellDef="let record">{{ record.timeIn | date:'hh:mm:ss' }}</td>
+        </ng-container>
+
+        <!-- Check In Column -->
+        <ng-container matColumnDef="inDevice">
+          <th mat-header-cell *matHeaderCellDef>In Device</th>
+          <td mat-cell *matCellDef="let record">{{record.inDevice?.name}}</td>
+        </ng-container>
+
+        <!-- Check Out Column -->
+        <ng-container matColumnDef="timeOut">
+          <th mat-header-cell *matHeaderCellDef>Time Out</th>
+          <td mat-cell *matCellDef="let record">{{ record.timeOut | date:'hh:mm:ss dd-MM-yyyy' }}</td>
+        </ng-container>
+
+        <!-- Check In Column -->
+        <ng-container matColumnDef="outDevice">
+          <th mat-header-cell *matHeaderCellDef>Out Device</th>
+          <td mat-cell *matCellDef="let record">{{record.outDevice?.name}}</td>
+        </ng-container>
+
+        <!-- Check Out Column -->
+        <ng-container matColumnDef="workingHours">
+          <th mat-header-cell *matHeaderCellDef>Working Hours</th>
+          <td mat-cell *matCellDef="let record">{{ record.workingHours}}</td>
+        </ng-container>
+
+        <!-- Check Out Column -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let record">{{ record.status}}</td>
+        </ng-container>
+
+        <!-- Table Header and Rows -->
+        <tr mat-header-row
+          *matHeaderRowDef="['date', 'timeIn','inDevice', 'timeOut','outDevice','workingHours','status']"></tr>
+        <tr mat-row
+          *matRowDef="let row; columns: ['date', 'timeIn', 'inDevice', 'timeOut', 'outDevice', 'workingHours','status']"
+          [ngClass]="{
+      'late-checkin': isLate(row),
+      'absent-row': row.status === 'Absent'
+    }">
+        </tr>
+      </table>
+  </div>
+</div>

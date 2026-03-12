@@ -1,0 +1,142 @@
+<form [formGroup]="saleReturnForm">
+  <mat-card>
+    <mat-card-header>
+      <div class="header-container">
+        <mat-card-title>Sale Return Form</mat-card-title>
+        <span class="badge badge-created" matTooltip="Status">{{ this.isEditMode == true ?
+          this.data.element.status.title
+          : this.saleReturnForm.get('statusName')?.value}}</span>
+      </div>
+    </mat-card-header>
+    <mat-divider></mat-divider>
+    <mat-card-content>
+      <input type="hidden" formControlName="id" />
+      <div class="row">
+        <div class="col-md-2">
+          <mat-form-field>
+            <mat-label>Sale Return No.</mat-label>
+            <input matInput value="{{this.saleReturnForm.get('code')?.value}}" tabindex="-1" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field class="form-field">
+            <mat-label>Sale Return Date</mat-label>
+            <input matInput [matDatepicker]="date" formControlName="createdDate" tabindex="-1">
+            <mat-datepicker-toggle matIconSuffix [for]="date"></mat-datepicker-toggle>
+            <mat-datepicker #date></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field>
+            <mat-label>DC #</mat-label>
+            <input matInput formControlName="dcCode" [matAutocomplete]="auto" (keyup)="getPendingOrder($event)"
+              (input)="onDcInputCleared($event)" type="search" />
+
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onDcSelected($event)">
+              <mat-option *ngFor="let dispatchOrder of dispatchOrderList" [value]="dispatchOrder">
+                {{ dispatchOrder?.dcCode }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        </div>
+        <!-- 
+        <div class="col-md-3">
+          <mat-form-field class="form-field">
+            <mat-label>DC #</mat-label>
+            <mat-select formControlName="dispatchOrderId" (selectionChange)="getDispatchedDetails()">
+              <mat-option value="">--Select--</mat-option>
+              <mat-option *ngFor="let dispatchOrder of dispatchOrderList" [value]="dispatchOrder.id">
+                {{ dispatchOrder.dcCode }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div> -->
+
+        <div class="col-md-12" *ngIf="this.saleReturnForm.get('dispatchOrderId')?.value">
+          <table class="text-left mb-4 shipto">
+            <colgroup>
+              <col span="1" style="width: 100px;">
+              <col span="1" style="width: 400px;">
+              <col span="1" style="width: 100px;">
+              <col span="1" style="width: 600px;">
+            </colgroup>
+            <tr>
+              <th>Distributor :</th>
+              <td> {{this.getDCData()?.order?.dealership?.name}}</td>
+              <th>Order # :</th>
+              <td> {{this.getDCData()?.order?.id}}</td>
+            </tr>
+          </table>
+        </div>
+
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Sr.#</th>
+                <th>Item</th>
+                <th>Dispatch Quantity</th>
+                <th>Return Quantity</th>
+              </tr>
+            </thead>
+            <tbody formArrayName="saleReturnDetail">
+              <tr *ngFor="let detail of saleReturnDetail.controls; let i = index" [formGroupName]="i">
+                <td style="width: 10px;">
+                  <div class="action_btns">
+                    <span>&#40;{{i + 1}}&#41;</span>
+                    <mat-icon aria-label="Edit" class="icons add" (click)="addSaleReturnDetail(i)">add</mat-icon>
+                    <mat-icon aria-label="Delete" class="icons delete"
+                      (click)="removeSaleReturnDetail(i)">delete</mat-icon>
+                  </div>
+                </td>
+                <input type="hidden" formControlName="id" />
+                <input type="hidden" formControlName="dispatchDetailId" />
+                <input type="hidden" formControlName="saleReturnId" />
+                <td>
+                  <mat-form-field style="width: 530px;">
+                    <mat-select formControlName="itemId">
+                      <mat-option value="0">--Select--</mat-option>
+                      <mat-option *ngFor="let item of itemList" [value]="item?.orderItem?.itemId"
+                        (onSelectionChange)="onItemSelected($event, i)">
+                        {{ item?.orderItem?.item?.name }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </td>
+                <td>
+                  <mat-form-field style="width: 150px;">
+                    <input matInput formControlName="dispatchedQuantity" type="number" readonly>
+                  </mat-form-field>
+                </td>
+                <td>
+                  <mat-form-field style="width: 150px;">
+                    <input matInput formControlName="quantity" type="number" min="1" (change)="validateQty(i);">
+                  </mat-form-field>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="row mt-2">
+        <div class="col-md-12">
+          <mat-form-field>
+            <mat-label>Remarks</mat-label>
+            <input matInput formControlName="remarks" type="text">
+          </mat-form-field>
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="button-container">
+        <button mat-flat-button color="success" type="button" (click)="SaveData()">
+          <span class="mat-button-wrapper">Save</span>
+        </button>
+        <button mat-flat-button color="default" [mat-dialog-close]="true">
+          <span class="mat-button-wrapper">Close</span>
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</form>

@@ -1,0 +1,67 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Delete Territory</mat-card-title>
+  </mat-card-header>
+
+  <mat-divider></mat-divider>
+
+  <mat-card-content>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="mb-3">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Region</mat-label>
+            <input matInput [value]="this.data.element.area.zone.region.name" readonly />
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div>
+          <mat-form-field style="width: 100%;">
+            <mat-label>Zone</mat-label>
+            <input matInput [value]="this.data.element.area.zone.name" readonly />
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div>
+          <mat-form-field style="width: 100%;">
+            <mat-label>Area</mat-label>
+            <input matInput [value]="this.data.element.area.name" readonly />
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="col-md-12">
+        <div>
+          <mat-form-field style="width: 100%;">
+            <mat-label>Description</mat-label>
+            <input matInput [value]="this.data.element.description" readonly />
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="col-md-12">
+        <div>
+          <mat-form-field style="width: 100%;">
+            <mat-label>Coordinates</mat-label>
+            <textarea matInput placeholder="Coordinates" rows="4" [value]="this.data.element.coordinates" readonly>
+              </textarea>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+
+
+    <mat-divider></mat-divider>
+    <div class="button-container">
+      <button mat-flat-button color="danger" type="button" (click)="delete()">
+        <span class="mat-button-wrapper">Delete</span>
+      </button>
+      <button mat-flat-button color="default" [mat-dialog-close]="true">
+        <span class="mat-button-wrapper">Close</span>
+      </button>
+    </div>
+  </mat-card-content>
+</mat-card>

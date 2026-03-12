@@ -1,0 +1,39 @@
+<div class="card">
+  <div class="card-header">
+    <div class="row w-100 justify-content-between align-items-center m-0">
+      <h4 class="card-title">{{this.data.element.caption}}</h4>
+      <!-- {{this.data.element.zoneDescription}} -->
+      <div class="label_wrap">
+        <div class="label_container">
+          <div class="box black-box"></div>
+          <div class="label">Region</div>
+        </div>
+        <div class="label_container">
+          <div class="box green-box"></div>
+          <div class="label">Zone</div>
+        </div>
+        <div class="label_container">
+          <div class="box orange-box"></div>
+          <div class="label">Area</div>
+        </div>
+        <div class="label_container">
+          <div class="box blue-box"></div>
+          <div class="label">Territory</div>
+        </div>
+      </div>
+      <div class="button_wrap">
+        <div class="button-container">
+          <button *ngIf="this.data.element.isExpandPolygon == true  || this.data.element.drawingPolygon == true || this.data.element.drawingMarker == true" mat-flat-button color="success" (click)="SaveData()"><span
+              class="mat-button-wrapper">Save</span></button>
+          <button mat-flat-button color="default" [mat-dialog-close]="false"><span
+              class="mat-button-wrapper">Close</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div id="map"></div>
+  </div>
+  <div class="card-footer">
+  </div>
+</div>

@@ -1,0 +1,260 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Shop Form</mat-card-title>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+    <form [formGroup]="createShopForm">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-3">
+              <mat-form-field>
+                <mat-label>Region</mat-label>
+                <mat-select formControlName="regionId"
+                  (selectionChange)="[getZoneByRegionId(), getFilteredData()]">
+                  <mat-option [value]=0>-- Select --</mat-option>
+                  <mat-option *ngFor="let option of regionList" [value]="option.id">{{option.name}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <mat-form-field>
+                <mat-label>Zone</mat-label>
+                <mat-select formControlName="zoneId"
+                  (selectionChange)="[getAreaByZoneId(), getFilteredData()]">
+                  <mat-option [value]=0>-- Select --</mat-option>
+                  <mat-option *ngFor="let option of zoneList" [value]="option.id">{{option.name}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <mat-form-field>
+                <mat-label>Area</mat-label>
+                <mat-select formControlName="areaId"
+                  (selectionChange)="[getTerritoryByAreaId(), getFilteredData()]">
+                  <mat-option [value]=0>-- Select --</mat-option>
+                  <mat-option *ngFor="let option of areaList" [value]="option.id">{{option.name}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <mat-form-field>
+                <mat-label>Territory</mat-label>
+                <mat-select formControlName="territoryId"
+                  (selectionChange)="getFilteredData()">
+                  <mat-option [value]=0>-- Select --</mat-option>
+                  <mat-option *ngFor="let option of territoryList" [value]="option.id">{{option.name}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <mat-form-field class="example-full-width">
+                <mat-label>Shop Name</mat-label>
+                <input matInput placeholder="Shop Name" formControlName="name"
+                   />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <mat-form-field class="example-full-width">
+                <mat-label>Owner Name</mat-label>
+                <input matInput placeholder="Owner Name" formControlName="ownerName"
+                   />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <mat-form-field class="example-full-width">
+                <mat-label>Phone No</mat-label>
+                <input matInput placeholder="Phone No" formControlName="phoneNo" [inputMask]="this.phoneNoInputMask"
+                   />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <mat-form-field class="example-full-width">
+                <mat-label>Secondary Phone No</mat-label>
+                <input matInput placeholder="Secondary Phone No" formControlName="secondaryPhoneNo" [inputMask]="this.phoneNoInputMask"
+                   />
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="mb-3">
+              <mat-form-field class="example-full-width">
+                <mat-label>Opening Time</mat-label>
+                <input type="time" matInput placeholder="Opening Time" formControlName="openingTime"
+                   />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <mat-form-field class="example-full-width">
+                <mat-label>Closing Time</mat-label>
+                <input type="time" matInput placeholder="Closing Time" formControlName="closingTime"
+                  />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <mat-form-field>
+                <mat-label>Shop Type</mat-label>
+                <mat-select formControlName="shopTypeId" >
+                  <mat-option [value]=0>-- Select --</mat-option>
+                  <mat-option *ngFor="let option of shopTypeList" [value]="option.id">{{option.name}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <mat-form-field class="example-full-width">
+                <mat-label>Landmark</mat-label>
+                <input matInput placeholder="Landmark" formControlName="landmark"
+                   />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="mb-3">
+              <mat-form-field class="example-full-width">
+                <mat-label>Address</mat-label>
+                <textarea matInput placeholder="Address" rows="2" formControlName="address"
+                  >
+                </textarea>
+              </mat-form-field>
+            </div>
+          </div>
+
+
+          <div class="col-md-2">
+            <div class="mb-3">
+              <mat-form-field class="example-full-width">
+                <mat-label>Pepsi Fridge</mat-label>
+                <input matInput type="number" placeholder="Pepsi Fridge" formControlName="pepsiFridge" min="0" max="10"
+
+                />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="mb-3">
+              <mat-form-field class="example-full-width">
+                <mat-label>Coke Fridge</mat-label>
+                <input matInput type="number" placeholder="Coke Fridge" formControlName="cokeFridge" min="0" max="10"
+
+                />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="mb-3">
+              <mat-form-field class="example-full-width">
+                <mat-label>Nestle Fridge</mat-label>
+                <input matInput type="number" placeholder="Nestle Fridge" formControlName="nestleFridge" min="0" max="10"
+
+                />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="mb-3">
+              <mat-form-field class="example-full-width">
+                <mat-label>Nesfruta Fridge</mat-label>
+                <input matInput type="number" placeholder="Nesfruta Fridge" formControlName="nesfrutaFridge" min="0" max="10"
+                />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="mb-3">
+              <mat-form-field class="example-full-width">
+                <mat-label>Others Fridge</mat-label>
+                <input matInput type="number" placeholder="Others Fridge" formControlName="othersFridge" min="0" max="10"
+                />
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="col-md-12">
+            <div class="mb-3">
+              <mat-form-field class="example-full-width">
+                <mat-label>Pin Location</mat-label>
+                <textarea matInput placeholder="Pin Location" rows="4" formControlName="pinLocation"
+                   readonly>
+                </textarea>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <button mat-flat-button color="default" class="btn btn-primary" (click)="selectPinLocation()" [disabled]="this.isEditMode">
+                <i class="fa fa-map-marker"></i> Select Pin Location
+              </button>
+            </div>
+          </div>
+
+          <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-4 mt-5 border-top">
+                <span class="btn btn-rose btn-file w-100">
+                  <span class="fileinput-new">Select Images</span>
+                  <input type="file" name="" accept=".jpeg, .jpg, .png" multiple
+                    (change)="onDocumentSourceChange($event)">
+                </span>
+              </div>
+              <div class="col-md-12 mt-3">
+                <div class="d-inline-flex flex-wrap w-100">
+                  <div class="uploaded_doc_wrap" *ngFor="let document of this.documents; let dIndex = index">
+                    <div class="file_upload text-center doucment_wrap">
+                      <i class="fa fa-remove remove_btn text-danger" (click)="onDocumentSourceRemove($event,dIndex)"></i>
+                      <div class="w-100 d-inline-block" (click)="GetDocument($event, dIndex, documentView)">
+                        <div class="fa fa-file-text-o"></div>
+                        <div class="" style="font-size: 12px; font-weight: 900;margin-left: 10px">
+                          {{document?.id != 0 ? document?.imageName?.split('/assets/Files/')[1] : document?.imageName }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <mat-divider class="mt-2"></mat-divider>
+        <div class="button-container">
+          <button mat-flat-button color="success" type="button" (click)="saveShop()">
+            <span class="mat-button-wrapper">Save</span>
+          </button>
+          <button mat-flat-button color="default" [mat-dialog-close]="true">
+            <span class="mat-button-wrapper">Close</span>
+          </button>
+        </div>
+    </form>
+  </mat-card-content>
+</mat-card>
+
+<ng-template #documentView>
+  <div class="card">
+    <div class="card-body" style="height: 700px;">
+      <iframe width="100%" height="100%" frameBorder="0" [src]="urlSafe"></iframe>
+    </div>
+    <div class="card-footer">
+      <button class="btn btn-danger" [mat-dialog-close]>Close</button>
+    </div>
+  </div>
+</ng-template>

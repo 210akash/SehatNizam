@@ -1,0 +1,93 @@
+<div class="card">
+  <div class="card-header">
+    <h4 class="card-title">Add Shops Route Frequency</h4>
+  </div>
+
+  <div class="card-body">
+
+    <form [formGroup]="addShopsRouteForm">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mb-3">
+            <mat-form-field>
+              <mat-label>Zone</mat-label>
+              <input matInput placeholder="Zone" formControlName="zone" readonly />
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mb-3">
+            <mat-form-field>
+              <mat-label>Territory</mat-label>
+              <input matInput placeholder="Territory" formControlName="territory" readonly />
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mb-3">
+            <mat-form-field class="example-full-width">
+              <mat-label>Route Name</mat-label>
+              <input matInput placeholder="Route Name" formControlName="routeName" readonly />
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mb-3">
+            <mat-form-field class="example-full-width">
+              <mat-label>Total Shops</mat-label>
+              <input matInput placeholder="Total Shops" formControlName="totalShops" readonly />
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <div class="col-md-12 schedule-container">
+      <table>
+        <thead>
+          <tr>
+            <th>STORE NAME</th>
+            <th class="uppercase" *ngFor="let day of daysOfWeek">{{ day }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let store of data.element.territory?.shop">
+            <td>{{ store.name }}</td>
+            <!-- Loop through the days and create checkboxes for each store -->
+            <td *ngFor="let day of daysOfWeek">
+              <input type="checkbox" [(ngModel)]="storeSchedules[store.id][day]"
+                name="schedule-{{ store.id }}-{{ day }}" />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <div class="card-footer">
+    <div class="button-container">
+      <button mat-flat-button color="success" class="btn btn-danger" color="danger" data-bs-dismiss="modal"
+        (click)="saveAddShops()">Save</button>
+
+      <button mat-flat-button color="default" [mat-dialog-close]="true">
+        <span class="mat-button-wrapper">Close</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<ng-template #deleteRouteShopTemplate>
+  <div class="card">
+    <div class="card-header">
+      <h4>Delete RouteShop</h4>
+    </div>
+    <div class="card-body">
+      <p>Are you sure you want to delete this RouteShop?</p>
+    </div>
+    <div class="card-footer">
+      <!-- <button class="btn btn-primary" (click)="deleteRouteShop()">Delete</button> -->
+      <button class="btn btn-danger" [mat-dialog-close]>Close</button>
+    </div>
+  </div>
+</ng-template>

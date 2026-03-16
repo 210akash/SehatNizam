@@ -8,6 +8,7 @@
   <ItemGroup>
     <Compile Remove="Mediator\Item\Handler\GetItemByNameWarehouseHandler.cs" />
     <Compile Remove="Mediator\Item\Query\GetItemByNameWarehouseQuery.cs" />
+    <Compile Remove="Mediator\PurchaseOrder\Handler\GetPendingDemandQuery.cs" />
     <Compile Remove="Mediator\TransferRequest\Command\AuthorityCommand.cs" />
     <Compile Remove="Mediator\TransferRequest\Command\DealerCommand.cs" />
     <Compile Remove="Mediator\TransferRequest\Command\MemberCommand.cs" />

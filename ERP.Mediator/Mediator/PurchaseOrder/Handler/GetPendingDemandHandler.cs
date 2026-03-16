@@ -36,7 +36,7 @@ namespace ERP.Mediator.Mediator.PurchaseOrder.Handler
             var PurchaseDemands = await unitOfWork.Repository<Entities.Models.PurchaseDemand>().GetAsync(
                 x => x.IsActive && // Ensure PurchaseDemand is active
                      x.StatusId == 3, //&& // Ensure StatusId is 3 (pending or processed, depending on business rules)
-                     //x. == sessionProvider.Session.StoreId, // Ensure StoreId matches the current session's store
+                                      //x. == sessionProvider.Session.StoreId, // Ensure StoreId matches the current session's store
                 includeProperties: "PurchaseDemandDetail", // Include related entities (PurchaseDemandDetail and IndentType)
                 orderByDec: query => query.OrderByDescending(orderByExpression) // Order by ApprovedDate descending
             );

@@ -148,7 +148,7 @@ namespace ERP.Entities.Models
         public string WeeklyOff { get; set; }
 
         public long? DealershipId { get; set; }
-        public virtual Dealership Dealership { get; set; }        
+        public virtual Dealership Dealership { get; set; }
 
         public virtual ICollection<AspNetUserClaims> AspNetUserClaims { get; set; }
         public virtual ICollection<AspNetUserLogins> AspNetUserLogins { get; set; }
@@ -164,5 +164,11 @@ namespace ERP.Entities.Models
         public virtual ICollection<Attachments> Attachments { get; set; }
         public virtual ICollection<UserAttendance> UserAttendance { get; set; }
         public virtual ICollection<EmployeeDevice> EmployeeDevice { get; set; }
+
+        #region Appoinment 
+        public ICollection<Appointment> PatientAppointments { get; set; } = new List<Appointment>();
+        public ICollection<Appointment> DoctorAppointments { get; set; } = new List<Appointment>();
+        public ICollection<Triage> TriagesTaken { get; set; } = new List<Triage>();
+        #endregion
     }
 }

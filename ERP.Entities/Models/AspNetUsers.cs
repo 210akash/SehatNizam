@@ -123,6 +123,8 @@ namespace ERP.Entities.Models
         public bool? IsDeviceWizardComplete { get; set; }
         public string UID { get; set; }
         public int? SecurityMehtod2FA { get; set; }
+
+        [Display(Name = "MRN Number")]
         public string Code { get; set; }
         public string HrCode { get; set; }
         public string BloodGroup { get; set; }

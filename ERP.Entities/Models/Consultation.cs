@@ -10,6 +10,7 @@ namespace ERP.Entities.Models
         public string Assessment { get; set; }
         public string Plan { get; set; }
         public DateTime FollowUpDate { get; set; }
+        public long StatusId { get; set; }
         public Status Status { get; set; }
         public Appointment Appointment { get; set; }
     }

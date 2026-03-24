@@ -145,7 +145,7 @@
         public virtual DbSet<ShopDispatchDetail> ShopDispatchDetail { get; set; }
         public virtual DbSet<RetailOrderReturn> RetailOrderReturn { get; set; }
         public virtual DbSet<RetailOrderReturnDetail> RetailOrderReturnDetail { get; set; }
-        
+
         #endregion
 
         #region HR
@@ -302,7 +302,7 @@
                 .WithMany(o => o.Users)      // Office has many AspNetUsers
                 .HasForeignKey(u => u.StoreId)  // Foreign key is OfficeId in AspNetUsers
                 .OnDelete(DeleteBehavior.SetNull); // Optional: Set OfficeId to null if Office is deleted
-        
+
 
             modelBuilder.Entity<Project>()
           .HasOne(c => c.CreatedBy) // Navigation property
@@ -435,6 +435,15 @@
                       .WithMany(s => s.CategoryStores) // only one navigation
                       .HasForeignKey(cs => cs.StoreId)
                       .OnDelete(DeleteBehavior.Restrict);
+
+
+                modelBuilder.Entity<Department>()
+                    .HasOne(c => c.ModifiedBy)
+                    .WithMany()
+                    .HasForeignKey(c => c.ModifiedById)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+
             });
 
             #region Purchase Demand 
@@ -950,6 +959,29 @@
                 .HasOne(w => w.CostSheet)
                 .WithMany(c => c.WarehouseTransferDetail)
                 .HasForeignKey(w => w.CostSheetId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            #endregion
+
+            #region Appointment
+
+
+            modelBuilder.Entity<Appointment>()
+              .HasOne(a => a.Patient)
+              .WithMany(u => u.PatientAppointments)
+              .HasForeignKey(a => a.PatientId)
+              .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Appointment>()
+                .HasOne(a => a.Doctor)
+                .WithMany(u => u.DoctorAppointments)
+                .HasForeignKey(a => a.DoctorId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Appointment>()
+                .HasOne(c => c.ConfirmedBy)
+                .WithMany()
+                .HasForeignKey(c => c.ConfirmedById)
                 .OnDelete(DeleteBehavior.Restrict);
 
             #endregion

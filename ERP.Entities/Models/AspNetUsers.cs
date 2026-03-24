@@ -168,7 +168,6 @@ namespace ERP.Entities.Models
         #region Appoinment 
         public ICollection<Appointment> PatientAppointments { get; set; } = new List<Appointment>();
         public ICollection<Appointment> DoctorAppointments { get; set; } = new List<Appointment>();
-        public ICollection<Triage> TriagesTaken { get; set; } = new List<Triage>();
         #endregion
     }
 }

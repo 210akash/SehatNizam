@@ -18,7 +18,7 @@ namespace ERP.BusinessModels.ResponseVM
         /// <summary>
         /// Gets or sets the user id
         /// </summary>
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         /// <summary>
         /// Gets or sets the user id

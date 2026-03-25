@@ -7,6 +7,7 @@ namespace ERP.Entities.Models
     {
         public DateTime AppointmentDate { get; set; }
         public string TokenNumber { get; set; }
+        public long ProjectId { get; set; }
         public long AppointmentTypeId { get; set; }
         public long PriorityLevelId { get; set; }
         public long DepartmentId { get; set; }
@@ -21,8 +22,9 @@ namespace ERP.Entities.Models
         public long AppointmentStatusId { get; set; }
 
         // navigation
-        public AspNetUsers Patient { get; set; } = null!;
-        public AspNetUsers Doctor { get; set; } = null!;
+        public Project Project { get; set; }
+        public Patient Patient { get; set; }
+        public AspNetUsers Doctor { get; set; }
         public AspNetUsers? ConfirmedBy { get; set; }
         public Department Department { get; set; }
         public PriorityLevel PriorityLevel { get; set; }

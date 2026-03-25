@@ -10,7 +10,6 @@ namespace ERP.Entities.Models
         public string Frequency { get; set; }
         public string Duration { get; set; }
         public string Instructions { get; set; }
-
-        public Appointment Appointment { get; set; } = null!;
+        public Appointment Appointment { get; set; }
     }
 }

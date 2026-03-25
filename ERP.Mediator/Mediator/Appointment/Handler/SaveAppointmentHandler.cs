@@ -38,35 +38,37 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
         public async Task<long> Handle(SaveAppointmentCommand request, CancellationToken cancellationToken)
         {
             // 1️⃣ If PatientId is null, register a new patient
-            if (request.PatientId == Guid.Empty || request.PatientId == null)
+            if (request.PatientId == null)
             {
-                // If email is empty, create a default one using FirstName
-                if (string.IsNullOrWhiteSpace(request.Patient.Email))
+                var registerCommand = new Patient
                 {
-                    request.Patient.Email = $"{request.Patient.FirstName.Replace(" ", "").ToLower()}@hms.com";
-                }
-
-                var registerCommand = new RegisterCommand
-                {
-                    FirstName = request.Patient.FirstName,
+                    Name = request.Patient.Name,
                     Email = request.Patient.Email,
-                    Password = "Hms@123456",
-                    PhoneNumber = request.Patient.PhoneNumber,
+                    PhoneNo = request.Patient.PhoneNo,
+                    SecondaryPhoneNo = request.Patient.SecondaryPhoneNo,
+                    Address = request.Patient.Address,
+                    CNIC = request.Patient.CNIC,
+                    Age = request.Patient.Age,
                     Gender = request.Patient.Gender,
                     DateOfBirth = request.Patient.DateOfBirth,
-                    IsEmployee = request.Patient.IsEmployee
+                    CityId = request.Patient.CityId,
+                    ProjectId = sessionProvider.Session.SelectedWarehouseId,
+                    CreatedById = sessionProvider.Session.LoggedInUserId,
                 };
 
+                var currentProject = await unitOfWork.Repository<Entities.Models.Project>()
+                  .GetOneAsync(u => u.IsActive && u.Id == sessionProvider.Session.SelectedWarehouseId);
+
                 // 4️⃣ Generate MRN (AspNetUsers.Code) like H1-000001
-                string prefix = "H1-";
-                var lastPatientWithMrn = await unitOfWork.Repository<AspNetUsers>()
-                    .GetOneAsync(u => !string.IsNullOrEmpty(u.Code) && u.Code.StartsWith(prefix),
-                                 query => query.OrderByDescending(x => x.Code));
+                string prefix = currentProject.Code;
+                var lastPatientWithMrn = await unitOfWork.Repository<Patient>()
+                    .GetOneAsync(u => !string.IsNullOrEmpty(u.MRN) && u.MRN.StartsWith(prefix),
+                                 query => query.OrderByDescending(x => x.MRN));
 
                 int newNumber = 1;
                 if (lastPatientWithMrn != null)
                 {
-                    string numericPart = lastPatientWithMrn.Code.Substring(prefix.Length); // get the number part
+                    string numericPart = lastPatientWithMrn.MRN.Substring(prefix.Length); // get the number part
                     if (!int.TryParse(numericPart, out newNumber))
                     {
                         newNumber = 1;
@@ -77,7 +79,7 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                     }
                 }
 
-                registerCommand.Code = prefix + newNumber.ToString().PadLeft(6, '0'); // H1-000001
+                registerCommand.MRN = prefix + newNumber.ToString().PadLeft(6, '0'); // H1-000001
 
                 // Call your Register handler logic
                 var identityResponse = await RegisterNewPatientAsync(registerCommand);
@@ -100,6 +102,7 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                 var newAppointment = mapper.Map<Entities.Models.Appointment>(request);
                 newAppointment.TokenNumber = newCode;
                 newAppointment.CreatedById = sessionProvider.Session.LoggedInUserId;
+                newAppointment.ProjectId = sessionProvider.Session.SelectedWarehouseId;
                 newAppointment.CreatedDate = DateTime.Now;
                 newAppointment.AppointmentStatusId = 1;  // default status
                 unitOfWork.Repository<Entities.Models.Appointment>().Add(newAppointment);
@@ -139,69 +142,20 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
         }
 
         // Helper: Register a new patient
-        private async Task<IdentityResponse> RegisterNewPatientAsync(RegisterCommand request)
+        private async Task<IdentityResponse> RegisterNewPatientAsync(Patient request)
         {
             var result = new IdentityResponse();
 
             // Check for duplicates
-            if (await unitOfWork.Repository<AspNetUsers>().GetExistsAsync(x => x.PhoneNumber == request.PhoneNumber))
+            if (await unitOfWork.Repository<AspNetUsers>().GetExistsAsync(x => x.PhoneNumber == request.PhoneNo))
             {
                 result.Error = "Phone Number Duplicate!";
                 return result;
             }
 
-            if (await unitOfWork.Repository<AspNetUsers>().GetExistsAsync(x => x.Email.ToLower() == request.Email.ToLower()))
-            {
-                result.Error = "Email Duplicate!";
-                return result;
-            }
-
-            var user = mapper.Map<AspNetUsers>(request);
-            user.Id = Guid.NewGuid();
-            user.IsActive = true;
-            user.IsDelete = false;
-            user.CreatedById = sessionProvider.Session.LoggedInUserId;
-            user.CreatedDate = DateTime.Now;
-            user.PhoneNumberConfirmed = true;
-            user.EmailConfirmed = true;
-            user.UserName = request.Email.ToLower();
-            user.NormalizedUserName = request.Email.ToUpper();
-            user.ConcurrencyStamp = Guid.NewGuid().ToString();
-
-            // Generate user code
-            string prefix = "";
-            var company = await unitOfWork.Repository<Entities.Models.Company>().GetFirstAsync(c => c.Id == sessionProvider.Session.CompanyId);
-            if (company != null) prefix = company.Code;
-
-            Func<IQueryable<AspNetUsers>, IOrderedQueryable<AspNetUsers>> orderByDesc = q => q.OrderByDescending(x => x.Code);
-            var latestUser = await unitOfWork.Repository<AspNetUsers>()
-                .GetOneAsync(u => u.IsActive && u.Code.StartsWith(prefix), orderByDesc);
-
-            string code = "00001";
-            if (latestUser != null)
-            {
-                string numericPart = latestUser.Code.Substring(prefix.Length);
-                int latestNumber = int.TryParse(numericPart, out int num) ? num : 0;
-                code = (latestNumber + 1).ToString().PadLeft(5, '0');
-            }
-
-            user.Code = prefix + code;
-
-            var savedUser = await userManager.CreateAsync(user, request.Password);
-            result = mapper.Map<IdentityResponse>(savedUser);
-            if (result.Succeeded)
-            {
-                result.Id = user.Id;
-
-                var userRole = new AspNetUserRoles()
-                {
-                    RoleId = new Guid(""),
-                    UserId = user.Id
-                };
-
-                await SaveAspNetUserRolesAsync(userRole);
-            }
-
+            unitOfWork.Repository<Patient>().Add(request);
+            SaveChanges();
+            result.Id = request.Id;
             return result;
         }
 

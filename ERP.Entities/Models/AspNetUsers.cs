@@ -152,6 +152,9 @@ namespace ERP.Entities.Models
         public long? DealershipId { get; set; }
         public virtual Dealership Dealership { get; set; }
 
+        public long? PatientId { get; set; }
+        public virtual Patient Patient { get; set; }
+
         public virtual ICollection<AspNetUserClaims> AspNetUserClaims { get; set; }
         public virtual ICollection<AspNetUserLogins> AspNetUserLogins { get; set; }
         public virtual ICollection<AspNetUserRoles> AspNetUserRoles { get; set; }
@@ -168,7 +171,6 @@ namespace ERP.Entities.Models
         public virtual ICollection<EmployeeDevice> EmployeeDevice { get; set; }
 
         #region Appoinment 
-        public ICollection<Appointment> PatientAppointments { get; set; } = new List<Appointment>();
         public ICollection<Appointment> DoctorAppointments { get; set; } = new List<Appointment>();
         #endregion
     }

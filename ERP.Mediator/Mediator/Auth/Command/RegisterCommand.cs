@@ -143,6 +143,7 @@ namespace ERP.Mediator.Mediator.Auth.Command
         public long? EmployeeBankId { get; set; }
         public long? CityId { get; set; }
         public string HrCode { get; set; }
+        public string Code { get; set; }
         public DateTime? ResignDate { get; set; }
         public bool IsResigned { get; set; } = false;
         public long? EmployeeOvertimeRateId { get; set; }

@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ERP.Mediator.Mediator.Appointment.Command
 {
@@ -16,7 +17,7 @@ namespace ERP.Mediator.Mediator.Appointment.Command
         public long PriorityLevelId { get; set; }
         public long DepartmentId { get; set; }
 
-        public Guid PatientId { get; set; }
+        public Guid? PatientId { get; set; }
         public Guid DoctorId { get; set; }
         public Guid? ConfirmedById { get; set; }
 
@@ -29,7 +30,7 @@ namespace ERP.Mediator.Mediator.Appointment.Command
         public DateTime? ConfirmedDate { get; set; }
 
         public long AppointmentStatusId { get; set; }
-
+        public PatientCommand Patient { get; set; }
         // 🔹 Child Collections
         public List<SaveTriageCommand> Triages { get; set; } = new();
         public List<SaveAppointmentAttachmentCommand> Attachments { get; set; } = new();
@@ -83,5 +84,55 @@ namespace ERP.Mediator.Mediator.Appointment.Command
         public long PatientId { get; set; }
 
         public string Attachment { get; set; }
+    }
+
+    public class PatientCommand
+    {
+        /// <summary>
+        /// Gets or sets of first name
+        /// </summary>
+        [Required(ErrorMessage = "First Name is required")]
+        [StringLength(500, ErrorMessage = "First Name must be between 3 and 500 characters", MinimumLength = 3)]
+        public string FirstName { get; set; }
+
+
+        public string Gender { get; set; }
+
+        public DateTime? DateOfBirth { get; set; }
+        public int Age { get; set; }
+
+        public string CNIC { get; set; }
+
+        /// <summary>
+        /// Gets or sets the phone number.
+        /// </summary>
+        /// <value>
+        /// The phone number.
+        /// </value>
+        public string PhoneNumber { get; set; }
+
+        public string EmergencyPhoneNo { get; set; }
+
+        /// <summary>
+        /// Gets or sets of email
+        /// </summary>
+        [Required(ErrorMessage = "Email is required")]
+        [DataType(DataType.EmailAddress)]
+        [EmailAddress]
+        public string Email { get; set; }
+
+        public long? CityId { get; set; }
+
+        public string Address { get; set; }
+
+        /// <summary>
+        /// Gets or sets of password
+        /// </summary>
+        [Required(ErrorMessage = "Password is required")]
+        [StringLength(50, ErrorMessage = "Password must be between 5 and 50 characters", MinimumLength = 5)]
+        [DataType(DataType.Password)]
+        public string Password { get; set; }
+
+        public bool IsEmployee { get; set; }
     }
 }

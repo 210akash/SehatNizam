@@ -7,12 +7,19 @@
 namespace ERP.BusinessModels.ResponseVM
 {
     using Microsoft.AspNetCore.Identity;
+    using System;
 
     /// <summary>
     /// Identity Response
     /// </summary>
     public class IdentityResponse : IdentityResult
     {
+
+        /// <summary>
+        /// Gets or sets the user id
+        /// </summary>
+        public Guid Id { get; set; }
+
         /// <summary>
         /// Gets or sets the user id
         /// </summary>

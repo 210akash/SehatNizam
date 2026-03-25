@@ -6,6 +6,23 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Mediator\Appointment\Command\SavePurchaseInvoiceWHTCommand.cs" />
+    <Compile Remove="Mediator\Appointment\Handler\ApproveGRNHandler.cs" />
+    <Compile Remove="Mediator\Appointment\Handler\ApprovePurchaseInvoiceHandler.cs" />
+    <Compile Remove="Mediator\Appointment\Handler\DeleteGRNHandler.cs" />
+    <Compile Remove="Mediator\Appointment\Handler\GetAllGRNHandler.cs" />
+    <Compile Remove="Mediator\Appointment\Handler\GetAllPurchaseInvoiceHandler.cs" />
+    <Compile Remove="Mediator\Appointment\Handler\GetGRNByIdHandler.cs" />
+    <Compile Remove="Mediator\Appointment\Handler\GetGRNCodeHandler.cs" />
+    <Compile Remove="Mediator\Appointment\Handler\GetGRNCountHandler.cs" />
+    <Compile Remove="Mediator\Appointment\Handler\GetPendingCostSheetHandler.cs" />
+    <Compile Remove="Mediator\Appointment\Handler\GetPendingInspectionItemsHandler.cs" />
+    <Compile Remove="Mediator\Appointment\Handler\GetPendingInspectionsHandler.cs" />
+    <Compile Remove="Mediator\Appointment\Handler\GetPurchaseInvoiceCountHandler.cs" />
+    <Compile Remove="Mediator\Appointment\Handler\ProcessGRNHandler.cs" />
+    <Compile Remove="Mediator\Appointment\Handler\ProcessPurchaseInvoiceHandler.cs" />
+    <Compile Remove="Mediator\Appointment\Handler\RejectPurchaseInvoiceHandler.cs" />
+    <Compile Remove="Mediator\Appointment\Handler\SavePurchaseInvoiceWHTHandler.cs" />
     <Compile Remove="Mediator\Item\Handler\GetItemByNameWarehouseHandler.cs" />
     <Compile Remove="Mediator\Item\Query\GetItemByNameWarehouseQuery.cs" />
     <Compile Remove="Mediator\PurchaseOrder\Handler\GetPendingDemandQuery.cs" />

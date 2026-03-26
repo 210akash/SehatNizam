@@ -182,6 +182,26 @@
 
         #endregion
 
+        #region Appointment
+
+        public virtual DbSet<Patient> Patient { get; set; }
+        public virtual DbSet<Appointment> Appointment { get; set; }
+        public virtual DbSet<PriorityLevel> PriorityLevel { get; set; }
+        public virtual DbSet<AppointmentType> AppointmentType { get; set; }
+        public virtual DbSet<VisitType> VisitType { get; set; }
+        public virtual DbSet<AppointmentStatus> AppointmentStatus { get; set; }
+        public virtual DbSet<Triage> Triage { get; set; }
+        public virtual DbSet<Consultation> Consultation { get; set; }
+        public virtual DbSet<PatientProblem> PatientProblem { get; set; }
+        public virtual DbSet<Prescription> Prescription { get; set; }
+        public virtual DbSet<AppointmentAttachment> AppointmentAttachment { get; set; }
+        public virtual DbSet<LabOrder> LabOrder { get; set; }
+        public virtual DbSet<RadiologyOrder> RadiologyOrder { get; set; }
+        public virtual DbSet<AppointmentPayment> AppointmentPayment { get; set; }
+        public virtual DbSet<RadiologyType> RadiologyType { get; set; }
+
+        #endregion
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Item>().HasQueryFilter(i => !i.IsDelete);

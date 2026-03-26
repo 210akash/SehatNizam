@@ -108,6 +108,8 @@ import { InterviewListComponent } from './components/interview/interview-list/in
 import { RetailOrderListComponent } from './components/order/retail-orders/retail-order-list/retail-order-list.component';
 import { HolidayListComponent } from './components/hr/holiday/holiday-list/holiday-list.component';
 import { RetailOrderReturnTabComponent } from './components/order/retail-orders/retail-order-return/retail-order-return-tab/retail-order-return-tab.component';
+import { AddAppointmentComponent } from './components/opd/appointment/add-appointment/add-appointment.component';
+import { AppointmentListComponent } from './components/opd/appointment/appointment-list/appointment-list.component';
 
 const routes: Routes = [
   {
@@ -219,6 +221,7 @@ const routes: Routes = [
       { path: 'employeeworksitetype', component: EmployeeWorkSiteTypeListComponent, canActivate: [AuthGuard], data: { roles: ["hr manager,hr executive,admin"] } },
       { path: 'interview', component: InterviewListComponent, canActivate: [AuthGuard] },
       { path: 'retailorderreturn', component: RetailOrderReturnTabComponent, canActivate: [AuthGuard], data: { roles: ["retailer,admin"] } },
+      { path: 'appointment', component: AppointmentListComponent, canActivate: [AuthGuard] },
     ]
   },
   {

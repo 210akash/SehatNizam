@@ -3,10 +3,8 @@ using ERP.BusinessModels.ResponseVM;
 using ERP.Core.Provider;
 using ERP.Entities.Models;
 using ERP.Mediator.Mediator.Appointment.Command;
-using ERP.Mediator.Mediator.Auth.Command;
 using ERP.Repositories.UnitOfWork;
 using MediatR;
-using Microsoft.AspNetCore.Identity;
 using System;
 using System.Linq;
 using System.Threading;
@@ -19,15 +17,11 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
         private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
         private readonly SessionProvider sessionProvider;
-        private readonly IMediator mediator;
-        private readonly UserManager<AspNetUsers> userManager;
-        public SaveAppointmentHandler(IMediator mediator, IMapper mapper, IUnitOfWork unitOfWork, SessionProvider sessionProvider, UserManager<AspNetUsers> userManager)
+        public SaveAppointmentHandler(IMapper mapper, IUnitOfWork unitOfWork, SessionProvider sessionProvider)
         {
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
             this.sessionProvider = sessionProvider;
-            this.mediator = mediator;
-            this.userManager = userManager;
         }
 
         public long SaveChanges()
@@ -157,17 +151,6 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
             SaveChanges();
             result.Id = request.Id;
             return result;
-        }
-
-        /// <summary>
-        /// Saves the ASP net user roles.
-        /// </summary>
-        /// <param name="model">The Asp Net User Roles model.</param>
-        /// <returns>the task</returns>
-        private async Task SaveAspNetUserRolesAsync(AspNetUserRoles model)
-        {
-            await unitOfWork.Repository<AspNetUserRoles>().AddAsync(model);
-            await unitOfWork.SaveChangesAsync();
         }
     }
 }

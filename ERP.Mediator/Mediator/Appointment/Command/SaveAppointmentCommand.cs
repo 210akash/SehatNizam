@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace ERP.Mediator.Mediator.Appointment.Command
 {
@@ -31,6 +30,20 @@ namespace ERP.Mediator.Mediator.Appointment.Command
 
         // 🔹 Child Collections
         public SaveAppointmentPaymentCommand AppointmentPayment { get; set; }
+    }
+    public class PatientCommand
+    {
+        public string Name { get; set; }
+        public string PhoneNo { get; set; }
+        public string SecondaryPhoneNo { get; set; }
+        public string Address { get; set; }
+        public string CNIC { get; set; }
+        public string Gender { get; set; }
+        public string Email { get; set; }
+        public DateTime? DateOfBirth { get; set; }
+        public int Age { get; set; }
+        public long CityId { get; set; }
+        public long ProjectId { get; set; }
     }
 
     public class SaveAppointmentPaymentCommand
@@ -95,18 +108,5 @@ namespace ERP.Mediator.Mediator.Appointment.Command
         public string Attachment { get; set; }
     }
 
-    public class PatientCommand
-    {
-        public string Name { get; set; }
-        public string PhoneNo { get; set; }
-        public string SecondaryPhoneNo { get; set; }
-        public string Address { get; set; }
-        public string CNIC { get; set; }
-        public string Gender { get; set; }
-        public string Email { get; set; }
-        public DateTime? DateOfBirth { get; set; }
-        public int Age { get; set; }
-        public long CityId { get; set; }
-        public long ProjectId { get; set; }
-    }
+
 }

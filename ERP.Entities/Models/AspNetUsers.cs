@@ -152,9 +152,6 @@ namespace ERP.Entities.Models
         public long? DealershipId { get; set; }
         public virtual Dealership Dealership { get; set; }
 
-        public long? PatientId { get; set; }
-        public virtual Patient Patient { get; set; }
-
         public virtual ICollection<AspNetUserClaims> AspNetUserClaims { get; set; }
         public virtual ICollection<AspNetUserLogins> AspNetUserLogins { get; set; }
         public virtual ICollection<AspNetUserRoles> AspNetUserRoles { get; set; }

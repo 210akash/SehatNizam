@@ -758,6 +758,10 @@ import { RetailOrderReturnEndPoints } from './components/order/retail-orders/ret
 import { RetailOrderReturnService } from './components/order/retail-orders/retail-order-return/retail-order-return.service';
 import { ViewRetailOrderReturnComponent } from './components/order/retail-orders/retail-order-return/view-retail-order-return/view-retail-order-return.component';
 import { ModernSidebarComponent } from './components/modern-sidebar.component/modern-sidebar.component';
+import { AddAppointmentComponent } from './components/opd/appointment/add-appointment/add-appointment.component';
+import { AppointmentService } from './components/opd/appointment/appointment.service';
+import { AppointmentEndPoints } from './components/opd/appointment/appointment.endpoints';
+import { AppointmentListComponent } from './components/opd/appointment/appointment-list/appointment-list.component';
 
 const matFormFieldDefaults: MatFormFieldDefaultOptions = {
     appearance: 'outline'
@@ -1298,6 +1302,8 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         ViewRetailOrderReturnComponent,
         ProcessRetailOrderReturnComponent,
         PrintRetailOrderReturnComponent,
+        AddAppointmentComponent,
+        AppointmentListComponent
     ],
     bootstrap: [AppComponent], imports: [
         InputMaskModule,
@@ -1544,6 +1550,8 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         HolidayEndPoints,
         RetailOrderReturnEndPoints,
         RetailOrderReturnService,
+        AppointmentService,
+        AppointmentEndPoints,
         { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
         { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },
         AuthenticationService, {

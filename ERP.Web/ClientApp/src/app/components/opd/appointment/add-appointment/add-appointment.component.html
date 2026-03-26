@@ -1,0 +1,207 @@
+<form *ngIf="appointmentForm" [formGroup]="appointmentForm" class="modern-form">
+  <mat-card class="modern-card">
+    <mat-card-header>
+      <div>
+        <mat-card-title class="title">New Patient Registration</mat-card-title>
+        <mat-card-subtitle class="subtitle">Create or update an appointment with patient details, schedule, and billing.</mat-card-subtitle>
+      </div>
+    </mat-card-header>
+    <mat-divider></mat-divider>
+
+    <mat-card-content>
+      <!-- Patient -->
+      <section class="section">
+        <div class="section-head">
+          <mat-icon fontIcon="person" class="icon"></mat-icon>
+          <div>
+            <div class="section-title">Patient Information</div>
+            <div class="section-sub">Identity and contact</div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <mat-form-field appearance="outline">
+            <mat-label>Appointment For</mat-label>
+            <mat-select formControlName="appointmentTypeId">
+              <mat-option [value]="1">Self</mat-option>
+              <mat-option [value]="2">Family Member</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="grid-4" formGroupName="patient">
+          <mat-form-field appearance="outline">
+            <mat-label>Full Name</mat-label>
+            <input matInput formControlName="name" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Gender</mat-label>
+            <mat-select formControlName="gender">
+              <mat-option value="male">Male</mat-option>
+              <mat-option value="female">Female</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Date of Birth</mat-label>
+            <input matInput [matDatepicker]="dobPicker" formControlName="dateOfBirth" />
+            <mat-datepicker-toggle matIconSuffix [for]="dobPicker"></mat-datepicker-toggle>
+            <mat-datepicker #dobPicker></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Age (Years)</mat-label>
+            <input matInput formControlName="age" readonly />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>CNIC</mat-label>
+            <input matInput [inputMask]="cnicInputMask" placeholder="00000-0000000-0" formControlName="cnic" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Phone Number</mat-label>
+            <input matInput [inputMask]="phoneNoInputMask" formControlName="phoneNo" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Alternate Contact</mat-label>
+            <input matInput [inputMask]="phoneNoInputMask" formControlName="secondaryPhoneNo" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email" [inputMask]="emailInputMask" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>City</mat-label>
+            <mat-select formControlName="cityId">
+              <mat-option *ngFor="let city of cityList" [value]="city.id">{{ city.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="span-2">
+            <mat-label>Address</mat-label>
+            <textarea matInput rows="2" formControlName="address"></textarea>
+          </mat-form-field>
+        </div>
+      </section>
+
+      <!-- Appointment -->
+      <section class="section">
+        <div class="section-head">
+          <mat-icon fontIcon="event" class="icon"></mat-icon>
+          <div>
+            <div class="section-title">Appointment Details</div>
+            <div class="section-sub">Schedule and provider</div>
+          </div>
+        </div>
+
+        <div class="grid-4">
+          <mat-form-field appearance="outline">
+            <mat-label>Date</mat-label>
+            <input matInput [matDatepicker]="appDate" formControlName="appointmentDate" [min]="minDate" />
+            <mat-datepicker-toggle matIconSuffix [for]="appDate"></mat-datepicker-toggle>
+            <mat-datepicker #appDate></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Time</mat-label>
+            <input matInput type="time" formControlName="appointmentTime" />
+          </mat-form-field>
+
+          <div class="span-2">
+            <label class="text-sm label-inline">Priority Level</label>
+            <mat-radio-group formControlName="priorityLevelId" class="priority-radio">
+              <mat-radio-button *ngFor="let p of priorityLevels" [value]="p.id">{{ p.label }}</mat-radio-button>
+            </mat-radio-group>
+          </div>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Department / Specialty</mat-label>
+            <mat-select formControlName="departmentId">
+              <mat-option [value]="null">Select Department</mat-option>
+              <mat-option *ngFor="let dept of departments" [value]="dept.id">{{ dept.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Doctor</mat-label>
+            <mat-select formControlName="doctorId">
+              <mat-option [value]="null">Select Doctor</mat-option>
+              <mat-option *ngFor="let doc of filterDoctors()" [value]="doc.id">{{ doc.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Visit Type</mat-label>
+            <mat-select formControlName="visitTypeId">
+              <mat-option *ngFor="let v of visitTypes" [value]="v.id">{{ v.label }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="span-2">
+            <mat-label>Reason for Visit / Complaint</mat-label>
+            <input matInput formControlName="reason" placeholder="e.g. Fever, Headache, Checkup" />
+          </mat-form-field>
+        </div>
+      </section>
+
+      <!-- Payment -->
+      <section class="section" formGroupName="appointmentPayment">
+        <div class="section-head">
+          <mat-icon fontIcon="credit_card" class="icon"></mat-icon>
+          <div>
+            <div class="section-title">Payment & Billing</div>
+            <div class="section-sub">Fees, discounts, and status</div>
+          </div>
+        </div>
+
+        <div class="grid-3">
+          <mat-form-field appearance="outline">
+            <mat-label>Visit Fee</mat-label>
+            <input matInput type="number" formControlName="visitFee" min="0" step="0.01" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Discount / Insurance</mat-label>
+            <input matInput type="number" formControlName="discount" min="0" step="0.01" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Total Payable</mat-label>
+            <input matInput formControlName="totalPayable" readonly />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Payment Method</mat-label>
+            <mat-select formControlName="paymentModeId">
+              <mat-option *ngFor="let mode of paymentModes" [value]="mode.id">{{ mode.label }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Payment Status</mat-label>
+            <mat-select formControlName="paymentStatusId">
+              <mat-option *ngFor="let status of appointmentStatuses" [value]="status.id">{{ status.label }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Appointment Status</mat-label>
+            <mat-select formControlName="appointmentStatusId">
+              <mat-option *ngFor="let status of appointmentStatuses" [value]="status.id">{{ status.label }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </section>
+
+      <div class="button-container">
+        <button mat-flat-button color="primary" type="button" (click)="onSubmit()">Save</button>
+        <button mat-stroked-button color="basic" type="button" (click)="onCancel()">Close</button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</form>

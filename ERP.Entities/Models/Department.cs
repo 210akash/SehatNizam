@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.Text.Json.Serialization;
+﻿using System.Collections.Generic;
 
 namespace ERP.Entities.Models
 {
@@ -8,7 +6,7 @@ namespace ERP.Entities.Models
     {
         public string Name { get; set; }
         public string Description { get; set; }
-
+        public bool Clinical { get; set; } = false;
         public long? CompanyId { get; set; }
         public virtual Company Company { get; set; }
 

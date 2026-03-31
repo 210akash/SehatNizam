@@ -8,5 +8,6 @@ namespace ERP.Mediator.Mediator.Department.Command
         public long CompanyId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public bool Clinical { get; set; }
     }
 }

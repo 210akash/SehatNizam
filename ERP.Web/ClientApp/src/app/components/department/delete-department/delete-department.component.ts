@@ -23,7 +23,9 @@ export class DeleteDepartmentComponent {
     this.departmentForm = this.formBuilder.group({
       id: [0],
       name: ['', Validators.required],
-      description: ['', Validators.required]
+      description: ['', Validators.required],
+      clinical :[]
+
     });
     this.LoadData(this.data.element);
   }

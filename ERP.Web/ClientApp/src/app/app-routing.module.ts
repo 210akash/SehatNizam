@@ -134,7 +134,7 @@ const routes: Routes = [
       { path: 'itemtype', component: ItemtypeListComponent, canActivate: [AuthGuard], data: { roles: ["store manager,store issuer"] } },
       { path: 'items', component: ItemListComponent, canActivate: [AuthGuard], data: { roles: ["store manager,store issuer"] } },
       { path: 'location', component: LocationListComponent, canActivate: [AuthGuard], data: { roles: ["admin"] } },
-      { path: 'project', component: ProjectListComponent, canActivate: [AuthGuard], data: { roles: ["admin,store manager,store issuer"] } },
+      { path: 'project', component: ProjectListComponent, canActivate: [AuthGuard], data: { roles: ["Admin,hr manager,hr executive"] } },
       { path: 'indentrequest', component: IndentrequestTabComponent, canActivate: [AuthGuard], data: {  breadcrumb : 'Issue Request', roles: ["manager, assistant"] } },
       { path: 'chartitems', component: ChartitemsComponent, canActivate: [AuthGuard], data: { roles: ["store manager,store issuer"] } },
       { path: 'purchasedemand', component: PurchaseDemandTabComponent, canActivate: [AuthGuard], data: { roles: ["store manager,store issuer,audit"] } },

@@ -106,7 +106,7 @@ export class AddEmployeeComponent {
       lastName: [''],
       title: [''],
       password: [
-        'Kc@123567'
+        'Hms@123567'
       ],
       roleId: [[
       '46684446-1139-4085-6401-08ddf519c24b'

@@ -7,3 +7,9 @@
   margin-top: 1rem;
   /* Add margin space above buttons */
 }
+
+.header-container {
+    justify-content: space-between;
+    /* Align buttons to the right */
+    width: 100%;
+}

@@ -26,7 +26,7 @@ export class AddDepartmentComponent {
       id: [0],
       name: ['', Validators.required],
       description: ['', Validators.required],
-      companyId: [0],
+      clinical:[false],
     });
     
     this.LoadData(this.data.element);

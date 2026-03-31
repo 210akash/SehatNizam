@@ -39,7 +39,7 @@
 
       <!-- Issuance -->
       <div class="nav-group"
-        *ngIf="hasRequiredRole(['manager','assistant','store manager','store issuer','audit','admin'])">
+        *ngIf="hasRequiredRole(['admin'])">
         <button (click)="toggleSubMenu('issuance')" class="nav-button">
           <i class="fas fa-file-export"></i>
           <span>Issuance</span>
@@ -243,8 +243,7 @@
             <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('storesetup')"></i>
           </button>
           <div class="nested-submenu" *ngIf="isSubMenuVisible('storesetup')">
-            <a routerLink="/project" *ngIf="hasRequiredRole(['admin','store manager','store issuer'])"
-              class="nested-link" [class.active-link]="isActive('/project')">Projects</a>
+        
             <a routerLink="/uoms" *ngIf="hasRequiredRole(['store manager','store issuer'])" class="nested-link"
               [class.active-link]="isActive('/uoms')">UOM</a>
             <a routerLink="/vehicle" *ngIf="hasRequiredRole(['store manager','store issuer'])" class="nested-link"
@@ -501,7 +500,17 @@
         </div>
       </div>
 
-      <!-- HR Setup -->
+    
+
+      <!-- Manage HR -->
+      <div class="nav-group" *ngIf="hasRequiredRole(['hr executive','hr manager','admin'])">
+        <button (click)="toggleSubMenu('employee')" class="nav-button">
+          <i class="fas fa-user-tie"></i>
+          <span>Manage HR</span>
+          <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('employee')"></i>
+        </button>
+        <div class="submenu" *ngIf="isSubMenuVisible('employee')">
+         <!-- HR Setup -->
       <div class="nav-group" *ngIf="hasRequiredRole(['hr executive','hr manager','admin'])">
         <button (click)="toggleSubMenu('hr')" class="nav-button">
           <i class="fas fa-user-cog"></i>
@@ -509,6 +518,8 @@
           <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('hr')"></i>
         </button>
         <div class="submenu" *ngIf="isSubMenuVisible('hr')">
+              <a routerLink="/project" *ngIf="hasRequiredRole(['admin','hr manager','hr executive'])"
+              class="nested-link" [class.active-link]="isActive('/project')">Site/Building</a>
           <a routerLink="/departments" class="submenu-link"
             [class.active-link]="isActive('/departments')">Departments</a>
           <a routerLink="/employeedesignation" class="submenu-link"
@@ -546,15 +557,6 @@
           </div>
         </div>
       </div>
-
-      <!-- Manage HR -->
-      <div class="nav-group" *ngIf="hasRequiredRole(['hr executive','hr manager','admin'])">
-        <button (click)="toggleSubMenu('employee')" class="nav-button">
-          <i class="fas fa-user-tie"></i>
-          <span>Manage HR</span>
-          <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('employee')"></i>
-        </button>
-        <div class="submenu" *ngIf="isSubMenuVisible('employee')">
           <a routerLink="/employee" class="submenu-link" [class.active-link]="isActive('/employee')">Manage
             Employees</a>
           <a routerLink="/manageemployeeleave" class="submenu-link"

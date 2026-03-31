@@ -22,7 +22,7 @@ export class DepartmentListComponent {
   currentPage = 0;
   pageSize = 0;
   pageSizeOptions: number[] = [5, 10, 25, 100];
-  displayedColumns: string[] = ['name','company', 'createdBy', 'actions'];
+  displayedColumns: string[] = ['name', 'clinical', 'createdBy', 'actions'];
   dataSource: any;
   take = 50;
   totalRows = 0;

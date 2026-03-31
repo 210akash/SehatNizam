@@ -110,6 +110,7 @@ import { HolidayListComponent } from './components/hr/holiday/holiday-list/holid
 import { RetailOrderReturnTabComponent } from './components/order/retail-orders/retail-order-return/retail-order-return-tab/retail-order-return-tab.component';
 import { AddAppointmentComponent } from './components/opd/appointment/add-appointment/add-appointment.component';
 import { AppointmentListComponent } from './components/opd/appointment/appointment-list/appointment-list.component';
+import { AppointmentTypeListComponent } from './components/opd/appointment-type/appointment-type-list/appointment-type-list.component';
 
 const routes: Routes = [
   {
@@ -222,6 +223,7 @@ const routes: Routes = [
       { path: 'interview', component: InterviewListComponent, canActivate: [AuthGuard] },
       { path: 'retailorderreturn', component: RetailOrderReturnTabComponent, canActivate: [AuthGuard], data: { roles: ["retailer,admin"] } },
       { path: 'appointment', component: AppointmentListComponent, canActivate: [AuthGuard] },
+      { path: 'appointmenttype', component: AppointmentTypeListComponent, canActivate: [AuthGuard] },
     ]
   },
   {

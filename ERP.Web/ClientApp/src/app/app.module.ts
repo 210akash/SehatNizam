@@ -762,6 +762,18 @@ import { AddAppointmentComponent } from './components/opd/appointment/add-appoin
 import { AppointmentService } from './components/opd/appointment/appointment.service';
 import { AppointmentEndPoints } from './components/opd/appointment/appointment.endpoints';
 import { AppointmentListComponent } from './components/opd/appointment/appointment-list/appointment-list.component';
+import { AppointmentTypeService } from './components/opd/appointment-type/appointment-type.service';
+import { AppointmentTypeEndPoints } from './components/opd/appointment-type/appointment-type.endpoints';
+import { AppointmentTypeListComponent } from './components/opd/appointment-type/appointment-type-list/appointment-type-list.component';
+import { DeleteAppointmentTypeComponent } from './components/opd/appointment-type/delete-appointment-type/delete-appointment-type.component';
+import { ViewAppointmentTypeComponent } from './components/opd/appointment-type/view-appointment-type/view-appointment-type.component';
+import { CreateAppointmentTypeComponent } from './components/opd/appointment-type/create-appointment-type/create-appointment-type.component';
+import { VisitTypeListComponent } from './components/opd/visit-type/visit-type-list/visit-type-list.component';
+import { ViewVisitTypeComponent } from './components/opd/visit-type/view-visit-type/view-visit-type.component';
+import { CreateVisitTypeComponent } from './components/opd/visit-type/create-visit-type/create-visit-type.component';
+import { DeleteVisitTypeComponent } from './components/opd/visit-type/delete-visit-type/delete-visit-type.component';
+import { VisitTypeService } from './components/opd/visit-type/visit-type.service';
+import { VisitTypeEndPoints } from './components/opd/visit-type/visit-type.endpoints';
 
 const matFormFieldDefaults: MatFormFieldDefaultOptions = {
     appearance: 'outline'
@@ -1303,7 +1315,16 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         ProcessRetailOrderReturnComponent,
         PrintRetailOrderReturnComponent,
         AddAppointmentComponent,
-        AppointmentListComponent
+        AppointmentListComponent,
+        AppointmentTypeListComponent,
+        CreateAppointmentTypeComponent,
+        DeleteAppointmentTypeComponent,
+        ViewAppointmentTypeComponent,
+        VisitTypeListComponent,
+        ViewVisitTypeComponent,
+        CreateVisitTypeComponent,
+        DeleteVisitTypeComponent,
+        VisitTypeListComponent
     ],
     bootstrap: [AppComponent], imports: [
         InputMaskModule,
@@ -1552,6 +1573,10 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         RetailOrderReturnService,
         AppointmentService,
         AppointmentEndPoints,
+        AppointmentTypeService,
+        AppointmentTypeEndPoints,
+        VisitTypeService,
+        VisitTypeEndPoints,
         { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
         { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },
         AuthenticationService, {

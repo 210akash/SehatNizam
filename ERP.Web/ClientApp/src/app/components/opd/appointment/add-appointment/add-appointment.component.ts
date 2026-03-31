@@ -6,6 +6,9 @@ import { AppointmentService } from '../appointment.service';
 import { DepartmentService } from '../../../department/department.service';
 import { createMask } from '@ngneat/input-mask';
 import { CityService } from '../../../hr/city/city.service';
+import { AppointmentTypeService } from '../../appointment-type/appointment-type.service';
+import { VisitTypeService } from '../../visit-type/visit-type.service';
+import { PaymentModeService } from '../../../paymentmode/paymentmode.service';
 
 type Option<T = any> = { id: T; label: string };
 
@@ -24,6 +27,9 @@ export class AddAppointmentComponent implements OnInit {
   phoneNoInputMask = createMask('0399-9999999');
   emailInputMask = createMask('*[*{0,50}]@*[*{0,50}].*[*{0,5}]');
   cityList: any;
+  appointmentTypeList : any;
+  visitTypesList : any;
+  paymentModesList : any;
   minDate = this.toInputDate(new Date());
 
   departments: any[] = [];
@@ -42,32 +48,9 @@ export class AddAppointmentComponent implements OnInit {
     { id: 4, label: 'Critical' }
   ];
 
-  visitTypes: Option<number>[] = [
-    { id: 1, label: 'First Visit' },
-    { id: 2, label: 'Follow-up' },
-    { id: 3, label: 'Emergency' },
-    { id: 4, label: 'Tele-Consultation' }
-  ];
-
-  paymentModes: Option<number>[] = [
-    { id: 1, label: 'Cash' },
-    { id: 2, label: 'Credit/Debit Card' },
-    { id: 3, label: 'Online Payment' },
-    { id: 4, label: 'Insurance' }
-  ];
-
   appointmentStatuses: Option<number>[] = [
     { id: 0, label: 'Pending (Only Register)' },
     { id: 1, label: 'Confirmed (Payment Received)' }
-  ];
-
-  cities: Array<Option<number>> = [
-    { id: 1, label: 'Lahore' },
-    { id: 2, label: 'New York' },
-    { id: 3, label: 'London' },
-    { id: 4, label: 'Dubai' },
-    { id: 5, label: 'Karachi' },
-    { id: 6, label: 'Islamabad' }
   ];
 
   constructor(
@@ -77,6 +60,9 @@ export class AddAppointmentComponent implements OnInit {
     private appointmentService: AppointmentService,
     private departmentService: DepartmentService,
     private cityService: CityService,
+    private appointmentTypeService: AppointmentTypeService,
+    private visitTypeService: VisitTypeService,
+    private paymentModeService: PaymentModeService,
     @Optional() @Inject(MAT_DIALOG_DATA) public data: { element: any } | null
   ) {}
 
@@ -84,6 +70,8 @@ export class AddAppointmentComponent implements OnInit {
     this.buildForm();
     this.loadDepartments();
     this.getCityList();
+    this.getAppointmentTypeList();
+    this.getVisitTypeList();
     this.patchEditData();
     this.setupCalculations();
   }
@@ -99,7 +87,7 @@ export class AddAppointmentComponent implements OnInit {
       departmentId: [null, Validators.required],
       patientId: [null],
       doctorId: [null, Validators.required],
-      visitTypeId: [this.visitTypes[0].id],
+      visitTypeId: [this.visitTypesList[0].id],
       reason: ['', Validators.required],
       confirmationNotes: [''],
       confirmedDate: [null],
@@ -114,7 +102,7 @@ export class AddAppointmentComponent implements OnInit {
         email: ['', Validators.email],
         dateOfBirth: [null, Validators.required],
         age: [{ value: null, disabled: true }],
-        cityId: [this.cities[0]?.id ?? null, Validators.required],
+        cityId: [this.cityList[0]?.id ?? null, Validators.required],
         projectId: [0, Validators.required]
       }),
       appointmentPayment: this.fb.group({
@@ -123,7 +111,7 @@ export class AddAppointmentComponent implements OnInit {
         visitFee: [0, Validators.min(0)],
         discount: [0, Validators.min(0)],
         totalPayable: [{ value: 0, disabled: true }],
-        paymentModeId: [this.paymentModes[0].id, Validators.required],
+        paymentModeId: [this.paymentModesList[0].id, Validators.required],
         paymentDate: [this.minDate, Validators.required],
         paymentStatusId: [0, Validators.required]
       })
@@ -183,6 +171,27 @@ export class AddAppointmentComponent implements OnInit {
     let _filterForm = {};
     this.cityService.getAllCities(_filterForm).subscribe(data => {
       this.cityList = data.item1;
+    });
+  }
+
+    async getAppointmentTypeList(): Promise<void> {
+    let _filterForm = {};
+    (await this.appointmentTypeService.getAllAppointmentType(_filterForm)).subscribe(data => {
+      this.appointmentTypeList = data.item1;
+    });
+  }
+
+   async getVisitTypeList(): Promise<void> {
+    let _filterForm = {};
+    (await this.visitTypeService.getAllVisitType(_filterForm)).subscribe(data => {
+      this.visitTypesList = data.item1;
+    });
+  }
+
+  async getPaymentModesList(): Promise<void> {
+    let _filterForm = {};
+    (await this.paymentModeService.getAllPaymentModes(_filterForm)).subscribe(data => {
+      this.paymentModesList = data.item1;
     });
   }
 

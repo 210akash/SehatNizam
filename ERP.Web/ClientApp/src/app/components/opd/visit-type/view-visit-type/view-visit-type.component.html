@@ -1,0 +1,26 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title> View Visit Type  </mat-card-title>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="mb-3">
+          <mat-form-field class="form-field">
+            <mat-label>Name</mat-label>
+            <input matInput  [value]="this.data.element.name" readonly />
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+
+    <div class="button-container">
+      <button mat-flat-button color="default" [mat-dialog-close]="true">
+        <span class="mat-button-wrapper">Close</span>
+      </button>
+    </div>
+
+  </mat-card-content>
+</mat-card>

@@ -23,10 +23,9 @@
         <div class="grid-2">
           <mat-form-field appearance="outline">
             <mat-label>Appointment For</mat-label>
-            <mat-select formControlName="appointmentTypeId">
-              <mat-option [value]="1">Self</mat-option>
-              <mat-option [value]="2">Family Member</mat-option>
-            </mat-select>
+             <mat-select formControlName="appointmentTypeId">
+                <mat-option *ngFor="let appointmentType of appointmentTypeList" [value]="appointmentType.id">{{ appointmentType.name }}</mat-option>
+             </mat-select>
           </mat-form-field>
         </div>
         <div formGroupName="patient">
@@ -142,7 +141,7 @@
           <mat-form-field appearance="outline">
             <mat-label>Visit Type</mat-label>
             <mat-select formControlName="visitTypeId">
-              <mat-option *ngFor="let v of visitTypes" [value]="v.id">{{ v.label }}</mat-option>
+              <mat-option *ngFor="let visitType of visitTypesList" [value]="visitType.id">{{ visitType.name }}</mat-option>
             </mat-select>
           </mat-form-field>
 
@@ -182,7 +181,7 @@
           <mat-form-field appearance="outline">
             <mat-label>Payment Method</mat-label>
             <mat-select formControlName="paymentModeId">
-              <mat-option *ngFor="let mode of paymentModes" [value]="mode.id">{{ mode.label }}</mat-option>
+              <mat-option *ngFor="let paymentMode of paymentModesList" [value]="paymentMode.id">{{ paymentMode.label }}</mat-option>
             </mat-select>
           </mat-form-field>
 

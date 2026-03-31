@@ -6,6 +6,9 @@ using System;
 using MediatR;
 using ERP.Mediator.Mediator.Appointment.Command;
 using Microsoft.AspNetCore.Authorization;
+using ERP.BusinessModels.ResponseVM;
+using ERP.Mediator.Mediator.PrimaryOrder.Query;
+using System.Collections.Generic;
 
 namespace ERP.API.Controllers
 {
@@ -47,6 +50,20 @@ namespace ERP.API.Controllers
                         return this.Result(ResponseStatus.Error, "There is some error!", null);
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                return this.Result(ResponseStatus.Error, null, ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("GetAllAppointmentStatus")]
+        public async Task<ActionResult<List<GetAppointmentStatus>>> GetAllAppointmentStatus()
+        {
+            try
+            {
+                return await this.mediator.Send(new GetAllAppointmentStatusQuery());
             }
             catch (Exception ex)
             {

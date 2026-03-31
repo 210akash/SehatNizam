@@ -774,6 +774,8 @@ import { CreateVisitTypeComponent } from './components/opd/visit-type/create-vis
 import { DeleteVisitTypeComponent } from './components/opd/visit-type/delete-visit-type/delete-visit-type.component';
 import { VisitTypeService } from './components/opd/visit-type/visit-type.service';
 import { VisitTypeEndPoints } from './components/opd/visit-type/visit-type.endpoints';
+import { PriorityLevelService } from './components/opd/prioritylevel/prioritylevel.service';
+import { PriorityLevelEndPoints } from './components/opd/prioritylevel/prioritylevel.endpoints';
 
 const matFormFieldDefaults: MatFormFieldDefaultOptions = {
     appearance: 'outline'
@@ -1577,6 +1579,8 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         AppointmentTypeEndPoints,
         VisitTypeService,
         VisitTypeEndPoints,
+        PriorityLevelService,
+        PriorityLevelEndPoints,
         { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
         { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },
         AuthenticationService, {

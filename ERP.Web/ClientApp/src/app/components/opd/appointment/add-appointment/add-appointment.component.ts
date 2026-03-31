@@ -9,6 +9,8 @@ import { CityService } from '../../../hr/city/city.service';
 import { AppointmentTypeService } from '../../appointment-type/appointment-type.service';
 import { VisitTypeService } from '../../visit-type/visit-type.service';
 import { PaymentModeService } from '../../../paymentmode/paymentmode.service';
+import { PriorityLevelService } from '../../prioritylevel/prioritylevel.service';
+import { PrimaryOrderService } from '../../../order/primary-order/order.service';
 
 type Option<T = any> = { id: T; label: string };
 
@@ -30,8 +32,10 @@ export class AddAppointmentComponent implements OnInit {
   appointmentTypeList : any;
   visitTypesList : any;
   paymentModesList : any;
+  appointmentStatusList: any;
   minDate = this.toInputDate(new Date());
-
+  priorityLevelList: any;
+  paymentStatusList: any;
   departments: any[] = [];
   doctors: Array<{ id: string; name: string; departmentId?: number }> = [
     { id: '7c9e6679-7425-40de-944b-e07fc1f90ae7', name: 'Dr. Sarah Khan', departmentId: 1 },
@@ -39,18 +43,6 @@ export class AddAppointmentComponent implements OnInit {
     { id: '1f4a9e3a-2f56-41fc-a6fb-20d8f3a1c9a2', name: 'Dr. Maria Aslam', departmentId: 3 },
     { id: 'c7f2b3b3-9dd5-4de6-8b45-6f5c7e9a5f8e', name: 'Dr. Jason Lee', departmentId: 4 },
     { id: '14fae5f8-cf4f-4af1-92d2-1f3d5cbd8f99', name: 'Any Available', departmentId: undefined }
-  ];
-
-  priorityLevels: Option<number>[] = [
-    { id: 1, label: 'Normal' },
-    { id: 2, label: 'Urgent' },
-    { id: 3, label: 'Emergency' },
-    { id: 4, label: 'Critical' }
-  ];
-
-  appointmentStatuses: Option<number>[] = [
-    { id: 0, label: 'Pending (Only Register)' },
-    { id: 1, label: 'Confirmed (Payment Received)' }
   ];
 
   constructor(
@@ -63,6 +55,8 @@ export class AddAppointmentComponent implements OnInit {
     private appointmentTypeService: AppointmentTypeService,
     private visitTypeService: VisitTypeService,
     private paymentModeService: PaymentModeService,
+    private priorityLevelService: PriorityLevelService,
+    private primaryOrderService: PrimaryOrderService,
     @Optional() @Inject(MAT_DIALOG_DATA) public data: { element: any } | null
   ) {}
 
@@ -72,9 +66,14 @@ export class AddAppointmentComponent implements OnInit {
     this.getCityList();
     this.getAppointmentTypeList();
     this.getVisitTypeList();
+    this.getAllAppointmentStatus();
+    this.getAllOrderStatus();
+    this.getPaymentModesList();
+    this.getAllPriorityLevel();
     this.patchEditData();
     this.setupCalculations();
   }
+
 
   private buildForm(): void {
     this.appointmentForm = this.fb.group({
@@ -178,6 +177,27 @@ export class AddAppointmentComponent implements OnInit {
     let _filterForm = {};
     (await this.appointmentTypeService.getAllAppointmentType(_filterForm)).subscribe(data => {
       this.appointmentTypeList = data.item1;
+    });
+  }
+
+  async getAllPriorityLevel(): Promise<void> {
+    let _filterForm = {};
+    (await this.priorityLevelService.getAllPriorityLevel(_filterForm)).subscribe(data => {
+      this.priorityLevelList = data;
+    });
+  }
+
+   async getAllOrderStatus(): Promise<void> {
+    let _filterForm = {};
+    (await this.primaryOrderService.getAllOrderStatus()).subscribe(data => {
+      this.paymentStatusList = data;
+    });
+  }
+
+   async getAllAppointmentStatus(): Promise<void> {
+    let _filterForm = {};
+    (await this.appointmentService.getAllAppointmentStatus()).subscribe(data => {
+      this.appointmentTypeList = data;
     });
   }
 

@@ -80,8 +80,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Mediator\Appointment\Query\" />
     <Folder Include="Mediator\Dashboard\Command\" />
+    <Folder Include="Mediator\Doctor\Command\" />
     <Folder Include="Mediator\Email\Command\" />
     <Folder Include="Mediator\Employee\Command\" />
     <Folder Include="Mediator\Ledger\Command\" />

@@ -149,7 +149,16 @@
             <mat-label>Reason for Visit / Complaint</mat-label>
             <input matInput formControlName="reason" placeholder="e.g. Fever, Headache, Checkup" />
           </mat-form-field>
+
+           <mat-form-field appearance="outline">
+            <mat-label>Appointment Status</mat-label>
+            <mat-select formControlName="appointmentStatusId">
+              <mat-option *ngFor="let appointmentStatus of appointmentStatusList" [value]="appointmentStatus.id">{{ appointmentStatus.title }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
         </div>
+           
       </section>
 
       <!-- Payment -->
@@ -181,21 +190,7 @@
           <mat-form-field appearance="outline">
             <mat-label>Payment Method</mat-label>
             <mat-select formControlName="paymentModeId">
-              <mat-option *ngFor="let paymentMode of paymentModesList" [value]="paymentMode.id">{{ paymentMode.label }}</mat-option>
-            </mat-select>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline">
-            <mat-label>Payment Status</mat-label>
-            <mat-select formControlName="paymentStatusId">
-              <mat-option *ngFor="let priorityLevel of priorityLevelList" [value]="priorityLevel.id">{{ priorityLevel.title }}</mat-option>
-            </mat-select>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline">
-            <mat-label>Appointment Status</mat-label>
-            <mat-select formControlName="appointmentStatusId">
-              <mat-option *ngFor="let appointmentStatus of appointmentStatusList" [value]="appointmentStatus.id">{{ appointmentStatus.name }}</mat-option>
+              <mat-option *ngFor="let paymentMode of paymentModesList" [value]="paymentMode.id">{{ paymentMode.name }}</mat-option>
             </mat-select>
           </mat-form-field>
         </div>

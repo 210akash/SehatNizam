@@ -12,6 +12,7 @@
     using ERP.Mediator.Mediator.AccountHead.Command;
     using ERP.Mediator.Mediator.AccountSubCategory.Command;
     using ERP.Mediator.Mediator.AccountType.Command;
+    using ERP.Mediator.Mediator.Appointment.Command;
     using ERP.Mediator.Mediator.Area.Command;
     using ERP.Mediator.Mediator.Auth.Command;
     using ERP.Mediator.Mediator.Category.Command;
@@ -571,6 +572,12 @@
 
             this.CreateMap<RetailOrderReturn, SaveRetailOrderReturnCommand>().ReverseMap();
             this.CreateMap<RetailOrderReturnDetail, SaveRetailOrderReturnDetailCommand>().ReverseMap();
+            this.CreateMap<AppointmentStatus, GetAppointmentStatus>().ReverseMap();
+            this.CreateMap<VisitType, GetVisitType>().ReverseMap();
+            this.CreateMap<AppointmentType, GetAppointmentType>().ReverseMap();
+            this.CreateMap<PriorityLevel, GetPriorityLevel>().ReverseMap();
+            this.CreateMap<Appointment, SaveAppointmentCommand>().ReverseMap();
+            this.CreateMap<AppointmentPayment, SaveAppointmentPaymentCommand>().ReverseMap();
         }
     }
 }

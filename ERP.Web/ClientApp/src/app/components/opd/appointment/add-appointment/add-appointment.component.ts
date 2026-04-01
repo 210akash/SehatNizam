@@ -38,11 +38,11 @@ export class AddAppointmentComponent implements OnInit {
   paymentStatusList: any;
   departments: any[] = [];
   doctors: Array<{ id: string; name: string; departmentId?: number }> = [
-    { id: '7c9e6679-7425-40de-944b-e07fc1f90ae7', name: 'Dr. Sarah Khan', departmentId: 1 },
-    { id: 'b46e6e71-bafd-4bb5-9a7b-27b9719a5e2d', name: 'Dr. Ahmed Raza', departmentId: 2 },
-    { id: '1f4a9e3a-2f56-41fc-a6fb-20d8f3a1c9a2', name: 'Dr. Maria Aslam', departmentId: 3 },
-    { id: 'c7f2b3b3-9dd5-4de6-8b45-6f5c7e9a5f8e', name: 'Dr. Jason Lee', departmentId: 4 },
-    { id: '14fae5f8-cf4f-4af1-92d2-1f3d5cbd8f99', name: 'Any Available', departmentId: undefined }
+    { id: '408C1D72-07FD-4E9A-A54C-D1AD4112F875', name: 'Dr. Sarah Khan', departmentId: 1 },
+    { id: '408C1D72-07FD-4E9A-A54C-D1AD4112F875', name: 'Dr. Ahmed Raza', departmentId: 2 },
+    { id: '408C1D72-07FD-4E9A-A54C-D1AD4112F875', name: 'Dr. Maria Aslam', departmentId: 3 },
+    { id: '408C1D72-07FD-4E9A-A54C-D1AD4112F875', name: 'Dr. Jason Lee', departmentId: 4 },
+    { id: '408C1D72-07FD-4E9A-A54C-D1AD4112F875', name: 'Any Available', departmentId: undefined }
   ];
 
   constructor(
@@ -61,7 +61,6 @@ export class AddAppointmentComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.buildForm();
     this.loadDepartments();
     this.getCityList();
     this.getAppointmentTypeList();
@@ -70,6 +69,7 @@ export class AddAppointmentComponent implements OnInit {
     this.getAllOrderStatus();
     this.getPaymentModesList();
     this.getAllPriorityLevel();
+    this.buildForm();
     this.patchEditData();
     this.setupCalculations();
   }
@@ -86,7 +86,7 @@ export class AddAppointmentComponent implements OnInit {
       departmentId: [null, Validators.required],
       patientId: [null],
       doctorId: [null, Validators.required],
-      visitTypeId: [this.visitTypesList[0].id],
+      visitTypeId: [1],
       reason: ['', Validators.required],
       confirmationNotes: [''],
       confirmedDate: [null],
@@ -101,7 +101,7 @@ export class AddAppointmentComponent implements OnInit {
         email: ['', Validators.email],
         dateOfBirth: [null, Validators.required],
         age: [{ value: null, disabled: true }],
-        cityId: [this.cityList[0]?.id ?? null, Validators.required],
+        cityId: [1, Validators.required],
         projectId: [0, Validators.required]
       }),
       appointmentPayment: this.fb.group({
@@ -110,7 +110,7 @@ export class AddAppointmentComponent implements OnInit {
         visitFee: [0, Validators.min(0)],
         discount: [0, Validators.min(0)],
         totalPayable: [{ value: 0, disabled: true }],
-        paymentModeId: [this.paymentModesList[0].id, Validators.required],
+        paymentModeId: [1, Validators.required],
         paymentDate: [this.minDate, Validators.required],
         paymentStatusId: [0, Validators.required]
       })
@@ -183,7 +183,7 @@ export class AddAppointmentComponent implements OnInit {
   async getAllPriorityLevel(): Promise<void> {
     let _filterForm = {};
     (await this.priorityLevelService.getAllPriorityLevel(_filterForm)).subscribe(data => {
-      this.priorityLevelList = data;
+      this.priorityLevelList = data.item1;
     });
   }
 
@@ -197,7 +197,7 @@ export class AddAppointmentComponent implements OnInit {
    async getAllAppointmentStatus(): Promise<void> {
     let _filterForm = {};
     (await this.appointmentService.getAllAppointmentStatus()).subscribe(data => {
-      this.appointmentTypeList = data;
+      this.appointmentStatusList = data;
     });
   }
 

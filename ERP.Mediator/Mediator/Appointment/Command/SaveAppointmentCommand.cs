@@ -10,7 +10,6 @@ namespace ERP.Mediator.Mediator.Appointment.Command
         // Core Fields
         public DateTime AppointmentDate { get; set; }
         public string TokenNumber { get; set; }
-
         public long AppointmentTypeId { get; set; }
         public long PriorityLevelId { get; set; }
         public long DepartmentId { get; set; }

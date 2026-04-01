@@ -46,12 +46,12 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                     Gender = request.Patient.Gender,
                     DateOfBirth = request.Patient.DateOfBirth,
                     CityId = request.Patient.CityId,
-                    ProjectId = sessionProvider.Session.SelectedWarehouseId,
+                    ProjectId = 1,
                     CreatedById = sessionProvider.Session.LoggedInUserId,
                 };
 
                 var currentProject = await unitOfWork.Repository<Entities.Models.Project>()
-                  .GetOneAsync(u => u.IsActive && u.Id == sessionProvider.Session.SelectedWarehouseId);
+                  .GetOneAsync(u => u.IsActive && u.Id == 1);
 
                 // 4️⃣ Generate MRN (AspNetUsers.Code) like H1-000001
                 string prefix = currentProject.Code;
@@ -78,7 +78,7 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                 // Call your Register handler logic
                 var identityResponse = await RegisterNewPatientAsync(registerCommand);
 
-                if (!identityResponse.Succeeded)
+                if (identityResponse.Id == 0)
                     throw new Exception($"Failed to register patient: {identityResponse.Error}");
 
                 request.PatientId = identityResponse.Id; // set newly created patient ID
@@ -93,33 +93,31 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                 // Create new appointment
                 string newCode = await GenerateAppointmentCodeAsync();
 
-                var newAppointment = mapper.Map<Entities.Models.Appointment>(request);
+                var appoinment = request;
+                appoinment.Patient = null;
+
+                var newAppointment = mapper.Map<Entities.Models.Appointment>(appoinment);
                 newAppointment.TokenNumber = newCode;
                 newAppointment.CreatedById = sessionProvider.Session.LoggedInUserId;
-                newAppointment.ProjectId = sessionProvider.Session.SelectedWarehouseId;
+                newAppointment.ProjectId = 1;
                 newAppointment.CreatedDate = DateTime.Now;
                 newAppointment.AppointmentStatusId = 1;  // default status
                 unitOfWork.Repository<Entities.Models.Appointment>().Add(newAppointment);
+                int check  = await unitOfWork.SaveChangesAsync();
+                if (check > 0)
+                {
+                    var newAppointmentPayment = mapper.Map<AppointmentPayment>(appoinment.AppointmentPayment);
+                    newAppointmentPayment.AppointmentId = newAppointment.Id;
+                    newAppointmentPayment.CreatedById = sessionProvider.Session.LoggedInUserId;
+                    newAppointmentPayment.PaymentDate = DateTime.Now;
+                    newAppointmentPayment.PaymentStatusId = 1;
+                    unitOfWork.Repository<AppointmentPayment>().Add(newAppointmentPayment);
+                    await unitOfWork.SaveChangesAsync();
+                    return 200; // success
+                }
+                return 200; // success
             }
-            else
-            {
-                //// Update existing appointment
-                //var updatedAppointment = mapper.Map<Entities.Models.Appointment>(request);
-                //updatedAppointment.Id = appointment.Id;
-                //updatedAppointment.Code = appointment.Code;
-                //updatedAppointment.StatusId = appointment.StatusId;
-                //updatedAppointment.InvoiceStatusId = appointment.InvoiceStatusId;
-                //updatedAppointment.CreatedById = appointment.CreatedById;
-                //updatedAppointment.CreatedDate = appointment.CreatedDate;
-                //updatedAppointment.ModifiedById = sessionProvider.Session.LoggedInUserId;
-                //updatedAppointment.ModifiedDate = DateTime.Now;
-
-                //unitOfWork.Repository<Entities.Models.Appointment>().Update(updatedAppointment);
-                //await unitOfWork.SaveChangesAsync();
-
-            }
-            await unitOfWork.SaveChangesAsync();
-            return 200;
+            return 200; // success
         }
 
         // Helper: Generate next appointment code
@@ -139,13 +137,6 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
         private async Task<IdentityResponse> RegisterNewPatientAsync(Patient request)
         {
             var result = new IdentityResponse();
-
-            // Check for duplicates
-            if (await unitOfWork.Repository<AspNetUsers>().GetExistsAsync(x => x.PhoneNumber == request.PhoneNo))
-            {
-                result.Error = "Phone Number Duplicate!";
-                return result;
-            }
 
             unitOfWork.Repository<Patient>().Add(request);
             SaveChanges();

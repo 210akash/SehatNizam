@@ -34,7 +34,7 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
             // 1️⃣ If PatientId is null, register a new patient
             if (request.PatientId == null)
             {
-                var registerCommand = new Patient
+                var registerCommand = new Entities.Models.Patient
                 {
                     Name = request.Patient.Name,
                     Email = request.Patient.Email,
@@ -55,7 +55,7 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
 
                 // 4️⃣ Generate MRN (AspNetUsers.Code) like H1-000001
                 string prefix = currentProject.Code;
-                var lastPatientWithMrn = await unitOfWork.Repository<Patient>()
+                var lastPatientWithMrn = await unitOfWork.Repository<Entities.Models.Patient>()
                     .GetOneAsync(u => !string.IsNullOrEmpty(u.MRN) && u.MRN.StartsWith(prefix),
                                  query => query.OrderByDescending(x => x.MRN));
 
@@ -134,11 +134,11 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
         }
 
         // Helper: Register a new patient
-        private async Task<IdentityResponse> RegisterNewPatientAsync(Patient request)
+        private async Task<IdentityResponse> RegisterNewPatientAsync(Entities.Models.Patient request)
         {
             var result = new IdentityResponse();
 
-            unitOfWork.Repository<Patient>().Add(request);
+            unitOfWork.Repository<Entities.Models.Patient>().Add(request);
             SaveChanges();
             result.Id = request.Id;
             return result;

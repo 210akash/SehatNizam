@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit, Optional } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { NotificationsService } from '../../../../Service/notification.service';
 import { AppointmentService } from '../appointment.service';
@@ -11,6 +11,10 @@ import { VisitTypeService } from '../../visit-type/visit-type.service';
 import { PaymentModeService } from '../../../paymentmode/paymentmode.service';
 import { PriorityLevelService } from '../../prioritylevel/prioritylevel.service';
 import { PrimaryOrderService } from '../../../order/primary-order/order.service';
+import { Router } from '@angular/router';
+import { PatientService } from '../../patient/patient.service';
+import { Observable, of } from 'rxjs';
+import { debounceTime, distinctUntilChanged, finalize, map, startWith, switchMap } from 'rxjs/operators';
 
 type Option<T = any> = { id: T; label: string };
 
@@ -37,6 +41,9 @@ export class AddAppointmentComponent implements OnInit {
   priorityLevelList: any;
   paymentStatusList: any;
   departments: any[] = [];
+  patientSearchCtrl = new FormControl<string | any>('');
+  filteredPatients$!: Observable<any[]>;
+  patientLoading = false;
   doctors: Array<{ id: string; name: string; departmentId?: number }> = [
     { id: '408C1D72-07FD-4E9A-A54C-D1AD4112F875', name: 'Dr. Sarah Khan', departmentId: 1 },
     { id: '408C1D72-07FD-4E9A-A54C-D1AD4112F875', name: 'Dr. Ahmed Raza', departmentId: 2 },
@@ -57,6 +64,8 @@ export class AddAppointmentComponent implements OnInit {
     private paymentModeService: PaymentModeService,
     private priorityLevelService: PriorityLevelService,
     private primaryOrderService: PrimaryOrderService,
+    private patientService: PatientService,
+    private router: Router,
     @Optional() @Inject(MAT_DIALOG_DATA) public data: { element: any } | null
   ) {}
 
@@ -72,6 +81,7 @@ export class AddAppointmentComponent implements OnInit {
     this.buildForm();
     this.patchEditData();
     this.setupCalculations();
+    this.setupPatientAutocomplete();
   }
 
 
@@ -127,12 +137,30 @@ export class AddAppointmentComponent implements OnInit {
     paymentGroup.valueChanges.subscribe(() => this.updateTotalPayable());
   }
 
+  private setupPatientAutocomplete(): void {
+    this.filteredPatients$ = this.patientSearchCtrl.valueChanges.pipe(
+      startWith(''),
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap((value: string | any) => {
+        const term = typeof value === 'string' ? value : value?.name || '';
+        if (!term || term.length < 2) {
+          return of([]);
+        }
+        this.patientLoading = true;
+        return this.patientService.getPatientByName(term).pipe(
+          map((data: any) => data?.item1 ?? data ?? []),
+          finalize(() => (this.patientLoading = false))
+        );
+      })
+    );
+  }
+
   private patchEditData(): void {
-    if (!this.data?.element) {
+    const element = this.data?.element ?? history.state?.element;
+    if (!element) {
       return;
     }
-
-    const element = this.data.element;
     this.appointmentForm.patchValue({
       ...element,
       appointmentDate: this.toInputDate(element.appointmentDate),
@@ -149,6 +177,10 @@ export class AddAppointmentComponent implements OnInit {
           : this.minDate
       }
     });
+
+    if (element.patient) {
+      this.patientSearchCtrl.setValue(element.patient);
+    }
 
     this.updateAge(element.patient?.dateOfBirth);
     this.updateTotalPayable();
@@ -215,11 +247,51 @@ export class AddAppointmentComponent implements OnInit {
     });
   }
 
+  displayPatient = (patient: any): string =>
+    patient ? `${patient.name}${patient.phoneNo ? ' - ' + patient.phoneNo : ''}` : '';
+
+  onPatientSelected(patient: any): void {
+    if (!patient) {
+      return;
+    }
+
+    this.patientSearchCtrl.setValue(patient, { emitEvent: false });
+
+    const patientGroup = this.appointmentForm.get('patient') as FormGroup;
+    patientGroup.patchValue({
+      name: patient.name,
+      phoneNo: patient.phoneNo,
+      secondaryPhoneNo: patient.secondaryPhoneNo,
+      address: patient.address,
+      cnic: patient.cnic,
+      gender: patient.gender || 'male',
+      email: patient.email,
+      dateOfBirth: patient.dateOfBirth ? this.toInputDate(patient.dateOfBirth) : null,
+      age: patient.age,
+      cityId: patient.cityId,
+      projectId: patient.projectId ?? 0
+    });
+
+    this.appointmentForm.patchValue({
+      patientId: patient.id
+    });
+
+    this.updateAge(patient.dateOfBirth);
+  }
+
   onCancel(): void {
     if (this.dialog) {
       this.dialog.closeAll();
-    } else {
+      this.router.navigate(['/appointment']);
+      return;
+    }
+
+    // When opened as a page, navigate back to the appointment list.
+    const canGoBack = window.history.length > 1;
+    if (canGoBack) {
       window.history.back();
+    } else {
+      this.router.navigate(['/appointment']);
     }
   }
 
@@ -261,7 +333,12 @@ export class AddAppointmentComponent implements OnInit {
         if (data.Status === 200) {
           this.successMessage = data.Data || 'Appointment Saved!';
           this.notifications.showNotification(this.successMessage, 'snack-bar-success');
-          setTimeout(() => this.onCancel(), 800);
+
+          // Navigate back to the list whether opened in dialog or page.
+          if (this.dialog) {
+            this.dialog.closeAll();
+          }
+          this.router.navigate(['/appointment']);
         } else if (data.Status === 409) {
           this.errorMessage = data.Data || 'Name Already Exists!';
           this.notifications.showNotification(this.errorMessage, 'snack-bar-danger');

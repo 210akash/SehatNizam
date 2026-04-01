@@ -50,23 +50,6 @@ export class AuthenticationService extends BaseService<any> {
                 const profile = await this.getProfile(response.userId);
                 localStorage.setItem('profile', JSON.stringify(profile));
 
-                // const role = response?.role;
-
-                // if (typeof role === 'string') {
-                //     const lowerRole = role.toLowerCase();
-
-                //     if (lowerRole.includes('hr')) {
-                //         window.location.href = '/hrdashboard';
-                //     } else if (lowerRole.includes('employee')) {
-                //         window.location.href = '/employeedashboard';
-                //     } else {
-                //         window.location.href = '/employeedashboard';
-                //     }
-                // } else {
-                //     console.warn('Unexpected role type in response:', role);
-                //     window.location.href = '/employeedashboard';
-                // }
-
                 const roleString = response?.role;
 
                 if (typeof roleString === 'string') {

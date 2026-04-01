@@ -111,6 +111,7 @@ import { RetailOrderReturnTabComponent } from './components/order/retail-orders/
 import { AddAppointmentComponent } from './components/opd/appointment/add-appointment/add-appointment.component';
 import { AppointmentListComponent } from './components/opd/appointment/appointment-list/appointment-list.component';
 import { AppointmentTypeListComponent } from './components/opd/appointment-type/appointment-type-list/appointment-type-list.component';
+import { PatientListComponent } from './components/opd/patient/patient-list/patient-list.component';
 
 const routes: Routes = [
   {
@@ -223,7 +224,9 @@ const routes: Routes = [
       { path: 'interview', component: InterviewListComponent, canActivate: [AuthGuard] },
       { path: 'retailorderreturn', component: RetailOrderReturnTabComponent, canActivate: [AuthGuard], data: { roles: ["retailer,admin"] } },
       { path: 'appointment', component: AppointmentListComponent, canActivate: [AuthGuard] },
+      { path: 'newappointment', component: AddAppointmentComponent, canActivate: [AuthGuard] },
       { path: 'appointmenttype', component: AppointmentTypeListComponent, canActivate: [AuthGuard] },
+      { path: 'patient', component: PatientListComponent, canActivate: [AuthGuard] },
     ]
   },
   {

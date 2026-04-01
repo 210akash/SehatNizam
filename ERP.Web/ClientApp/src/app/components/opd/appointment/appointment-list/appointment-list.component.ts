@@ -1,12 +1,11 @@
 import { Component, EventEmitter, ViewChild, Output } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
-import { MatSort, Sort } from '@angular/material/sort'; // Import MatSort and Sort
+import { MatSort } from '@angular/material/sort'; // Import MatSort and Sort
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { AppointmentService } from '../appointment.service';
 import { ConstantService } from '../../../../Service/constant.service';
-import { AddAppointmentComponent } from '../add-appointment/add-appointment.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-appointment-list',
@@ -38,9 +37,9 @@ export class AppointmentListComponent {
 
   constructor(
     private appointmentService: AppointmentService,
-    private dialog: MatDialog,
     private formBuilder: FormBuilder,
-    private constantService: ConstantService
+    private constantService: ConstantService,
+    private router: Router
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -129,19 +128,9 @@ export class AppointmentListComponent {
   }
 
   openAppointmentDialog(element: any) {
-    const dialogRef = this.dialog.open(AddAppointmentComponent, {
-      panelClass: 'cstm_width_1100',
-      maxHeight: '90vh',
-      data: {
-        element: element,
-      },
-      disableClose: true
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      this.bindData(this.AppointmentFilterForm, this.currenttab, false);
-      this.getAppointmentCount.emit();
-    });
+    // Open the appointment form as a full page instead of a dialog.
+    const navigationExtras = element ? { state: { element } } : undefined;
+    this.router.navigate(['/newappointment'], navigationExtras);
   }
 
   filterData() {

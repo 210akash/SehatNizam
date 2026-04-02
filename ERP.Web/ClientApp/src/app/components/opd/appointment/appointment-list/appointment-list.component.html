@@ -1,97 +1,111 @@
-  <div class="header-container">
+<div class="header-container">
   <h2>Appointment</h2>
-  <button mat-mini-fab aria-label="Add" color="success" (click)="openAppointmentDialog(null)" matTooltip="Add Appointment">
-      <mat-icon>add</mat-icon>
+  <button
+    mat-mini-fab
+    aria-label="Add"
+    color="success"
+    (click)="openAppointmentDialog(null)"
+    matTooltip="Add Appointment">
+    <mat-icon>add</mat-icon>
   </button>
 </div>
-  <div class="mat-elevation-z8 table-responsive">
-    <table mat-table [dataSource]="dataSource" matSort>
 
-      <!-- Columns -->
+<div class="mat-elevation-z8 table-responsive">
+  <table mat-table [dataSource]="dataSource" matSort>
 
-      <ng-container matColumnDef="itemType">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>  Appointment Type </th>
-        <td mat-cell *matCellDef="let element"> {{ element.itemType.code }} : {{ element.itemType.name }} </td>
-      </ng-container>
+    <!-- Appointment Date -->
+    <ng-container matColumnDef="appointmentDate">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Appointment Date</th>
+      <td mat-cell *matCellDef="let element"> {{ element.appointmentDate | date:'short' }} </td>
+    </ng-container>
 
-      <ng-container matColumnDef="code">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Code </th>
-        <td mat-cell *matCellDef="let element"> {{ element.code }} </td>
-      </ng-container>
-      <ng-container matColumnDef="createdDate">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Prepared Date </th>
-        <td mat-cell *matCellDef="let element"> {{ element.createdDate | date : 'shortDate' }} </td>
-      </ng-container>
+    <!-- Patient -->
+    <ng-container matColumnDef="patient">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Patient</th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.patient?.name }}
+        <div class="muted">{{ element.patient?.phoneNo }}</div>
+      </td>
+    </ng-container>
 
-      <ng-container matColumnDef="processedDate">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Processed Date </th>
-        <td mat-cell *matCellDef="let element"> {{ element.processedDate | date : 'shortDate' }} </td>
-      </ng-container>
+    <!-- Token -->
+    <ng-container matColumnDef="tokenNumber">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Token</th>
+      <td mat-cell *matCellDef="let element"> {{ element.tokenNumber }} </td>
+    </ng-container>
 
-      <ng-container matColumnDef="approvedDate">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Approved Date </th>
-        <td mat-cell *matCellDef="let element"> {{ element.approvedDate | date : 'shortDate' }} </td>
-      </ng-container>
+    <!-- Doctor -->
+    <ng-container matColumnDef="doctor">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Doctor</th>
+      <td mat-cell *matCellDef="let element"> {{ element.doctor?.firstName }} {{ element.doctor?.lastName }} </td>
+    </ng-container>
 
-      <ng-container matColumnDef="issuedDate">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Issued Date </th>
-        <td mat-cell *matCellDef="let element"> {{ element.createdDate | date : 'shortDate' }} </td>
-      </ng-container>
+    <!-- Department -->
+    <ng-container matColumnDef="department">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Department</th>
+      <td mat-cell *matCellDef="let element"> {{ element.department?.name }} </td>
+    </ng-container>
 
-      <ng-container matColumnDef="requiredDate">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Required Date </th>
-        <td mat-cell *matCellDef="let element"> {{ element.requiredDate | date : 'shortDate' }} </td>
-      </ng-container>
+    <!-- Priority -->
+    <ng-container matColumnDef="priority">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Priority</th>
+      <td mat-cell *matCellDef="let element"> {{ element.priorityLevel?.name }} </td>
+    </ng-container>
 
-      <ng-container matColumnDef="store">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Store </th>
-        <td mat-cell *matCellDef="let element"> {{ element.store?.name}} </td>
-      </ng-container>
+    <!-- Appointment Type -->
+    <ng-container matColumnDef="appointmentType">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Type</th>
+      <td mat-cell *matCellDef="let element"> {{ element.appointmentType?.name }} </td>
+    </ng-container>
 
-      <ng-container matColumnDef="createdBy">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Prepared By</th>
-        <td mat-cell *matCellDef="let element"> {{ element.createdBy?.firstName + ' ' + element.createdBy?.lastName }} </td>
-      </ng-container>
+    <!-- Visit Type -->
+    <ng-container matColumnDef="visitType">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Visit</th>
+      <td mat-cell *matCellDef="let element"> {{ element.visitType?.name }} </td>
+    </ng-container>
 
-      <ng-container matColumnDef="processedBy">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Processed By</th>
-        <td mat-cell *matCellDef="let element"> {{ element.processedBy?.firstName + ' ' + element.processedBy?.lastName }} </td>
-      </ng-container>
+    <!-- Reason -->
+    <ng-container matColumnDef="reason">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Reason</th>
+      <td mat-cell *matCellDef="let element"> {{ element.reason }} </td>
+    </ng-container>
 
-      <ng-container matColumnDef="approvedBy">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Approved By</th>
-        <td mat-cell *matCellDef="let element"> {{ element.approvedBy?.firstName + ' ' + element.approvedBy?.lastName }} </td>
-      </ng-container>
+    <!-- Status -->
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+      <td mat-cell *matCellDef="let element"> {{ element.appointmentStatus?.title }} </td>
+    </ng-container>
 
-      <ng-container matColumnDef="issuedBy">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Issued By</th>
-        <td mat-cell *matCellDef="let element"> {{ element.createdBy?.firstName + ' ' + element.createdBy?.lastName }} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="status">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
-        <td mat-cell *matCellDef="let element"> {{ element.status?.title }} </td>
-      </ng-container>
-
-      <!-- Actions column definition -->
-      <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef style="width: 11%;"> Actions </th>
-        <td mat-cell *matCellDef="let element">
-          <div class="action_btns">
-          <button mat-mini-fab matTooltip="Edit" color="primary" *ngIf="element.statusId == 1" (click)="openAppointmentDialog(element)">
-            <mat-icon aria-label="Edit" >edit</mat-icon>
+    <!-- Actions -->
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef style="width: 11%;">Actions</th>
+      <td mat-cell *matCellDef="let element">
+        <div class="action_btns">
+          <button
+            mat-mini-fab
+            matTooltip="Edit"
+            color="primary"
+            (click)="openAppointmentDialog(element)">
+            <mat-icon aria-label="Edit">edit</mat-icon>
           </button>
         </div>
-        </td>
-      </ng-container>
+      </td>
+    </ng-container>
 
-      <!-- Table rows -->
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
-    <mat-divider></mat-divider>
-    <!-- Paginator -->
-    <mat-paginator #paginator [length]="totalRows" [pageIndex]="currentPage" [pageSize]="pageSize"
-      [pageSizeOptions]="pageSizeOptions" (page)="pageChanged($event)" aria-label="Select page">
-    </mat-paginator>
-  </div>
+    <!-- Table rows -->
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+  <mat-divider></mat-divider>
+
+  <mat-paginator
+    #paginator
+    [length]="totalRows"
+    [pageIndex]="currentPage"
+    [pageSize]="pageSize"
+    [pageSizeOptions]="pageSizeOptions"
+    (page)="pageChanged($event)"
+    aria-label="Select page">
+  </mat-paginator>
+</div>

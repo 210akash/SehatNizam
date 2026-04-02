@@ -587,6 +587,7 @@
             this.CreateMap<PatientProblem, GetPatientProblem>().ReverseMap();
             this.CreateMap<Consultation, GetConsultation>().ReverseMap();
             this.CreateMap<Triage, GetTriage>().ReverseMap();
+            this.CreateMap<Appointment, GetAppointment>().ReverseMap();
         }
     }
 }

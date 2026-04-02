@@ -251,8 +251,6 @@ namespace ERP.Mediator.Mediator.Auth.Handler
 
                 #region User Warehouse
 
-                if (request.DepartmentId == 3)
-                {
                     var UserProjectList = await unitOfWork.Repository<Entities.Models.UserProject>()
                         .GetPagingWhereAsNoTrackingAsync(y => y.UserId == request.Id && y.IsActive == true,
                         null, null, null, null, null).Item1.ToListAsync();
@@ -292,7 +290,6 @@ namespace ERP.Mediator.Mediator.Auth.Handler
                         };
                         unitOfWork.Repository<Entities.Models.UserProject>().Add(lObjUserProject);
                     }
-                }
 
                 #endregion
 

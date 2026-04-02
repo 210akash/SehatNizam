@@ -780,6 +780,9 @@ import { PatientEndPoints } from './components/opd/patient/patient.endpoints';
 import { PatientService } from './components/opd/patient/patient.service';
 import { PatientListComponent } from './components/opd/patient/patient-list/patient-list.component';
 import { ViewPatientComponent } from './components/opd/patient/view-patient/view-patient.component';
+import { DoctorEndPoints } from './components/opd/doctor/doctor.endpoints';
+import { DoctorService } from './components/opd/doctor/doctor.service';
+import { DoctorListComponent } from './components/opd/doctor/doctor-list/doctor-list.component';
 
 const matFormFieldDefaults: MatFormFieldDefaultOptions = {
     appearance: 'outline'
@@ -1332,7 +1335,8 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         DeleteVisitTypeComponent,
         VisitTypeListComponent,
         PatientListComponent,
-        ViewPatientComponent
+        ViewPatientComponent,
+        DoctorListComponent
     ],
     bootstrap: [AppComponent], imports: [
         InputMaskModule,
@@ -1589,6 +1593,8 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         PriorityLevelEndPoints,
         PatientEndPoints,
         PatientService,
+        DoctorEndPoints,
+        DoctorService,
         { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
         { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },
         AuthenticationService, {

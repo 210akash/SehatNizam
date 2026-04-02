@@ -112,6 +112,7 @@ import { AddAppointmentComponent } from './components/opd/appointment/add-appoin
 import { AppointmentListComponent } from './components/opd/appointment/appointment-list/appointment-list.component';
 import { AppointmentTypeListComponent } from './components/opd/appointment-type/appointment-type-list/appointment-type-list.component';
 import { PatientListComponent } from './components/opd/patient/patient-list/patient-list.component';
+import { DoctorListComponent } from './components/opd/doctor/doctor-list/doctor-list.component';
 
 const routes: Routes = [
   {
@@ -227,6 +228,7 @@ const routes: Routes = [
       { path: 'newappointment', component: AddAppointmentComponent, canActivate: [AuthGuard] },
       { path: 'appointmenttype', component: AppointmentTypeListComponent, canActivate: [AuthGuard] },
       { path: 'patient', component: PatientListComponent, canActivate: [AuthGuard] },
+      { path: 'doctor', component: DoctorListComponent, canActivate: [AuthGuard] },
     ]
   },
   {

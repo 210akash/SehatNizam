@@ -38,7 +38,7 @@ namespace ERP.Mediator.Mediator.Doctor.Handler
                 x.IsActive &&
                 (request.DepartmentId == null || request.DepartmentId == 0 || x.DepartmentId == request.DepartmentId) &&
                 (request.EmployeeDesignationId == null || request.EmployeeDesignationId == 0 || x.EmployeeDesignationId == request.EmployeeDesignationId) &&
-                x.UserProject.Any(y => y.ProjectId == sessionProvider.Session.SelectedWarehouseId) &&
+              //  x.UserProject.Any(y => y.ProjectId == sessionProvider.Session.SelectedWarehouseId) &&
                 x.AspNetUserRoles.Any(y => y.RoleId == doctorrole.Id) &&
                 (string.IsNullOrEmpty(request.Name) ||
                     x.FirstName.Contains(request.Name) ||

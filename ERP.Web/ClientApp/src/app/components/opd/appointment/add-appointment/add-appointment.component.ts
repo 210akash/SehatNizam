@@ -161,6 +161,14 @@ export class AddAppointmentComponent implements OnInit {
     if (!element) {
       return;
     }
+
+    // Prefer the payment entry that matches this appointmentId; fallback to first or single payment object
+    const payment =
+      element.appointmentPayments?.find((p: any) => p.appointmentId === element.id) ||
+      element.appointmentPayments?.[0] ||
+      element.appointmentPayment ||
+      {};
+
     this.appointmentForm.patchValue({
       ...element,
       appointmentDate: this.toInputDate(element.appointmentDate),
@@ -172,8 +180,15 @@ export class AddAppointmentComponent implements OnInit {
       },
       appointmentPayment: {
         ...element.appointmentPayment,
-        paymentDate: element.appointmentPayment?.paymentDate
-          ? this.toInputDate(element.appointmentPayment.paymentDate)
+        ...payment,
+        appointmentId: payment.appointmentId ?? element.id ?? 0,
+        visitFee: payment.visitFee ?? payment.amount ?? element.appointmentPayment?.visitFee ?? 0,
+        discount: payment.discount ?? element.appointmentPayment?.discount ?? 0,
+        totalPayable: payment.totalPayable ?? element.appointmentPayment?.totalPayable ?? 0,
+        paymentModeId: payment.paymentModeId ?? element.appointmentPayment?.paymentModeId ?? 1,
+        paymentStatusId: payment.paymentStatusId ?? element.appointmentPayment?.paymentStatusId ?? element.appointmentStatusId ?? 0,
+        paymentDate: payment.paymentDate
+          ? this.toInputDate(payment.paymentDate)
           : this.minDate
       }
     });

@@ -3,6 +3,7 @@ using ERP.BusinessModels.Enums;
 using ERP.BusinessModels.ResponseVM;
 using ERP.Mediator.Mediator.Appointment.Command;
 using ERP.Mediator.Mediator.Appointment.Query;
+using ERP.Mediator.Mediator.PrimaryOrder.Query;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -31,6 +32,20 @@ namespace ERP.API.Controllers
             try
             {
                 return await this.mediator.Send(command);
+            }
+            catch (Exception ex)
+            {
+                return this.Result(ResponseStatus.Error, null, ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("GetAllAppointmentStatus")]
+        public async Task<ActionResult<List<GetAppointmentStatus>>> GetAllAppointmentStatus()
+        {
+            try
+            {
+                return await this.mediator.Send(new GetAllAppointmentStatusQuery());
             }
             catch (Exception ex)
             {

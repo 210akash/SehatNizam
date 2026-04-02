@@ -21,7 +21,19 @@ export class AppointmentListComponent {
   isLoading = false;
   currentPage = 0;
   pageSizeOptions: number[] = [5, 10, 25, 100];
-  displayedColumns: string[] = [];
+  displayedColumns: string[] = [
+    'appointmentDate',
+    'patient',
+    'tokenNumber',
+    'doctor',
+    'department',
+    'priority',
+    'appointmentType',
+    'visitType',
+    'reason',
+    'status',
+    'actions'
+  ];
   dataSource: any;
   take = 50;
   pageSize = 0;
@@ -121,4 +133,5 @@ export class AppointmentListComponent {
   filterData() {
     this.bindData();
   }
+
 }

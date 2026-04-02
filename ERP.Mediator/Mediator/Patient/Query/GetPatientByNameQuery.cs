@@ -6,11 +6,11 @@ namespace ERP.Mediator.Mediator.Patient.Query
 {
     public class GetPatientByNameQuery : IRequest<List<GetPatient>>
     {
-        public GetPatientByNameQuery(string search)
+        public GetPatientByNameQuery(string Search)
         {
-            this.search = search;
+            this.Search = Search;
         }
 
-        public string search { get; set; }
+        public string Search { get; set; }
     }
 }

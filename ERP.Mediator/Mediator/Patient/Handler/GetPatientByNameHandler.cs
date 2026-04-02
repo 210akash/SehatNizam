@@ -23,15 +23,15 @@ namespace ERP.Mediator.Mediator.Patient.Handler
 
         public async Task<List<GetPatient>> Handle(GetPatientByNameQuery request, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrWhiteSpace(request.search))
+            if (string.IsNullOrWhiteSpace(request.Search))
                 return new List<GetPatient>();
 
             var patients = await unitOfWork.Repository<Entities.Models.Patient>()
                 .GetAsync(x =>
-                    string.IsNullOrEmpty(request.search) ||
-                    EF.Functions.Like(x.Name, $"%{request.search}%") ||
-                    EF.Functions.Like(x.PhoneNo, $"%{request.search}%") ||
-                    EF.Functions.Like(x.MRN, $"%{request.search}%")
+                    string.IsNullOrEmpty(request.Search) ||
+                    EF.Functions.Like(x.Name, $"%{request.Search}%") ||
+                    EF.Functions.Like(x.PhoneNo, $"%{request.Search}%") ||
+                    EF.Functions.Like(x.MRN, $"%{request.Search}%")
                 );
 
             return mapper.Map<List<GetPatient>>(patients ?? new List<Entities.Models.Patient>());

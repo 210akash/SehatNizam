@@ -51,38 +51,23 @@ export class AppointmentListComponent {
     });
     this.currentUser = JSON.parse(localStorage.getItem('currentUser') ?? '{}');
     this.roleList = this.currentUser.role.toLowerCase().split(',').map((role: string) => role.trim().toLowerCase());
+    this.bindData();
   }
 
-  async bindData(appointmentFilterForm: any, currenttab: number, isFromParent: boolean): Promise<void> {
+  
 
-    if (isFromParent == true) {
-      this.currentPage = 0;
-    }
-
-    this.currenttab = currenttab;
-    if (currenttab == 0) {
-      this.displayedColumns = ['code', 'createdDate', 'requiredDate', 'store', 'createdBy', 'status', 'actions'];
-    }
-    else if (currenttab == 1) {
-      this.displayedColumns = ['code', 'processedDate', 'requiredDate', 'store', 'processedBy', 'status', 'actions'];
-    }
-    else if (currenttab == 2) {
-      this.displayedColumns = ['code', 'approvedDate', 'requiredDate', 'store', 'approvedBy', 'status', 'actions'];
-    }
-    else if (currenttab == 3) {
-      this.displayedColumns = ['code', 'issuedDate', 'requiredDate', 'store', 'issuedBy', 'status', 'actions'];
-    }
-
+  async bindData(): Promise<void> {
     return new Promise<void>(async (resolve, reject) => {
-      // Set loading indicator
-      this.isLoading = true;
-      this.AppointmentFilterForm = appointmentFilterForm;
-
-      const pagingData = {
+        // Clone the form value and add paging data
+          const pagingData = {
         currentPage: this.currentPage,
         take: this.pageSize
       };
-
+    const appointmentFilterForm = {
+      ...this.AppointmentFilterForm.value
+    };
+      // Set loading indicator
+      this.isLoading = true;
       appointmentFilterForm["PagingData"] = pagingData;
       let fdate = new Date(appointmentFilterForm.fdate);
       let tdate = new Date(appointmentFilterForm.tdate);
@@ -124,7 +109,7 @@ export class AppointmentListComponent {
   pageChanged(event: PageEvent): void {
     this.pageSize = event.pageSize;
     this.currentPage = event.pageIndex;
-    this.bindData(this.AppointmentFilterForm, this.currenttab, false); // Re-fetch data on page change
+    this.bindData(); // Re-fetch data on page change
   }
 
   openAppointmentDialog(element: any) {
@@ -134,6 +119,6 @@ export class AppointmentListComponent {
   }
 
   filterData() {
-    this.bindData(this.AppointmentFilterForm, this.currenttab, false);
+    this.bindData();
   }
 }

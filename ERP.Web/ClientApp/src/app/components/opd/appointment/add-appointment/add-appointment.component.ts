@@ -143,7 +143,7 @@ export class AddAppointmentComponent implements OnInit {
       debounceTime(300),
       distinctUntilChanged(),
       switchMap((value: string | any) => {
-        const term = typeof value === 'string' ? value : value?.name || '';
+        const term = typeof value === 'string' ? value : value || '';
         if (!term || term.length < 2) {
           return of([]);
         }
@@ -259,6 +259,7 @@ export class AddAppointmentComponent implements OnInit {
 
     const patientGroup = this.appointmentForm.get('patient') as FormGroup;
     patientGroup.patchValue({
+      patientId: patient.name,
       name: patient.name,
       phoneNo: patient.phoneNo,
       secondaryPhoneNo: patient.secondaryPhoneNo,
@@ -277,6 +278,34 @@ export class AddAppointmentComponent implements OnInit {
     });
 
     this.updateAge(patient.dateOfBirth);
+  }
+
+  onInputCleared(event: Event): void {
+    const value = (event.target as HTMLInputElement)?.value?.trim() ?? '';
+    if (value.length > 0) {
+      return;
+    }
+
+    this.patientSearchCtrl.setValue('', { emitEvent: false });
+
+    const patientGroup = this.appointmentForm.get('patient') as FormGroup;
+    patientGroup.reset({
+      name: '',
+      phoneNo: '',
+      secondaryPhoneNo: '',
+      address: '',
+      cnic: '',
+      gender: 'male',
+      email: '',
+      dateOfBirth: null,
+      age: null,
+      cityId: 1,
+      projectId: 0
+    });
+
+    this.appointmentForm.patchValue({
+      patientId: null
+    });
   }
 
   onCancel(): void {

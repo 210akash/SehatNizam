@@ -1,8 +1,7 @@
 ﻿namespace ERP.Entities.Models
 {
-    public class LabOrder
+    public class LabOrder : BaseEntity
     {
-        public long Id { get; set; }
         public long AppointmentId { get; set; }
         public long LabOrderTypeId { get; set; }
         public Status Status { get; set; }

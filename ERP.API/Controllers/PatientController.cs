@@ -40,11 +40,11 @@ namespace ERP.API.Controllers
 
         [HttpGet]
         [Route("GetPatientByName")]
-        public async Task<ActionResult<List<GetPatient>>> GetPatientByName(string Name)
+        public async Task<ActionResult<List<GetPatient>>> GetPatientByName(string Search)
         {
             try
             {
-                return await mediator.Send(new GetPatientByNameQuery(Name));
+                return await mediator.Send(new GetPatientByNameQuery(Search));
             }
             catch (Exception ex)
             {

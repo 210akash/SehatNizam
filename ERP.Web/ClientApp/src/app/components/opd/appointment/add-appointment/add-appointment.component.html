@@ -27,6 +27,8 @@
               matInput
               [formControl]="patientSearchCtrl"
               [matAutocomplete]="patientAuto"
+               (input)="onInputCleared($event)"
+                type="search"
               placeholder="Type name or phone number" />
             <mat-autocomplete #patientAuto="matAutocomplete" [displayWith]="displayPatient"
               (optionSelected)="onPatientSelected($event.option.value)">

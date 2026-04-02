@@ -578,6 +578,15 @@
             this.CreateMap<PriorityLevel, GetPriorityLevel>().ReverseMap();
             this.CreateMap<Appointment, SaveAppointmentCommand>().ReverseMap();
             this.CreateMap<AppointmentPayment, SaveAppointmentPaymentCommand>().ReverseMap();
+            this.CreateMap<Patient, GetPatient>().ReverseMap();
+            this.CreateMap<AppointmentPayment, GetAppointmentPayment>().ReverseMap();
+            this.CreateMap<RadiologyOrder, GetRadiologyOrder>().ReverseMap();
+            this.CreateMap<LabOrder, GetLabOrder>().ReverseMap();
+            this.CreateMap<AppointmentAttachment, GetAppointmentAttachment>().ReverseMap();
+            this.CreateMap<Prescription, GetPrescription>().ReverseMap();
+            this.CreateMap<PatientProblem, GetPatientProblem>().ReverseMap();
+            this.CreateMap<Consultation, GetConsultation>().ReverseMap();
+            this.CreateMap<Triage, GetTriage>().ReverseMap();
         }
     }
 }

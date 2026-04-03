@@ -170,10 +170,21 @@ namespace ERP.Mediator.Mediator.Auth.Handler
                         {
                             CreatedById = sessionProvider.Session.LoggedInUserId,
                             CreatedDate = DateTime.Now,
-                            UserId = _user.Id
+                            UserId = _user.Id,
+                            ProjectId = item
                         };
                         unitOfWork.Repository<Entities.Models.UserProject>().Add(lObjUserProject);
                     }
+                }
+                try
+                {
+                    await unitOfWork.SaveChangesAsync();
+
+                }
+                catch (Exception ex)
+                {
+
+                    throw ex;
                 }
             }
 

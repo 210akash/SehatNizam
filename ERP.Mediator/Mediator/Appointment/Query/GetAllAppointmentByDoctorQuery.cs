@@ -6,10 +6,11 @@ using MediatR;
 
 namespace ERP.Mediator.Mediator.Appointment.Query
 {
-    public class GetAllAppointmentQuery : IRequest<Tuple<IEnumerable<GetAppointment>, long>>
+    public class GetAllAppointmentByDoctorQuery : IRequest<Tuple<IEnumerable<GetAppointment>, long>>
     {
         public DateTime? FDate { get; set; }
         public DateTime? TDate { get; set; }
+        public long StatusId { get; set; }
         public PagingData PagingData { get; set; }
     }
 }

@@ -7,9 +7,7 @@ using System;
 using ERP.BusinessModels.ResponseVM;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using ERP.Mediator.Mediator.Account.Query;
 using ERP.Mediator.Mediator.Employee.Query;
-using ERP.Mediator.Mediator.AccountCategory.Query;
 
 namespace ERP.API.Controllers
 {
@@ -27,7 +25,7 @@ namespace ERP.API.Controllers
 
         [HttpPost]
         [Route("GetEmployeeByName")]
-        public async Task<ActionResult<List<GetEmployee>>> GetAccountByName(GetEmployeeByNameQuery request)
+        public async Task<ActionResult<List<GetEmployee>>> GetEmployeeByName(GetEmployeeByNameQuery request)
         {
             try
             {

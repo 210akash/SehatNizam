@@ -38,8 +38,7 @@
       </div>
 
       <!-- Issuance -->
-      <div class="nav-group"
-        *ngIf="hasRequiredRole(['admin'])">
+      <div class="nav-group" *ngIf="hasRequiredRole(['admin'])">
         <button (click)="toggleSubMenu('issuance')" class="nav-button">
           <i class="fas fa-file-export"></i>
           <span>Issuance</span>
@@ -243,7 +242,7 @@
             <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('storesetup')"></i>
           </button>
           <div class="nested-submenu" *ngIf="isSubMenuVisible('storesetup')">
-        
+
             <a routerLink="/uoms" *ngIf="hasRequiredRole(['store manager','store issuer'])" class="nested-link"
               [class.active-link]="isActive('/uoms')">UOM</a>
             <a routerLink="/vehicle" *ngIf="hasRequiredRole(['store manager','store issuer'])" class="nested-link"
@@ -500,7 +499,7 @@
         </div>
       </div>
 
-    
+
 
       <!-- Manage HR -->
       <div class="nav-group" *ngIf="hasRequiredRole(['hr executive','hr manager','admin'])">
@@ -510,53 +509,57 @@
           <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('employee')"></i>
         </button>
         <div class="submenu" *ngIf="isSubMenuVisible('employee')">
-         <!-- HR Setup -->
-      <div class="nav-group" *ngIf="hasRequiredRole(['hr executive','hr manager','admin'])">
-        <button (click)="toggleSubMenu('hr')" class="nav-button">
-          <i class="fas fa-user-cog"></i>
-          <span>HR Setup</span>
-          <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('hr')"></i>
-        </button>
-        <div class="submenu" *ngIf="isSubMenuVisible('hr')">
+          <!-- HR Setup -->
+          <div class="nav-group" *ngIf="hasRequiredRole(['hr executive','hr manager','admin'])">
+            <button (click)="toggleSubMenu('hr')" class="nav-button">
+              <i class="fas fa-user-cog"></i>
+              <span>HR Setup</span>
+              <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('hr')"></i>
+            </button>
+            <div class="submenu" *ngIf="isSubMenuVisible('hr')">
               <a routerLink="/project" *ngIf="hasRequiredRole(['admin','hr manager','hr executive'])"
-              class="nested-link" [class.active-link]="isActive('/project')">Site/Building</a>
-          <a routerLink="/departments" class="submenu-link"
-            [class.active-link]="isActive('/departments')">Departments</a>
-          <a routerLink="/employeedesignation" class="submenu-link"
-            [class.active-link]="isActive('/employeedesignation')">Employee Designation</a>
-          <a routerLink="/employeeeducation" class="submenu-link"
-            [class.active-link]="isActive('/employeeeducation')">Employee Education</a>
-          <a routerLink="/employeegrade" class="submenu-link" [class.active-link]="isActive('/employeegrade')">Employee
-            Grade</a>
-          <a routerLink="/employeeshift" class="submenu-link" [class.active-link]="isActive('/employeeshift')">Employee
-            Shift</a>
-          <a routerLink="/employeetype" class="submenu-link" [class.active-link]="isActive('/employeetype')">Employee
-            Type</a>
-          <a routerLink="/employeebank" class="submenu-link" [class.active-link]="isActive('/employeebank')">Employee
-            Bank</a>
-          <a routerLink="/employeedocumenttype" class="submenu-link"
-            [class.active-link]="isActive('/employeedocumenttype')">Employee Document Type</a>
-          <a routerLink="/employeeovertimerate" class="submenu-link"
-            [class.active-link]="isActive('/employeeovertimerate')">Employee Over Time Rate</a>
-          <a routerLink="/employeeworksitetype" class="submenu-link"
-            [class.active-link]="isActive('/employeeworksitetype')">Employee Work Site Type</a>
-          <a routerLink="/device" class="submenu-link" [class.active-link]="isActive('/device')">Device</a>
-          <a routerLink="/cities" class="submenu-link" [class.active-link]="isActive('/cities')">City</a>
-          <a routerLink="/hryear" class="submenu-link" [class.active-link]="isActive('/hryear')">HR Year</a>
-          <a routerLink="/holiday" class="submenu-link" [class.active-link]="isActive('/holiday')">Holiday</a>
+                class="nested-link" [class.active-link]="isActive('/project')">Site/Building</a>
+              <a routerLink="/departments" class="submenu-link"
+                [class.active-link]="isActive('/departments')">Departments</a>
+              <a routerLink="/employeedesignation" class="submenu-link"
+                [class.active-link]="isActive('/employeedesignation')">Employee Designation</a>
+              <a routerLink="/employeeeducation" class="submenu-link"
+                [class.active-link]="isActive('/employeeeducation')">Employee Education</a>
+              <a routerLink="/employeegrade" class="submenu-link"
+                [class.active-link]="isActive('/employeegrade')">Employee
+                Grade</a>
+              <a routerLink="/employeeshift" class="submenu-link"
+                [class.active-link]="isActive('/employeeshift')">Employee
+                Shift</a>
+              <a routerLink="/employeetype" class="submenu-link"
+                [class.active-link]="isActive('/employeetype')">Employee
+                Type</a>
+              <a routerLink="/employeebank" class="submenu-link"
+                [class.active-link]="isActive('/employeebank')">Employee
+                Bank</a>
+              <a routerLink="/employeedocumenttype" class="submenu-link"
+                [class.active-link]="isActive('/employeedocumenttype')">Employee Document Type</a>
+              <a routerLink="/employeeovertimerate" class="submenu-link"
+                [class.active-link]="isActive('/employeeovertimerate')">Employee Over Time Rate</a>
+              <a routerLink="/employeeworksitetype" class="submenu-link"
+                [class.active-link]="isActive('/employeeworksitetype')">Employee Work Site Type</a>
+              <a routerLink="/device" class="submenu-link" [class.active-link]="isActive('/device')">Device</a>
+              <a routerLink="/cities" class="submenu-link" [class.active-link]="isActive('/cities')">City</a>
+              <a routerLink="/hryear" class="submenu-link" [class.active-link]="isActive('/hryear')">HR Year</a>
+              <a routerLink="/holiday" class="submenu-link" [class.active-link]="isActive('/holiday')">Holiday</a>
 
-          <button (click)="toggleSubMenu('leaveManage')" class="submenu-button">
-            <span>Leave Quota</span>
-            <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('leaveManage')"></i>
-          </button>
-          <div class="nested-submenu" *ngIf="isSubMenuVisible('leaveManage')">
-            <a routerLink="/employeeleavetype" class="nested-link"
-              [class.active-link]="isActive('/employeeleavetype')">Employee Leave Type</a>
-            <a routerLink="/employeeleavegroup" class="nested-link"
-              [class.active-link]="isActive('/employeeleavegroup')">Employee Leave Group</a>
+              <button (click)="toggleSubMenu('leaveManage')" class="submenu-button">
+                <span>Leave Quota</span>
+                <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('leaveManage')"></i>
+              </button>
+              <div class="nested-submenu" *ngIf="isSubMenuVisible('leaveManage')">
+                <a routerLink="/employeeleavetype" class="nested-link"
+                  [class.active-link]="isActive('/employeeleavetype')">Employee Leave Type</a>
+                <a routerLink="/employeeleavegroup" class="nested-link"
+                  [class.active-link]="isActive('/employeeleavegroup')">Employee Leave Group</a>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
           <a routerLink="/employee" class="submenu-link" [class.active-link]="isActive('/employee')">Manage
             Employees</a>
           <a routerLink="/manageemployeeleave" class="submenu-link"
@@ -580,6 +583,31 @@
         </div>
       </div>
 
+        <!-- Manage OPD -->
+      <div class="nav-group" *ngIf="hasRequiredRole(['admin','doctor','receptionist'])">
+        <button (click)="toggleSubMenu('appointment')" class="nav-button">
+          <i class="fas fa-user-tie"></i>
+          <span>Manage OPD</span>
+          <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('appointment')"></i>
+        </button>
+        <div class="submenu" *ngIf="isSubMenuVisible('appointment')">
+          <!-- HR Setup -->
+          <div class="nav-group" *ngIf="hasRequiredRole(['admin','doctor','receptionist'])">
+            <button (click)="toggleSubMenu('hr')" class="nav-button">
+              <i class="fas fa-user-cog"></i>
+              <span>OPD Setup</span>
+              <!-- <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('hr')"></i> -->
+            </button>
+            <!-- <div class="submenu" *ngIf="isSubMenuVisible('hr')">
+              <a routerLink="/project" *ngIf="hasRequiredRole(['admin','receptionist'])"
+                class="nested-link" [class.active-link]="isActive('/project')">Site/Building</a>
+            </div> -->
+          </div>
+          <a routerLink="/appointment" *ngIf="hasRequiredRole(['admin','receptionist'])" class="submenu-link" [class.active-link]="isActive('/appointment')">Appointments</a>
+          <a routerLink="/patient"     *ngIf="hasRequiredRole(['admin','receptionist'])" class="submenu-link"  [class.active-link]="isActive('/patient')">Patients</a>
+          <a routerLink="/doctor"      *ngIf="hasRequiredRole(['admin','receptionist'])" class="submenu-link"  [class.active-link]="isActive('/doctor')">Doctors</a>
+        </div>
+      </div>
     </nav>
 
     <!-- Sidebar Footer -->

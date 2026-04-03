@@ -24,6 +24,11 @@ export class AppointmentService extends BaseService<any> {
             .pipe(map((data: any) => data));
     }
 
+    getAllAppointmentByDoctor(categorysFilterForm: any) {
+        return this.post(categorysFilterForm, this.endPointControllerName + this.AppointmentEndPoints.getAllAppointmentByDoctor)
+            .pipe(map((data: any) => data));
+    }
+
     saveAppointment(saveAppointmentCommand: any) {
         return this.post(saveAppointmentCommand, this.endPointControllerName + this.AppointmentEndPoints.saveAppointment)
             .pipe(map((data: any) => data));

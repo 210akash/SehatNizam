@@ -5,4 +5,5 @@ export class DepartmentEndPoints {
     public readonly getDepartmentByName = '/GetDepartmentByName';
     public readonly deleteDepartment = '/DeleteDepartment';
     public readonly getDepartmentByCompany = '/GetDepartmentByCompany';
+    public readonly getClinicalDepartment = '/GetClinicalDepartment';
 }

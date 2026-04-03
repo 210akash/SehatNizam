@@ -39,6 +39,20 @@ namespace ERP.API.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("GetAllAppointmentByDoctor")]
+        public async Task<ActionResult<Tuple<IEnumerable<GetAppointment>, long>>> GetAllAppointmentByDoctor(GetAllAppointmentByDoctorQuery command)
+        {
+            try
+            {
+                return await this.mediator.Send(command);
+            }
+            catch (Exception ex)
+            {
+                return this.Result(ResponseStatus.Error, null, ex.Message);
+            }
+        }
+
         [HttpGet]
         [Route("GetAllAppointmentStatus")]
         public async Task<ActionResult<List<GetAppointmentStatus>>> GetAllAppointmentStatus()

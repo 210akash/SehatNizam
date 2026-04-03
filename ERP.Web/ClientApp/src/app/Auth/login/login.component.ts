@@ -55,15 +55,15 @@ export class LoginComponent implements OnInit {
 
         try {
           const data = await this.authenticationService.login(loginFormValue);
-          if (data != null) {
-              if (data.token != '' && data.token != null) {
-                  window.location.href = '/home';
-              } else {
-                  this.notificationsService.showNotification(data.Message, 'snack-bar-danger');
-                  this.loading = false;
-                  // window.location.href = '/login';
-              }
-          }
+        //   if (data != null) {
+        //       if (data.token != '' && data.token != null) {
+
+        //       } else {
+        //           this.notificationsService.showNotification(data.Message, 'snack-bar-danger');
+        //           this.loading = false;
+        //           // window.location.href = '/login';
+        //       }
+        //   }
       } catch (error) {
           this.error = error;
           this.loading = false;

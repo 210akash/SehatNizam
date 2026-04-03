@@ -15,6 +15,9 @@ import { Router } from '@angular/router';
 import { PatientService } from '../../patient/patient.service';
 import { Observable, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, finalize, map, startWith, switchMap } from 'rxjs/operators';
+import { EmployeeService } from '../../../hr/employee/employee.service';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { DoctorService } from '../../doctor/doctor.service';
 
 type Option<T = any> = { id: T; label: string };
 
@@ -33,9 +36,9 @@ export class AddAppointmentComponent implements OnInit {
   phoneNoInputMask = createMask('0399-9999999');
   emailInputMask = createMask('*[*{0,50}]@*[*{0,50}].*[*{0,5}]');
   cityList: any;
-  appointmentTypeList : any;
-  visitTypesList : any;
-  paymentModesList : any;
+  appointmentTypeList: any;
+  visitTypesList: any;
+  paymentModesList: any;
   appointmentStatusList: any;
   minDate = this.toInputDate(new Date());
   priorityLevelList: any;
@@ -44,6 +47,7 @@ export class AddAppointmentComponent implements OnInit {
   patientSearchCtrl = new FormControl<string | any>('');
   filteredPatients$!: Observable<any[]>;
   patientLoading = false;
+  doctorList: any;
   doctors: Array<{ id: string; name: string; departmentId?: number }> = [
     { id: '408C1D72-07FD-4E9A-A54C-D1AD4112F875', name: 'Dr. Sarah Khan', departmentId: 1 },
     { id: '408C1D72-07FD-4E9A-A54C-D1AD4112F875', name: 'Dr. Ahmed Raza', departmentId: 2 },
@@ -65,9 +69,10 @@ export class AddAppointmentComponent implements OnInit {
     private priorityLevelService: PriorityLevelService,
     private primaryOrderService: PrimaryOrderService,
     private patientService: PatientService,
+    private doctorService: DoctorService,
     private router: Router,
     @Optional() @Inject(MAT_DIALOG_DATA) public data: { element: any } | null
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadDepartments();
@@ -95,6 +100,8 @@ export class AddAppointmentComponent implements OnInit {
       priorityLevelId: [1, Validators.required],
       departmentId: [null, Validators.required],
       patientId: [null],
+      doctorName: [''],
+      doctor: [''],
       doctorId: [null, Validators.required],
       visitTypeId: [1],
       reason: ['', Validators.required],
@@ -202,7 +209,7 @@ export class AddAppointmentComponent implements OnInit {
   }
 
   private loadDepartments(): void {
-    this.departmentService.getAllDepartments({}).subscribe({
+    this.departmentService.getClinicalDepartment().subscribe({
       next: (res: any) => {
         this.departments = res?.item1 ?? res ?? [];
       },
@@ -212,7 +219,7 @@ export class AddAppointmentComponent implements OnInit {
       }
     });
   }
-  
+
   getCityList(): void {
     let _filterForm = {};
     this.cityService.getAllCities(_filterForm).subscribe(data => {
@@ -220,7 +227,7 @@ export class AddAppointmentComponent implements OnInit {
     });
   }
 
-    async getAppointmentTypeList(): Promise<void> {
+  async getAppointmentTypeList(): Promise<void> {
     let _filterForm = {};
     (await this.appointmentTypeService.getAllAppointmentType(_filterForm)).subscribe(data => {
       this.appointmentTypeList = data.item1;
@@ -234,21 +241,21 @@ export class AddAppointmentComponent implements OnInit {
     });
   }
 
-   async getAllOrderStatus(): Promise<void> {
+  async getAllOrderStatus(): Promise<void> {
     let _filterForm = {};
     (await this.primaryOrderService.getAllOrderStatus()).subscribe(data => {
       this.paymentStatusList = data;
     });
   }
 
-   async getAllAppointmentStatus(): Promise<void> {
+  async getAllAppointmentStatus(): Promise<void> {
     let _filterForm = {};
     (await this.appointmentService.getAllAppointmentStatus()).subscribe(data => {
       this.appointmentStatusList = data;
     });
   }
 
-   async getVisitTypeList(): Promise<void> {
+  async getVisitTypeList(): Promise<void> {
     let _filterForm = {};
     (await this.visitTypeService.getAllVisitType(_filterForm)).subscribe(data => {
       this.visitTypesList = data.item1;
@@ -455,5 +462,56 @@ export class AddAppointmentComponent implements OnInit {
     const hours = `${d.getHours()}`.padStart(2, '0');
     const minutes = `${d.getMinutes()}`.padStart(2, '0');
     return `${hours}:${minutes}`;
+  }
+
+  getDoctorList(event: any) {
+    var filter = event.currentTarget.value;
+    var departmentId = this.appointmentForm.get('departmentId')?.value;
+    if (departmentId == 0 || departmentId == null) {
+      this.appointmentForm.get('doctorId')?.patchValue(0);
+      this.appointmentForm.get('doctorName')?.patchValue('');
+      this.appointmentForm.get('doctor')?.patchValue('');
+      this.notifications.showNotification('Please Select Department', 'snack-bar-danger');
+    }
+    var getDoctorFilter = {
+      name: filter,
+      departmentId: departmentId
+    }
+    this.doctorService.getDoctorByName(getDoctorFilter)
+      .subscribe((data: any) => {
+        this.doctorList = data;
+      });
+  }
+
+  onOptionSelected(event: MatAutocompleteSelectedEvent): void {
+    const selectedValue = event.option.value;
+    if (!selectedValue) {
+      console.error('Option value is undefined. Ensure mat-option [value] is correctly bound.');
+      return;
+    }
+    // Get the selected item details from your getaccount method
+    const selectedItem = this.getdoctor(selectedValue.id);
+    if (!selectedItem) {
+      console.error('Selected item not found.');
+      return;
+    }
+
+    // Patch the values into the form group
+    this.appointmentForm.get('employeeId')?.patchValue(selectedValue.id);
+    this.appointmentForm.get('employeeName')?.patchValue(selectedValue?.hrCode + ' : ' + selectedValue?.firstName + ' ' + selectedValue?.lastName + ' (' + selectedValue?.designation + ')');
+    this.appointmentForm.get('employee')?.patchValue(selectedValue);
+  }
+
+  getdoctor(itemId: string) {
+    return this.doctorList.find((option: { id: string; }) => option.id === itemId);
+  }
+
+  onDoctorInputCleared(event: Event): void {
+    const inputValue = (event.target as HTMLInputElement)?.value;
+    if (!inputValue.trim()) {
+      this.appointmentForm.get('doctorId')?.patchValue(0);
+      this.appointmentForm.get('doctorName')?.patchValue('');
+      this.appointmentForm.get('doctor')?.patchValue('');
+    }
   }
 }

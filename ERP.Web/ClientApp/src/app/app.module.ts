@@ -783,6 +783,7 @@ import { ViewPatientComponent } from './components/opd/patient/view-patient/view
 import { DoctorEndPoints } from './components/opd/doctor/doctor.endpoints';
 import { DoctorService } from './components/opd/doctor/doctor.service';
 import { DoctorListComponent } from './components/opd/doctor/doctor-list/doctor-list.component';
+import { DoctorAppointmentListComponent } from './components/opd/appointment/doctor-appointment-list/doctor-appointment-list.component';
 
 const matFormFieldDefaults: MatFormFieldDefaultOptions = {
     appearance: 'outline'
@@ -1336,7 +1337,8 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         VisitTypeListComponent,
         PatientListComponent,
         ViewPatientComponent,
-        DoctorListComponent
+        DoctorListComponent,
+        DoctorAppointmentListComponent,
     ],
     bootstrap: [AppComponent], imports: [
         InputMaskModule,

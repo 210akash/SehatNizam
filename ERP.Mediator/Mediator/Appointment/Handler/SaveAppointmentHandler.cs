@@ -46,7 +46,7 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                     Gender = request.Patient.Gender,
                     DateOfBirth = request.Patient.DateOfBirth,
                     CityId = request.Patient.CityId,
-                    ProjectId = 1,
+                    ProjectId = sessionProvider.Session.SelectedWarehouseId,
                     CreatedById = sessionProvider.Session.LoggedInUserId,
                 };
 
@@ -99,7 +99,7 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                 var newAppointment = mapper.Map<Entities.Models.Appointment>(appoinment);
                 newAppointment.TokenNumber = newCode;
                 newAppointment.CreatedById = sessionProvider.Session.LoggedInUserId;
-                newAppointment.ProjectId = 1;
+                newAppointment.ProjectId = sessionProvider.Session.SelectedWarehouseId;
                 newAppointment.CreatedDate = DateTime.Now;
                 newAppointment.AppointmentStatusId = 1;  // default status
                 unitOfWork.Repository<Entities.Models.Appointment>().Add(newAppointment);

@@ -48,4 +48,9 @@ export class DepartmentService extends BaseService<any> {
         return this.get('?CompanyId=' + companyId, this.endPointControllerName + this.departmentEndPoints.getDepartmentByCompany)
             .pipe(map((data: any) => data));
     }
+
+     getClinicalDepartment() {
+        return this.get(this.endPointControllerName + this.departmentEndPoints.getClinicalDepartment)
+            .pipe(map((data: any) => data));
+    }
 }

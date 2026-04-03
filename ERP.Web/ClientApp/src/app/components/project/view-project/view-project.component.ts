@@ -19,6 +19,7 @@ export class ViewProjectComponent {
 
   ngOnInit(): void {
     this.projectForm = this.formBuilder.group({
+      code: ['', Validators.required],
       name: ['', Validators.required],
       description: ['', Validators.required]
     });

@@ -151,10 +151,15 @@
 
           <mat-form-field appearance="outline">
             <mat-label>Doctor</mat-label>
-            <mat-select formControlName="doctorId">
-              <mat-option [value]="null">Select Doctor</mat-option>
-              <mat-option *ngFor="let doc of filterDoctors()" [value]="doc.id">{{ doc.name }}</mat-option>
-            </mat-select>
+            <input matInput formControlName="doctorName" [matAutocomplete]="auto" (keyup)="getDoctorList($event);"
+              class="form-control" (input)="onDoctorInputCleared($event)" type="search"
+              [matTooltip]="this.appointmentForm.get('doctor')?.value ? this.appointmentForm.get('doctor')?.value.hrCode  + ' ' +
+              this.appointmentForm.get('doctor')?.value.firstName + ' ' + this.appointmentForm.get('doctor')?.value.lastName : 'No Doctor Selected'" />
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionSelected($event)">
+              <mat-option *ngFor="let doctor of doctorList" [value]="doctor">
+              {{ doctor?.hrCode }} :  {{ doctor?.firstName }} {{ doctor?.lastName }} ({{doctor?.designation}})
+              </mat-option>
+            </mat-autocomplete>
           </mat-form-field>
 
           <mat-form-field appearance="outline">

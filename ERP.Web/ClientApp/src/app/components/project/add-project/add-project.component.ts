@@ -27,6 +27,7 @@ export class AddProjectComponent {
   ngOnInit(): void {
     this.projectForm = this.formBuilder.group({
       id: [0],
+      code: ['', Validators.required],
       name: ['', Validators.required],
       description: ['', Validators.required],
       companyId: [0],

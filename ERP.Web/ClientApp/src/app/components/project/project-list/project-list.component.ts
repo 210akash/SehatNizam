@@ -21,7 +21,7 @@ export class ProjectListComponent {
   isLoading = false;
   currentPage = 0;
   pageSizeOptions: number[] = [5, 10, 25, 100];
-  displayedColumns: string[] = ['name','company', 'createdBy', 'actions'];
+  displayedColumns: string[] = ['code','name','company', 'createdBy', 'actions'];
   dataSource: any;
   take = 50;
   pageSize = 0;

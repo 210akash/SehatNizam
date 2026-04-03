@@ -25,4 +25,9 @@ export class DoctorService extends BaseService<any> {
       this.endPointControllerName + this.doctorEndPoints.getAllDoctors
     ).pipe(map((data: any) => data));
   }
+
+   getDoctorByName(employeeFilterForm: any) {
+        return this.post(employeeFilterForm, this.endPointControllerName + this.doctorEndPoints.getDoctorByName)
+            .pipe(map((data: any) => data));
+    }
 }

@@ -126,5 +126,19 @@ namespace ERP.API.Controllers
                 return this.Result(ResponseStatus.Error, null, ex.Message);
             }
         }
+
+        [HttpGet]
+        [Route("GetClinicalDepartment")]
+        public async Task<ActionResult<List<GetDepartment>>> getClinicalDepartment()
+        {
+            try
+            {
+                return await mediator.Send(new GetClinicalDepartmentQuery());
+            }
+            catch (Exception ex)
+            {
+                return this.Result(ResponseStatus.Error, null, ex.Message);
+            }
+        }
     }
 }

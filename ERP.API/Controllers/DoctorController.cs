@@ -2,6 +2,8 @@
 using ERP.BusinessModels.Enums;
 using ERP.BusinessModels.ResponseVM;
 using ERP.Mediator.Mediator.Auth.Query;
+using ERP.Mediator.Mediator.Doctor.Query;
+using ERP.Mediator.Mediator.Employee.Query;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -37,6 +39,18 @@ namespace ERP.API.Controllers
             }
         }
 
-  
+        [HttpPost]
+        [Route("GetDoctorByName")]
+        public async Task<ActionResult<List<GetEmployee>>> GetDoctorByName(GetDoctorByNameQuery request)
+        {
+            try
+            {
+                return await this.mediator.Send(request);
+            }
+            catch (Exception ex)
+            {
+                return this.Result(ResponseStatus.Error, null, ex.Message);
+            }
+        }
     }
 }

@@ -1,0 +1,65 @@
+
+<div class="header-container">
+    <h2>Appointment Type</h2>
+    <button *appHasRole="['admin', 'sales', 'audit']" mat-mini-fab aria-label="Add" color="success" (click)="openTriageCategoryDialog(null)" matTooltip="Add Company">
+        <mat-icon>add</mat-icon>
+    </button>
+</div>
+
+<div class="body-container">
+    <form [formGroup]="appointmentTypeListFilerForm" class="form-horizontal form-label-left">
+
+    </form>
+
+    <div class="mat-elevation-z8 table-responsive mt-2">
+
+        <table mat-table [dataSource]="dataSource" matSort>
+
+            <!--Name  Column-->
+            <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-dark"> Name</th>
+                <td  mat-cell *matCellDef="let element"> {{element.name}} </td>
+            </ng-container>
+
+            <!--Description  Column-->
+            <ng-container matColumnDef="description">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-dark"> Description</th>
+                <td  mat-cell *matCellDef="let element"> {{element.description}} </td>
+            </ng-container>
+
+            <!--Created Date  Column-->
+            <ng-container matColumnDef="createdDate">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-dark"> Created Date</th>
+                <td  mat-cell *matCellDef="let element"> {{element.createdDate | date: 'd MMM y h:mm a'}} </td>
+            </ng-container>
+
+            <!-- Actions column definition -->
+            <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef style="width: 11%;"> Actions </th>
+                <td mat-cell  mat-cell *matCellDef="let element">
+                    <div class="action_btns">
+                        <button *appHasRole="['admin', 'sales', 'audit']" mat-mini-fab matTooltip="Edit" color="primary" (click)="openTriageCategoryDialog(element)">
+                            <mat-icon aria-label="Edit">edit</mat-icon>
+                        </button>
+
+                        <button mat-mini-fab matTooltip="View" color="dark" (click)="openViewTriageCategoryDialog('3000ms', '1500ms', element)">
+                            <mat-icon aria-label="View">visibility</mat-icon>
+                        </button>
+
+                        <button *appHasRole="['admin', 'sales', 'audit']" mat-mini-fab matTooltip="Delete" color="warn" (click)="openDeleteDialog(element)">
+                            <mat-icon aria-label="Delete">delete</mat-icon>
+                        </button>
+                    </div>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns;  sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+
+        <mat-paginator #paginator [length]="totalRows" [pageIndex]="currentPage" [pageSize]="pageSize"
+            [pageSizeOptions]="pageSizeOptions" (page)="pageChanged($event)" aria-label="Select page">
+        </mat-paginator>
+
+    </div>
+</div>

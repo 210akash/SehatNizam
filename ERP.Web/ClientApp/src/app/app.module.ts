@@ -784,6 +784,24 @@ import { DoctorEndPoints } from './components/opd/doctor/doctor.endpoints';
 import { DoctorService } from './components/opd/doctor/doctor.service';
 import { DoctorListComponent } from './components/opd/doctor/doctor-list/doctor-list.component';
 import { DoctorAppointmentListComponent } from './components/opd/appointment/doctor-appointment-list/doctor-appointment-list.component';
+import { SugarTypeService } from './components/opd/sugar-type/sugar-type.service';
+import { SugarTypeEndPoints } from './components/opd/sugar-type/sugar-type.endpoints';
+import { TriageService } from './components/opd/triage/triage.service';
+import { TriageEndPoints } from './components/opd/triage/triage.endpoints';
+import { TriageCategoryService } from './components/opd/triage-category/triage-category.service';
+import { TriageCategoryEndPoints } from './components/opd/triage-category/triage-category.endpoints';
+import { SugarTypeListComponent } from './components/opd/sugar-type/visit-sugar-list/visit-sugar-list.component';
+import { DeleteSugarTypeComponent } from './components/opd/sugar-type/delete-sugar-type/delete-sugar-type.component';
+import { ViewSugarTypeComponent } from './components/opd/sugar-type/view-sugar-type/view-sugar-type.component';
+import { CreateSugarTypeComponent } from './components/opd/sugar-type/create-sugar-type/create-sugar-type.component';
+import { CreateTriageComponent } from './components/opd/triage/create-triage/create-triage.component';
+import { ViewTriageComponent } from './components/opd/triage/view-triage/view-triage.component';
+import { DeleteTriageComponent } from './components/opd/triage/delete-triage/delete-triage.component';
+import { TriageListComponent } from './components/opd/triage/triage-list/triage-list.component';
+import { CreateTriageCategoryComponent } from './components/opd/triage-category/create-triage-category/create-triage-category.component';
+import { ViewTriageCategoryComponent } from './components/opd/triage-category/view-triage-category/view-triage-category.component';
+import { DeleteTriageCategoryComponent } from './components/opd/triage-category/delete-triage-category/delete-triage-category.component';
+import { TriageCategoryListComponent } from './components/opd/triage-category/triage-category-list/triage-category-list.component';
 
 const matFormFieldDefaults: MatFormFieldDefaultOptions = {
     appearance: 'outline'
@@ -1339,6 +1357,20 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         ViewPatientComponent,
         DoctorListComponent,
         DoctorAppointmentListComponent,
+        CreateSugarTypeComponent,
+        ViewSugarTypeComponent,
+        DeleteSugarTypeComponent,
+        SugarTypeListComponent,
+        CreateTriageComponent,
+        ViewTriageComponent,
+        DeleteTriageComponent,
+        TriageListComponent,
+        CreateTriageCategoryComponent,
+         ViewTriageCategoryComponent,
+        DeleteTriageCategoryComponent,
+        TriageCategoryListComponent,
+
+
     ],
     bootstrap: [AppComponent], imports: [
         InputMaskModule,
@@ -1597,6 +1629,12 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         PatientService,
         DoctorEndPoints,
         DoctorService,
+        SugarTypeService,
+        SugarTypeEndPoints,
+        TriageService,
+        TriageEndPoints,
+        TriageCategoryService,
+        TriageCategoryEndPoints,
         { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
         { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },
         AuthenticationService, {

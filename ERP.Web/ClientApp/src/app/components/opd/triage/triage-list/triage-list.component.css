@@ -1,0 +1,10 @@
+.header-container { display: flex; justify-content: space-between; align-items: center; }
+.body-container { margin-top: 10px; }
+.form-field { width: 100%; }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.col-md-4 { flex: 1 1 calc(33.333% - 10px); }
+.col-md-2 { flex: 1 1 calc(16.666% - 10px); }
+.btn-col { display: flex; align-items: center; }
+@media (max-width: 768px) {
+  .col-md-4, .col-md-2 { flex: 1 1 100%; }
+}

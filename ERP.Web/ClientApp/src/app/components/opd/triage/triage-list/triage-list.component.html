@@ -1,0 +1,84 @@
+<div class="header-container">
+    <h2>Triage</h2>
+    <button *appHasRole="['admin', 'sales', 'audit']" mat-mini-fab aria-label="Add" color="success" (click)="openTriageDialog(null)" matTooltip="Add Triage">
+        <mat-icon>add</mat-icon>
+    </button>
+</div>
+
+<div class="body-container">
+    <form [formGroup]="triageFilterForm" class="form-horizontal form-label-left">
+        <div class="row">
+            <div class="col-md-4">
+                <mat-form-field class="form-field">
+                    <mat-label>Appointment Id</mat-label>
+                    <input matInput placeholder="Appointment Id" formControlName="appointmentId">
+                </mat-form-field>
+            </div>
+            <div class="col-md-2 btn-col">
+                <button mat-flat-button color="primary" type="button" (click)="bindData()">Search</button>
+            </div>
+        </div>
+    </form>
+
+    <div class="mat-elevation-z8 table-responsive mt-2">
+        <table mat-table [dataSource]="dataSource" matSort>
+
+            <ng-container matColumnDef="appointmentId">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-dark"> Appointment Id</th>
+                <td mat-cell *matCellDef="let element"> {{element.appointmentId}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="triageCategoryId">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-dark"> Triage Category</th>
+                <td mat-cell *matCellDef="let element"> {{element.triageCategoryName || element.triageCategoryId}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="triagePriorityId">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-dark"> Priority</th>
+                <td mat-cell *matCellDef="let element"> {{element.triagePriorityName || element.triagePriorityId}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="sugarTypeId">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-dark"> Sugar Type</th>
+                <td mat-cell *matCellDef="let element"> {{element.sugarTypeName || element.sugarTypeId}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="triageScore">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-dark"> Score</th>
+                <td mat-cell *matCellDef="let element"> {{element.triageScore}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="createdDate">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-dark"> Created Date</th>
+                <td mat-cell *matCellDef="let element"> {{element.createdDate | date: 'd MMM y h:mm a'}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef style="width: 12%;"> Actions </th>
+                <td mat-cell mat-cell *matCellDef="let element">
+                    <div class="action_btns">
+                        <button *appHasRole="['admin', 'sales', 'audit']" mat-mini-fab matTooltip="Edit" color="primary" (click)="openTriageDialog(element)">
+                            <mat-icon aria-label="Edit">edit</mat-icon>
+                        </button>
+
+                        <button mat-mini-fab matTooltip="View" color="dark" (click)="openViewTriageDialog('3000ms', '1500ms', element)">
+                            <mat-icon aria-label="View">visibility</mat-icon>
+                        </button>
+
+                        <button *appHasRole="['admin', 'sales', 'audit']" mat-mini-fab matTooltip="Delete" color="warn" (click)="openDeleteDialog(element)">
+                            <mat-icon aria-label="Delete">delete</mat-icon>
+                        </button>
+                    </div>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns;  sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+
+        <mat-paginator #paginator [length]="totalRows" [pageIndex]="currentPage" [pageSize]="pageSize"
+            [pageSizeOptions]="pageSizeOptions" (page)="pageChanged($event)" aria-label="Select page">
+        </mat-paginator>
+
+    </div>
+</div>

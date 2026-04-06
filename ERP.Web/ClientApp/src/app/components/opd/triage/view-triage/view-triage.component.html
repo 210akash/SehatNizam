@@ -1,0 +1,141 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Triage Details</mat-card-title>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+    <form [formGroup]="viewTriageForm">
+      <div class="row">
+        <div class="col-md-6">
+          <mat-form-field class="form-field">
+            <mat-label>Appointment Id</mat-label>
+            <input matInput formControlName="appointmentId" readonly />
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field class="form-field">
+            <mat-label>Triage Category</mat-label>
+            <input matInput formControlName="triageCategoryId" readonly />
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <mat-form-field class="form-field">
+            <mat-label>Triage Priority</mat-label>
+            <input matInput formControlName="triagePriorityId" readonly />
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field class="form-field">
+            <mat-label>Sugar Type</mat-label>
+            <input matInput formControlName="sugarTypeId" readonly />
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <mat-form-field class="form-field">
+            <mat-label>Temperature</mat-label>
+            <input matInput formControlName="temperature" readonly />
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field class="form-field">
+            <mat-label>Pulse</mat-label>
+            <input matInput formControlName="pulse" readonly />
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field class="form-field">
+            <mat-label>SPO2</mat-label>
+            <input matInput formControlName="spo2" readonly />
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <mat-form-field class="form-field">
+            <mat-label>Systolic BP</mat-label>
+            <input matInput formControlName="systolicBp" readonly />
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field class="form-field">
+            <mat-label>Diastolic BP</mat-label>
+            <input matInput formControlName="diastolicBp" readonly />
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field class="form-field">
+            <mat-label>Triage Score</mat-label>
+            <input matInput formControlName="triageScore" readonly />
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <mat-form-field class="form-field">
+            <mat-label>Weight</mat-label>
+            <input matInput formControlName="weight" readonly />
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field class="form-field">
+            <mat-label>Height (ft)</mat-label>
+            <input matInput formControlName="heightFeet" readonly />
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field class="form-field">
+            <mat-label>Height (in)</mat-label>
+            <input matInput formControlName="heightInches" readonly />
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field class="form-field">
+            <mat-label>Height (cm)</mat-label>
+            <input matInput formControlName="heightCm" readonly />
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field class="form-field">
+            <mat-label>BMI</mat-label>
+            <input matInput formControlName="bmi" readonly />
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <mat-form-field class="form-field">
+            <mat-label>Chief Complaint</mat-label>
+            <textarea matInput rows="2" formControlName="chiefComplaint" readonly></textarea>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field class="form-field">
+            <mat-label>Medications</mat-label>
+            <textarea matInput rows="2" formControlName="medications" readonly></textarea>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <mat-form-field class="form-field">
+            <mat-label>Allergies</mat-label>
+            <textarea matInput rows="2" formControlName="allergies" readonly></textarea>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field class="form-field">
+            <mat-label>Notes</mat-label>
+            <textarea matInput rows="2" formControlName="notes" readonly></textarea>
+          </mat-form-field>
+        </div>
+      </div>
+    </form>
+  </mat-card-content>
+  <mat-card-actions align="end">
+    <button mat-flat-button color="default" [mat-dialog-close]="true">Close</button>
+  </mat-card-actions>
+</mat-card>

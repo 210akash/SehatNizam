@@ -1,0 +1,9 @@
+.form-field { width: 100%; }
+.button-container { margin-top: 10px; display: flex; gap: 8px; }
+.row { display: flex; flex-wrap: wrap; gap: 10px; }
+.col-md-4 { flex: 1 1 calc(33.333% - 10px); }
+.col-md-6 { flex: 1 1 calc(50% - 10px); }
+.col-md-12 { flex: 1 1 100%; }
+@media (max-width: 768px) {
+  .col-md-4, .col-md-6 { flex: 1 1 100%; }
+}

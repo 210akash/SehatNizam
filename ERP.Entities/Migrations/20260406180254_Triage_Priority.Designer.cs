@@ -4,14 +4,16 @@ using ERP.Entities.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ERP.Entities.Migrations
 {
     [DbContext(typeof(ERPDbContext))]
-    partial class ERPDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260406180254_Triage_Priority")]
+    partial class Triage_Priority
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -8754,6 +8756,9 @@ namespace ERP.Entities.Migrations
                     b.Property<Guid?>("NurseId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("PatientId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<int?>("Pulse")
                         .HasColumnType("int");
 
@@ -8793,6 +8798,8 @@ namespace ERP.Entities.Migrations
                     b.HasIndex("ModifiedById");
 
                     b.HasIndex("NurseId");
+
+                    b.HasIndex("PatientId");
 
                     b.HasIndex("SugarTypeId");
 
@@ -14112,6 +14119,12 @@ namespace ERP.Entities.Migrations
                         .WithMany()
                         .HasForeignKey("NurseId");
 
+                    b.HasOne("ERP.Entities.Models.AspNetUsers", "Patient")
+                        .WithMany()
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("ERP.Entities.Models.SugarType", "SugarType")
                         .WithMany()
                         .HasForeignKey("SugarTypeId")
@@ -14137,6 +14150,8 @@ namespace ERP.Entities.Migrations
                     b.Navigation("ModifiedBy");
 
                     b.Navigation("Nurse");
+
+                    b.Navigation("Patient");
 
                     b.Navigation("SugarType");
 

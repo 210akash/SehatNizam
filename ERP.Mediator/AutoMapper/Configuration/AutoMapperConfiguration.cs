@@ -80,9 +80,11 @@
     using ERP.Mediator.Mediator.ShopType.Command;
     using ERP.Mediator.Mediator.Store.Command;
     using ERP.Mediator.Mediator.SubCategory.Command;
+    using ERP.Mediator.Mediator.SugarType.Command;
     using ERP.Mediator.Mediator.Templates.Command;
     using ERP.Mediator.Mediator.Territory.Command;
     using ERP.Mediator.Mediator.Transaction.Command;
+    using ERP.Mediator.Mediator.TriageCategory.Command;
     using ERP.Mediator.Mediator.UOM.Command;
     using ERP.Mediator.Mediator.UserAttendance.Command;
     using ERP.Mediator.Mediator.UserTerritory.Command;
@@ -586,8 +588,13 @@
             this.CreateMap<Prescription, GetPrescription>().ReverseMap();
             this.CreateMap<PatientProblem, GetPatientProblem>().ReverseMap();
             this.CreateMap<Consultation, GetConsultation>().ReverseMap();
+            this.CreateMap<Triage, SaveTriageCommand>().ReverseMap();
             this.CreateMap<Triage, GetTriage>().ReverseMap();
+            this.CreateMap<TriageCategory, SaveTriageCategoryCommand>().ReverseMap();
+            this.CreateMap<TriageCategory, GetTriageCategory>().ReverseMap();
             this.CreateMap<Appointment, GetAppointment>().ReverseMap();
+            this.CreateMap<SugarType, SaveSugarTypeCommand>().ReverseMap();
+            this.CreateMap<SugarType, GetSugarType>().ReverseMap();
         }
     }
 }

@@ -1,0 +1,19 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Delete Triage</mat-card-title>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+    <form [formGroup]="deleteTriageForm">
+      <p>Are you sure you want to delete this triage record?</p>
+      <mat-form-field class="form-field">
+        <mat-label>Appointment Id</mat-label>
+        <input matInput formControlName="appointmentId" readonly />
+      </mat-form-field>
+    </form>
+  </mat-card-content>
+  <mat-card-actions align="end">
+    <button mat-flat-button color="warn" type="button" (click)="delete()">Delete</button>
+    <button mat-flat-button color="default" [mat-dialog-close]="true">Close</button>
+  </mat-card-actions>
+</mat-card>

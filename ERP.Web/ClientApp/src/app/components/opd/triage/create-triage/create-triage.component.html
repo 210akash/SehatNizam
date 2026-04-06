@@ -1,0 +1,179 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Triage Form</mat-card-title>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+
+    <form [formGroup]="createTriageForm">
+      <div class="row">
+        <div class="col-md-6">
+          <mat-form-field class="form-field">
+            <mat-label>Appointment Id</mat-label>
+            <input matInput type="number" placeholder="Appointment Id" formControlName="appointmentId" />
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field class="form-field">
+            <mat-label>Nurse Id</mat-label>
+            <input matInput placeholder="Nurse Id" formControlName="nurseId" />
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <mat-form-field class="form-field">
+            <mat-label>Triage Category</mat-label>
+            <mat-select formControlName="triageCategoryId">
+              <mat-option *ngFor="let item of triageCategories" [value]="item.id">{{item.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field class="form-field">
+            <mat-label>Triage Priority</mat-label>
+            <mat-select formControlName="triagePriorityId">
+              <mat-option *ngFor="let item of triagePriorities" [value]="item.id">{{item.name || item.title || item.priority}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <mat-form-field class="form-field">
+            <mat-label>Sugar Type</mat-label>
+            <mat-select formControlName="sugarTypeId">
+              <mat-option *ngFor="let item of sugarTypes" [value]="item.id">{{item.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field class="form-field">
+            <mat-label>Blood Sugar</mat-label>
+            <input matInput type="number" placeholder="Blood Sugar" formControlName="bloodSugar" />
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <mat-form-field class="form-field">
+            <mat-label>Temperature</mat-label>
+            <input matInput type="number" placeholder="Temperature" formControlName="temperature" />
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field class="form-field">
+            <mat-label>Pulse</mat-label>
+            <input matInput type="number" placeholder="Pulse" formControlName="pulse" />
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field class="form-field">
+            <mat-label>SPO2</mat-label>
+            <input matInput type="number" placeholder="SPO2" formControlName="spo2" />
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <mat-form-field class="form-field">
+            <mat-label>Systolic BP</mat-label>
+            <input matInput type="number" placeholder="Systolic BP" formControlName="systolicBp" />
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field class="form-field">
+            <mat-label>Diastolic BP</mat-label>
+            <input matInput type="number" placeholder="Diastolic BP" formControlName="diastolicBp" />
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field class="form-field">
+            <mat-label>Triage Score</mat-label>
+            <input matInput type="number" placeholder="Triage Score" formControlName="triageScore" />
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <mat-form-field class="form-field">
+            <mat-label>Weight (kg)</mat-label>
+            <input matInput type="number" placeholder="Weight" formControlName="weight" />
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field class="form-field">
+            <mat-label>Height (ft)</mat-label>
+            <input matInput type="number" placeholder="Height (feet)" formControlName="heightFeet" />
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field class="form-field">
+            <mat-label>Height (in)</mat-label>
+            <input matInput type="number" placeholder="Height (inches)" formControlName="heightInches" />
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <mat-form-field class="form-field">
+            <mat-label>Height (cm)</mat-label>
+            <input matInput type="number" placeholder="Height (cm)" formControlName="heightCm" />
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field class="form-field">
+            <mat-label>BMI</mat-label>
+            <input matInput placeholder="BMI" formControlName="bmi" readonly />
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <mat-form-field class="form-field">
+            <mat-label>Chief Complaint</mat-label>
+            <textarea matInput placeholder="Chief Complaint" formControlName="chiefComplaint"></textarea>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field class="form-field">
+            <mat-label>Medications</mat-label>
+            <textarea matInput placeholder="Medications" formControlName="medications"></textarea>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <mat-form-field class="form-field">
+            <mat-label>Allergies</mat-label>
+            <textarea matInput placeholder="Allergies" formControlName="allergies"></textarea>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field class="form-field">
+            <mat-label>Notes</mat-label>
+            <textarea matInput placeholder="Notes" formControlName="notes"></textarea>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <mat-divider class="mt-2"></mat-divider>
+      <div class="button-container">
+        <button mat-flat-button color="success" type="button" (click)="saveTriage()">
+          <span class="mat-button-wrapper">Save</span>
+        </button>
+        <button mat-flat-button color="default" [mat-dialog-close]="true">
+          <span class="mat-button-wrapper">Close</span>
+        </button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

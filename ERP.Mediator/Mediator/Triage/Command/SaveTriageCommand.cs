@@ -1,9 +1,11 @@
-﻿using System;
+﻿using MediatR;
+using System;
 
-namespace ERP.Entities.Models
+namespace ERP.Mediator.Mediator.Triage.Command
 {
-    public class Triage : BaseEntity
+    public class SaveTriageCommand : IRequest<long>
     {
+        public long Id { get; set; }   // Triage Id (for update)
         public long AppointmentId { get; set; }
         public Guid? NurseId { get; set; }
         public decimal? Temperature { get; set; }
@@ -23,13 +25,7 @@ namespace ERP.Entities.Models
         public string Allergies { get; set; }
         public string Medications { get; set; }
         public string Notes { get; set; }
-        public int TriageScore { get; set; } = 0;
+        public int TriageScore { get; set; }
         public long TriageCategoryId { get; set; }
-        public DateTime? TakenAt { get; set; }
-        public Appointment Appointment { get; set; }
-        public AspNetUsers? Nurse { get; set; }
-        public SugarType SugarType { get; set; }
-        public PriorityLevel TriagePriority { get; set; }
-        public TriageCategory TriageCategory { get; set; }
     }
 }

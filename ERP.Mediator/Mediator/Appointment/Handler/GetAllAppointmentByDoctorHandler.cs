@@ -51,11 +51,11 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
             };
 
             predicate = x => x.IsActive == true
-            && x.DoctorId == sessionProvider.Session.LoggedInUserId
-            && x.ProjectId == sessionProvider.Session.SelectedWarehouseId
-                      && x.AppointmentStatusId == request.StatusId
-                      && x.CreatedDate >= request.FDate.Value
-                      && x.CreatedDate <= request.TDate.Value.AddDays(1).AddTicks(-1);
+           // && x.DoctorId == sessionProvider.Session.LoggedInUserId
+           // && x.ProjectId == sessionProvider.Session.SelectedWarehouseId
+                      && x.AppointmentStatusId == request.StatusId;
+                      //&& x.CreatedDate >= request.FDate.Value
+                      //&& x.CreatedDate <= request.TDate.Value.AddDays(1).AddTicks(-1);
 
             Expression<Func<Entities.Models.Appointment, object>> OrderBy = null;
             Expression<Func<Entities.Models.Appointment, object>> OrderByDesc = x => x.Id;

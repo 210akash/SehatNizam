@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticationService } from '../authentication.service';
 import { NotificationsService } from '../../Service/notification.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
     selector: 'app-login',
@@ -15,7 +16,11 @@ export class LoginComponent implements OnInit {
     loading = false;
     submitted = false;
     returnUrl!: string;
-    error : any;
+    error: any;
+    bgClass = environment.backgroundStyle; // e.g., 'prod' or 'dev'
+    colorClass = environment.color; // e.g., 'prod' or 'dev'
+    name = environment.name; // e.g., 'prod' or 'dev'
+    logo = environment.logo; // e.g., 'prod' or 'dev'
 
     constructor(private notificationsService: NotificationsService, private formBuilder: FormBuilder, private route: ActivatedRoute, private router: Router, private authenticationService: AuthenticationService) {
         // redirect to home if already logged in
@@ -25,7 +30,7 @@ export class LoginComponent implements OnInit {
     }
 
     ngOnInit() {
-
+        
         this.loginForm = this.formBuilder.group({
             email: ['', Validators.required],
             password: ['', Validators.required],
@@ -54,20 +59,27 @@ export class LoginComponent implements OnInit {
         this.loading = true;
 
         try {
-          const data = await this.authenticationService.login(loginFormValue);
-        //   if (data != null) {
-        //       if (data.token != '' && data.token != null) {
-
-        //       } else {
-        //           this.notificationsService.showNotification(data.Message, 'snack-bar-danger');
-        //           this.loading = false;
-        //           // window.location.href = '/login';
-        //       }
-        //   }
-      } catch (error) {
-          this.error = error;
-          this.loading = false;
-      }
+            const data = await this.authenticationService.login(loginFormValue);
+            //   if (data != null) {
+            //       if (data.token != '' && data.token != null) {
+            //         const roles = data.role.split(',').map((role: string) => role.trim());
+            //       if (roles.includes('Employee')) 
+            //             window.location.href = '/employeedashboard';
+            //         //   else if(data.role.replace(',','') == 'Team Manager')
+            //         //       window.location.href = '/teammanagerdashboard';
+            //         //   else if(data.role.replace(',','') == 'Manager')
+            //         //       window.location.href = '/managerdashboard';
+            //           else
+            //           window.location.href = '/home';
+            //       } else {
+            //           this.notificationsService.showNotification(data.Message, 'snack-bar-danger');
+            //           this.loading = false;
+            //           // window.location.href = '/login';
+            //       }
+            //   }
+        } catch (error) {
+            this.error = error;
+            this.loading = false;
+        }
     }
 }
-    

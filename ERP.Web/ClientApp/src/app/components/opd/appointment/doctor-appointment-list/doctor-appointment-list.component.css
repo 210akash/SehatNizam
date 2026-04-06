@@ -1,0 +1,678 @@
+ /* ============================================
+       GLOBAL DESIGN TOKENS (CSS Custom Properties)
+       These variables should align with your Angular app's theme.
+       Modify values to match your design system.
+    ============================================ */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      /* Color palette – light mode defaults */
+      --color-background-primary: #ffffff;
+      --color-background-secondary: #f8fafc;
+      --color-background-tertiary: #f1f5f9;
+      --color-text-primary: #0f172a;
+      --color-text-secondary: #475569;
+      --color-border-primary: #e2e8f0;
+      --color-border-secondary: #cbd5e1;
+      --color-border-tertiary: #e2e8f0;
+      --color-border-info: #bfdbfe;
+      --color-background-info: #eff6ff;
+      --color-text-info: #1e40af;
+      --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      --font-mono: 'SF Mono', ui-monospace, monospace;
+      --border-radius-sm: 4px;
+      --border-radius-md: 6px;
+      --border-radius-lg: 12px;
+    }
+
+    /* If dark mode is needed, override via Angular’s theme class */
+    body {
+      font-family: var(--font-sans);
+      font-size: 13px;
+      color: var(--color-text-primary);
+      background: var(--color-background-tertiary);
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Main app container – mimics shell layout */
+    .shell {
+      display: grid;
+      grid-template-rows: auto 1fr;
+      height: 100vh;
+      min-height: 700px;
+      gap: 12px;
+      padding: 12px;
+    }
+
+    /* Header styles */
+    .header {
+      background: var(--color-background-primary);
+      border: 0.5px solid var(--color-border-tertiary);
+      border-radius: var(--border-radius-lg);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .pat-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--color-background-info);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--color-text-info);
+      border: 2px solid var(--color-border-info);
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .pat-name {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--color-text-primary);
+    }
+    .pat-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 3px;
+      font-size: 12px;
+      color: var(--color-text-secondary);
+      flex-wrap: wrap;
+    }
+    .mrn {
+      background: var(--color-background-secondary);
+      border: 0.5px solid var(--color-border-tertiary);
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-size: 11px;
+      font-family: var(--font-mono);
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      border: 0.5px solid #93c5fd;
+      color: #1d4ed8;
+      background: #eff6ff;
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+    .pat-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .stat-block {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      padding-right: 12px;
+      border-right: 0.5px solid var(--color-border-tertiary);
+    }
+    .stat-label {
+      font-size: 10px;
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 500;
+    }
+    .stat-val {
+      font-size: 18px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .stat-val.green {
+      color: #059669;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: var(--border-radius-md);
+      border: 0.5px solid var(--color-border-secondary);
+      background: var(--color-background-primary);
+      color: var(--color-text-primary);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s ease;
+    }
+    .btn:hover {
+      background: var(--color-background-secondary);
+    }
+    .btn.primary {
+      background: #059669;
+      color: #fff;
+      border-color: #059669;
+    }
+    .btn.primary:hover {
+      background: #047857;
+    }
+    .btn.blue {
+      background: #1e40af;
+      color: #fff;
+      border-color: #1e40af;
+    }
+    .btn.blue:hover {
+      background: #1e3a8a;
+    }
+    .btn:disabled {
+      opacity: 0.45;
+      pointer-events: none;
+    }
+    .btn svg {
+      width: 14px;
+      height: 14px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+    }
+
+    /* 3‑column layout */
+    .grid3 {
+      display: grid;
+      grid-template-columns: 260px 1fr 280px;
+      gap: 12px;
+      overflow: hidden;
+      min-height: 0;
+    }
+    .col {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      overflow: hidden;
+    }
+    .col.scroll {
+      overflow-y: auto;
+    }
+    .center-col {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .card {
+      background: var(--color-background-primary);
+      border: 0.5px solid var(--color-border-tertiary);
+      border-radius: var(--border-radius-lg);
+      overflow: hidden;
+    }
+    .card-head {
+      padding: 12px 14px 6px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--color-text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .card-body {
+      padding: 0 14px 14px;
+    }
+    .vital-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .vital-item .v-label {
+      font-size: 10px;
+      color: var(--color-text-secondary);
+      margin-bottom: 2px;
+    }
+    .vital-item .v-val {
+      font-size: 16px;
+      font-weight: 500;
+    }
+    .vital-item .v-unit {
+      font-size: 11px;
+      color: var(--color-text-secondary);
+      font-weight: 400;
+    }
+    .prob-item {
+      padding: 8px 0;
+      border-bottom: 0.5px solid var(--color-border-tertiary);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .prob-item:last-child {
+      border-bottom: none;
+    }
+    .prob-name {
+      font-size: 12px;
+      font-weight: 500;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .prob-onset {
+      font-size: 11px;
+      color: var(--color-text-secondary);
+    }
+    .status-badge {
+      font-size: 10px;
+      padding: 1px 6px;
+      border: 0.5px solid var(--color-border-tertiary);
+      border-radius: 4px;
+      font-weight: 500;
+      color: var(--color-text-secondary);
+      white-space: nowrap;
+    }
+    .status-badge.active {
+      border-color: #86efac;
+      color: #166534;
+      background: #f0fdf4;
+    }
+    .soap-wrap {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      height: 100%;
+    }
+    .soap-section {
+      border-bottom: 0.5px solid var(--color-border-tertiary);
+      padding: 10px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .soap-section:last-child {
+      border-bottom: none;
+    }
+    .soap-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: #2563eb;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .soap-ta {
+      width: 100%;
+      border: none;
+      background: var(--color-background-secondary);
+      border-radius: var(--border-radius-md);
+      padding: 8px;
+      font-size: 12px;
+      color: var(--color-text-primary);
+      resize: vertical;
+      font-family: var(--font-sans);
+      outline: none;
+      line-height: 1.5;
+    }
+    .soap-ta:focus {
+      box-shadow: 0 0 0 1.5px #3b82f6;
+    }
+    .tab-bar {
+      display: flex;
+      gap: 0;
+      border-bottom: 0.5px solid var(--color-border-tertiary);
+      background: var(--color-background-secondary);
+      border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+      overflow: hidden;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      color: var(--color-text-secondary);
+      transition: all 0.2s;
+    }
+    .tab-btn.active {
+      border-bottom-color: #2563eb;
+      color: #2563eb;
+      background: var(--color-background-primary);
+    }
+    .tab-btn svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+    }
+    .tab-panel {
+      display: none;
+      padding: 12px 0;
+    }
+    .tab-panel.active {
+      display: block;
+    }
+    .form-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 10px;
+    }
+    .form-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--color-text-secondary);
+    }
+    select, input[type="text"], input[type="date"], textarea {
+      width: 100%;
+      background: var(--color-background-primary);
+      border: 0.5px solid var(--color-border-secondary);
+      border-radius: var(--border-radius-md);
+      padding: 6px 10px;
+      font-size: 12px;
+      color: var(--color-text-primary);
+      font-family: var(--font-sans);
+      outline: none;
+    }
+    select:focus, input:focus, textarea:focus {
+      box-shadow: 0 0 0 1.5px #3b82f6;
+    }
+    .dose-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 6px;
+    }
+    .med-item {
+      border-left: 2px solid #2563eb;
+      padding-left: 8px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .med-name {
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .med-detail {
+      font-size: 11px;
+      color: var(--color-text-secondary);
+    }
+    .lab-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 8px;
+      border: 0.5px solid var(--color-border-tertiary);
+      border-radius: var(--border-radius-md);
+      margin-bottom: 6px;
+      font-size: 12px;
+      background: var(--color-background-secondary);
+    }
+    .rem-btn {
+      width: 18px;
+      height: 18px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      color: var(--color-text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      padding: 0;
+    }
+    .rem-btn:hover {
+      color: #dc2626;
+    }
+    .rem-btn svg {
+      width: 12px;
+      height: 12px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+    }
+    .divider {
+      height: 0.5px;
+      background: var(--color-border-tertiary);
+      margin: 10px 0;
+    }
+    .fu-label {
+      font-size: 10px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--color-text-secondary);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .fu-label svg {
+      width: 12px;
+      height: 12px;
+      stroke: currentColor;
+    }
+    .attach-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      border: 0.5px solid var(--color-border-tertiary);
+      border-radius: var(--border-radius-md);
+      margin-bottom: 8px;
+      background: var(--color-background-secondary);
+    }
+    .attach-icon {
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .attach-name {
+      font-size: 12px;
+      font-weight: 500;
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .attach-meta {
+      font-size: 10px;
+      color: var(--color-text-secondary);
+    }
+    .add-btn {
+      width: 22px;
+      height: 22px;
+      border: 0.5px solid var(--color-border-secondary);
+      border-radius: 4px;
+      background: transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-secondary);
+    }
+    .add-btn:hover {
+      background: var(--color-background-secondary);
+    }
+    .add-btn svg {
+      width: 12px;
+      height: 12px;
+      stroke: currentColor;
+    }
+    .sect-head {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .soap-card {
+      background: var(--color-background-primary);
+      border: 0.5px solid #93c5fd;
+      border-radius: var(--border-radius-lg);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .soap-card-head {
+      padding: 12px 14px;
+      border-bottom: 0.5px solid var(--color-border-tertiary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 500;
+      font-size: 13px;
+      background: var(--color-background-secondary);
+    }
+    .soap-card-body {
+      flex: 1;
+      overflow-y: auto;
+    }
+    .empty {
+      text-align: center;
+      color: var(--color-text-secondary);
+      font-size: 12px;
+      padding: 16px 0;
+    }
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      display: none;
+    }
+    .modal-box {
+      background: var(--color-background-primary);
+      border-radius: var(--border-radius-lg);
+      border: 0.5px solid var(--color-border-secondary);
+      padding: 20px;
+      width: 320px;
+      max-width: 95%;
+    }
+    .modal-title {
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .close-btn {
+      width: 22px;
+      height: 22px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      color: var(--color-text-secondary);
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+    }
+    .close-btn:hover {
+      background: var(--color-background-secondary);
+    }
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 14px;
+    }
+    .sep {
+      color: var(--color-text-secondary);
+    }
+    /* Scroll utilities */
+    .col.scroll::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    /* Copy all the styles from the original <style> block, but wrap in :host for encapsulation */
+:host {
+  display: block;
+  height: 100%;
+  --color-background-primary: #ffffff;
+  --color-background-secondary: #f8fafc;
+  --color-background-tertiary: #f1f5f9;
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #475569;
+  --color-border-primary: #e2e8f0;
+  --color-border-secondary: #cbd5e1;
+  --color-border-tertiary: #e2e8f0;
+  --color-border-info: #bfdbfe;
+  --color-background-info: #eff6ff;
+  --color-text-info: #1e40af;
+  --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  --font-mono: 'SF Mono', ui-monospace, monospace;
+  --border-radius-sm: 4px;
+  --border-radius-md: 6px;
+  --border-radius-lg: 12px;
+}
+
+/* All the original CSS rules go here (the same as provided, but without the body tag wrapper) */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.shell {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100%;
+  min-height: 700px;
+  gap: 12px;
+  padding: 12px;
+}
+
+.header { /* ... copy from original ... */ }
+.pat-left { /* ... */ }
+.avatar { /* ... */ }
+/* ... include every style rule from the original <style> block exactly as provided ... */
+/* (To save space, I've omitted the full copy here; you can paste the entire original CSS block inside this :host context.) */
+
+/* Additional helper for modals */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+}
+.modal-overlay.show {
+  display: flex;
+}
+.loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}

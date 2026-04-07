@@ -219,10 +219,13 @@
           </mat-form-field>
         </div>
       </section>
-
-      <div class="button-container">
-        <button mat-flat-button color="primary" type="button" (click)="onSubmit()">Save</button>
-        <button mat-stroked-button color="basic" type="button" (click)="onCancel()">Close</button>
+ <div class="button-container">
+        <button mat-flat-button color="success" type="button" (click)="onSubmit()">
+          <span class="mat-button-wrapper">Save</span>
+        </button>
+        <button mat-flat-button color="default" [mat-dialog-close]="true" (click)="onCancel()">
+          <span class="mat-button-wrapper">Close</span>
+        </button>
       </div>
     </mat-card-content>
   </mat-card>

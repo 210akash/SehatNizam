@@ -227,8 +227,62 @@
     color: #333;
   }
   
-  .leave-days {
+.leave-days {
     color: #666;
     font-size: 14px;
-  }
-  
+}
+
+/* Modern layout enhancements */
+.employee-card {
+    padding: 18px;
+    border-radius: 18px;
+    box-shadow: 0 14px 30px -18px rgba(0, 0, 0, 0.25);
+    border: 1px solid #e5e9f2;
+}
+
+.employee-card-content {
+    padding-top: 6px !important;
+}
+
+mat-card-title {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+}
+
+mat-card-header {
+    border-bottom: 1px solid #e5e9f2;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+}
+
+h3 {
+    margin: 24px 0 8px;
+    font-weight: 700;
+    color: #0f172a;
+    letter-spacing: 0.01em;
+}
+
+hr {
+    border: 0;
+    border-top: 1px dashed #d1d8e5;
+    margin: 0 0 18px;
+}
+
+.form-field,
+.example-full-width,
+mat-form-field {
+    width: 100%;
+}
+
+.button-container {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 12px 0 4px;
+}
+
+.employee_container {
+    display: flex;
+    justify-content: center;
+}

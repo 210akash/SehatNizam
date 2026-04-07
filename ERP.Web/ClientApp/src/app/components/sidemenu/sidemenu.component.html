@@ -23,7 +23,7 @@
 
       <!-- Dashboard -->
       <div class="nav-group">
-        <a routerLink="/dashboard" class="nav-link" [class.active-link]="isActive('/dashboard')">
+        <a routerLink="/dashboard" class="nav-link" [class.active-link]="isActive('/dashboard')" (click)="goToDashboard()">
           <i class="fas fa-th-large"></i>
           <span>Dashboard</span>
         </a>
@@ -675,44 +675,47 @@
             <!-- Dropdown Menu -->
             <mat-menu #profileMenu="matMenu" class="profile-menu">
               <mat-card class="profile-card">
-
-                <!-- Header -->
-                <div class="profile_wrap">
-                  <div class="profile-header">
-                    <ng-container *ngIf="this.fileSource; else noPhoto">
-                      <img [src]="this.fileSource" alt="Employee Photo" class="photo-img" />
-                    </ng-container>
-                    <ng-template #noPhoto>
-                      <div class="photo-placeholder">
-                        <i class="fa fa-user fa-3x"></i>
-                        <p>No Photo</p>
-                      </div>
-                    </ng-template>
+                <div class="profile-top">
+                  <div class="avatar-wrapper">
+                    <img
+                      [src]="fileSource || 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiBmaWxsPSJub25lIiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxjaXJjbGUgY3g9IjEyIiBjeT0iNyIgcj0iNC41IiBmaWxsPSIjZTJlOGZjIi8+PHBhdGggZD0iTTE5IDE5YTIgMiAwIDAgMC0yLTJoLTEwYTIgMiAwIDAgMC0yIDJ2MSBoMTR6IiBmaWxsPSIjZDhkZWU3Ii8+PC9zdmc+'"
+                      alt="Employee Photo"
+                      class="photo-img"
+                    />
+                  </div>
+                  <div class="profile-meta">
+                    <div class="profile-name">
+                      {{ currentUser.firstName }} {{ currentUser.lastName }}
+                    </div>
+                    <div class="profile-role">
+                      {{ currentUser.department?.name || 'Employee' }}
+                    </div>
+                    <span class="profile-badge">Signed in</span>
                   </div>
                 </div>
+
                 <mat-divider></mat-divider>
-                <!-- Employee -->
+
                 <div class="profile-actions">
-                  <button class="cstm_btn" routerLink="/employeedashboard"
+                  <button class="action-btn" routerLink="/employeedashboard"
                     [ngClass]="{ 'active': isActive('/employeedashboard') }">
-                    <mat-icon>description</mat-icon>
-                    Dashboard
+                    <mat-icon>dashboard</mat-icon>
+                    <span>Dashboard</span>
                   </button>
-                  <button class="cstm_btn" (click)="viewEmployeeDialog()">
+                  <button class="action-btn" (click)="viewEmployeeDialog()">
                     <mat-icon>manage_accounts</mat-icon>
-                    Profile
+                    <span>Profile</span>
                   </button>
-                  <button class="cstm_btn" (click)="viewAttendanceDialog()">
+                  <button class="action-btn" (click)="viewAttendanceDialog()">
                     <mat-icon>fingerprint</mat-icon>
-                    Attendance
+                    <span>Attendance</span>
                   </button>
-                  <button class="cstm_btn" routerLink="/employeeleave"
+                  <button class="action-btn" routerLink="/employeeleave"
                     [ngClass]="{ 'active': isActive('/employeeleave') }">
-                    <mat-icon>description</mat-icon>
-                    Leave Applications
+                    <mat-icon>beach_access</mat-icon>
+                    <span>Leave Applications</span>
                   </button>
                 </div>
-
               </mat-card>
             </mat-menu>
           </div>

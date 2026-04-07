@@ -17,7 +17,7 @@ import { ConstantService } from '../../../../Service/constant.service';
 
 export class SugarTypeListComponent implements OnInit {
   dataSource: any;
-  visitTypeListFilerForm!: FormGroup;
+  sugarTypeListFilerForm!: FormGroup;
   isEditMode: boolean = false;
   displayedColumns: string[] = ['name', 'createdDate', 'actions'];
   isLoading = false;
@@ -29,13 +29,13 @@ export class SugarTypeListComponent implements OnInit {
   totalRows = 0;
   pageSizeOptions: number[] = [5, 10, 25, 100];
 
-  constructor(private constantService: ConstantService, private dialog: MatDialog, private visitTypeService: SugarTypeService, private formBuilder: FormBuilder) { }
+  constructor(private constantService: ConstantService, private dialog: MatDialog, private sugarTypeService: SugarTypeService, private formBuilder: FormBuilder) { }
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   ngOnInit(): void {
     this.pageSize = this.constantService.defaultItemPerPage;
 
-    this.visitTypeListFilerForm = this.formBuilder.group({
+    this.sugarTypeListFilerForm = this.formBuilder.group({
       name: [''],
     });
 
@@ -76,11 +76,11 @@ export class SugarTypeListComponent implements OnInit {
       take: this.pageSize
     }
 
-    let _visitTypeListFilerForm: any = {};
-    _visitTypeListFilerForm = Object.assign(_visitTypeListFilerForm, this.visitTypeListFilerForm.value);
-    _visitTypeListFilerForm["PagingData"] = pagingData;
+    let _sugarTypeListFilerForm: any = {};
+    _sugarTypeListFilerForm = Object.assign(_sugarTypeListFilerForm, this.sugarTypeListFilerForm.value);
+    _sugarTypeListFilerForm["PagingData"] = pagingData;
 
-    (await this.visitTypeService.getAllSugarType(_visitTypeListFilerForm)).subscribe({
+    (await this.sugarTypeService.getAllSugarType(_sugarTypeListFilerForm)).subscribe({
       next: (data: any) => {
         this.dataSource = new MatTableDataSource(data.item1);
         if (data.item1.length > 0) {

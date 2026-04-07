@@ -32,16 +32,14 @@ namespace ERP.Mediator.Mediator.TriageCategory.Handler
             Expression<Func<Entities.Models.TriageCategory, bool>> predicate;
 
             Expression<Func<Entities.Models.TriageCategory, object>>[] includes = {
-                x => x.CreatedBy,
-                x => x.Company
+                x => x.CreatedBy
             };
 
             // Check if the current user's RoleId array contains the AccountOwnerRoleId
             if (roles.Contains("Accounts Manager") || roles.Contains("Accounts Assistant"))
             {
                 predicate = x => x.IsActive == true
-                &&(request.Name == "" || request.Name == null || x.Name == request.Name)
-                && x.CompanyId == this.sessionProvider.Session.CompanyId;
+                &&(request.Name == "" || request.Name == null || x.Name == request.Name);
             }
             else
             {

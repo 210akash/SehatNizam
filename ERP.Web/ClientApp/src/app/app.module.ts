@@ -790,7 +790,6 @@ import { TriageService } from './components/opd/triage/triage.service';
 import { TriageEndPoints } from './components/opd/triage/triage.endpoints';
 import { TriageCategoryService } from './components/opd/triage-category/triage-category.service';
 import { TriageCategoryEndPoints } from './components/opd/triage-category/triage-category.endpoints';
-import { SugarTypeListComponent } from './components/opd/sugar-type/visit-sugar-list/visit-sugar-list.component';
 import { DeleteSugarTypeComponent } from './components/opd/sugar-type/delete-sugar-type/delete-sugar-type.component';
 import { ViewSugarTypeComponent } from './components/opd/sugar-type/view-sugar-type/view-sugar-type.component';
 import { CreateSugarTypeComponent } from './components/opd/sugar-type/create-sugar-type/create-sugar-type.component';
@@ -802,6 +801,7 @@ import { CreateTriageCategoryComponent } from './components/opd/triage-category/
 import { ViewTriageCategoryComponent } from './components/opd/triage-category/view-triage-category/view-triage-category.component';
 import { DeleteTriageCategoryComponent } from './components/opd/triage-category/delete-triage-category/delete-triage-category.component';
 import { TriageCategoryListComponent } from './components/opd/triage-category/triage-category-list/triage-category-list.component';
+import { SugarTypeListComponent } from './components/opd/sugar-type/visit-sugar-list/sugar-type-list.component';
 
 const matFormFieldDefaults: MatFormFieldDefaultOptions = {
     appearance: 'outline'

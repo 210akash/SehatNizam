@@ -1,124 +1,157 @@
-<mat-card>
-  <mat-card-header>
-     <div class="header-container">
-      <mat-card-title>Leave Application
-        ({{this.data.element.employeeGroupLeaveTypeDetail?.employeeLeaveType?.name}})</mat-card-title>
-      <span class="badge badge-inprocess" matTooltip="Status" *ngIf="this.data.element.status?.title == 'Approved'">Pending</span>
-      <span class="badge badge-done" matTooltip="Status" *ngIf="this.data.element.status?.title == 'HR Approved'">HR Approved</span>
-      <span class="badge badge-closed" matTooltip="Status" *ngIf="this.data.element.status?.title == 'Reject'">Reject</span>
-    </div>
-  </mat-card-header>
-  <mat-divider></mat-divider>
-  <mat-card-content>
-        <div class="row" style="align-items: center;">
-      <div class="col-md-3">
-        <mat-form-field class="form-field">
-          <mat-label>Department</mat-label>
-          <input matInput type="text" [value]="this.data.element.employee?.department?.name" />
-        </mat-form-field>
+<div class="leave-approval-container">
+  <!-- Header Section -->
+  <header class="approval-header">
+    <div class="header-main">
+      <div class="header-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
       </div>
-      <div class="col-md-9">
-        <mat-form-field>
-          <mat-label>Employee</mat-label>
-          <input matInput type="text"
-            [value]="this.data.element.employee.hrCode + ' : ' +this.data.element.employee.firstName + ' ' +  this.data.element.employee.lastName" />
-        </mat-form-field>
+      <div class="header-text">
+        <h1>Leave Application</h1>
+        <p class="leave-type-label">Type: <span>{{this.data.element.employeeGroupLeaveTypeDetail?.employeeLeaveType?.name}}</span></p>
       </div>
     </div>
-    <div class="row">
-      <div class="col-md-6">
-        <mat-form-field class="form-field">
-          <mat-label>Work Location</mat-label>
-          <input matInput type="text" [value]="this.data.element.employee.workLocation" />
-        </mat-form-field>
+    <div class="header-status">
+      <span class="status-badge processed" *ngIf="this.data.element.status?.title == 'Processed'">Processed</span>
+      <span class="status-badge pending" *ngIf="this.data.element.status?.title == 'Approved'">Pending</span>
+      <span class="status-badge approved" *ngIf="this.data.element.status?.title == 'HR Approved'">HR Approved</span>
+      <span class="status-badge rejected" *ngIf="this.data.element.status?.title == 'Reject'">Reject</span>
+    </div>
+  </header>
+
+  <div class="approval-body">
+    <!-- Employee Profile Section -->
+    <section class="info-grid profile-section">
+      <div class="info-group">
+        <label>Employee Name</label>
+        <div class="value-with-sub">
+          <strong>{{this.data.element.employee.firstName}} {{this.data.element.employee.lastName}}</strong>
+          <span class="hr-code">{{this.data.element.employee.hrCode}}</span>
+        </div>
       </div>
-      <div class="col-md-6">
-        <mat-form-field class="form-field">
-          <mat-label>Contact Number</mat-label>
-          <input matInput type="text" [value]="this.data.element.employee.phoneNumber" />
-        </mat-form-field>
+      <div class="info-group">
+        <label>Department</label>
+        <p>{{this.data.element.employee?.department?.name}}</p>
+      </div>
+      <div class="info-group">
+        <label>Contact Number</label>
+        <p>{{this.data.element.employee.phoneNumber}}</p>
+      </div>
+    </section>
+
+    <!-- Schedule Section -->
+    <!-- <section class="schedule-section">
+      <h3 class="section-title">Leave Schedule</h3>
+      <div class="schedule-grid">
+        <div class="date-card">
+          <label>Start Date</label>
+          <div class="date-value">
+            {{data.element.startDate | date:'MMM d, y'}}
+            <span class="half-day-tag" *ngIf="this.data.element.isFirstHalfDay">First Half</span>
+          </div>
+        </div>
+        <div class="date-card">
+          <label>End Date</label>
+          <div class="date-value">
+            {{data.element.endDate | date:'MMM d, y'}}
+            <span class="half-day-tag" *ngIf="this.data.element.isLastHalfDay">Last Half</span>
+          </div>
+        </div>
+        <div class="duration-card">
+          <label>Total Duration</label>
+          <div class="duration-value">{{noOfDays}} <span>Days</span></div>
+        </div>
+      </div>
+    </section> -->
+
+    <section class="schedule-section">
+  <h3 class="section-title">Leave Schedule</h3>
+  <div class="schedule-grid">
+    <!-- Start Date Card -->
+    <div class="date-card min-h-card">
+      <label>Start Date</label>
+      <div class="date-value">
+        {{data.element.startDate | date:'MMM d, y'}}
+        <span class="half-day-tag" *ngIf="this.data.element.isFirstHalfDay">First Half</span>
       </div>
     </div>
 
-    <div class="row" style="align-items: center;">
-        <div class="col-md-12">
-          <table class="table table-bordered table-striped">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Leave Type</th>
-                <th>Allotted</th>
-                <th>Used</th>
-                <th>Balance</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let item of leaveBalance; let i = index">
-                <td>{{ i + 1 }}</td>
-                <td>{{ item.leaveType }}</td>
-                <td>{{ item.allotted }}</td>
-                <td>{{ item.used }}</td>
-                <td>{{ item.balance }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="col-md-6">
-          <mat-label>Start Date</mat-label>
-          <input class="form-control" type="text" [value]="data.element.startDate | date:'MMM d, y'" readonly>
-        </div>
-
-        <div class="col-md-6">
-          <mat-label>End Date</mat-label>
-          <input class="form-control" type="text" [value]="data.element.endDate | date:'MMM d, y'" readonly>
-        </div>
-
-        <div class="col-md-3 mt-3">
-          <mat-checkbox [(ngModel)]="this.data.element.isLastHalfDay" disabled>Last Half</mat-checkbox>
-        </div>
-
-        <div class="col-md-3 mt-3">
-          <mat-checkbox [(ngModel)]="this.data.element.isFirstHalfDay" disabled>First Half</mat-checkbox>
-        </div>
-
-        <div class="col-md-6 mt-4">
-          Days: {{noOfDays}}
-        </div>
-
-        <div class="col-md-12 mt-3">
-          <mat-form-field>
-            <mat-label>Reason</mat-label>
-            <input matInput [value]="this.data.element.reason" type="text" readonly>
-          </mat-form-field>
-        </div>
-
-        <div class="col-md-12"  *ngIf="this.data.element.status?.title != 'Approved'">
-          <mat-form-field>
-            <mat-label>Comments</mat-label>
-            <input matInput formControlName="comments" type="text">
-          </mat-form-field>
-        </div>
-        
-        <div class="col-md-6">
-        <mat-form-field>
-          <mat-label>Supervisor/HR (Processed By)</mat-label>
-          <input matInput [value]="this.data.element.processedBy.firstName + ' ' + this.data.element.processedBy.lastName" type="text" readonly>
-        </mat-form-field>
+    <!-- End Date Card -->
+    <div class="date-card min-h-card">
+      <label>End Date</label>
+      <div class="date-value">
+        {{data.element.endDate | date:'MMM d, y'}}
+        <span class="half-day-tag" *ngIf="this.data.element.isLastHalfDay">Last Half</span>
       </div>
-
-      </div>
-    <mat-divider></mat-divider>
-    <div class="button-container">
-      <button mat-flat-button color="success" type="button" (click)="Approve()">
-        <span class="mat-button-wrapper">Approve</span>
-      </button>
-       <button mat-flat-button color="danger" type="button" (click)="Reject()">
-        <span class="mat-button-wrapper">Reject</span>
-      </button>
-      <button mat-flat-button color="default" [mat-dialog-close]="true">
-        <span class="mat-button-wrapper">Close</span>
-      </button>
     </div>
-  </mat-card-content>
-</mat-card>
+
+    <!-- Total Duration Card -->
+    <div class="duration-card min-h-card">
+      <label>Total Duration</label>
+      <div class="duration-value">{{noOfDays}} <span>Days</span></div>
+    </div>
+  </div>
+</section>
+
+    <!-- Balance Table -->
+    <section class="balance-section">
+      <h3 class="section-title">Leave Balance Overview</h3>
+      <div class="table-wrapper">
+        <table class="balance-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Leave Type</th>
+              <th class="text-center">Allotted</th>
+              <th class="text-center">Used</th>
+              <th class="text-center">Balance</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of leaveBalance; let i = index">
+              <td class="index-col">{{ i + 1 }}</td>
+              <td class="type-col">{{ item.leaveType }}</td>
+              <td class="text-center">{{ item.allotted }}</td>
+              <td class="text-center">{{ item.used }}</td>
+              <td class="text-center balance-val">{{ item.balance }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Reason & Comments -->
+    <section class="feedback-section" [formGroup]="processEmployeeLeaveForm">
+      <div class="reason-box">
+        <label>Reason for Leave</label>
+        <blockquote>"{{this.data.element.reason}}"</blockquote>
+      </div>
+
+      <div class="comment-box" *ngIf="this.data.element.status?.title != 'Approved'">
+        <label>Approver Comments</label>
+        <textarea formControlName="comments" placeholder="Add your feedback here..."></textarea>
+      </div>
+    </section>
+
+    <!-- Footer Info -->
+    <footer class="approval-footer-info">
+      <div class="processed-by">
+        <div class="avatar">
+          {{this.data.element.processedBy.firstName[0]}}{{this.data.element.processedBy.lastName[0]}}
+        </div>
+        <div class="processed-text">
+          <label>Processed By</label>
+          <p>{{this.data.element.processedBy.firstName}} {{this.data.element.processedBy.lastName}}</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Action Buttons -->
+  <footer class="approval-actions">
+       <button mat-flat-button color="default" [mat-dialog-close]="true">
+          <span class="mat-button-wrapper">Close</span>
+        </button>
+      <button class="btn btn-outline-danger"  (click)="Reject()">Reject</button>
+      <button class="btn btn-primary" (click)="Approve()">Approve Application</button>
+  </footer>
+</div>

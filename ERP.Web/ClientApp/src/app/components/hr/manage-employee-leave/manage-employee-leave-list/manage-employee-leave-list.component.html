@@ -47,6 +47,7 @@
           <mat-form-field>
             <mat-label>Status</mat-label>
             <mat-select formControlName="statusId" (selectionChange)="filterData()">
+              <mat-option [value]=2> Processed </mat-option>
               <mat-option [value]=3> Pending </mat-option>
               <mat-option [value]=160> HR Approved </mat-option>
               <mat-option [value]=4> Reject </mat-option>
@@ -123,7 +124,7 @@
               (click)="viewEmployeeLeaveDialog(element)">
               <mat-icon aria-label="View">visibility</mat-icon>
             </button>
-            <button mat-mini-fab matTooltip="Approve" color="success" (click)="processLeaveDialog(element)" *ngIf="element.statusId == 3">
+            <button mat-mini-fab matTooltip="Approve" color="success" (click)="processLeaveDialog(element)" *ngIf="(element.statusId == 2 || element.statusId == 3)">
               <mat-icon aria-label="Approve">send</mat-icon>
             </button>
 

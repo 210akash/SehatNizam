@@ -46,7 +46,7 @@ export class ManageEmployeeLeaveListComponent {
     this.EmployeeLeaveFilterForm = this.formBuilder.group({
       fdate: [new Date()],
       tdate: [new Date()],
-      statusId: [3],
+      statusId: [2],
       employeeId: [null],
       departmentId: ['']
     });

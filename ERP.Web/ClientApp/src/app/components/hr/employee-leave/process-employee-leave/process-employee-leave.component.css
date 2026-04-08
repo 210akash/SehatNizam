@@ -1,9 +1,79 @@
-.button-container {
-  display: flex;
-  justify-content: flex-end;
-  /* Align buttons to the right */
-  gap: 10px;
-  /* Adjust the gap between buttons */
-  margin-top: 1rem;
-  /* Add margin space above buttons */
+:host {
+  --primary: #4f46e5;
+  --bg-light: #f8fafc;
+  --text-dark: #1e293b;
+  --text-muted: #64748b;
+  --border: #e2e8f0;
+  --white: #ffffff;
+  
+  display: block;
+  font-family: 'Inter', sans-serif;
+  color: var(--text-dark);
 }
+
+.leave-process-container {
+  max-width: 800px;
+  margin: 0 auto;
+  background: var(--white);
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+  overflow: hidden;
+}
+
+/* Header */
+.process-header {
+  background: var(--bg-light);
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-main { display: flex; align-items: center; gap: 12px; }
+.header-icon { background: var(--white); padding: 8px; border-radius: 8px; color: var(--primary); border: 1px solid var(--border); }
+.header-text h1 { margin: 0; font-size: 1.1rem; font-weight: 800; }
+.sub-label { margin: 0; font-size: 0.7rem; color: var(--text-muted); }
+.sub-label span { color: var(--primary); font-weight: 600; }
+.ref-number { font-family: monospace; font-size: 0.7rem; color: var(--text-muted); }
+
+/* Body */
+.process-body { padding: 16px 24px; }
+.section-title { font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px solid #f1f5f9; padding-bottom: 4px; }
+
+/* Table */
+.table-wrapper { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 20px; }
+.compact-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+.compact-table th { background: #f8fafc; padding: 8px; font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; text-align: left; }
+.compact-table td { padding: 6px 8px; border-top: 1px solid #f1f5f9; }
+.text-center { text-align: center; }
+.balance-val { font-weight: 700; color: var(--primary); }
+
+/* Schedule Grid */
+.schedule-grid { display: grid; grid-template-columns: 1fr 1fr 140px; gap: 12px; margin-bottom: 20px; }
+.min-h-card { min-height: 80px; display: flex; flex-direction: column; justify-content: center; }
+.date-card { background: var(--white); padding: 10px 16px; border-radius: 10px; border: 1px solid var(--border); }
+.card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+.card-top label { font-size: 0.65rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+
+.status-pill { font-size: 0.55rem; background: #eef2ff; color: var(--primary); padding: 1px 8px; border-radius: 10px; border: 1px solid #e0e7ff; font-weight: 800; text-transform: uppercase; }
+.date-value { font-size: 1rem; font-weight: 700; }
+
+.duration-card { background: var(--primary); color: white; border-radius: 10px; text-align: center; padding: 10px; }
+.duration-card label { font-size: 0.6rem; font-weight: 700; opacity: 0.8; text-transform: uppercase; }
+.duration-value { font-size: 1.8rem; font-weight: 900; }
+.duration-value span { font-size: 0.8rem; font-weight: 400; }
+
+/* Feedback */
+.reason-box { margin-bottom: 16px; }
+.section-label { display: block; font-size: 0.65rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px; }
+.reason-box blockquote { margin: 0; padding: 12px; background: #f1f5f9; border-radius: 8px; font-style: italic; font-size: 0.85rem; border-left: 3px solid var(--primary); }
+
+.full-width { width: 100%; }
+::ng-deep .compact-field .mat-mdc-form-field-subscript-wrapper { display: none; }
+
+/* Actions */
+.process-actions { background: var(--bg-light); padding: 12px 24px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 12px; }
+.btn { padding: 8px 24px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; cursor: pointer; border: none; transition: all 0.2s; }
+.btn-primary { background: var(--primary); color: white; }
+.btn-ghost { background: transparent; color: var(--text-muted); }

@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monthly Roster</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    background: #f5f5f5;
+    color: #1a1a1a;
+    padding: 1.5rem;
+  }
+
+  /* ── Header ── */
+  .header-bar {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    background: #fff;
+    padding: 1rem;
+    border-radius: 10px;
+    border: 1px solid #e8e8e8;
+    margin-bottom: 1rem;
+  }
+  .fg { display: flex; flex-direction: column; gap: 4px; }
+  .fg label { font-size: 11px; color: #888; }
+  .fg select,
+  .fg input[type=text] {
+    height: 32px;
+    font-size: 12px;
+    padding: 0 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background: #fff;
+    color: #1a1a1a;
+  }
+  .fg select:focus,
+  .fg input[type=text]:focus { outline: 2px solid #378ADD; outline-offset: 1px; }
+
+  /* ── Buttons ── */
+  .btn {
+    height: 32px;
+    padding: 0 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background: #fff;
+    color: #1a1a1a;
+    font-size: 12px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .btn:hover { background: #f0f0f0; }
+  .btn-save { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+  .btn-save:hover { background: #333; }
+
+  /* ── Summary cards ── */
+  .summary-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+  .sc {
+    background: #fff;
+    border-radius: 8px;
+    padding: 10px 16px;
+    flex: 1;
+    min-width: 90px;
+    border: 1px solid #e8e8e8;
+  }
+  .sc-l { font-size: 11px; color: #888; margin-bottom: 2px; }
+  .sc-v  { font-size: 22px; font-weight: 600; }
+
+  /* ── Table wrapper ── */
+  .twrap {
+    overflow-x: auto;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    background: #fff;
+  }
+  table { border-collapse: collapse; width: max-content; min-width: 100%; }
+
+  /* ── Table header ── */
+  thead th {
+    background: #f7f7f7;
+    padding: 8px 6px;
+    text-align: center;
+    border-right: 1px solid #ebebeb;
+    color: #777;
+    font-size: 11px;
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    white-space: nowrap;
+  }
+  thead th.ecol {
+    text-align: left;
+    position: sticky;
+    left: 0;
+    z-index: 3;
+    min-width: 160px;
+    background: #f7f7f7;
+  }
+  .weekend-th { color: #E24B4A !important; }
+
+  /* ── Table body cells ── */
+  td {
+    padding: 5px 6px;
+    border-right: 1px solid #f0f0f0;
+    border-top: 1px solid #f0f0f0;
+    vertical-align: middle;
+    text-align: center;
+    white-space: nowrap;
+  }
+  td.ecell {
+    text-align: left;
+    position: sticky;
+    left: 0;
+    background: #fff;
+    z-index: 1;
+    padding: 6px 12px;
+    min-width: 160px;
+    border-right: 1px solid #e0e0e0;
+  }
+  tr:hover td        { background: #fafafa; }
+  tr:hover td.ecell  { background: #fafafa; }
+  td.weekend-cell    { background: #fafafa; }
+  td.is-off          { background: #FEF2F2 !important; }
+
+  /* ── Employee info ── */
+  .emp-n {
+    font-size: 12px;
+    font-weight: 600;
+    color: #1a1a1a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 140px;
+  }
+  .emp-id { font-size: 10px; color: #bbb; }
+
+  /* ── Day header ── */
+  .dhead { display: flex; flex-direction: column; align-items: center; gap: 1px; }
+  .dnum  { font-size: 12px; font-weight: 600; }
+  .dname { font-size: 10px; color: #aaa; }
+
+  /* ── Shift dropdown ── */
+  .shift-sel {
+    height: 26px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 0 3px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: #fff;
+    color: #1a1a1a;
+    cursor: pointer;
+    width: 52px;
+    appearance: auto;
+  }
+  .shift-sel:focus  { outline: 2px solid #378ADD; outline-offset: 1px; }
+  .shift-sel.sel-M  { background: #E6F1FB; color: #0C447C; border-color: #378ADD; }
+  .shift-sel.sel-E  { background: #FAEEDA; color: #633806; border-color: #BA7517; }
+  .shift-sel.sel-N  { background: #EEEDFE; color: #3C3489; border-color: #534AB7; }
+  .shift-sel.sel-O  { background: #FCEBEB; color: #A32D2D; border-color: #E24B4A; }
+
+  /* ── Legend ── */
+  .legend {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid #e8e8e8;
+  }
+  .leg { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #666; }
+  .leg-dot { width: 13px; height: 13px; border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- Header Controls -->
+<div class="header-bar">
+  <div class="fg">
+    <label>Department</label>
+    <select id="dept">
+      <option>Engineering</option>
+      <option>Operations</option>
+      <option>HR</option>
+    </select>
+  </div>
+  <div class="fg">
+    <label>Year</label>
+    <select id="yr"></select>
+  </div>
+  <div class="fg">
+    <label>Month</label>
+    <select id="mo"></select>
+  </div>
+  <div class="fg">
+    <label>Status</label>
+    <select id="st">
+      <option>Draft</option>
+      <option>Published</option>
+      <option>Locked</option>
+    </select>
+  </div>
+  <div class="fg">
+    <label>Remarks</label>
+    <input type="text" id="rm" placeholder="Optional..." style="min-width:150px">
+  </div>
+  <button class="btn" onclick="bulkApply('M')">All Morning</button>
+  <button class="btn" onclick="bulkApply('E')">All Evening</button>
+  <button class="btn" onclick="clearAll()">Clear</button>
+  <button class="btn btn-save" onclick="saveRoster()">Save Roster</button>
+</div>
+
+<!-- Summary Cards -->
+<div class="summary-bar">
+  <div class="sc">
+    <div class="sc-l">Employees</div>
+    <div class="sc-v" id="s-emp" style="color:#1a1a1a">0</div>
+  </div>
+  <div class="sc">
+    <div class="sc-l">Morning</div>
+    <div class="sc-v" id="s-m" style="color:#185FA5">0</div>
+  </div>
+  <div class="sc">
+    <div class="sc-l">Evening</div>
+    <div class="sc-v" id="s-e" style="color:#854F0B">0</div>
+  </div>
+  <div class="sc">
+    <div class="sc-l">Night</div>
+    <div class="sc-v" id="s-n" style="color:#534AB7">0</div>
+  </div>
+  <div class="sc">
+    <div class="sc-l">Off days</div>
+    <div class="sc-v" id="s-off" style="color:#A32D2D">0</div>
+  </div>
+</div>
+
+<!-- Roster Table -->
+<div class="twrap">
+  <table id="tbl"></table>
+</div>
+
+<!-- Legend -->
+<div class="legend">
+  <div class="leg"><div class="leg-dot" style="background:#E6F1FB;border:1px solid #378ADD"></div> M — Morning</div>
+  <div class="leg"><div class="leg-dot" style="background:#FAEEDA;border:1px solid #BA7517"></div> E — Evening</div>
+  <div class="leg"><div class="leg-dot" style="background:#EEEDFE;border:1px solid #534AB7"></div> N — Night</div>
+  <div class="leg"><div class="leg-dot" style="background:#FCEBEB;border:1px solid #E24B4A"></div> O — Off day</div>
+</div>
+
+<script>
+  // ── Sample employees — replace with your API data ──
+  const EMPS = [
+    { id: 'E001', name: 'Ayesha Mahmood', sid: 1 },
+    { id: 'E002', name: 'Usman Tariq',    sid: 2 },
+    { id: 'E003', name: 'Sara Baig',      sid: 1 },
+    { id: 'E004', name: 'Bilal Ahmed',    sid: 3 },
+    { id: 'E005', name: 'Nadia Khan',     sid: 2 },
+    { id: 'E006', name: 'Faisal Raza',    sid: 1 },
+  ];
+
+  const MONTHS = [
+    'January','February','March','April','May','June',
+    'July','August','September','October','November','December'
+  ];
+  const DNAMES = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+
+  let data = {};
+
+  function daysInMonth(y, m) { return new Date(y, m, 0).getDate(); }
+  function k(eid, d)         { return eid + '_' + d; }
+  function getD(eid, d) {
+    if (!data[k(eid, d)]) data[k(eid, d)] = { shift: '' };
+    return data[k(eid, d)];
+  }
+
+  function onShift(eid, d, val) {
+    getD(eid, d).shift = val;
+    syncCell(eid, d);
+    updateSummary();
+  }
+
+  function syncCell(eid, d) {
+    const r   = getD(eid, d);
+    const sel = document.getElementById('sel_' + eid + '_' + d);
+    const td  = document.getElementById('td_'  + eid + '_' + d);
+    if (!sel || !td) return;
+    sel.value     = r.shift;
+    sel.className = 'shift-sel' + (r.shift ? ' sel-' + r.shift : '');
+    if (r.shift === 'O') td.classList.add('is-off');
+    else                 td.classList.remove('is-off');
+  }
+
+  function buildSelects() {
+    const ys  = document.getElementById('yr');
+    const ms  = document.getElementById('mo');
+    const now = new Date();
+    for (let y = now.getFullYear() - 1; y <= now.getFullYear() + 2; y++) {
+      const o = document.createElement('option');
+      o.value = y; o.textContent = y;
+      if (y === now.getFullYear()) o.selected = true;
+      ys.appendChild(o);
+    }
+    MONTHS.forEach((m, i) => {
+      const o = document.createElement('option');
+      o.value = i + 1; o.textContent = m;
+      if (i === now.getMonth()) o.selected = true;
+      ms.appendChild(o);
+    });
+  }
+
+  function buildTable() {
+    const y    = +document.getElementById('yr').value;
+    const m    = +document.getElementById('mo').value;
+    const days = daysInMonth(y, m);
+    data = {};
+
+    let h = '<thead><tr><th class="ecol">Employee</th>';
+    for (let d = 1; d <= days; d++) {
+      const dow  = new Date(y, m - 1, d).getDay();
+      const wknd = dow === 0 || dow === 6;
+      h += `<th class="${wknd ? 'weekend-th' : ''}">
+              <div class="dhead">
+                <span class="dnum">${d}</span>
+                <span class="dname">${DNAMES[dow]}</span>
+              </div>
+            </th>`;
+    }
+    h += '</tr></thead><tbody>';
+
+    EMPS.forEach(emp => {
+      h += `<tr>
+              <td class="ecell">
+                <div class="emp-n">${emp.name}</div>
+                <div class="emp-id">${emp.id}</div>
+              </td>`;
+      for (let d = 1; d <= days; d++) {
+        const dow  = new Date(y, m - 1, d).getDay();
+        const wknd = dow === 0 || dow === 6;
+        h += `<td id="td_${emp.id}_${d}" class="${wknd ? 'weekend-cell' : ''}">
+                <select class="shift-sel" id="sel_${emp.id}_${d}"
+                        onchange="onShift('${emp.id}', ${d}, this.value)">
+                  <option value="">—</option>
+                  <option value="M">M</option>
+                  <option value="E">E</option>
+                  <option value="N">N</option>
+                  <option value="O">O</option>
+                </select>
+              </td>`;
+      }
+      h += '</tr>';
+    });
+
+    h += '</tbody>';
+    document.getElementById('tbl').innerHTML = h;
+    updateSummary();
+  }
+
+  function bulkApply(s) {
+    const y    = +document.getElementById('yr').value;
+    const m    = +document.getElementById('mo').value;
+    const days = daysInMonth(y, m);
+    EMPS.forEach(emp => {
+      for (let d = 1; d <= days; d++) {
+        getD(emp.id, d).shift = s;
+        syncCell(emp.id, d);
+      }
+    });
+    updateSummary();
+  }
+
+  function clearAll() {
+    data = {};
+    const y    = +document.getElementById('yr').value;
+    const m    = +document.getElementById('mo').value;
+    const days = daysInMonth(y, m);
+    EMPS.forEach(emp => {
+      for (let d = 1; d <= days; d++) syncCell(emp.id, d);
+    });
+    updateSummary();
+  }
+
+  function updateSummary() {
+    let mc = 0, ec = 0, nc = 0, oc = 0;
+    Object.values(data).forEach(r => {
+      if      (r.shift === 'M') mc++;
+      else if (r.shift === 'E') ec++;
+      else if (r.shift === 'N') nc++;
+      else if (r.shift === 'O') oc++;
+    });
+    document.getElementById('s-emp').textContent = EMPS.length;
+    document.getElementById('s-m').textContent   = mc;
+    document.getElementById('s-e').textContent   = ec;
+    document.getElementById('s-n').textContent   = nc;
+    document.getElementById('s-off').textContent = oc;
+  }
+
+  // ── Builds SaveRosterCommand payload ──
+  function saveRoster() {
+    const y    = +document.getElementById('yr').value;
+    const m    = +document.getElementById('mo').value;
+    const days = daysInMonth(y, m);
+    const details = [];
+
+    EMPS.forEach(emp => {
+      for (let d = 1; d <= days; d++) {
+        const r = data[k(emp.id, d)];
+        if (r && r.shift) {
+          details.push({
+            id: 0,
+            rosterId: 0,
+            employeeId: emp.id,
+            employeeShiftId: emp.sid,
+            rosterDate: `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`,
+            isOffDay: r.shift === 'O',
+            shift: r.shift === 'O' ? null : r.shift
+          });
+        }
+      }
+    });
+
+    const payload = {
+      id: 0,
+      year: y,
+      month: m,
+      departmentId: document.getElementById('dept').value,
+      statusId: document.getElementById('st').value,
+      remarks: document.getElementById('rm').value,
+      rosterDetail: details
+    };
+
+    console.log('SaveRosterCommand payload:', JSON.stringify(payload, null, 2));
+    alert(`Roster saved!\n${details.length} detail entries generated.\nSee browser console for full payload.`);
+  }
+
+  // ── Init ──
+  buildSelects();
+  buildTable();
+  document.getElementById('yr').onchange = buildTable;
+  document.getElementById('mo').onchange = buildTable;
+</script>
+</body>
+</html>

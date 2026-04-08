@@ -2,8 +2,11 @@
 
 namespace ERP.Entities.Models
 {
-    public class EmployeeRoster : BaseEntity
+    public class RosterDetail : BaseEntity
     {
+        public long RosterId { get; set; }
+        public virtual Roster Roster { get; set; }
+
         public Guid EmployeeId { get; set; }
         public virtual AspNetUsers Employee { get; set; }
 
@@ -12,5 +15,8 @@ namespace ERP.Entities.Models
 
         // Date for this roster entry
         public DateTime RosterDate { get; set; }
+
+        // Day status
+        public bool IsOffDay { get; set; } = false;
     }
 }

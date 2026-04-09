@@ -31,9 +31,9 @@
     </div>
   
     <button class="btn" (click)="clearAll()">Clear</button>
-    <!-- <button class="btn btn-save" (click)="saveRoster()" [disabled]="isSaving">
-      {{ isSaving ? 'Saving...' : 'Save Roster' }}
-    </button> -->
+    <button class="btn btn-save" (click)="SaveData()" [disabled]="isLoading">
+      {{ isLoading ? 'Saving...' : 'Save Roster' }}
+    </button>
 
   </div>
   
@@ -86,20 +86,29 @@
           <td class="emp-cell">
             <div class="emp-n">{{ emp.firstName + ' ' + emp.lastName }}</div>
             <div class="emp-id">{{ emp.hrCode | slice:0:8 }}...</div>
+            <select Id="BulkShift" class="bulk-sel" (change)="bulkApply(emp.id, $any($event.target).value)">
+              <option value="">—</option>
+              <option *ngFor="let s of employeeShiftList" [value]='s.id'>
+                {{ shiftLabel(s) }}
+              </option>
+            </select>`
           </td>
 
-          <td
+         <td
             *ngFor="let day of days; trackBy: trackByDay"
-            >
-            <select
-              
-            >
+            [ngClass]="cellClass(emp.id, day)">
+            <div [formGroup]="detailGroup(emp.id, day)">
+              <select
+                formControlName="employeeShiftId"
+                [ngClass]="['shift-sel', shiftClass(emp.id, day)]"
+                (change)="onShiftChange(emp.id, day, $any($event.target).value)">
               <option value="">—</option>
-              <option value="M">M</option>
-              <option value="E">E</option>
-              <option value="N">N</option>
-              <option value="O">O</option>
+              <option value="0">O</option>
+              <option *ngFor="let s of employeeShiftList" [value]='s.id'>
+                {{ shiftLabel(s) }}
+              </option>
             </select>
+            </div>
           </td>
 
         </tr>

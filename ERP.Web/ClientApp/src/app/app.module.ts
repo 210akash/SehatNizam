@@ -802,6 +802,16 @@ import { ViewTriageCategoryComponent } from './components/opd/triage-category/vi
 import { DeleteTriageCategoryComponent } from './components/opd/triage-category/delete-triage-category/delete-triage-category.component';
 import { TriageCategoryListComponent } from './components/opd/triage-category/triage-category-list/triage-category-list.component';
 import { SugarTypeListComponent } from './components/opd/sugar-type/visit-sugar-list/sugar-type-list.component';
+import { AddRosterComponent } from './components/hr/roster/add-roster/add-roster.component';
+import { DeleteRosterComponent } from './components/hr/roster/delete-roster/delete-roster.component';
+import { RosterListComponent } from './components/hr/roster/roster-list/roster-list.component';
+import { RosterTabComponent } from './components/hr/roster/roster-tab/roster-tab.component';
+import { ViewRosterComponent } from './components/hr/roster/view-roster/view-roster.component';
+import { ProcessRosterComponent } from './components/hr/roster/process-roster/process-roster.component';
+import { ApproveRosterComponent } from './components/hr/roster/approve-roster/approve-roster.component';
+import { RosterService } from './components/hr/roster/roster.service';
+import { RosterEndPoints } from './components/hr/roster/roster.endpoints';
+import { PrintRosterComponent } from './components/hr/roster/print-roster/print-roster.component';
 
 const matFormFieldDefaults: MatFormFieldDefaultOptions = {
     appearance: 'outline'
@@ -1369,8 +1379,14 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
          ViewTriageCategoryComponent,
         DeleteTriageCategoryComponent,
         TriageCategoryListComponent,
-
-
+        AddRosterComponent,
+        DeleteRosterComponent,
+        RosterListComponent,
+        RosterTabComponent,
+        ViewRosterComponent,
+        ProcessRosterComponent,
+        ApproveRosterComponent,
+        PrintRosterComponent
     ],
     bootstrap: [AppComponent], imports: [
         InputMaskModule,
@@ -1635,6 +1651,8 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         TriageEndPoints,
         TriageCategoryService,
         TriageCategoryEndPoints,
+        RosterService,
+        RosterEndPoints,
         { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
         { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },
         AuthenticationService, {

@@ -10,7 +10,7 @@ using ERP.Repositories.UnitOfWork;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace ERP.Mediator.Mediator.Account.Handler
+namespace ERP.Mediator.Mediator.Employee.Handler
 {
     public class GetEmployeeByNameHandler : IRequestHandler<GetEmployeeByNameQuery, List<GetEmployee>>
     {

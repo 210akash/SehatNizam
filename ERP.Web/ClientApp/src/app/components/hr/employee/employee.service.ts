@@ -23,4 +23,9 @@ export class EmployeeService extends BaseService<any> {
         return this.post(employeeFilterForm, this.endPointControllerName + this.employeeEndPoints.getEmployeeByName)
             .pipe(map((data: any) => data));
     }
+
+      getEmployeeByDepartment(departmentId:number) {
+        return this.get('?departmentId=' + departmentId, this.endPointControllerName + this.employeeEndPoints.getEmployeeByDepartment)
+            .pipe(map((data: any) => data));
+    }
 }

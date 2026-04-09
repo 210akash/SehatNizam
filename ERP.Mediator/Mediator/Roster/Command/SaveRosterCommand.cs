@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using System.Collections.Generic;
 using System;
-using ERP.Entities.Models;
 
 namespace ERP.Mediator.Mediator.Roster.Command
 {
@@ -11,7 +10,6 @@ namespace ERP.Mediator.Mediator.Roster.Command
         public int Year { get; set; }
         public int Month { get; set; }
         public long DepartmentId { get; set; }
-        public long StatusId { get; set; }
         public string Remarks { get; set; }
         public virtual List<SaveRosterDetailCommand> RosterDetail { get; set; }
     }

@@ -1,0 +1,120 @@
+<form [formGroup]="rosterForm">
+  <div class="roster-page">
+  <!-- ── Header Controls ─────────────────────────────────────────────── -->
+  <div class="header-bar">
+
+    <div class="fg">
+      <label>Department</label>
+      <select formControlName="departmentId">
+        <option [value]="0">Select Department</option>
+        <option *ngFor="let department of departmentList" [value]="department.id">{{ department.name }}</option>
+      </select>
+    </div>
+
+    <div class="fg">
+      <label>Year</label>
+      <select  formControlName="year" (change)="onMonthYearChange()" >
+        <option *ngFor="let y of years" [value]="y">{{ y }}</option>
+      </select>
+    </div>
+
+    <div class="fg">
+      <label>Month</label>
+      <select  formControlName="month" (change)="onMonthYearChange()">
+        <option *ngFor="let m of months" [value]="m.value">{{ m.label }}</option>
+      </select>
+    </div>
+
+    <div class="fg">
+      <label>Remarks</label>
+      <input type="text" formControlName="remarks" placeholder="Optional..." />
+    </div>
+  
+    <button class="btn" (click)="clearAll()">Clear</button>
+    <!-- <button class="btn btn-save" (click)="saveRoster()" [disabled]="isSaving">
+      {{ isSaving ? 'Saving...' : 'Save Roster' }}
+    </button> -->
+
+  </div>
+  
+  <!-- ── Summary Cards ───────────────────────────────────────────────── -->
+  <div class="summary-bar">
+    <div class="sc">
+      <div class="sc-l">Employees</div>
+      <div class="sc-v emp-color">{{ employeeList.length }}</div>
+    </div>
+    <div class="sc">
+      <div class="sc-l">Morning</div>
+      <div class="sc-v morning-color">{{ morningCount }}</div>
+    </div>
+    <div class="sc">
+      <div class="sc-l">Evening</div>
+      <div class="sc-v evening-color">{{ eveningCount }}</div>
+    </div>
+    <div class="sc">
+      <div class="sc-l">Night</div>
+      <div class="sc-v night-color">{{ nightCount }}</div>
+    </div>
+    <div class="sc">
+      <div class="sc-l">Off days</div>
+      <div class="sc-v off-color">{{ offCount }}</div>
+    </div>
+  
+  </div>
+
+  
+  <!-- ── Roster Table ────────────────────────────────────────────────── -->
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th class="emp-col">Employee</th>
+          <th
+            *ngFor="let day of days; trackBy: trackByDay"
+            [class.weekend-th]="isWeekend(day)">
+            <div class="dhead">
+              <span class="dnum">{{ day }}</span>
+              <span class="dname">{{ getDayName(day) }}</span>
+            </div>
+          </th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let emp of employeeList; trackBy: trackByEmp">
+
+          <td class="emp-cell">
+            <div class="emp-n">{{ emp.firstName + ' ' + emp.lastName }}</div>
+            <div class="emp-id">{{ emp.hrCode | slice:0:8 }}...</div>
+          </td>
+
+          <td
+            *ngFor="let day of days; trackBy: trackByDay"
+            >
+            <select
+              
+            >
+              <option value="">—</option>
+              <option value="M">M</option>
+              <option value="E">E</option>
+              <option value="N">N</option>
+              <option value="O">O</option>
+            </select>
+          </td>
+
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── Legend ──────────────────────────────────────────────────────── -->
+  <div class="legend">
+    <div class="leg"><span class="leg-dot dot-m"></span> M — Morning</div>
+    <div class="leg"><span class="leg-dot dot-e"></span> E — Evening</div>
+    <div class="leg"><span class="leg-dot dot-n"></span> N — Night</div>
+    <div class="leg"><span class="leg-dot dot-o"></span> O — Off day</div>
+  </div>
+
+
+  </div>
+</form>

@@ -30,30 +30,27 @@ namespace ERP.Mediator.Mediator.Roster.Handler
             // Check if the current user's RoleId array contains the AccountOwnerRoleId
             if (roles.Contains("Purchase Manager"))
             {
-                predicate = x => x.IsActive == true && x.Item.CompanyId == this.sessionProvider.Session.CompanyId
+                predicate = x => x.IsActive == true 
                           && x.CreatedDate >= request.FDate.Value
-                          && x.CreatedDate <= request.TDate.Value.AddDays(1).AddTicks(-1)
-                          && (request.ItemId == null || x.ItemId == request.ItemId)
-                          && (request.Code == "" || x.Code.ToLower().Contains(request.Code));
+                          && x.CreatedDate <= request.TDate.Value.AddDays(1).AddTicks(-1);
             }
-            else if (roles.Contains("Purchaser"))
-            {
-                predicate = x => x.IsActive == true && x.Item.CompanyId == this.sessionProvider.Session.CompanyId
-                          && x.CreatedDate >= request.FDate.Value
-                          && x.CreatedById == this.sessionProvider.Session.LoggedInUserId
-                          && x.CreatedDate <= request.TDate.Value.AddDays(1).AddTicks(-1)
-                          && (request.ItemId == null || x.ItemId == request.ItemId)
-                          && (request.Code == "" || x.Code.ToLower().Contains(request.Code));
-            }
+            //else if (roles.Contains("Purchaser"))
+            //{
+            //    //predicate = x => x.IsActive == true 
+            //    //          && x.CreatedDate >= request.FDate.Value
+            //    //          && x.CreatedById == this.sessionProvider.Session.LoggedInUserId
+            //    //          && x.CreatedDate <= request.TDate.Value.AddDays(1).AddTicks(-1)
+            //    //          && (request.ItemId == null || x.ItemId == request.ItemId)
+            //    //          && (request.Code == "" || x.Code.ToLower().Contains(request.Code));
+            //}
             else
             {
                 predicate = x => x.IsActive == true
                           && x.CreatedDate >= request.FDate.Value
-                          && x.CreatedDate <= request.TDate.Value.AddDays(1).AddTicks(-1)
-                          && (request.Code == "" || x.Code.ToLower().Contains(request.Code));
+                          && x.CreatedDate <= request.TDate.Value.AddDays(1).AddTicks(-1);
             }
 
-                var entity = unitOfWork.Repository<Entities.Models.Roster>().GetPagingWhereAsNoTrackingAsync(predicate, null, null, null, null, null);
+            var entity = unitOfWork.Repository<Entities.Models.Roster>().GetPagingWhereAsNoTrackingAsync(predicate, null, null, null, null, null);
             int Created = entity.Item1.Count(item => item.StatusId == 1 );
             int Processed = entity.Item1.Count(item => item.StatusId == 2);
             int Approved = entity.Item1.Count(item => item.StatusId == 3);

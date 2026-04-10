@@ -2,10 +2,10 @@
   <div class="roster-page">
   <!-- ── Header Controls ─────────────────────────────────────────────── -->
   <div class="header-bar">
-
+      <input type="hidden" formControlName="id" />
     <div class="fg">
       <label>Department</label>
-      <select formControlName="departmentId">
+      <select formControlName="departmentId"  (change)="getEmployeeList()">
         <option [value]="0">Select Department</option>
         <option *ngFor="let department of departmentList" [value]="department.id">{{ department.name }}</option>
       </select>
@@ -34,7 +34,7 @@
     <button class="btn btn-save" (click)="SaveData()" [disabled]="isLoading">
       {{ isLoading ? 'Saving...' : 'Save Roster' }}
     </button>
-
+      <button class="btn" (click)="onCancel()">Cancel</button>
   </div>
   
   <!-- ── Summary Cards ───────────────────────────────────────────────── -->
@@ -82,7 +82,6 @@
 
       <tbody>
         <tr *ngFor="let emp of employeeList; trackBy: trackByEmp">
-
           <td class="emp-cell">
             <div class="emp-n">{{ emp.firstName + ' ' + emp.lastName }}</div>
             <div class="emp-id">{{ emp.hrCode | slice:0:8 }}...</div>
@@ -98,6 +97,8 @@
             *ngFor="let day of days; trackBy: trackByDay"
             [ngClass]="cellClass(emp.id, day)">
             <div [formGroup]="detailGroup(emp.id, day)">
+              <input type="hidden" formControlName="id" />
+              <input type="hidden" formControlName="employeeId" />
               <select
                 formControlName="employeeShiftId"
                 [ngClass]="['shift-sel', shiftClass(emp.id, day)]"

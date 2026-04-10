@@ -65,6 +65,7 @@
     using ERP.Mediator.Mediator.RejectReason.Command;
     using ERP.Mediator.Mediator.RetailOrder.Command;
     using ERP.Mediator.Mediator.RetailOrderReturn.Command;
+    using ERP.Mediator.Mediator.Roster.Command;
     using ERP.Mediator.Mediator.Route.Command;
     using ERP.Mediator.Mediator.Row.Command;
     using ERP.Mediator.Mediator.SaleMaterial.Command;
@@ -595,6 +596,11 @@
             this.CreateMap<Appointment, GetAppointment>().ReverseMap();
             this.CreateMap<SugarType, SaveSugarTypeCommand>().ReverseMap();
             this.CreateMap<SugarType, GetSugarType>().ReverseMap();
+
+            this.CreateMap<Roster, SaveRosterCommand>().ReverseMap();
+            this.CreateMap<RosterDetail, SaveRosterDetailCommand>().ReverseMap();
+            this.CreateMap<Roster, GetRoster>().ReverseMap();
+            this.CreateMap<RosterDetail, GetRosterDetail>().ReverseMap();
         }
     }
 }

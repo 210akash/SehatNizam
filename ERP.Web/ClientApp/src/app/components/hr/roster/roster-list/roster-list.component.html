@@ -3,9 +3,17 @@
 
       <!-- Columns -->
 
-      <ng-container matColumnDef="code">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Code </th>
-        <td mat-cell *matCellDef="let element"> {{ element.code }} </td>
+      <ng-container matColumnDef="month">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Month </th>
+        <td mat-cell *matCellDef="let element"> {{ element.month }} </td>
+      </ng-container>
+           <ng-container matColumnDef="year">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Year </th>
+        <td mat-cell *matCellDef="let element"> {{ element.year }} </td>
+      </ng-container>
+           <ng-container matColumnDef="department">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Department </th>
+        <td mat-cell *matCellDef="let element"> {{ element.department?.name }} </td>
       </ng-container>
       <ng-container matColumnDef="createdDate">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Prepared Date </th>
@@ -20,11 +28,6 @@
       <ng-container matColumnDef="approvedDate">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Approved Date </th>
         <td mat-cell *matCellDef="let element"> {{ element.approvedDate | date : 'shortDate' }} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="product">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Product </th>
-        <td mat-cell *matCellDef="let element"> {{ element.item?.name}} </td>
       </ng-container>
 
       <ng-container matColumnDef="createdBy">
@@ -42,17 +45,12 @@
         <td mat-cell *matCellDef="let element"> {{ element.approvedBy?.firstName + ' ' + element.approvedBy?.lastName }} </td>
       </ng-container>
 
-      <ng-container matColumnDef="status">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
-        <td mat-cell *matCellDef="let element"> {{ element.status?.title }} </td>
-      </ng-container>
-
       <!-- Actions column definition -->
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef style="width: 11%;"> Actions </th>
         <td mat-cell *matCellDef="let element">
           <div class="action_btns">
-          <button mat-mini-fab matTooltip="Edit" color="primary" *ngIf="element.statusId == 1 && (roleList?.includes('store manager') || roleList?.includes('store issuer'))"  (click)="openRosterDialog(element)">
+          <button mat-mini-fab matTooltip="Edit" color="primary" *ngIf="element.statusId == 1 && (roleList?.includes('hr manager') || roleList?.includes('store issuer'))"  (click)="openRosterDialog(element)">
             <mat-icon aria-label="Edit" >edit</mat-icon>
           </button>
 

@@ -1004,6 +1004,34 @@
                 .HasForeignKey(c => c.ConfirmedById)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<Appointment>()
+               .HasOne(c => c.CreatedBy)
+               .WithMany()
+               .HasForeignKey(c => c.CreatedById)
+               .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Appointment>()
+             .HasOne(c => c.ModifiedBy)
+             .WithMany()
+             .HasForeignKey(c => c.ModifiedById)
+             .OnDelete(DeleteBehavior.Restrict);
+
+            #endregion
+
+            #region Roster
+
+            modelBuilder.Entity<RosterDetail>()
+             .HasOne(a => a.Employee)
+             .WithMany(u => u.RosterDetail)
+             .HasForeignKey(a => a.EmployeeId)
+             .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<RosterDetail>()
+            .HasOne(c => c.CreatedBy)
+            .WithMany()
+            .HasForeignKey(c => c.CreatedById)
+            .OnDelete(DeleteBehavior.Restrict);
+
             #endregion
 
             this.OnModelCreatingPartial(modelBuilder);

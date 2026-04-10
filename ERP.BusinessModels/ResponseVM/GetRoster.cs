@@ -1,5 +1,4 @@
-﻿using ERP.Entities.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace ERP.BusinessModels.ResponseVM
@@ -24,7 +23,7 @@ namespace ERP.BusinessModels.ResponseVM
         public long StatusId { get; set; }
         public GetStatus Status { get; set; }
 
-        public virtual List<GetRosterDetail> CostSheetDetail { get; set; }
+        public virtual List<GetRosterDetail> RosterDetail { get; set; }
     }
 
     public class GetRosterDetail

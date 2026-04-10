@@ -13,6 +13,7 @@ import { ViewRosterComponent } from '../view-roster/view-roster.component';
 import { ProcessRosterComponent } from '../process-roster/process-roster.component';
 import { ApproveRosterComponent } from '../approve-roster/approve-roster.component';
 import { ConstantService } from '../../../../Service/constant.service';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-roster-list',
   templateUrl: './roster-list.component.html',
@@ -42,6 +43,7 @@ export class RosterListComponent {
   @ViewChild(MatSort) sort!: MatSort; // ViewChild for MatSort
 
   constructor(
+    private router: Router, 
     private rosterService: RosterService,
     private dialog: MatDialog,
     private formBuilder: FormBuilder,
@@ -67,13 +69,13 @@ export class RosterListComponent {
 
     this.currenttab = currenttab;
     if (currenttab == 0) {
-      this.displayedColumns = ['code', 'createdDate', 'product', 'createdBy', 'status', 'actions'];
+      this.displayedColumns = ['month', 'year','department','createdDate',  'createdBy', 'actions'];
     }
     else if (currenttab == 1) {
-      this.displayedColumns = ['code', 'processedDate', 'product', 'processedBy', 'status', 'actions'];
+      this.displayedColumns = ['month', 'year','department','processedDate', 'processedBy','actions'];
     }
     else if (currenttab == 2) {
-      this.displayedColumns = ['code', 'approvedDate', 'product', 'approvedBy', 'status', 'actions'];
+      this.displayedColumns = ['month', 'year', 'department','approvedDate', 'approvedBy', 'actions'];
     }
 
     return new Promise<void>(async (resolve, reject) => {
@@ -87,11 +89,6 @@ export class RosterListComponent {
       };
 
       rosterFilterForm["PagingData"] = pagingData;
-      let fdate = new Date(rosterFilterForm.fdate);
-      let tdate = new Date(rosterFilterForm.tdate);
-
-      rosterFilterForm['fdate'] = fdate.toLocaleDateString();
-      rosterFilterForm['tdate'] = tdate.toLocaleDateString();
 
       // Call the service method and subscribe with the observer
 
@@ -130,21 +127,11 @@ export class RosterListComponent {
     this.bindData(this.RosterFilterForm, this.currenttab, false); // Re-fetch data on page change
   }
 
-  openRosterDialog(element: any) {
-    const dialogRef = this.dialog.open(AddRosterComponent, {
-      panelClass: 'cstm_width_1200',
-      maxHeight: '90vh',
-      data: {
-        element: element,
-      },
-      disableClose: true
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      this.bindData(this.RosterFilterForm, this.currenttab, false);
-      this.getRosterCount.emit();
-    });
-  }
+    openRosterDialog(element: any) {
+      // Open the appointment form as a full page instead of a dialog.
+      const navigationExtras = element ? { state: { element } } : undefined;
+      this.router.navigate(['/addroster'], navigationExtras);
+    }
 
   viewRosterDialog(element: any): void {
     this.dialog.open(ViewRosterComponent, {

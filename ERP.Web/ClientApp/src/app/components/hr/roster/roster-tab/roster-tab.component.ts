@@ -7,6 +7,8 @@ import { AddRosterComponent } from '../add-roster/add-roster.component';
 import { RosterService } from '../roster.service';
 import { NotificationsService } from '../../../../Service/notification.service';
 import { ConstantService } from '../../../../Service/constant.service';
+import { DepartmentService } from '../../../department/department.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-roster-tab',
@@ -32,39 +34,54 @@ export class RosterTabComponent implements OnInit {
   projectsList: any;
   lObjLeadsFilterForm: any;
   gIsAll: boolean = false;
-
+  departmentList: any;
   CountCreated: number = 0;
   CountProcessed: number = 0;
   CountApproved: number = 0;
   CountIssued: number = 0;
-
-  constructor( private rosterService: RosterService, private notificationsService: NotificationsService, private dialog: MatDialog, private constantService: ConstantService, private formBuilder: FormBuilder) { }
+  years: number[] = [];
+  months = [
+    { value: 1, label: 'January' },
+    { value: 2, label: 'February' },
+    { value: 3, label: 'March' },
+    { value: 4, label: 'April' },
+    { value: 5, label: 'May' },
+    { value: 6, label: 'June' },
+    { value: 7, label: 'July' },
+    { value: 8, label: 'August' },
+    { value: 9, label: 'September' },
+    { value: 10, label: 'October' },
+    { value: 11, label: 'November' },
+    { value: 12, label: 'December' },
+  ];
+  constructor(private router: Router, private departmentService: DepartmentService, private rosterService: RosterService, private notificationsService: NotificationsService, private dialog: MatDialog, private constantService: ConstantService, private formBuilder: FormBuilder) { }
   @ViewChild(RosterListComponent) rosterListComponent!: RosterListComponent;
   async ngOnInit() {
     this.RosterFilterForm = this.formBuilder.group({
-      fdate: [new Date()],
-      tdate: [new Date()],
-      itemId: '',
-      code: [''],
-      statusId: [0]
+      year: [2026],
+      month: [5],
+      departmentId: [26],
+      statusId: [1]
     });
 
     this.currentUser = JSON.parse(localStorage.getItem('currentUser') ?? '{}');
     this.roleList = this.currentUser.role.toLowerCase();
-
-    // this.RosterFilterForm.get('fdate')?.patchValue(this.constantService.formatDate(new Date().setDate(new Date().getDate() - 30)));
-    // this.RosterFilterForm.get('tdate')?.patchValue(this.constantService.formatDate(new Date()));
-
-    const currentYear = new Date().getFullYear();
-    const startDate = new Date(currentYear, 0, 1);
-    const endDate = new Date(currentYear, 11, 31);
-    this.RosterFilterForm.get('fdate')?.patchValue(this.constantService.formatDate(startDate));
-    this.RosterFilterForm.get('tdate')?.patchValue(this.constantService.formatDate(endDate));
-    this.fillGridCount(1);
+    this.getDepartmentList();
+    this.buildYears();
+    this.fillGridCount(0);
   }
 
   tabs: any = [];
   selected: any = new FormControl(1);
+
+  buildYears(): void {
+    const current = new Date().getFullYear();
+    for (let y = current; y <= current + 1; y++) {
+      this.years.push(y);
+    }
+  }
+
+
 
   addTab() {
     this.generateRoleWiseTab();
@@ -121,16 +138,11 @@ export class RosterTabComponent implements OnInit {
 
   resetForm() {
     this.RosterFilterForm.reset({
-      code: "",
-      fdate: new Date(),
-      tdate: new Date(),
+      // code: "",
+      // fdate: new Date(),
+      // tdate: new Date(),
     });
 
-    const currentYear = new Date().getFullYear();
-    const startDate = new Date(currentYear, 0, 1);
-    const endDate = new Date(currentYear, 11, 31);
-    this.RosterFilterForm.get('fdate')?.patchValue(this.constantService.formatDate(startDate));
-    this.RosterFilterForm.get('tdate')?.patchValue(this.constantService.formatDate(endDate));
     this.filterData();
   }
 
@@ -144,18 +156,16 @@ export class RosterTabComponent implements OnInit {
     this.changeTabs(0); // Change to the index of the tab you want to select
   }
 
-  async openRosterDialog(element: any) {
-    const dialogRef = this.dialog.open(AddRosterComponent, {
-      data: { element: element },
-      panelClass: 'cstm_width_1200',
-      maxHeight: '90vh',
-      autoFocus: true,
-      disableClose: true
-    });
+  openRosterDialog(element: any) {
+    // Open the appointment form as a full page instead of a dialog.
+    const navigationExtras = element ? { state: { element } } : undefined;
+    this.router.navigate(['/addroster'], navigationExtras);
+  }
 
-    dialogRef.afterClosed().subscribe(result => {
-      this.changeTabs(0); // Change to the index of the tab you want to select
-      console.log(`Dialog result: ${result}`);
+  getDepartmentList(): void {
+    let _departmentsForm: any = {};
+    this.departmentService.getAllDepartments(_departmentsForm).subscribe(data => {
+      this.departmentList = data.item1;
     });
   }
 }

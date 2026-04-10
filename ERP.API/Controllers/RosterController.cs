@@ -129,7 +129,7 @@ namespace ERP.API.Controllers
 
         [HttpPost]
         [Route("GetRosterCount")]
-        public async Task<ActionResult<Tuple<long, long, long, long>>> GetRosterCount(GetRosterCountQuery getLeadsCountByUserProjectQuery)
+        public async Task<ActionResult<Tuple<long, long, long>>> GetRosterCount(GetRosterCountQuery getLeadsCountByUserProjectQuery)
         {
             try
             {

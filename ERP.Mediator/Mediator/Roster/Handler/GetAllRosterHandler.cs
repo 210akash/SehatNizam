@@ -47,13 +47,13 @@ namespace ERP.Mediator.Mediator.Roster.Handler
             };
 
             // Check if the current user's RoleId array contains the AccountOwnerRoleId
-            if (roles.Contains("Hr Manager"))
+            if (roles.Contains("HR Manager"))
             {
-                predicate = x => x.IsActive == true && x.Department.CompanyId == this.sessionProvider.Session.CompanyId
+                predicate = x => x.IsActive == true 
                       && x.StatusId == request.StatusId
-                      && x.Month >= request.Month
-                      && x.Year <= request.Year
-                      && (request.DepartmentId == null || x.DepartmentId == request.DepartmentId);
+                      && (request.DepartmentId == 0 || x.DepartmentId == request.DepartmentId)
+                      && x.Year == request.Year
+                      && x.Month == request.Month;
             }
             else
             {

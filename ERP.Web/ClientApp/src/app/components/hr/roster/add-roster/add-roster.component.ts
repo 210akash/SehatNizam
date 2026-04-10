@@ -7,6 +7,7 @@ import { ConstantService } from '../../../../Service/constant.service';
 import { DepartmentService } from '../../../department/department.service';
 import { EmployeeService } from '../../employee/employee.service';
 import { EmployeeShiftService } from '../../employee-shift/employee-shift.service';
+import { Router } from '@angular/router';
 
 export interface Employee {
   id: string;          // Guid as string
@@ -56,6 +57,7 @@ export class AddRosterComponent {
   offCount = 0;
 
   constructor(
+    private router : Router,
     private notificationsService: NotificationsService,
     private formBuilder: FormBuilder,
     private rosterService: RosterService,
@@ -77,11 +79,15 @@ export class AddRosterComponent {
     });
     this.getDepartmentList();
     this.buildYears();
-    this.getEmployeeList();
     this.getEmployeeShiftList();
+      this.getEmployeeList();
+
     // render days header on first load
     this.buildDays();
-    this.LoadData(this.data?.element);
+    const navStateElement =
+      this.router.getCurrentNavigation()?.extras?.state?.['element'];
+    const element = this.data?.element ?? navStateElement ?? history.state?.element;
+    this.LoadData(element);
   }
 
   buildYears(): void {
@@ -95,8 +101,6 @@ export class AddRosterComponent {
     const totalDays = new Date(this.rosterForm.get('year')?.value, this.rosterForm.get('month')?.value, 0).getDate();
     this.days = Array.from({ length: totalDays }, (_, i) => i + 1);
   }
-
-
 
   get rosterDetail(): FormArray {
     return this.rosterForm.get('rosterDetail') as FormArray;
@@ -134,7 +138,12 @@ export class AddRosterComponent {
             id: [detail.id],
             rosterId: [detail.rosterId],
             employeeId: [detail.employeeId, Validators.required],
-            employeeShiftId: [detail.employeeShiftId ?? detail.shiftId ?? detail.shift ?? 0, Validators.required],
+         employeeShiftId: [
+    detail.isOffDay === true
+      ? 0
+      : (detail.employeeShiftId ?? detail.shiftId ?? detail.shift ?? 0),
+    Validators.required
+  ],
             rosterDate: [detail.rosterDate, Validators.required],
             isOffDay: [detail.isOffDay ?? false, []]
           });
@@ -144,6 +153,7 @@ export class AddRosterComponent {
         });
         this.updateSummary();
       }
+      console.log(detailsArray);
     }
     else {
       this.detailIndexMap.clear();
@@ -204,6 +214,7 @@ export class AddRosterComponent {
       .subscribe((data: any) => {
         this.employeeList = data;
       });
+      this.onMonthYearChange();
   }
 
   getEmployeeShiftList(): void {
@@ -383,6 +394,17 @@ export class AddRosterComponent {
     if (!value) return;
     this.days.forEach(day => this.onShiftChange(employeeId, day, value));
   }
+
+  onCancel(): void {
+    // When opened as a page, navigate back to the appointment list.
+    const canGoBack = window.history.length > 1;
+    if (canGoBack) {
+      window.history.back();
+    } else {
+      this.router.navigate(['/roster']);
+    }
+  }
+
 
   // ── TrackBy for performance ───────────────────────────────────────────────
 

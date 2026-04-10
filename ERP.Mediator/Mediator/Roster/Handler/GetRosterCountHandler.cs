@@ -13,7 +13,7 @@ using MediatR;
 
 namespace ERP.Mediator.Mediator.Roster.Handler
 {
-    public class GetRosterCountHandler : IRequestHandler<GetRosterCountQuery, Tuple<long, long, long, long>>
+    public class GetRosterCountHandler : IRequestHandler<GetRosterCountQuery, Tuple<long, long, long>>
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly SessionProvider sessionProvider;
@@ -23,16 +23,18 @@ namespace ERP.Mediator.Mediator.Roster.Handler
             this.sessionProvider = sessionProvider;
         }
 
-        public async Task<Tuple<long, long, long, long>> Handle(GetRosterCountQuery request, CancellationToken cancellationToken)
+        public async Task<Tuple<long, long, long>> Handle(GetRosterCountQuery request, CancellationToken cancellationToken)
         {
             string[] roles = this.sessionProvider.Session.Roles;
             Expression<Func<Entities.Models.Roster, bool>> predicate;
             // Check if the current user's RoleId array contains the AccountOwnerRoleId
-            if (roles.Contains("Purchase Manager"))
+            if (roles.Contains("Hr Manager"))
             {
-                predicate = x => x.IsActive == true 
-                          && x.CreatedDate >= request.FDate.Value
-                          && x.CreatedDate <= request.TDate.Value.AddDays(1).AddTicks(-1);
+                predicate = x => x.IsActive == true && x.Department.CompanyId == this.sessionProvider.Session.CompanyId
+                   && x.StatusId == request.StatusId
+                   && (request.DepartmentId == 0 || x.DepartmentId == request.DepartmentId)
+                   && x.Year == request.Year
+                   && x.Month == request.Month;
             }
             //else if (roles.Contains("Purchaser"))
             //{
@@ -45,17 +47,18 @@ namespace ERP.Mediator.Mediator.Roster.Handler
             //}
             else
             {
-                predicate = x => x.IsActive == true
-                          && x.CreatedDate >= request.FDate.Value
-                          && x.CreatedDate <= request.TDate.Value.AddDays(1).AddTicks(-1);
+                predicate = x => x.IsActive == true && x.Department.CompanyId == this.sessionProvider.Session.CompanyId
+                   && x.StatusId == request.StatusId
+                   && (request.DepartmentId == 0 || x.DepartmentId == request.DepartmentId)
+                   && x.Year == request.Year
+                   && x.Month == request.Month;
             }
 
             var entity = unitOfWork.Repository<Entities.Models.Roster>().GetPagingWhereAsNoTrackingAsync(predicate, null, null, null, null, null);
             int Created = entity.Item1.Count(item => item.StatusId == 1 );
             int Processed = entity.Item1.Count(item => item.StatusId == 2);
             int Approved = entity.Item1.Count(item => item.StatusId == 3);
-            int Issued = entity.Item1.Count(item => item.StatusId == 20);
-            return new Tuple<long, long, long, long>(Created, Processed, Approved, Issued);
+            return new Tuple<long, long, long>(Created, Processed, Approved);
         }
     }
 }

@@ -3,11 +3,11 @@ using MediatR;
 
 namespace ERP.Mediator.Mediator.Roster.Query
 {
-    public class GetRosterCountQuery : IRequest<Tuple<long, long, long, long>>
+    public class GetRosterCountQuery : IRequest<Tuple<long, long, long>>
     {
-        public string Code { get; set; }
-        public long? ItemId { get; set; }
-        public DateTime? FDate { get; set; }
-        public DateTime? TDate { get; set; }
+        public int Year { get; set; }
+        public int Month { get; set; }
+        public long? DepartmentId { get; set; }
+        public long StatusId { get; set; }
     }
 }

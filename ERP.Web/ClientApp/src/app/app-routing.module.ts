@@ -117,6 +117,8 @@ import { DoctorAppointmentListComponent } from './components/opd/appointment/doc
 import { TriageListComponent } from './components/opd/triage/triage-list/triage-list.component';
 import { AddRosterComponent } from './components/hr/roster/add-roster/add-roster.component';
 import { RosterTabComponent } from './components/hr/roster/roster-tab/roster-tab.component';
+import { RosterDepartmentListComponent } from './components/hr/roster-department/roster-list-department/roster-department-list.component';
+import { AddRosterDepartmentComponent } from './components/hr/roster-department/add-roster-department/add-roster-department.component';
 
 const routes: Routes = [
   {
@@ -235,6 +237,8 @@ const routes: Routes = [
       { path: 'doctor', component: DoctorListComponent, canActivate: [AuthGuard] },
       { path: 'doctorappointment', component: DoctorAppointmentListComponent, canActivate: [AuthGuard] },
       { path: 'triage', component: TriageListComponent, canActivate: [AuthGuard] },
+      { path: 'adddepartmentroster', component: AddRosterDepartmentComponent, canActivate: [AuthGuard] },
+      { path: 'rosterdepartment', component: RosterDepartmentListComponent, canActivate: [AuthGuard] },
       { path: 'addroster', component: AddRosterComponent, canActivate: [AuthGuard] },
       { path: 'roster', component: RosterTabComponent, canActivate: [AuthGuard] },
     ]

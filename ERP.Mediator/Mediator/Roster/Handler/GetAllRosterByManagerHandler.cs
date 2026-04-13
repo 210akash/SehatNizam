@@ -13,20 +13,20 @@ using MediatR;
 
 namespace ERP.Mediator.Mediator.Roster.Handler
 {
-    public class GetAllRosterHandler : IRequestHandler<GetAllRosterQuery, Tuple<IEnumerable<GetRoster>, long>>
+    public class GetAllRosterByManagerHandler : IRequestHandler<GetAllRosterByManagerQuery, Tuple<IEnumerable<GetRoster>, long>>
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;
         private readonly SessionProvider sessionProvider;
 
-        public GetAllRosterHandler(IUnitOfWork unitOfWork, IMapper mapper, SessionProvider sessionProvider)
+        public GetAllRosterByManagerHandler(IUnitOfWork unitOfWork, IMapper mapper, SessionProvider sessionProvider)
         {
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
             this.sessionProvider = sessionProvider;
         }
 
-        public async Task<Tuple<IEnumerable<GetRoster>, long>> Handle(GetAllRosterQuery request, CancellationToken cancellationToken)
+        public async Task<Tuple<IEnumerable<GetRoster>, long>> Handle(GetAllRosterByManagerQuery request, CancellationToken cancellationToken)
         {
             string[] roles = this.sessionProvider.Session.Roles;
             Expression<Func<Entities.Models.Roster, bool>> predicate;
@@ -46,22 +46,11 @@ namespace ERP.Mediator.Mediator.Roster.Handler
                 "RosterDetail.EmployeeShift"
             };
 
-            if (roles.Any(r => r == "HR Manager"))
-            {
-                predicate = x => x.IsActive == true
-                   && x.StatusId == request.StatusId
-                   && (request.DepartmentId == 0 || x.DepartmentId == request.DepartmentId)
-                   && x.Year == request.Year
-                   && x.Month == request.Month;
-            }
-            else
-            {
-                predicate = x => x.IsActive == true && x.Department.CompanyId == this.sessionProvider.Session.CompanyId
-                      && x.StatusId == request.StatusId
-                      && x.Month >= request.Month
-                      && x.Year <= request.Year
-                      && x.DepartmentId == this.sessionProvider.Session.DepartmentId;
-            }
+            predicate = x => x.IsActive == true && x.Department.CompanyId == this.sessionProvider.Session.CompanyId
+                  && (request.StatusId == 0 || x.StatusId == request.StatusId)
+                  && x.Year == request.Year
+                  && x.Month == request.Month
+                  && x.DepartmentId == this.sessionProvider.Session.DepartmentId;
 
             Expression<Func<Entities.Models.Roster, object>> OrderBy = null;
             Expression<Func<Entities.Models.Roster, object>> OrderByDesc = x => x.Id;

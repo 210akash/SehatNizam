@@ -5,30 +5,28 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort'; // Import MatSort and Sort
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { SafeHtml } from '@angular/platform-browser';
-import { PrintRosterComponent } from '../print-roster/print-roster.component';
-import { RosterService } from '../roster.service';
-import { AddRosterComponent } from '../add-roster/add-roster.component';
-import { DeleteRosterComponent } from '../delete-roster/delete-roster.component';
-import { ViewRosterComponent } from '../view-roster/view-roster.component';
-import { ProcessRosterComponent } from '../process-roster/process-roster.component';
-import { ApproveRosterComponent } from '../approve-roster/approve-roster.component';
 import { ConstantService } from '../../../../Service/constant.service';
 import { Router } from '@angular/router';
+import { RosterService } from '../../roster/roster.service';
+import { ViewRosterComponent } from '../../roster/view-roster/view-roster.component';
+import { DeleteRosterComponent } from '../../roster/delete-roster/delete-roster.component';
+import { PrintRosterComponent } from '../../roster/print-roster/print-roster.component';
+import { ProcessRosterComponent } from '../../roster/process-roster/process-roster.component';
 @Component({
-  selector: 'app-roster-list',
-  templateUrl: './roster-list.component.html',
-  styleUrls: ['./roster-list.component.css'],
+  selector: 'app-roster-department-list',
+  templateUrl: './roster-department-list.component.html',
+  styleUrls: ['./roster-department-list.component.css'],
   standalone: false
 })
 
-export class RosterListComponent {
+export class RosterDepartmentListComponent {
   [x: string]: any;
   @Output() getRosterCount: EventEmitter<void> = new EventEmitter<void>();
   RosterFilterForm!: FormGroup;
   isLoading = false;
   currentPage = 0;
   pageSizeOptions: number[] = [5, 10, 25, 100];
-  displayedColumns: string[] = [];
+  displayedColumns = ['month', 'year','department','createdDate',  'createdBy', 'actions'];
   dataSource: any;
   take = 50;
   pageSize = 0;
@@ -39,6 +37,7 @@ export class RosterListComponent {
   History: any;
   roleList: string | undefined;
   dialogRef: any;
+   years: number[] = [];
   months = [
     { value: 1, label: 'January' },
     { value: 2, label: 'February' },
@@ -67,46 +66,46 @@ export class RosterListComponent {
   async ngOnInit(): Promise<void> {
     this.pageSize = this.constantService.defaultItemPerPage;
     this.RosterFilterForm = this.formBuilder.group({
-      code: [''],
-      fdate: [],
-      tdate: []
+       year: [2026],
+      month: [5],
+      statusId: [1]
     });
     this.currentUser = JSON.parse(localStorage.getItem('currentUser') ?? '{}');
     this.roleList = this.currentUser.role.toLowerCase().split(',').map((role: string) => role.trim().toLowerCase());
+    this.buildYears();
+    this.bindData();
   }
 
-  async bindData(rosterFilterForm: any, currenttab: number, isFromParent: boolean): Promise<void> {
 
-    if (isFromParent == true) {
-      this.currentPage = 0;
+  buildYears(): void {
+    const current = new Date().getFullYear();
+    for (let y = current; y <= current + 1; y++) {
+      this.years.push(y);
     }
+  }
 
-    this.currenttab = currenttab;
-    if (currenttab == 0) {
-      this.displayedColumns = ['month', 'year','department','createdDate',  'createdBy', 'actions'];
-    }
-    else if (currenttab == 1) {
-      this.displayedColumns = ['month', 'year','department','processedDate', 'processedBy','actions'];
-    }
-    else if (currenttab == 2) {
-      this.displayedColumns = ['month', 'year', 'department','approvedDate', 'approvedBy', 'actions'];
-    }
+
+  async bindData(): Promise<void> {
 
     return new Promise<void>(async (resolve, reject) => {
-      // Set loading indicator
       this.isLoading = true;
-      this.RosterFilterForm = rosterFilterForm;
 
-      const pagingData = {
-        currentPage: this.currentPage,
-        take: this.pageSize
-      };
+    // Prepare paging data
+    const pagingData = {
+      currentPage: this.currentPage,
+      take: this.take
+    };
 
-      rosterFilterForm["PagingData"] = pagingData;
+    // Clone the form value and add paging data
+    const _RosterFilterForm = {
+      ...this.RosterFilterForm.value,
+      PagingData: pagingData
+    };
+
 
       // Call the service method and subscribe with the observer
 
-      (await this.rosterService.getAllRosters(rosterFilterForm)).subscribe({
+      (await this.rosterService.getAllRostersByManager(_RosterFilterForm)).subscribe({
         next: (data: any) => {
           // Update data source for MatTable
           this.dataSource = new MatTableDataSource(data.item1);
@@ -135,16 +134,26 @@ export class RosterListComponent {
     });
   }
 
+  resetForm() {
+    this.RosterFilterForm.reset({
+      // code: "",
+      // fdate: new Date(),
+      // tdate: new Date(),
+    });
+
+    this.filterData();
+  }
+
   pageChanged(event: PageEvent): void {
     this.pageSize = event.pageSize;
     this.currentPage = event.pageIndex;
-    this.bindData(this.RosterFilterForm, this.currenttab, false); // Re-fetch data on page change
+    this.bindData(); // Re-fetch data on page change
   }
 
     openRosterDialog(element: any) {
       // Open the appointment form as a full page instead of a dialog.
       const navigationExtras = element ? { state: { element } } : undefined;
-      this.router.navigate(['/addroster'], navigationExtras);
+      this.router.navigate(['/adddepartmentroster'], navigationExtras);
     }
 
   viewRosterDialog(element: any): void {
@@ -167,7 +176,7 @@ export class RosterListComponent {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      this.bindData(this.RosterFilterForm, this.currenttab, false);
+      this.bindData();
       this.getRosterCount.emit();
     });
   }
@@ -183,23 +192,7 @@ export class RosterListComponent {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      this.bindData(this.RosterFilterForm, this.currenttab, false);
-      this.getRosterCount.emit();
-    });
-  }
-
-  approveRosterDialog(element: any) {
-    const dialogRef = this.dialog.open(ApproveRosterComponent, {
-      panelClass: 'cstm_width_1200',
-      maxHeight: '90vh',
-      data: {
-        element: element,
-      },
-      disableClose: true
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      this.bindData(this.RosterFilterForm, this.currenttab, false);
+      this.bindData();
       this.getRosterCount.emit();
     });
   }
@@ -216,11 +209,12 @@ export class RosterListComponent {
   }
 
   filterData() {
-    this.bindData(this.RosterFilterForm, this.currenttab, false);
+    this.bindData();
   }
 
 getMonthLabel(value: number): string {
   return this.months.find(m => m.value === value)?.label || '';
 }
+
 
 }

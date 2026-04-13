@@ -37,10 +37,57 @@ namespace ERP.API.Controllers
                 return this.Result(ResponseStatus.Error, null, ex.Message);
             }
         }
-        
+
+        [HttpPost]
+        [Route("GetAllRostersByManager")]
+        public async Task<ActionResult<Tuple<IEnumerable<GetRoster>, long>>> GetAll(GetAllRosterByManagerQuery getAllRosterByManagerQuery)
+        {
+            try
+            {
+                return await this.mediator.Send(getAllRosterByManagerQuery);
+            }
+            catch (Exception ex)
+            {
+                return this.Result(ResponseStatus.Error, null, ex.Message);
+            }
+        }
+
         [HttpPost]
         [Route("SaveRoster")]
         public async Task<IActionResult> Save(SaveRosterCommand command)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return this.Result(ResponseStatus.Error, null, this.GetModelValidationErrors(this.ModelState));
+                }
+                else
+                {
+                    var result = await this.mediator.Send(command);
+                    if (result == 200)
+                    {
+                        return this.Result(ResponseStatus.OK, "Roster Saved!", null);
+                    }
+                    else if (result == 409)
+                    {
+                        return this.Result(ResponseStatus.Conflict, "Name Already Exists!", null);
+                    }
+                    else
+                    {
+                        return this.Result(ResponseStatus.Error, "There is some error!", null);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return this.Result(ResponseStatus.Error, null, ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [Route("SaveRosterByManager")]
+        public async Task<IActionResult> Save(SaveRosterByManagerCommand command)
         {
             try
             {

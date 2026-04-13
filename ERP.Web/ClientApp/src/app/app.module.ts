@@ -812,6 +812,8 @@ import { ApproveRosterComponent } from './components/hr/roster/approve-roster/ap
 import { RosterService } from './components/hr/roster/roster.service';
 import { RosterEndPoints } from './components/hr/roster/roster.endpoints';
 import { PrintRosterComponent } from './components/hr/roster/print-roster/print-roster.component';
+import { AddRosterDepartmentComponent } from './components/hr/roster-department/add-roster-department/add-roster-department.component';
+import { RosterDepartmentListComponent } from './components/hr/roster-department/roster-list-department/roster-department-list.component';
 
 const matFormFieldDefaults: MatFormFieldDefaultOptions = {
     appearance: 'outline'
@@ -1386,7 +1388,9 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         ViewRosterComponent,
         ProcessRosterComponent,
         ApproveRosterComponent,
-        PrintRosterComponent
+        PrintRosterComponent,
+        AddRosterDepartmentComponent,
+        RosterDepartmentListComponent
     ],
     bootstrap: [AppComponent], imports: [
         InputMaskModule,

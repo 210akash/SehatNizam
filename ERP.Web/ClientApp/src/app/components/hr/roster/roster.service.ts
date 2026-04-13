@@ -24,8 +24,18 @@ export class RosterService extends BaseService<any> {
             .pipe(map((data: any) => data));
     }
 
+    async getAllRostersByManager(categorysFilterForm: any) {
+        return this.post(categorysFilterForm, this.endPointControllerName + this.rosterEndPoints.getAllRostersByManager)
+            .pipe(map((data: any) => data));
+    }
+
     saveRoster(saveRosterCommand: any) {
         return this.post(saveRosterCommand, this.endPointControllerName + this.rosterEndPoints.saveRoster)
+            .pipe(map((data: any) => data));
+    }
+
+    saveRosterByManager(saveRosterCommand: any) {
+        return this.post(saveRosterCommand, this.endPointControllerName + this.rosterEndPoints.saveRosterByManager)
             .pipe(map((data: any) => data));
     }
 
@@ -43,9 +53,9 @@ export class RosterService extends BaseService<any> {
         return this.get(this.endPointControllerName + this.rosterEndPoints.getRosterCode)
             .pipe(map((data: any) => data));
     }
-    
+
     processRoster(id: number) {
-        return this.get('?id='+id, this.endPointControllerName + this.rosterEndPoints.processRoster)
+        return this.get('?id=' + id, this.endPointControllerName + this.rosterEndPoints.processRoster)
             .pipe();
     }
 
@@ -55,12 +65,12 @@ export class RosterService extends BaseService<any> {
     }
 
     approveRoster(id: number) {
-        return this.get('?id='+id, this.endPointControllerName + this.rosterEndPoints.approveRoster)
+        return this.get('?id=' + id, this.endPointControllerName + this.rosterEndPoints.approveRoster)
             .pipe();
     }
 
-      rejectRoster(id: number) {
-        return this.get('?id='+id, this.endPointControllerName + this.rosterEndPoints.rejectRoster)
+    rejectRoster(id: number) {
+        return this.get('?id=' + id, this.endPointControllerName + this.rosterEndPoints.rejectRoster)
             .pipe();
     }
 }

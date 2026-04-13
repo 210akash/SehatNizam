@@ -1,0 +1,157 @@
+<div class="header-container">
+  <h2>Roster</h2>
+  <button mat-mini-fab aria-label="Add" color="success" *ngIf="!roleList?.includes('audit')"
+    (click)="openRosterDialog(null)" matTooltip="Add Roster">
+    <mat-icon>add</mat-icon>
+  </button>
+</div>
+<div class="body-container">
+  <form [formGroup]="RosterFilterForm">
+    <div class="row">
+      <div class="col-lg-2 col-md-3">
+        <div class="mt-2">
+          <mat-form-field class="form-field">
+            <mat-label>Year</mat-label>
+            <mat-select formControlName="year" (selectionChange)="filterData()">
+              <mat-option *ngFor="let y of years" [value]="y">
+                {{ y }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="col-lg-2 col-md-3">
+        <div class="mt-2">
+          <mat-form-field class="form-field">
+            <mat-label>Month</mat-label>
+            <mat-select formControlName="month" (selectionChange)="filterData()">
+              <mat-option *ngFor="let m of months" [value]="m.value">
+                {{ m.label }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="col-lg-2 col-md-2">
+        <div class="mt-2">
+          <mat-form-field>
+            <mat-label>Leave Status</mat-label>
+            <mat-select formControlName="statusId" (selectionChange)="bindData()">
+              <mat-option [value]=0>-- ALL --</mat-option>
+              <mat-option [value]=1> Created </mat-option>
+              <mat-option [value]=2> Inprocess </mat-option>
+              <mat-option [value]=3> Approved </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="col-lg-2 col-md-3">
+        <div class="mt-2">
+          <button mat-mini-fab color="primary" matTooltip="Reset Filters" (click)="resetForm()">
+            <mat-icon>refresh</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+  <mat-divider></mat-divider>
+</div>
+<div class="mat-elevation-z8 table-responsive">
+  <table mat-table [dataSource]="dataSource" matSort>
+
+    <!-- Columns -->
+
+    <ng-container matColumnDef="month">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Month </th>
+      <td mat-cell *matCellDef="let element">  {{ getMonthLabel(element.month) }} </td>
+    </ng-container>
+    <ng-container matColumnDef="year">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Year </th>
+      <td mat-cell *matCellDef="let element"> {{ element.year }} </td>
+    </ng-container>
+    <ng-container matColumnDef="department">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Department </th>
+      <td mat-cell *matCellDef="let element"> {{ element.department?.name }} </td>
+    </ng-container>
+    <ng-container matColumnDef="createdDate">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Prepared Date </th>
+      <td mat-cell *matCellDef="let element"> {{ element.createdDate | date : 'shortDate' }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="processedDate">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Processed Date </th>
+      <td mat-cell *matCellDef="let element"> {{ element.processedDate | date : 'shortDate' }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="approvedDate">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Approved Date </th>
+      <td mat-cell *matCellDef="let element"> {{ element.approvedDate | date : 'shortDate' }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="createdBy">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Prepared By</th>
+      <td mat-cell *matCellDef="let element"> {{ element.createdBy?.firstName + ' ' + element.createdBy?.lastName }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="processedBy">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Processed By</th>
+      <td mat-cell *matCellDef="let element"> {{ element.processedBy?.firstName + ' ' + element.processedBy?.lastName }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="approvedBy">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Approved By</th>
+      <td mat-cell *matCellDef="let element"> {{ element.approvedBy?.firstName + ' ' + element.approvedBy?.lastName }}
+      </td>
+    </ng-container>
+
+    <!-- Actions column definition -->
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef style="width: 11%;"> Actions </th>
+      <td mat-cell *matCellDef="let element">
+        <div class="action_btns">
+          <button mat-mini-fab matTooltip="Edit" color="primary"
+            *ngIf="element.statusId == 1 && (roleList?.includes('hr manager') || roleList?.includes('store issuer'))"
+            (click)="openRosterDialog(element)">
+            <mat-icon aria-label="Edit">edit</mat-icon>
+          </button>
+
+          <button mat-mini-fab matTooltip="View" color="dark" (click)="viewRosterDialog(element)">
+            <mat-icon aria-label="View">visibility</mat-icon>
+          </button>
+
+          <button mat-mini-fab matTooltip="Delete" color="warn"
+            *ngIf="element.statusId == 1 && (roleList?.includes('store manager') || roleList?.includes('store issuer'))"
+            (click)="deleteRosterDialog(element)">
+            <mat-icon aria-label="Delete">delete</mat-icon>
+          </button>
+
+          <button mat-mini-fab matTooltip="Process To Manager"
+            *ngIf="element.statusId == 1 && (roleList?.includes('store manager') || roleList?.includes('store issuer'))"
+            color="success" (click)="processRosterDialog(element)">
+            <mat-icon aria-label="Delete">send</mat-icon>
+          </button>
+
+          <button mat-mini-fab matTooltip="Print"
+            *ngIf="element.statusId == 3 && (roleList?.includes('store manager') || roleList?.includes('store issuer') || roleList?.includes('audit'))"
+            color="success" (click)="printRosterDialog(element)">
+            <mat-icon aria-label="Delete">print</mat-icon>
+          </button>
+
+        </div>
+      </td>
+    </ng-container>
+
+    <!-- Table rows -->
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+  <mat-divider></mat-divider>
+  <!-- Paginator -->
+  <mat-paginator #paginator [length]="totalRows" [pageIndex]="currentPage" [pageSize]="pageSize"
+    [pageSizeOptions]="pageSizeOptions" (page)="pageChanged($event)" aria-label="Select page">
+  </mat-paginator>
+</div>

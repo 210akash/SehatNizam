@@ -601,6 +601,9 @@
             this.CreateMap<RosterDetail, SaveRosterDetailCommand>().ReverseMap();
             this.CreateMap<Roster, GetRoster>().ReverseMap();
             this.CreateMap<RosterDetail, GetRosterDetail>().ReverseMap();
+
+            this.CreateMap<Roster, SaveRosterByManagerCommand>().ReverseMap();
+
         }
     }
 }

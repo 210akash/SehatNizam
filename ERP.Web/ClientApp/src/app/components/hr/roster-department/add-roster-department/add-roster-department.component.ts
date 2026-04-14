@@ -57,7 +57,7 @@ export class AddRosterDepartmentComponent {
   offCount = 0;
 
   constructor(
-    private router : Router,
+    private router: Router,
     private notificationsService: NotificationsService,
     private formBuilder: FormBuilder,
     private rosterService: RosterService,
@@ -79,7 +79,7 @@ export class AddRosterDepartmentComponent {
     this.getDepartmentList();
     this.buildYears();
     this.getEmployeeShiftList();
-      this.getEmployeeList();
+    this.getEmployeeList();
 
     // render days header on first load
     this.buildDays();
@@ -137,18 +137,27 @@ export class AddRosterDepartmentComponent {
             id: [detail.id],
             rosterId: [detail.rosterId],
             employeeId: [detail.employeeId, Validators.required],
-         employeeShiftId: [
-    detail.isOffDay === true
-      ? 0
-      : (detail.employeeShiftId ?? detail.shiftId ?? detail.shift ?? 0),
-    Validators.required
-  ],
+            employeeShiftId: [
+              detail.isOffDay === true
+                ? 0
+                : (detail.employeeShiftId ?? detail.shiftId ?? detail.shift ?? 0),
+              Validators.required
+            ],
             rosterDate: [detail.rosterDate, Validators.required],
             isOffDay: [detail.isOffDay ?? false, []]
           });
           detailsArray.push(detailGroup);
           const day = new Date(detail.rosterDate).getDate();
           this.detailIndexMap.set(this.cellKey(detail.employeeId, day), idx);
+          // ✅ 🔥 IMPORTANT: disable dropdown if OFF DAY
+          const shiftCtrl = detailGroup.get('employeeShiftId');
+
+          if (detail.isOffDay) {
+            shiftCtrl?.disable({ emitEvent: false });
+          } else {
+            shiftCtrl?.enable({ emitEvent: false });
+          }
+
         });
         this.updateSummary();
       }
@@ -199,11 +208,11 @@ export class AddRosterDepartmentComponent {
   }
 
   getEmployeeList() {
-    this.employeeService.getEmployeeByDepartment(0)
+    this.employeeService.getEmployeeByDepartmentManager()
       .subscribe((data: any) => {
         this.employeeList = data;
       });
-      this.onMonthYearChange();
+    this.onMonthYearChange();
   }
 
   getEmployeeShiftList(): void {
@@ -215,12 +224,12 @@ export class AddRosterDepartmentComponent {
 
   onMonthYearChange(): void {
     this.detailIndexMap.clear();
-     this.buildDays();
+    this.buildDays();
     this.rosterDetail.clear();
     this.updateSummary();
   }
 
-   cellClass(employeeId: string, day: number): string {
+  cellClass(employeeId: string, day: number): string {
     const shift = this.getShift(employeeId, day);
     const weekend = this.isWeekend(day) ? 'weekend-cell' : '';
     const off = shift === '0' ? 'is-off' : '';
@@ -266,7 +275,7 @@ export class AddRosterDepartmentComponent {
         return;
       }
       const shift = this.shiftCodeFromId(fg.get('employeeShiftId')?.value);
-      if      (shift === 'M') this.morningCount++;
+      if (shift === 'M') this.morningCount++;
       else if (shift === 'E') this.eveningCount++;
       else if (shift === 'N') this.nightCount++;
     });
@@ -306,10 +315,13 @@ export class AddRosterDepartmentComponent {
     return this.ensureDetail(employeeId, day);
   }
 
-  shiftLabel(shift: any): string {
-    const name = (shift?.name ?? shift?.shiftName ?? shift?.code ?? '').toString().trim();
-    return name ? name.charAt(0).toUpperCase() : '?';
-  }
+ shiftLabel(shift: any): string {
+  const raw = shift?.name ?? shift?.shiftName ?? shift?.code;
+  if (!raw) return '?';
+  const name = String(raw).trim();
+  if (name.length === 0) return '?';
+  return name[0].toUpperCase();
+}
 
   private shiftCodeFromId(id: any): ShiftCode {
     if (!id || !this.employeeShiftList) return '';
@@ -323,20 +335,20 @@ export class AddRosterDepartmentComponent {
     return emp?.employeeShiftId ?? 0;
   }
 
-// ── Cell interaction ──────────────────────────────────────────────────────
- 
-  onShiftChange(employeeId: string, day: number, value: ShiftCode): void {
-    const ctrl = this.ensureDetail(employeeId, day);
-    const isOff = value === '0';
-    const targetShiftId = isOff ? this.getEmployeeDefaultShiftId(employeeId) : value;
-    ctrl.patchValue({
-      employeeId,
-      rosterDate: this.formatRosterDate(day),
-      employeeShiftId: value === '0' ? targetShiftId : value,
-      isOffDay: isOff
-    });
-    this.updateSummary();
-  }
+  // ── Cell interaction ──────────────────────────────────────────────────────
+
+onShiftChange(employeeId: string, day: number, value: any): void {
+  const ctrl = this.ensureDetail(employeeId, day);
+
+  ctrl.patchValue({
+    employeeId,
+    rosterDate: this.formatRosterDate(day),
+    employeeShiftId: value,
+     isOffDay: ctrl.get('isOffDay')?.value // ✅ correct
+  });
+
+  this.updateSummary();
+}
 
   private ensureDetail(employeeId: string, day: number): FormGroup {
     const existing = this.findDetail(employeeId, day);
@@ -394,6 +406,33 @@ export class AddRosterDepartmentComponent {
     }
   }
 
+
+onOffDayToggle(employeeId: string, day: number): void {
+  const group = this.detailGroup(employeeId, day);
+  const isOff = group.get('isOffDay')?.value;
+  const shiftCtrl = group.get('employeeShiftId');
+
+  if (isOff) {
+    // ✅ OFF → set DEFAULT shift
+    const defaultShift = this.getEmployeeDefaultShiftId(employeeId);
+
+    this.onShiftChange(employeeId, day, defaultShift);
+
+    // disable dropdown
+    shiftCtrl?.disable({ emitEvent: false });
+
+  } else {
+    // enable dropdown
+    shiftCtrl?.enable({ emitEvent: false });
+
+    // optional: keep current or leave as-is
+    const currentValue = shiftCtrl?.value;
+
+    this.onShiftChange(employeeId, day, currentValue);
+  }
+
+  this.updateSummary();
+}
 
   // ── TrackBy for performance ───────────────────────────────────────────────
 

@@ -50,5 +50,19 @@ namespace ERP.API.Controllers
                 return this.Result(ResponseStatus.Error, null, ex.Message);
             }
         }
+
+        [HttpGet]
+        [Route("GetEmployeeByDepartmentManager")]
+        public async Task<ActionResult<List<GetEmployee>>> GetEmployeeByDepartmentManager()
+        {
+            try
+            {
+                return await this.mediator.Send(new GetEmployeeByDepartmentManagerQuery());
+            }
+            catch (Exception ex)
+            {
+                return this.Result(ResponseStatus.Error, null, ex.Message);
+            }
+        }
     }
 }

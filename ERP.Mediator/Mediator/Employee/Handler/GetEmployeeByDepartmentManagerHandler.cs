@@ -13,27 +13,27 @@ using System.Threading.Tasks;
 
 namespace ERP.Mediator.Mediator.Employee.Handler
 {
-    public class GetEmployeeByDepartmentHandler : IRequestHandler<GetEmployeeByDepartment, List<GetEmployee>>
+    public class GetEmployeeByDepartmentManagerHandler : IRequestHandler<GetEmployeeByDepartmentManagerQuery, List<GetEmployee>>
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;
         private readonly SessionProvider sessionProvider;
 
-        public GetEmployeeByDepartmentHandler(IUnitOfWork unitOfWork, IMapper mapper, SessionProvider sessionProvider)
+        public GetEmployeeByDepartmentManagerHandler(IUnitOfWork unitOfWork, IMapper mapper, SessionProvider sessionProvider)
         {
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
             this.sessionProvider = sessionProvider;
         }
 
-        public async Task<List<GetEmployee>> Handle(GetEmployeeByDepartment request, CancellationToken cancellationToken)
+        public async Task<List<GetEmployee>> Handle(GetEmployeeByDepartmentManagerQuery request, CancellationToken cancellationToken)
         {
             var result = await unitOfWork.Repository<AspNetUsers>()
             .GetQueryable()
-            .Where(e =>
+             .Where(e =>
              e.IsActive &&
              e.IsEmployee &&
-             e.DepartmentId == request.DepartmentId)
+             e.DepartmentId == this.sessionProvider.Session.DepartmentId)
              .Select(e => new GetEmployee
              {
                  Id = e.Id,

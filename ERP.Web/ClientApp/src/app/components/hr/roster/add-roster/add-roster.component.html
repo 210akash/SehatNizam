@@ -41,7 +41,7 @@
   <div class="summary-bar">
     <div class="sc">
       <div class="sc-l">Employees</div>
-      <div class="sc-v emp-color">{{ employeeList.length }}</div>
+      <div class="sc-v emp-color">{{ employeeList?.length }}</div>
     </div>
     <div class="sc">
       <div class="sc-l">Morning</div>
@@ -99,12 +99,25 @@
             <div [formGroup]="detailGroup(emp.id, day)">
               <input type="hidden" formControlName="id" />
               <input type="hidden" formControlName="employeeId" />
-              <select
+   <!-- ✅ Off Day Checkbox -->
+ <!-- ✅ Off Checkbox (top) -->
+  <div class="off-toggle">
+    <input 
+      type="checkbox" 
+      formControlName="isOffDay"
+  (change)="onOffDayToggle(emp.id, day, $any($event.target).checked)" />
+    <span>O</span>
+  </div>
+              <select  
+                 [ngClass]="[
+      'shift-sel',
+      shiftClass(emp.id, day),
+      detailGroup(emp.id, day).get('isOffDay')?.value ? 'off-selected' : ''
+    ]"
                 formControlName="employeeShiftId"
                 [ngClass]="['shift-sel', shiftClass(emp.id, day)]"
                 (change)="onShiftChange(emp.id, day, $any($event.target).value)">
               <option value="">—</option>
-              <option value="0">O</option>
               <option *ngFor="let s of employeeShiftList" [value]='s.id'>
                 {{ shiftLabel(s) }}
               </option>

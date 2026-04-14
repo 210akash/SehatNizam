@@ -62,7 +62,7 @@ export class AddInterviewComponent {
       reference: ['', Validators.required],
       personalDetail: ['', Validators.required],
       reason: ['', Validators.required],
-      // comments: ['', Validators.required],
+     remarks: ['', [Validators.required, Validators.maxLength(1000)]],
       // joinAfterDays: ['', Validators.required],
       // interviewDate: ['', Validators.required],
       joinDate: ['', Validators.required],

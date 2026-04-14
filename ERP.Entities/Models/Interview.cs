@@ -34,6 +34,12 @@ namespace ERP.Entities.Models
 
         [MaxLength(500)]
         public string Reason { get; set; }
+
+        [MaxLength(500)]
+        public string LastCompany { get; set; }
+
+        [MaxLength(1000)]
+        public string Remarks { get; set; }
         public DateTime? JoinDate { get; set; }
         public long CompanyId { get; set; }
         public virtual Company Company { get; set; }

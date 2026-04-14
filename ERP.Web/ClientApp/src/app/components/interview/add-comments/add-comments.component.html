@@ -5,39 +5,156 @@
   <mat-divider class="m-0"></mat-divider>
 
   <mat-card-content>
+    <!-- SECTION: Personal Information -->
+    <h3 class="section-title">Personal Information</h3>
+    <mat-divider></mat-divider>
+    <div class="row">
+      <div class="col-md-2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+          <mat-label>Candidate Code</mat-label>
+          <input matInput [value]="this.data.element.code" readonly />
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-4">
+        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+          <mat-label>Full Name</mat-label>
+          <input matInput [value]="this.data.element.name" readonly />
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-3">
+        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+          <mat-label>Mobile Number</mat-label>
+          <input matInput [value]="this.data.element.mobile" readonly />
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-3">
+        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+          <mat-label>Email Address</mat-label>
+          <input matInput [value]="this.data.element.email" readonly />
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-12">
+        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+          <mat-label>Personal Details</mat-label>
+          <textarea matInput [value]="this.data.element.personalDetail" rows="3"></textarea>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- SECTION: Education & Experience -->
+    <h3 class="section-title">Education & Experience</h3>
+    <mat-divider></mat-divider>
+    <div class="row">
+      <div class="col-md-6">
+        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+          <mat-label>Education</mat-label>
+          <input matInput [value]="this.data.element.employeeEducation?.name" readonly />
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-6">
+        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+          <mat-label>Experience (Years)</mat-label>
+          <input matInput [value]="this.data.element.experience" readonly />
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- SECTION: Job Details -->
+    <h3 class="section-title">Job Details</h3>
+    <mat-divider></mat-divider>
+    <div class="row">
+
+      <div class="col-md-4">
+        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+          <mat-label>Department</mat-label>
+          <input matInput [value]="this.data.element.department?.name" readonly />
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-4">
+        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+          <mat-label>Designation</mat-label>
+          <input matInput [value]="this.data.element.employeeDesignation?.name" readonly />
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-4">
+        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+          <mat-label>Expected Join Date</mat-label>
+          <input matInput type="text" [value]="this.data.element.joinDate | date : 'mediumDate'" readonly />
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- SECTION: Salary & Reference -->
+    <h3 class="section-title">Salary & Reference</h3>
+    <mat-divider></mat-divider>
+    <div class="row">
+      <div class="col-md-6">
+        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+          <mat-label>Current Salary</mat-label>
+          <input matInput type="number" [value]="this.data.element.currentSalary" readonly />
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-6">
+        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+          <mat-label>Expected Salary</mat-label>
+          <input matInput type="number" [value]="this.data.element.expectedSalary" readonly />
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-6">
+        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+          <mat-label>Reference</mat-label>
+          <input matInput [value]="this.data.element.reference" readonly />
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-6">
+        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+          <mat-label>Reason for Change</mat-label>
+          <input matInput [value]="this.data.element.reason" readonly />
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- SECTION: Interview Panel -->
+    <!-- <h3 class="section-title">Interview Panel</h3>
+    <mat-divider></mat-divider>
+    <div class="row">
+      <div class="col-md-12">
+        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+          <mat-label>Select Interview Attendees</mat-label>
+          <mat-select formControlName="interviewAttendees" multiple placeholder="Choose panel members">
+            <mat-option *ngFor="let user of interviewAttendeesList" [value]="user.id">
+              {{ user.firstName }} {{ user.lastName }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div> -->
+
+    <!-- SECTION: Comments -->
+    <h3 class="section-title">Additional Comments</h3>
+    <mat-divider></mat-divider>
+    <div class="row">
+      <div class="col-md-12">
+        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+          <mat-label>Remarks</mat-label>
+          <textarea matInput rows="3" [value]="this.data.element?.remarks"></textarea>
+        </mat-form-field>
+      </div>
+    </div>
+
+
     <form [formGroup]="interviewForm">
       <input type="hidden" formControlName="id" />
-
-      <!-- SECTION: Job Details -->
-      <h3 class="section-title m-0"> Candidate Information </h3>
-      <mat-divider></mat-divider>
-      <div class="row">
-        <div class="col-md-4">
-          <strong>Code:</strong> {{this.data.element.code}}
-        </div>
-
-        <div class="col-md-4">
-          <strong>Name:</strong> {{this.data.element.name}}
-        </div>
-
-        <div class="col-md-4">
-          <strong>Email:</strong> {{this.data.element.email}}
-        </div>
-      </div>
-      <div class="row mt-2">
-        <div class="col-md-4">
-          <strong>Contact:</strong> {{this.data.element.mobile}}
-        </div>
-
-        <div class="col-md-4">
-          <strong>Company:</strong> {{this.data.element.company.name}}
-        </div>
-
-        <div class="col-md-4">
-          <strong>Department:</strong> {{this.data.element.department.name}}
-        </div>
-      </div>
-
       <!-- SECTION: Job Details -->
       <h3 class="section-title"> Interview Remarks </h3>
       <mat-divider></mat-divider>
@@ -47,7 +164,9 @@
             <mat-label>Status</mat-label>
             <mat-select formControlName="statusId" placeholder="Select Status" (selectionChange)="updateValidity()">
               <mat-option [value]="2">In Process</mat-option>
+              <mat-option *ngIf="this.data.element.interviewHistory?.length" [value]="180">Short Listed</mat-option>
               <mat-option *ngIf="this.data.element.interviewHistory?.length" [value]="3">Approved</mat-option>
+              <mat-option [value]="4">Reject</mat-option>
             </mat-select>
           </mat-form-field>
         </div>

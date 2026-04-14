@@ -53,7 +53,7 @@ export class AddCommentsComponent {
   get f() { return this.interviewForm.controls; }
 
   SaveData() {
-    if (this.interviewForm.invalid || !this.selectedUsers.length) {
+    if (this.interviewForm.invalid || (!this.selectedUsers.length && this.interviewForm.get('statusId')?.value == 2)) {
       this.constantService.markFormGroupTouched(this.interviewForm);
       return;
     }
@@ -96,7 +96,7 @@ export class AddCommentsComponent {
       this.interviewForm.get('joinAfterDays')?.setValidators(Validators.required);
       this.interviewForm.get('interviewAttendees')?.setValidators(Validators.required);
     }
-    else if (statusId === 3) {
+    else if (statusId === 3 || statusId === 180 || statusId === 4) {
       this.interviewForm.get('interviewDate')?.clearValidators();
       this.interviewForm.get('joinAfterDays')?.clearValidators();
       this.interviewForm.get('interviewAttendees')?.clearValidators();

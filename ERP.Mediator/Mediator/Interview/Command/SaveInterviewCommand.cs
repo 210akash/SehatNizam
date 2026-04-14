@@ -28,7 +28,7 @@ namespace ERP.Mediator.Mediator.Interview.Command
 
         //public DateTime? InterviewDate { get; set; }
         //public int? JoinAfterDays { get; set; }
-        //public string Comments { get; set; }
+        public string Remarks { get; set; }
 
         //public string[] InterviewAttendees { get; set; }
     }

@@ -4,315 +4,233 @@
   </mat-card-header>
   <mat-divider class="m-0"></mat-divider>
 
-  <mat-card-content>
-    <!-- SECTION: Personal Information -->
-    <h3 class="section-title">Personal Information</h3>
-    <mat-divider></mat-divider>
-    <div class="row">
-      <div class="col-md-2">
-        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
-          <mat-label>Candidate Code</mat-label>
-          <input matInput [value]="this.data.element.code" readonly />
-        </mat-form-field>
+<mat-card-content>
+
+  <div class="row">
+
+    <!-- LEFT SIDE (INFO + HISTORY) -->
+    <div class="col-md-8">
+
+      <!-- Candidate Summary -->
+      <div class="candidate-summary">
+
+        <div class="summary-header d-flex justify-content-between">
+          <div>
+            <h2 class="mb-0">{{ data.element.name }}</h2>
+            <small class="text-muted">
+              {{ data.element.code }} • {{ data.element.department?.name }} • {{ data.element.employeeDesignation?.name }}
+            </small>
+          </div>
+
+          <div class="text-end">
+            <div><strong>Exp:</strong> {{ data.element.experience }} yrs</div>
+            <div><strong>Expected:</strong> {{ data.element.expectedSalary | number }}</div>
+          </div>
+        </div>
+
+        <mat-divider class="my-2"></mat-divider>
+
+        <div class="row g-2">
+
+          <div class="col-md-4">
+            <div class="info-box">
+              <label>Mobile</label>
+              <div>{{ data.element.mobile }}</div>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="info-box">
+              <label>Email</label>
+              <div>{{ data.element.email }}</div>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="info-box">
+              <label>Education</label>
+              <div>{{ data.element.employeeEducation?.name }}</div>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="info-box">
+              <label>Join Date</label>
+              <div>{{ data.element.joinDate | date:'mediumDate' }}</div>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="info-box">
+              <label>Reference</label>
+              <div>{{ data.element.reference }}</div>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="info-box">
+              <label>Reason</label>
+              <div>{{ data.element.reason }}</div>
+            </div>
+          </div>
+
+          <div class="col-md-12">
+            <div class="info-box">
+              <label>Details</label>
+              <div>{{ data.element.personalDetail }}</div>
+            </div>
+          </div>
+
+        </div>
+
       </div>
 
-      <div class="col-md-4">
-        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
-          <mat-label>Full Name</mat-label>
-          <input matInput [value]="this.data.element.name" readonly />
-        </mat-form-field>
+      <!-- HISTORY -->
+      <div class="mt-3">
+
+        <h3 class="section-title">Interview History ({{ dataSource?.length }})</h3>
+        <mat-divider></mat-divider>
+
+        <div class="table-responsive mt-2">
+
+          <table class="table table-sm table-hover align-middle">
+
+            <thead class="table-light">
+              <tr>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Attendees</th>
+                <th>Days</th>
+                <th>Comments</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let element of dataSource">
+
+                <td>{{ element.interviewDate | date:'short' }}</td>
+
+                <td>
+                  <span class="badge bg-primary">
+                    {{ element.status?.title }}
+                  </span>
+                </td>
+
+                <td class="small">
+                  {{ getAttendeesString(element) }}
+                </td>
+
+                <td>{{ element.joinAfterDays || '-' }}</td>
+
+                <td class="small text-muted">
+                  {{ element.comments }}
+                </td>
+
+              </tr>
+            </tbody>
+
+          </table>
+
+        </div>
+
       </div>
 
-      <div class="col-md-3">
-        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
-          <mat-label>Mobile Number</mat-label>
-          <input matInput [value]="this.data.element.mobile" readonly />
-        </mat-form-field>
-      </div>
-
-      <div class="col-md-3">
-        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
-          <mat-label>Email Address</mat-label>
-          <input matInput [value]="this.data.element.email" readonly />
-        </mat-form-field>
-      </div>
-
-      <div class="col-md-12">
-        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
-          <mat-label>Personal Details</mat-label>
-          <textarea matInput [value]="this.data.element.personalDetail" rows="3"></textarea>
-        </mat-form-field>
-      </div>
     </div>
 
-    <!-- SECTION: Education & Experience -->
-    <h3 class="section-title">Education & Experience</h3>
-    <mat-divider></mat-divider>
-    <div class="row">
-      <div class="col-md-6">
-        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
-          <mat-label>Education</mat-label>
-          <input matInput [value]="this.data.element.employeeEducation?.name" readonly />
-        </mat-form-field>
-      </div>
+    <!-- RIGHT SIDE (ACTIONS) -->
+    <div class="col-md-4">
 
-      <div class="col-md-6">
-        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
-          <mat-label>Experience (Years)</mat-label>
-          <input matInput [value]="this.data.element.experience" readonly />
-        </mat-form-field>
-      </div>
-    </div>
+      <form [formGroup]="interviewForm" class="action-panel">
 
-    <!-- SECTION: Job Details -->
-    <h3 class="section-title">Job Details</h3>
-    <mat-divider></mat-divider>
-    <div class="row">
+        <h3 class="section-title">Interview Action</h3>
+        <mat-divider></mat-divider>
 
-      <div class="col-md-4">
-        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
-          <mat-label>Department</mat-label>
-          <input matInput [value]="this.data.element.department?.name" readonly />
-        </mat-form-field>
-      </div>
-
-      <div class="col-md-4">
-        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
-          <mat-label>Designation</mat-label>
-          <input matInput [value]="this.data.element.employeeDesignation?.name" readonly />
-        </mat-form-field>
-      </div>
-
-      <div class="col-md-4">
-        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
-          <mat-label>Expected Join Date</mat-label>
-          <input matInput type="text" [value]="this.data.element.joinDate | date : 'mediumDate'" readonly />
-        </mat-form-field>
-      </div>
-    </div>
-
-    <!-- SECTION: Salary & Reference -->
-    <h3 class="section-title">Salary & Reference</h3>
-    <mat-divider></mat-divider>
-    <div class="row">
-      <div class="col-md-6">
-        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
-          <mat-label>Current Salary</mat-label>
-          <input matInput type="number" [value]="this.data.element.currentSalary" readonly />
-        </mat-form-field>
-      </div>
-
-      <div class="col-md-6">
-        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
-          <mat-label>Expected Salary</mat-label>
-          <input matInput type="number" [value]="this.data.element.expectedSalary" readonly />
-        </mat-form-field>
-      </div>
-
-      <div class="col-md-6">
-        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
-          <mat-label>Reference</mat-label>
-          <input matInput [value]="this.data.element.reference" readonly />
-        </mat-form-field>
-      </div>
-
-      <div class="col-md-6">
-        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
-          <mat-label>Reason for Change</mat-label>
-          <input matInput [value]="this.data.element.reason" readonly />
-        </mat-form-field>
-      </div>
-    </div>
-
-    <!-- SECTION: Interview Panel -->
-    <!-- <h3 class="section-title">Interview Panel</h3>
-    <mat-divider></mat-divider>
-    <div class="row">
-      <div class="col-md-12">
-        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
-          <mat-label>Select Interview Attendees</mat-label>
-          <mat-select formControlName="interviewAttendees" multiple placeholder="Choose panel members">
-            <mat-option *ngFor="let user of interviewAttendeesList" [value]="user.id">
-              {{ user.firstName }} {{ user.lastName }}
-            </mat-option>
+        <!-- STATUS -->
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Status</mat-label>
+          <mat-select formControlName="statusId" (selectionChange)="updateValidity()">
+            <mat-option [value]="2">In Process</mat-option>
+            <mat-option *ngIf="data.element.interviewHistory?.length" [value]="180">Short Listed</mat-option>
+            <mat-option *ngIf="data.element.interviewHistory?.length" [value]="3">Approved</mat-option>
+            <mat-option [value]="4">Reject</mat-option>
           </mat-select>
         </mat-form-field>
-      </div>
-    </div> -->
 
-    <!-- SECTION: Comments -->
-    <h3 class="section-title">Additional Comments</h3>
-    <mat-divider></mat-divider>
-    <div class="row">
-      <div class="col-md-12">
-        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
-          <mat-label>Remarks</mat-label>
-          <textarea matInput rows="3" [value]="this.data.element?.remarks"></textarea>
-        </mat-form-field>
-      </div>
-    </div>
+        <!-- CONDITIONAL -->
+        <div *ngIf="f['statusId'].value === 2">
 
+          <input class="form-control mb-2" type="datetime-local" formControlName="interviewDate" />
 
-    <form [formGroup]="interviewForm">
-      <input type="hidden" formControlName="id" />
-      <!-- SECTION: Job Details -->
-      <h3 class="section-title"> Interview Remarks </h3>
-      <mat-divider></mat-divider>
-      <div class="row">
-        <div class="col-md-4">
-          <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
-            <mat-label>Status</mat-label>
-            <mat-select formControlName="statusId" placeholder="Select Status" (selectionChange)="updateValidity()">
-              <mat-option [value]="2">In Process</mat-option>
-              <mat-option *ngIf="this.data.element.interviewHistory?.length" [value]="180">Short Listed</mat-option>
-              <mat-option *ngIf="this.data.element.interviewHistory?.length" [value]="3">Approved</mat-option>
-              <mat-option [value]="4">Reject</mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-
-        <div class="col-md-4" *ngIf="f['statusId'].value === 2">
-          <!-- <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
-            <mat-label>Interview Date</mat-label>
-            <input matInput type="datetime-local" formControlName="interviewDate" placeholder="Select interview date" />
-              <mat-datepicker-toggle matIconSuffix [for]="interviewDate"></mat-datepicker-toggle>
-              <mat-datepicker #interviewDate></mat-datepicker>
-          </mat-form-field> -->
-          <input class="form-control" type="datetime-local" formControlName="interviewDate"
-            placeholder="Select interview date" />
-        </div>
-
-        <div class="col-md-4" *ngIf="f['statusId'].value === 2">
-          <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
+          <mat-form-field appearance="outline" class="w-100">
             <mat-label>Join After Days</mat-label>
-            <input matInput type="number" formControlName="joinAfterDays" placeholder="Number of days to join" />
+            <input matInput type="number" formControlName="joinAfterDays" />
           </mat-form-field>
+
         </div>
 
-        <div class="col-md-12">
-          <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
-            <mat-label>Comments</mat-label>
-            <textarea matInput formControlName="comments" rows="3" placeholder="Any notes or comments"></textarea>
-          </mat-form-field>
-        </div>
-      </div>
+        <!-- COMMENTS -->
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Comments</mat-label>
+          <textarea matInput formControlName="comments" rows="3"></textarea>
+        </mat-form-field>
 
-      <!-- SECTION: Interview Panel -->
-      <h3 *ngIf="f['statusId'].value === 2" class="section-title">Interview Panel</h3>
-      <mat-divider *ngIf="f['statusId'].value === 2"></mat-divider>
-      <div *ngIf="f['statusId'].value === 2" class="row">
-        <!-- <div class="col-md-12">
-          <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
-            <mat-label>Select Interview Attendees</mat-label>
-            <mat-select formControlName="interviewAttendees" multiple placeholder="Choose panel members">
-              <mat-option *ngFor="let user of interviewAttendeesList" [value]="user.id">
-                {{ user.firstName }} {{ user.lastName }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div> -->
-        <div class="col-md-12">
-          <!-- Display selected plots as chips -->
+        <!-- PANEL -->
+        <div *ngIf="f['statusId'].value === 2">
+
+          <h4 class="mt-2">Panel</h4>
+
           <mat-chip-set>
-            <mat-chip *ngFor="let user of selectedUsers" [removable]="true"
-              (removed)="removeUser(user)">
-              {{ user?.firstName }} {{ user?.lastName }} ({{ user?.department?.name }})
+            <mat-chip *ngFor="let user of selectedUsers" (removed)="removeUser(user)">
+              {{ user?.firstName }}
               <mat-icon matChipRemove>cancel</mat-icon>
             </mat-chip>
           </mat-chip-set>
 
-          <mat-form-field class="mt-2">
-            <mat-label>User</mat-label>
-            <!-- Input for selecting new plots -->
-            <input style="margin-top: 15px;" matInput formControlName="user" [matAutocomplete]="auto"
-              class="form-control w-100" (input)="[onUserInputCleared($event), searchUser($event)]" type="search" />
-
+          <mat-form-field class="w-100 mt-2">
+            <input matInput formControlName="user" [matAutocomplete]="auto"
+              (input)="[onUserInputCleared($event), searchUser($event)]">
             <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onUserOptionSelected($event)">
               <mat-option *ngFor="let user of userList" [value]="user">
-                {{ user?.firstName }} {{ user?.lastName }} ({{ user?.department?.name }})
+                {{ user.firstName }} {{ user.lastName }}
               </mat-option>
-            </mat-autocomplete> 
+            </mat-autocomplete>
           </mat-form-field>
+
         </div>
-      </div>
 
-      <!-- SECTION: Interview History -->
-      <h3 class="section-title m-0">Interview History ({{dataSource?.length}})</h3>
-      <mat-divider></mat-divider>
-      <div class="row">
-        <div class="col-md-12 text-center">
-          <div class="mat-elevation-z8 table-responsive">
+        <!-- EVALUATION -->
+        <div *ngIf="f['statusId'].value === 180 || f['statusId'].value === 4" formArrayName="candidateEvaluations">
 
-            <table mat-table [dataSource]="dataSource" matSort>
+          <h4 class="mt-2">Evaluation</h4>
 
-              <colgroup>
-                <col span="1" style="width: 5%"/>
-                <col span="1" style="width: 15%"/>
-                <col span="1" style="width: 2%"/>
-                <col span="1" style="width: 15%"/>
-                <col span="1" style="width: 7%"/>
-                <col span="1" style="width: 7%"/>
-                <col span="1" style="width: 7%"/>
-              </colgroup>
+          <div *ngFor="let group of candidateEvaluationsFormArray.controls; let i = index"
+               [formGroupName]="i" class="eval-box">
 
-              <ng-container matColumnDef="interviewDate">
-                <th mat-header-cell *matHeaderCellDef> Interview Date </th>
-                <td mat-cell *matCellDef="let element"> {{ element.interviewDate | date: 'medium' }} </td>
-              </ng-container>
+            <div class="mb-1">
+              <strong>{{ evaluationCategorysList[i]?.name }}</strong>
+            </div>
 
-              <ng-container matColumnDef="attendees">
-                <th mat-header-cell *matHeaderCellDef> Attendees </th>
-                <td mat-cell *matCellDef="let element"> {{ getAttendeesString(element) }} </td>
-              </ng-container>
-
-              <ng-container matColumnDef="joinAfterDays">
-                <th mat-header-cell *matHeaderCellDef> Days </th>
-                <td mat-cell *matCellDef="let element"> {{ element.joinAfterDays }} </td>
-              </ng-container>
-
-              <ng-container matColumnDef="comments">
-                <th mat-header-cell *matHeaderCellDef> Comments </th>
-                <td mat-cell *matCellDef="let element"> {{ element.comments }} </td>
-              </ng-container>
-
-              <ng-container matColumnDef="status">
-                <th mat-header-cell *matHeaderCellDef> Status </th>
-                <td mat-cell *matCellDef="let element"> {{ element.status?.title }} </td>
-              </ng-container>
-
-              <ng-container matColumnDef="createdDate">
-                <th mat-header-cell *matHeaderCellDef> Created Date </th>
-                <td mat-cell *matCellDef="let element"> {{ element.createdDate | date: 'medium' }} </td>
-              </ng-container>
-
-              <ng-container matColumnDef="createdBy">
-                <th mat-header-cell *matHeaderCellDef> Created By </th>
-                <td mat-cell *matCellDef="let element"> {{ element.createdBy?.firstName }} {{
-                  element.createdBy?.lastName
-                  }} </td>
-              </ng-container>
-
-              <!-- Table rows -->
-              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-            </table>
-
-            <!-- <mat-divider></mat-divider> -->
-            <!-- Paginator -->
-            <!-- <mat-paginator #paginator [length]="totalRows" [pageIndex]="currentPage" [pageSize]="pageSize"
-            [pageSizeOptions]="pageSizeOptions" (page)="pageChanged($event)" aria-label="Select page">
-          </mat-paginator> -->
+            <mat-radio-group formControlName="candidateScoringScaleId">
+              <mat-radio-button *ngFor="let scale of scoringScaleList" [value]="scale.id">
+                {{ scale.title }}
+              </mat-radio-button>
+            </mat-radio-group>
 
           </div>
-        </div>
-      </div>
 
-      <!-- ACTION BUTTONS -->
-      <mat-divider></mat-divider>
-      <div class="button-container text-center mt-3">
-        <button mat-flat-button color="success" type="button" (click)="SaveData()">Save</button>
-        <button mat-flat-button color="default" [mat-dialog-close]="true">Close</button>
-      </div>
-    </form>
-  </mat-card-content>
+        </div>
+
+        <!-- ACTION BUTTONS -->
+        <div class="mt-3 text-center">
+          <button mat-flat-button color="primary" (click)="SaveData()">Save</button>
+          <button mat-stroked-button [mat-dialog-close]="true">Close</button>
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+</mat-card-content>
 </mat-card>

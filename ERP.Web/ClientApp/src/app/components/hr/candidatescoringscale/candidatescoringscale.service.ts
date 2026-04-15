@@ -3,17 +3,17 @@ import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { BaseService } from '../../../Service/base.service';
-import { PriorityLevelEndPoints } from './candidatescoringscale.endpoints';
+import { CandidateScoringScaleEndPoints } from './candidatescoringscale.endpoints';
 
 @Injectable({
     providedIn: 'root'
 })
 
-export class PriorityLevelService extends BaseService<any> {
+export class CandidateScoringScaleService extends BaseService<any> {
 
-    endPointControllerName = 'PriorityLevel';
+    endPointControllerName = 'CandidateScoringScale';
 
-    constructor(private http: HttpClient, httpClient: HttpClient, private priorityLevelEndPoints: PriorityLevelEndPoints) {
+    constructor(private http: HttpClient, httpClient: HttpClient, private candidateScoringScaleEndPoints: CandidateScoringScaleEndPoints) {
         super(
             httpClient,
             environment.dev_uri
@@ -21,7 +21,7 @@ export class PriorityLevelService extends BaseService<any> {
     }
 
     async getAllCandidateScoringScales() {
-        return this.get(this.endPointControllerName + this.priorityLevelEndPoints.getAllCandidateScoringScales)
+        return this.get(this.endPointControllerName + this.candidateScoringScaleEndPoints.getAllCandidateScoringScales)
             .pipe(map((data: any) => data));
     }
 }

@@ -15,6 +15,7 @@
     using ERP.Mediator.Mediator.Appointment.Command;
     using ERP.Mediator.Mediator.Area.Command;
     using ERP.Mediator.Mediator.Auth.Command;
+    using ERP.Mediator.Mediator.CandidateEvaluationCategory.Command;
     using ERP.Mediator.Mediator.Category.Command;
     using ERP.Mediator.Mediator.City.Command;
     using ERP.Mediator.Mediator.Company.Command;
@@ -603,6 +604,10 @@
             this.CreateMap<RosterDetail, GetRosterDetail>().ReverseMap();
 
             this.CreateMap<Roster, SaveRosterByManagerCommand>().ReverseMap();
+            this.CreateMap<CandidateEvaluationCategory, SaveCandidateEvaluationCategoryCommand>().ReverseMap();
+            this.CreateMap<CandidateEvaluationCategory, GetCandidateEvaluationCategory>().ReverseMap();
+            this.CreateMap<CandidateScoringScale, GetCandidateScoringScale>().ReverseMap();
+            this.CreateMap<CandidateEvaluation, GetCandidateEvaluation>().ReverseMap();
 
         }
     }

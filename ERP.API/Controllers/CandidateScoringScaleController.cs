@@ -24,13 +24,13 @@ namespace ERP.API.Controllers
             this.mediator = mediator;
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("GetAllCandidateScoringScales")]
-        public async Task<ActionResult<IEnumerable<GetCandidateScoringScale>>> GetAll(GetAllCandidateScoringScaleQuery getAllCandidateScoringScaleQuery)
+        public async Task<ActionResult<IEnumerable<GetCandidateScoringScale>>> GetAll()
         {
             try
             {
-                return await this.mediator.Send(getAllCandidateScoringScaleQuery);
+                return await this.mediator.Send(new GetAllCandidateScoringScaleQuery());
             }
             catch (Exception ex)
             {

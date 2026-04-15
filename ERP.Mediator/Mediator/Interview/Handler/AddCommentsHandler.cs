@@ -85,6 +85,29 @@ namespace ERP.Mediator.Mediator.Interview.Handler
                     SaveChanges(); // Save all new related data
                 }
 
+                // Save Candidate Evaluations
+                if ((request.StatusId == 180 || request.StatusId == 4)
+                    && request.CandidateEvaluations != null
+                    && request.CandidateEvaluations.Any())
+                {
+                    foreach (var item in request.CandidateEvaluations)
+                    {
+                        var evaluation = new CandidateEvaluation
+                        {
+                            CreatedDate = DateTime.Now,
+                            CreatedById = sessionProvider.Session.LoggedInUserId,
+
+                            InterviewHistoryId = interviewHistory.Id, // ✅ IMPORTANT FK
+                            CandidateEvaluationCategoryId = item.CandidateEvaluationCategoryId,
+                            CandidateScoringScaleId = item.CandidateScoringScaleId
+                        };
+
+                        await unitOfWork.Repository<CandidateEvaluation>().AddAsync(evaluation);
+                    }
+
+                    SaveChanges();
+                }
+
                 await transaction.CommitAsync(); // ✅ Commit transaction
                 return 200;
             }

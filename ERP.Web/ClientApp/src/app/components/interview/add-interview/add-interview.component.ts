@@ -44,7 +44,6 @@ export class AddInterviewComponent {
     @Inject(MAT_DIALOG_DATA) public data: { element: any }) { }
 
   ngOnInit(): void {
-    this.getCode();
     this.currentUser = this.authenticationService.currentUserValue;
     console.log('this.currentUser', this.currentUser);
     this.interviewForm = this.formBuilder.group({
@@ -82,13 +81,12 @@ export class AddInterviewComponent {
     if (element != null) {
       this.isEditMode = true;
       this.constantService.LoadData(element, this.interviewForm);
-
-      this.getDepartmentByCompany();
-
       var joinDate = this.constantService.formatDate(element.joinDate);
       this.interviewForm.get('joinDate')?.patchValue(joinDate);
-
       this.documents = element.attachments;
+    }
+    else{
+    this.getCode();
     }
   }
 

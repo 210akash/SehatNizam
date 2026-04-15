@@ -820,6 +820,8 @@ import { DeleteCandidateEvaluationCategoryComponent } from './components/hr/cand
 import { CandidateEvaluationCategoryListComponent } from './components/hr/candidateevaluationcategory/candidateevaluationcategory-list/candidateevaluationcategory-list.component';
 import { CandidateEvaluationCategoryService } from './components/hr/candidateevaluationcategory/candidateevaluationcategory.service';
 import { CandidateEvaluationCategoryEndPoints } from './components/hr/candidateevaluationcategory/candidateevaluationcategory.endpoints';
+import { CandidateScoringScaleService } from './components/hr/candidatescoringscale/candidatescoringscale.service';
+import { CandidateScoringScaleEndPoints } from './components/hr/candidatescoringscale/candidatescoringscale.endpoints';
 
 const matFormFieldDefaults: MatFormFieldDefaultOptions = {
     appearance: 'outline'
@@ -1669,6 +1671,8 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         RosterEndPoints,
         CandidateEvaluationCategoryService,
         CandidateEvaluationCategoryEndPoints,
+        CandidateScoringScaleService,
+        CandidateScoringScaleEndPoints,
         { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
         { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },
         AuthenticationService, {

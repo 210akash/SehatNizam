@@ -4,14 +4,16 @@ using ERP.Entities.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ERP.Entities.Migrations
 {
     [DbContext(typeof(ERPDbContext))]
-    partial class ERPDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260415173538_Interview_LastCompany")]
+    partial class Interview_LastCompany
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1507,9 +1509,6 @@ namespace ERP.Entities.Migrations
                     b.Property<long>("InterviewHistoryId")
                         .HasColumnType("bigint");
 
-                    b.Property<long?>("InterviewId")
-                        .HasColumnType("bigint");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -1531,8 +1530,6 @@ namespace ERP.Entities.Migrations
                     b.HasIndex("CreatedById");
 
                     b.HasIndex("InterviewHistoryId");
-
-                    b.HasIndex("InterviewId");
 
                     b.HasIndex("ModifiedById");
 
@@ -10590,10 +10587,6 @@ namespace ERP.Entities.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ERP.Entities.Models.Interview", null)
-                        .WithMany("CandidateEvaluation")
-                        .HasForeignKey("InterviewId");
-
                     b.HasOne("ERP.Entities.Models.AspNetUsers", "ModifiedBy")
                         .WithMany()
                         .HasForeignKey("ModifiedById");
@@ -15200,8 +15193,6 @@ namespace ERP.Entities.Migrations
             modelBuilder.Entity("ERP.Entities.Models.Interview", b =>
                 {
                     b.Navigation("Attachments");
-
-                    b.Navigation("CandidateEvaluation");
 
                     b.Navigation("InterviewHistory");
                 });

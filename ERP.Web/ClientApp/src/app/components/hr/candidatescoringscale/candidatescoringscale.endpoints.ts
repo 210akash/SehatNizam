@@ -1,3 +1,3 @@
-export class PriorityLevelEndPoints {
+export class CandidateScoringScaleEndPoints {
     public readonly getAllCandidateScoringScales = "/GetAllCandidateScoringScales"
 }

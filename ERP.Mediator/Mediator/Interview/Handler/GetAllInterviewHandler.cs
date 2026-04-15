@@ -35,6 +35,7 @@ namespace ERP.Mediator.Mediator.Interview.Handler
                 x => x.EmployeeEducation,
                 x => x.CreatedBy,
                 x => x.Status,
+                x => x.CandidateEvaluation,
                 x => x.InterviewHistory.Where(x => x.IsActive),
                 x => x.Attachments.Where(x => x.IsActive),
             };

@@ -1,11 +1,13 @@
 import { Component, Inject } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConstantService } from '../../../Service/constant.service';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { NotificationsService } from '../../../Service/notification.service';
 import { InterviewService } from '../interview.service';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { AuthenticationService } from '../../../Auth/authentication.service';
+import { CandidateEvaluationCategoryService } from '../../hr/candidateevaluationcategory/candidateevaluationcategory.service';
+import { CandidateScoringScaleService } from '../../hr/candidatescoringscale/candidatescoringscale.service';
 
 @Component({
   selector: 'app-add-comments',
@@ -27,11 +29,13 @@ export class AddCommentsComponent {
   dataSource: any;
   take = 50;
   totalRows = 0;
-
+  scoringScaleList: any;
   userList: any[] = [];
   selectedUsers: any[] = [];
+  evaluationCategorysList: any;
+  candidateEvaluations: any[] = [];
 
-  constructor(private dialog: MatDialog, private notificationsService: NotificationsService, private formBuilder: FormBuilder, private authenticationService: AuthenticationService,
+  constructor(private scoringScaleService: CandidateScoringScaleService, private evaluationCategoryService: CandidateEvaluationCategoryService, private dialog: MatDialog, private notificationsService: NotificationsService, private formBuilder: FormBuilder, private authenticationService: AuthenticationService,
     private interviewService: InterviewService, private constantService: ConstantService, @Inject(MAT_DIALOG_DATA) public data: { element: any }) { }
 
   ngOnInit(): void {
@@ -45,12 +49,19 @@ export class AddCommentsComponent {
       statusId: ['', Validators.required],
       // interviewAttendees: ['', Validators.required],
       user: [''],
+       candidateEvaluations: this.formBuilder.array([])
     });
 
     this.getInterviewAttendees();
+    this.getscoringScale();
+    this.getevaluationCategorysList();
   }
 
   get f() { return this.interviewForm.controls; }
+
+get candidateEvaluationsFormArray(): FormArray {
+  return this.interviewForm.get('candidateEvaluations') as FormArray;
+}
 
   SaveData() {
     if (this.interviewForm.invalid || (!this.selectedUsers.length && this.interviewForm.get('statusId')?.value == 2)) {
@@ -58,12 +69,22 @@ export class AddCommentsComponent {
       return;
     }
 
+
     this.isLoading = true;
     let _interviewForm: any = {};
     _interviewForm = Object.assign(_interviewForm, this.interviewForm.value);
 
     _interviewForm['interviewAttendees'] = this.selectedUsers.map(x => x.id);
 
+
+   if (this.interviewForm.get('statusId')?.value == 180 || this.interviewForm.get('statusId')?.value == 4) {
+
+  if (this.candidateEvaluationsFormArray.invalid) {
+    this.candidateEvaluationsFormArray.markAllAsTouched();
+    this.notificationsService.showNotification('Please complete all evaluations', 'snack-bar-danger');
+    return;
+  }
+}
     this.interviewService.addComments(_interviewForm).subscribe({
       next: (data) => {
         if (data.Status == 200) {
@@ -176,5 +197,29 @@ export class AddCommentsComponent {
     }
   }
 
+  async getscoringScale(): Promise<void> {
+    (await this.scoringScaleService.getAllCandidateScoringScales()).subscribe(data => {
+      this.scoringScaleList = data;
+    });
+  }
 
+
+  getevaluationCategorysList(): void {
+   let _filterForm = {};
+  this.evaluationCategoryService.getAllCandidateEvaluationCategorys(_filterForm).subscribe(data => {
+    this.evaluationCategorysList = data.item1;
+
+    this.candidateEvaluationsFormArray.clear();
+
+    this.evaluationCategorysList.forEach((x: any) => {
+      this.candidateEvaluationsFormArray.push(
+        this.formBuilder.group({
+          interviewHistoryId: [0],
+          candidateEvaluationCategoryId: [x.id],
+          candidateScoringScaleId: [null, Validators.required] // ✅ required
+        })
+      );
+    });
+  });
+  }
 }

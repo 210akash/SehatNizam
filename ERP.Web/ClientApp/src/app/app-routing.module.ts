@@ -119,6 +119,7 @@ import { AddRosterComponent } from './components/hr/roster/add-roster/add-roster
 import { RosterTabComponent } from './components/hr/roster/roster-tab/roster-tab.component';
 import { RosterDepartmentListComponent } from './components/hr/roster-department/roster-list-department/roster-department-list.component';
 import { AddRosterDepartmentComponent } from './components/hr/roster-department/add-roster-department/add-roster-department.component';
+import { CandidateEvaluationCategoryListComponent } from './components/hr/candidateevaluationcategory/candidateevaluationcategory-list/candidateevaluationcategory-list.component';
 
 const routes: Routes = [
   {
@@ -241,6 +242,7 @@ const routes: Routes = [
       { path: 'rosterdepartment', component: RosterDepartmentListComponent, canActivate: [AuthGuard] },
       { path: 'addroster', component: AddRosterComponent, canActivate: [AuthGuard] },
       { path: 'roster', component: RosterTabComponent, canActivate: [AuthGuard] },
+      { path: 'candidateevaluationcategory', component: CandidateEvaluationCategoryListComponent, canActivate: [AuthGuard] },
     ]
   },
   {

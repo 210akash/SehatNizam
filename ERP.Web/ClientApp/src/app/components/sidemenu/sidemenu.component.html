@@ -566,8 +566,30 @@
             Roster</a>
           <a routerLink="/manageemployeeleave" class="submenu-link"
             [class.active-link]="isActive('/manageemployeeleave')">Manage Leave</a>
-          <a routerLink="/interview" class="submenu-link" [class.active-link]="isActive('/interview')">Manage
-            Interviews</a>
+      
+        </div>
+      </div>
+
+     <!-- Recruitment -->
+      <div class="nav-group" *ngIf="hasRequiredRole(['hr executive','hr manager','admin'])">
+            <button (click)="toggleSubMenu('recruitment')" class="nav-button">
+          <i class="fas fa-user-tie"></i>
+          <span>Recruitment</span>
+          <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('recruitment')"></i>
+        </button>
+        <div class="submenu" *ngIf="isSubMenuVisible('recruitment')">
+          <!-- HR Setup -->
+          <div class="nav-group" *ngIf="hasRequiredRole(['hr executive','hr manager','admin'])">
+            <button (click)="toggleSubMenu('recruitmentsetup')" class="nav-button">
+              <i class="fas fa-user-cog"></i>
+              <span>Setup</span>
+              <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('recruitmentsetup')"></i>
+            </button>
+            <div class="submenu" *ngIf="isSubMenuVisible('recruitment')">
+              <a routerLink="/candidateevaluationcategory" class="submenu-link" [class.active-link]="isActive('/candidateevaluationcategory')">Evaluation Category</a>
+            </div>
+          </div>
+             <a routerLink="/interview" class="submenu-link" [class.active-link]="isActive('/interview')">Candicates</a>
         </div>
       </div>
 

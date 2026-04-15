@@ -172,6 +172,9 @@
         public virtual DbSet<EmployeeWorkSiteType> EmployeeWorkSiteType { get; set; }
         public virtual DbSet<Interview> Interview { get; set; }
         public virtual DbSet<InterviewHistory> InterviewHistory { get; set; }
+        public virtual DbSet<CandidateEvaluation> CandidateEvaluation { get; set; }
+        public virtual DbSet<CandidateScoringScale> CandidateScoringScale { get; set; }
+        public virtual DbSet<CandidateEvaluationCategory> CandidateEvaluationCategory { get; set; }
 
         #endregion
 

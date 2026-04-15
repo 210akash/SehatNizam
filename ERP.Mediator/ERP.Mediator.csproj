@@ -80,6 +80,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Mediator\CandidateScoringScale\Command\" />
     <Folder Include="Mediator\Dashboard\Command\" />
     <Folder Include="Mediator\Doctor\Command\" />
     <Folder Include="Mediator\Email\Command\" />

@@ -814,6 +814,12 @@ import { RosterEndPoints } from './components/hr/roster/roster.endpoints';
 import { PrintRosterComponent } from './components/hr/roster/print-roster/print-roster.component';
 import { AddRosterDepartmentComponent } from './components/hr/roster-department/add-roster-department/add-roster-department.component';
 import { RosterDepartmentListComponent } from './components/hr/roster-department/roster-list-department/roster-department-list.component';
+import { AddCandidateEvaluationCategoryComponent } from './components/hr/candidateevaluationcategory/add-candidateevaluationcategory/add-candidateevaluationcategory.component';
+import { ViewCandidateEvaluationCategoryComponent } from './components/hr/candidateevaluationcategory/view-candidateevaluationcategory/view-candidateevaluationcategory.component';
+import { DeleteCandidateEvaluationCategoryComponent } from './components/hr/candidateevaluationcategory/delete-candidateevaluationcategory/delete-candidateevaluationcategory.component';
+import { CandidateEvaluationCategoryListComponent } from './components/hr/candidateevaluationcategory/candidateevaluationcategory-list/candidateevaluationcategory-list.component';
+import { CandidateEvaluationCategoryService } from './components/hr/candidateevaluationcategory/candidateevaluationcategory.service';
+import { CandidateEvaluationCategoryEndPoints } from './components/hr/candidateevaluationcategory/candidateevaluationcategory.endpoints';
 
 const matFormFieldDefaults: MatFormFieldDefaultOptions = {
     appearance: 'outline'
@@ -1390,7 +1396,11 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         ApproveRosterComponent,
         PrintRosterComponent,
         AddRosterDepartmentComponent,
-        RosterDepartmentListComponent
+        RosterDepartmentListComponent,
+        AddCandidateEvaluationCategoryComponent,
+        ViewCandidateEvaluationCategoryComponent,
+        DeleteCandidateEvaluationCategoryComponent,
+        CandidateEvaluationCategoryListComponent
     ],
     bootstrap: [AppComponent], imports: [
         InputMaskModule,
@@ -1657,6 +1667,8 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         TriageCategoryEndPoints,
         RosterService,
         RosterEndPoints,
+        CandidateEvaluationCategoryService,
+        CandidateEvaluationCategoryEndPoints,
         { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
         { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },
         AuthenticationService, {

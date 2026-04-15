@@ -13,6 +13,19 @@ namespace ERP.Entities.Models
         public long StatusId { get; set; }
         public virtual Status Status { get; set; }
         public virtual List<InterviewAttendees> InterviewAttendees { get; set; }
+        public virtual List<CandidateEvaluation> CandidateEvaluations { get; set; }
+    }
+
+    public class CandidateEvaluation : BaseEntity
+    {
+        public long InterviewHistoryId { get; set; }
+        public virtual InterviewHistory InterviewHistory { get; set; }
+
+        public long CandidateScoringScaleId { get; set; }
+        public virtual CandidateScoringScale CandidateScoringScale { get; set; }
+
+        public long CandidateEvaluationCategoryId { get; set; }
+        public virtual CandidateEvaluationCategory CandidateEvaluationCategory { get; set; }
     }
 
     public class InterviewAttendees : BaseEntity

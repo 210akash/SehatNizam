@@ -69,5 +69,15 @@ export class ViewInterviewComponent {
     return filePath?.toLowerCase().endsWith('.pdf');
   }
 
+getScorePercentage(scaleId: number): number {
+  switch (scaleId) {
+    case 1: return 20;  // Poor
+    case 2: return 40;  // Below Avg
+    case 3: return 60;  // Average
+    case 4: return 80;  // Good
+    case 5: return 100; // Excellent
+    default: return 0;
+  }
+}
 
 }

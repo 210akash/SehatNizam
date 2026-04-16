@@ -822,6 +822,7 @@ import { CandidateEvaluationCategoryService } from './components/hr/candidateeva
 import { CandidateEvaluationCategoryEndPoints } from './components/hr/candidateevaluationcategory/candidateevaluationcategory.endpoints';
 import { CandidateScoringScaleService } from './components/hr/candidatescoringscale/candidatescoringscale.service';
 import { CandidateScoringScaleEndPoints } from './components/hr/candidatescoringscale/candidatescoringscale.endpoints';
+import { ConductInterviewListComponent } from './components/interview/conduct-interview-list/conduct-interview-list.component';
 
 const matFormFieldDefaults: MatFormFieldDefaultOptions = {
     appearance: 'outline'
@@ -1402,7 +1403,8 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         AddCandidateEvaluationCategoryComponent,
         ViewCandidateEvaluationCategoryComponent,
         DeleteCandidateEvaluationCategoryComponent,
-        CandidateEvaluationCategoryListComponent
+        CandidateEvaluationCategoryListComponent,
+        ConductInterviewListComponent
     ],
     bootstrap: [AppComponent], imports: [
         InputMaskModule,

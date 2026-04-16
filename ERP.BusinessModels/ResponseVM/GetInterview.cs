@@ -57,6 +57,7 @@ namespace ERP.BusinessModels.ResponseVM
         public GetInterview Interview { get; set; }
 
         public List<GetInterviewAttendees> InterviewAttendees { get; set; }
+        public List<GetCandidateEvaluation> candidateEvaluations { get; set; }
     }
 
     public class GetInterviewAttendees

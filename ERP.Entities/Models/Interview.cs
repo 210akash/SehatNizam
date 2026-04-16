@@ -45,6 +45,5 @@ namespace ERP.Entities.Models
         public virtual Company Company { get; set; }
         public virtual List<InterviewHistory> InterviewHistory { get; set; }
         public virtual List<Attachments> Attachments { get; set; }
-        public virtual List<CandidateEvaluation> CandidateEvaluation { get; set; }
     }
 }

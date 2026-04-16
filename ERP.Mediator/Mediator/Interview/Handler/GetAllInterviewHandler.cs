@@ -35,16 +35,20 @@ namespace ERP.Mediator.Mediator.Interview.Handler
                 x => x.EmployeeEducation,
                 x => x.CreatedBy,
                 x => x.Status,
-                x => x.CandidateEvaluation,
                 x => x.InterviewHistory.Where(x => x.IsActive),
                 x => x.Attachments.Where(x => x.IsActive),
             };
 
-            List<string> thenIncludes = new List<string>();
-            thenIncludes.Add("InterviewHistory.Status");
-            thenIncludes.Add("InterviewHistory.CreatedBy");
-            thenIncludes.Add("InterviewHistory.InterviewAttendees");
-            thenIncludes.Add("InterviewHistory.InterviewAttendees.AspNetUsers");
+            List<string> thenIncludes = new List<string>
+            {
+                "InterviewHistory.Status",
+                "InterviewHistory.CreatedBy",
+                "InterviewHistory.InterviewAttendees",
+                "InterviewHistory.CandidateEvaluations",
+                "InterviewHistory.CandidateEvaluations.CandidateScoringScale",
+                "InterviewHistory.CandidateEvaluations.CandidateEvaluationCategory",
+                "InterviewHistory.InterviewAttendees.AspNetUsers"
+            };
 
             Expression<Func<Entities.Models.Interview, object>> OrderBy = null;
             Expression<Func<Entities.Models.Interview, object>> OrderByDesc = x => x.Id;

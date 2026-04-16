@@ -31,3 +31,56 @@
   font-size: 11px;
   color: #888;
 }
+
+.progress {
+  background-color: #e9ecef;
+  border-radius: 4px;
+}
+
+.progress-bar {
+  background: linear-gradient(90deg, #4caf50, #2e7d32);
+  transition: width 0.4s ease;
+}
+
+.floating-field {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.floating-field input {
+  width: 100%;
+  padding: 14px 12px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+  background: transparent;
+}
+
+/* Label default position (inside field) */
+.floating-field label {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: white;
+  padding: 0 4px;
+  color: #777;
+  font-size: 14px;
+  pointer-events: none;
+  transition: 0.2s ease;
+}
+
+/* On focus or when value exists */
+.floating-field input:focus + label,
+.floating-field input:not(:placeholder-shown) + label {
+  top: 0;
+  transform: translateY(-50%);
+  font-size: 12px;
+  color: #1d1b1e;
+}
+
+/* Focus border effect */
+.floating-field input:focus {
+  border-color: #1d1b1e;
+}

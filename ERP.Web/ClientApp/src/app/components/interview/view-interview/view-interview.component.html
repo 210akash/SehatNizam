@@ -1,282 +1,139 @@
 <mat-card>
-  <mat-card-header>
-    <mat-card-title> View Interview </mat-card-title>
-  </mat-card-header>
+  <div mat-dialog-title class="d-flex justify-content-between align-items-center mb-0">
+    <span><mat-icon class="align-middle me-2 text-primary">assignment_ind</mat-icon>Conduct Interview</span>
+    <button mat-icon-button [mat-dialog-close]="true"><mat-icon>close</mat-icon></button>
+  </div>
   <mat-divider></mat-divider>
-  <mat-card-content>
 
-    <!-- SECTION: Interview History -->
-    <h3 class="section-title m-0">Interview History ({{dataSource.length}})</h3>
-    <mat-divider></mat-divider>
-    <div class="row">
-      <div class="col-md-12 text-center">
-        <div class="mat-elevation-z8 table-responsive">
-
-          <table mat-table [dataSource]="dataSource" matSort>
-
-            <colgroup>
-                <col span="1" style="width: 5%"/>
-                <col span="1" style="width: 15%"/>
-                <col span="1" style="width: 2%"/>
-                <col span="1" style="width: 15%"/>
-                <col span="1" style="width: 7%"/>
-                <col span="1" style="width: 7%"/>
-                <col span="1" style="width: 7%"/>
-            </colgroup>
-
-            <ng-container matColumnDef="interviewDate">
-              <th mat-header-cell *matHeaderCellDef> Interview Date </th>
-              <td mat-cell *matCellDef="let element"> {{ element.interviewDate | date: 'medium' }} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="attendees">
-                <th mat-header-cell *matHeaderCellDef> Attendees </th>
-                <td mat-cell *matCellDef="let element"> {{ getAttendeesString(element) }} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="joinAfterDays">
-              <th mat-header-cell *matHeaderCellDef> Days </th>
-              <td mat-cell *matCellDef="let element"> {{ element.joinAfterDays }} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="comments">
-              <th mat-header-cell *matHeaderCellDef> Comments </th>
-              <td mat-cell *matCellDef="let element"> {{ element.comments }} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="status">
-              <th mat-header-cell *matHeaderCellDef> Status </th>
-              <td mat-cell *matCellDef="let element"> {{ element.status?.title }} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="createdDate">
-              <th mat-header-cell *matHeaderCellDef> Created Date </th>
-              <td mat-cell *matCellDef="let element"> {{ element.createdDate | date: 'medium' }} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="createdBy">
-              <th mat-header-cell *matHeaderCellDef> Created By </th>
-              <td mat-cell *matCellDef="let element"> {{ element.createdBy?.firstName }} {{ element.createdBy?.lastName
-                }} </td>
-            </ng-container>
-
-            <!-- Table rows -->
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-          </table>
-
-          <!-- <mat-divider></mat-divider> -->
-          <!-- Paginator -->
-          <!-- <mat-paginator #paginator [length]="totalRows" [pageIndex]="currentPage" [pageSize]="pageSize"
-            [pageSizeOptions]="pageSizeOptions" (page)="pageChanged($event)" aria-label="Select page">
-          </mat-paginator> -->
-
+  <mat-card-content class="pt-3">
+    <!-- TOP: CANDIDATE INFO HEADER -->
+    <div class="candidate-summary-panel mb-4 p-3 border rounded shadow-sm bg-light">
+      <div class="row align-items-center">
+        <div class="col-md-7 border-end">
+          <h2 class="mb-1 text-primary">{{ data.element.name }}</h2>
+          <div class="text-muted small">
+            <mat-icon style="font-size: 16px; height: 16px; width: 16px; vertical-align: middle;">fingerprint</mat-icon> {{ data.element.code }} | 
+            <mat-icon style="font-size: 16px; height: 16px; width: 16px; vertical-align: middle;">business</mat-icon> {{ data.element.department?.name }} | 
+            <mat-icon style="font-size: 16px; height: 16px; width: 16px; vertical-align: middle;">work_outline</mat-icon> {{ data.element.employeeDesignation?.name }}
+          </div>
         </div>
-      </div>
-    </div>
-
-    <!-- SECTION: Personal Information -->
-    <h3 class="section-title">Personal Information</h3>
-    <mat-divider></mat-divider>
-    <div class="row">
-      <div class="col-md-2">
-        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
-          <mat-label>Candidate Code</mat-label>
-          <input matInput [value]="this.data.element.code" readonly />
-        </mat-form-field>
-      </div>
-
-      <div class="col-md-4">
-        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
-          <mat-label>Full Name</mat-label>
-          <input matInput [value]="this.data.element.name" readonly />
-        </mat-form-field>
-      </div>
-
-      <div class="col-md-3">
-        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
-          <mat-label>Mobile Number</mat-label>
-          <input matInput [value]="this.data.element.mobile" readonly />
-        </mat-form-field>
-      </div>
-
-      <div class="col-md-3">
-        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
-          <mat-label>Email Address</mat-label>
-          <input matInput [value]="this.data.element.email" readonly />
-        </mat-form-field>
-      </div>
-
-      <div class="col-md-12">
-        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
-          <mat-label>Personal Details</mat-label>
-          <textarea matInput [value]="this.data.element.personalDetail" rows="3"></textarea>
-        </mat-form-field>
-      </div>
-    </div>
-
-    <!-- SECTION: Education & Experience -->
-    <h3 class="section-title">Education & Experience</h3>
-    <mat-divider></mat-divider>
-    <div class="row">
-      <div class="col-md-6">
-        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
-          <mat-label>Education</mat-label>
-          <input matInput [value]="this.data.element.employeeEducation?.name" readonly />
-        </mat-form-field>
-      </div>
-
-      <div class="col-md-6">
-        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
-          <mat-label>Experience (Years)</mat-label>
-          <input matInput [value]="this.data.element.experience" readonly />
-        </mat-form-field>
-      </div>
-    </div>
-
-    <!-- SECTION: Job Details -->
-    <h3 class="section-title">Job Details</h3>
-    <mat-divider></mat-divider>
-    <div class="row">
-
-      <div class="col-md-4">
-        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
-          <mat-label>Department</mat-label>
-          <input matInput [value]="this.data.element.department?.name" readonly />
-        </mat-form-field>
-      </div>
-
-      <div class="col-md-4">
-        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
-          <mat-label>Designation</mat-label>
-          <input matInput [value]="this.data.element.employeeDesignation?.name" readonly />
-        </mat-form-field>
-      </div>
-
-       <div class="col-md-4">
-        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
-          <mat-label>Expected Join Date</mat-label>
-          <input matInput type="text" [value]="this.data.element.joinDate | date : 'mediumDate'" readonly />
-        </mat-form-field>
-      </div>
-    </div>
-
-    <!-- SECTION: Salary & Reference -->
-    <h3 class="section-title">Salary & Reference</h3>
-    <mat-divider></mat-divider>
-    <div class="row">
-      <div class="col-md-6">
-        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
-          <mat-label>Current Salary</mat-label>
-          <input matInput type="number" [value]="this.data.element.currentSalary" readonly />
-        </mat-form-field>
-      </div>
-
-      <div class="col-md-6">
-        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
-          <mat-label>Expected Salary</mat-label>
-          <input matInput type="number" [value]="this.data.element.expectedSalary" readonly />
-        </mat-form-field>
-      </div>
-
-      <div class="col-md-6">
-        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
-          <mat-label>Reference</mat-label>
-          <input matInput [value]="this.data.element.reference" readonly />
-        </mat-form-field>
-      </div>
-
-      <div class="col-md-6">
-        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
-          <mat-label>Reason for Change</mat-label>
-          <input matInput [value]="this.data.element.reason" readonly />
-        </mat-form-field>
-      </div>
-    </div>
-
-    <!-- SECTION: Interview Panel -->
-    <!-- <h3 class="section-title">Interview Panel</h3>
-    <mat-divider></mat-divider>
-    <div class="row">
-      <div class="col-md-12">
-        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
-          <mat-label>Select Interview Attendees</mat-label>
-          <mat-select formControlName="interviewAttendees" multiple placeholder="Choose panel members">
-            <mat-option *ngFor="let user of interviewAttendeesList" [value]="user.id">
-              {{ user.firstName }} {{ user.lastName }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-    </div> -->
-
-    <!-- SECTION: Comments -->
-    <h3 class="section-title">Additional Comments</h3>
-    <mat-divider></mat-divider>
-    <div class="row">
-      <div class="col-md-12">
-        <mat-form-field appearance="outline" floatLabel="always" style="width: 100%;">
-          <mat-label>Remarks</mat-label>
-          <textarea matInput rows="3" [value]="this.data.element?.remarks"></textarea>
-        </mat-form-field>
-      </div>
-    </div>
-
-    <!-- <img src="{{this.data.element.logo}}" class="previewimg"> -->
-
-    <!-- SECTION: Upload Picture -->
-    <h3 class="section-title">Documents</h3>
-    <mat-divider></mat-divider>
-    <div class="row">
-      <div class="col-md-12">
-        <div class="row">
-          <div class="col-md-2" *ngFor="let media of documents; let i = index">
-            <div class="uploaded_doc_wrap" (click)="GetDocument($event, i, documentView)">
-              <div class="file_upload text-center">
-                <!-- <img [src]="media.imageName ?? media.filePath" class="previewimg" /> -->
-
-                <img 
-                    *ngIf="isImage(media.imageName || media.filePath); else fileIcon"
-                    [src]="media.imageName || media.filePath"
-                    class="previewimg" 
-                  />
-                  <ng-template #fileIcon>
-                    <!-- Show PDF icon if PDF, otherwise generic file icon -->
-                    <i
-                      [ngClass]="{
-                        'fa fa-file-pdf': isPdf(media.filePath),
-                        'fa fa-file': !isPdf(media.filePath)
-                      }"
-                      class="file-icon"
-                    ></i>
-                  </ng-template>
-
-                <div class="progress-bar" [style.width.%]="media.FileProgress"></div>
-              </div>
-            </div>
+        <div class="col-md-5 text-md-end mt-2 mt-md-0">
+          <span class="badge bg-info me-2 p-2">Exp: {{ data.element.experience }} yrs</span>
+          <span class="badge bg-success p-2">Expected: {{ data.element.expectedSalary | number }}</span>
+          <div class="mt-2 small">
+            <span class="me-3"><mat-icon style="font-size: 16px; height: 16px; width: 16px; vertical-align: middle;" class="text-secondary">phone</mat-icon> {{ data.element.mobile }}</span>
+            <span><mat-icon style="font-size: 16px; height: 16px; width: 16px; vertical-align: middle;" class="text-secondary">email</mat-icon> {{ data.element.email }}</span>
           </div>
         </div>
       </div>
+      <div class="row mt-3 g-3 small border-top pt-2">
+        <div class="col-md-3"><strong>Education:</strong> {{ data.element.employeeEducation?.name }}</div>
+        <div class="col-md-3"><strong>Join Date:</strong> {{ data.element.joinDate | date:'mediumDate' }}</div>
+        <div class="col-md-3"><strong>Reference:</strong> {{ data.element.reference || 'N/A' }}</div>
+        <div class="col-md-3"><strong>Reason:</strong> {{ data.element.reason || 'N/A' }}</div>
+        <div class="col-12 mt-2">
+          <p class="mb-0 text-muted italic"><strong>Bio:</strong> {{ data.element.personalDetail }}</p>
+        </div>
+      </div>
     </div>
 
-    <mat-divider></mat-divider>
-    <div class="button-container">
-      <button mat-flat-button color="default" [mat-dialog-close]="true">
-        <span class="mat-button-wrapper">Close</span>
-      </button>
+
+    <!-- ROUND HISTORY SECTION (FULL ROW) -->
+    <div class="row">
+      <div class="col-12">
+        <h3 class="section-title text-primary"><mat-icon class="align-middle me-1">history</mat-icon>Round History ({{ dataSource?.length || 0 }})</h3>
+        <mat-divider class="mb-3"></mat-divider>
+
+     <div class="history-table-container border rounded bg-white shadow-sm overflow-auto" style="max-height: 480px;">
+  <table class="table table-sm table-hover align-middle mb-0">
+    
+    <thead class="table-light sticky-top">
+      <tr>
+        <th>Date</th>
+        <th>Status</th>
+        <th>Panel Members</th>
+        <th>Evaluation</th> <!-- ✅ NEW -->
+        <th>Notes</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let element of dataSource">
+
+        <!-- Date -->
+        <td class="text-nowrap">
+          {{ element.interviewDate | date:'shortDate' }}<br>
+          <small class="text-muted">{{ element.interviewDate | date:'shortTime' }}</small>
+        </td>
+
+        <!-- Status -->
+        <td>
+          <span class="badge rounded-pill bg-primary px-2">
+            {{ element.status?.title }}
+          </span>
+        </td>
+
+        <!-- Panel -->
+        <td class="small">
+          {{ getAttendeesString(element) || '-' }}
+        </td>
+
+        <!-- ✅ Evaluation Column -->
+       <td class="small">
+
+  <ng-container *ngIf="element.candidateEvaluations?.length; else noEval">
+
+    <div *ngFor="let ev of element.candidateEvaluations" class="mb-2">
+
+      <!-- Category -->
+      <div class="d-flex justify-content-between">
+        <strong>{{ ev.candidateEvaluationCategory?.name }}</strong>
+        <span class="text-muted small">
+          {{ ev.candidateScoringScale?.title }}
+        </span>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="progress" style="height: 6px;">
+        <div class="progress-bar"
+             role="progressbar"
+             [style.width.%]="getScorePercentage(ev.candidateScoringScaleId)">
+        </div>
+      </div>
+
+    </div>
+
+  </ng-container>
+
+  <ng-template #noEval>
+    <span class="text-muted">-</span>
+  </ng-template>
+
+</td>
+
+        <!-- Notes -->
+        <td class="small text-muted">
+          {{ element.comments }}
+        </td>
+
+      </tr>
+
+      <!-- Empty -->
+      <tr *ngIf="!dataSource?.length">
+        <td colspan="5" class="text-center py-5 text-muted italic">
+          No previous interviews recorded for this candidate.
+        </td>
+      </tr>
+
+    </tbody>
+  </table>
+</div>
+      </div>
     </div>
   </mat-card-content>
-</mat-card>
 
-<ng-template #documentView>
-  <div class="card">
-    <div class="card-body" style="height: 680px;">
-      <iframe width="100%" height="100%" frameBorder="0" [src]="urlSafe"></iframe>
-    </div>
-    <div class="card-footer">
-      <button mat-flat-button color="default" [mat-dialog-close]="true">
-        <span class="mat-button-wrapper">Close</span>
-      </button>
-    </div>
+  <mat-divider></mat-divider>
+  <div mat-dialog-actions class="justify-content-end p-3 bg-light">
+    <button mat-stroked-button [mat-dialog-close]="true" class="me-2">Cancel</button>
   </div>
-</ng-template>
+</mat-card>

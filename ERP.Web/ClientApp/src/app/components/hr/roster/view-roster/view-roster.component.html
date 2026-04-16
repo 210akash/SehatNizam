@@ -1,149 +1,81 @@
-<mat-card>
-  <mat-card-header>
-    <div class="header-container">
-      <mat-card-title>View Cost Sheet</mat-card-title>
-      <span class="badge badge-created" matTooltip="Status">{{this.data.element.status.title}}</span>
+<div class="roster-view-page">
+<!-- HEADER CARD -->
+<div class="header-card">
+
+  <div class="left">
+    <h2>
+      {{ roster?.department?.name }} - Roster
+    </h2>
+
+    <div class="sub">
+      {{ roster?.year }} / {{ roster?.month }}
     </div>
-  </mat-card-header>
-  <mat-divider></mat-divider>
-  <mat-card-content>
-    <div class="row justify-content-center">
-      <div class="col-md-2">
-        <mat-form-field>
-          <mat-label>Code</mat-label>
-          <input matInput [value]="this.data.element.code" tabindex="-1"  readonly>
-        </mat-form-field>
-      </div>
-      <div class="col-md-2">
-        <mat-form-field>
-          <mat-label>Date</mat-label>
-          <input matInput [value]="this.data.element.createdDate | date : 'shortDate'" tabindex="-1"  readonly>
-        </mat-form-field>
-      </div>
-      <div class="col-md-4">
-        <mat-form-field  class="form-field">
-          <mat-label>Product</mat-label>
-          <input matInput [value]="this.data.element.item.name" tabindex="-1"  readonly>
-        </mat-form-field>
-      </div>
-      <div class="col-md-2">
-        <mat-form-field  class="form-field">
-          <mat-label>Planned Quantity</mat-label>
-          <input matInput [value]="this.data.element.quantity" tabindex="-1"  readonly>
-        </mat-form-field>
-      </div>
-      <div class="col-md-2">
-        <mat-form-field  class="form-field">
-          <mat-label>Toll Fill Rate</mat-label>
-          <input matInput [value]="this.data.element.tollFillRate" tabindex="-1"  readonly>
-        </mat-form-field>
-      </div>
-    </div>
-    <div class="row mt-3">
-      <div class="col-md-12">
-        <div class="table-responsive">
-          <table class="table table-bordered">
-            <thead>
-              <tr>
-                <th>Sr.#</th>
-                <th>Item</th>
-                <th>UOM</th>
-                <th>Rate</th>
-                <th>Quantity</th>
-                <th>Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let detail of this.data.element.costSheetDetail; let i = index">
-              <!-- UOM Column -->
-                      <td style="width: 10px;">
-                          {{i + 1}}
-                      </td>
-                <!-- Item Column -->
-                <td>
-                  <mat-form-field style="width: 500px;">
-                    <input matInput [matTooltip]="detail.item.name"  [value]="detail.item.name" tabindex="-1"  readonly  />
-                  </mat-form-field>
-                </td>
-          
-                <!-- UOM Column -->
-                <td>
-                  <mat-form-field style="width: 100px;">
-                   <input matInput [value]="detail.item.uom.name" tabindex="-1"  readonly  />
-                  </mat-form-field>
-                </td>
-          
-                <!-- Required Column -->
-                <td>
-                  <mat-form-field  style="width: 100px;">
-                    <input matInput [value]="detail.rate" tabindex="-1"  readonly  />
-                  </mat-form-field>
-                </td>
-          
-                           <!-- Required Column -->
-                           <td>
-                            <mat-form-field  style="width: 100px;">
-                              <input matInput [value]="detail.quantity" tabindex="-1"  readonly  />
-                            </mat-form-field>
-                          </td>
-        
-                                <!-- Required Column -->
-                                <td>
-                                  <mat-form-field  style="width: 100px;">
-                                    <input matInput [value]="detail.rate * detail.quantity" tabindex="-1"  readonly  />
-                                  </mat-form-field>
-                                </td>
-              </tr>
-            </tbody>
-            <tfoot>
-              <tr>
-                <th colspan="5">Total Material Cost : </th>
-                <th colspan="1">{{this.data.element.tMaterialCost}}</th>
-              </tr>
-              <tr>
-                <th colspan="5">Toll Filling Per Pet : </th>
-                <th colspan="1">{{this.data.element.tFillingPerPet}}</th>
-              </tr>
-              <tr>
-                <th colspan="5">Cost Per Pet : </th>
-                <th colspan="1">{{this.data.element.costPerPet}}</th>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-2">
-        <mat-form-field >
-          <mat-label>Adv Sale Tax %</mat-label>
-          <input matInput type="number" [value]="this.data.element.advSaleTaxPer" readonly>
-        </mat-form-field>
-      </div>
-      <div class="col-md-4">
-        <mat-form-field >
-          <mat-label>Adv Sale Tax Amount</mat-label>
-          <input matInput type="number" [value]="this.advSaleTaxAmt" readonly>
-        </mat-form-field>
-      </div>
-      <div class="col-md-2">
-        <mat-form-field >
-          <mat-label>Adv FED %</mat-label>
-          <input matInput type="number" [value]="this.data.element.advFEDPer" readonly>
-        </mat-form-field>
-      </div>
-      <div class="col-md-4">
-        <mat-form-field >
-          <mat-label>Adv Sale Tax Amount</mat-label>
-          <input matInput type="number" [value]="this.advFEDAmt" readonly>
-        </mat-form-field>
-      </div>
-    </div>
-    <mat-divider></mat-divider>
-    <div class="button-container">
-      <button mat-flat-button color="default" [mat-dialog-close]="true">
-        <span class="mat-button-wrapper">Close</span>
-      </button>
-    </div>
-  </mat-card-content>
-</mat-card>
+      <!-- STATUS -->
+  <div class="sub" [ngClass]="getStatusClass()">
+    {{ roster?.status?.title }}
+  </div>
+  </div>
+
+
+
+  <!-- CLOSE -->
+  <button class="close-btn" (click)="close()">
+    ✕
+  </button>
+
+</div>
+
+
+  <!-- GRID -->
+  <div class="table-wrap">
+
+    <table class="roster-table">
+
+      <!-- HEADER -->
+      <thead>
+        <tr>
+          <th class="emp-col">Employee</th>
+          <th *ngFor="let day of days">{{ day }}</th>
+        </tr>
+      </thead>
+
+      <!-- BODY -->
+      <tbody>
+
+        <tr *ngFor="let emp of groupedRoster">
+
+          <!-- Employee -->
+          <td class="emp-cell">
+            <div class="emp-name">{{ emp.employeeName }}</div>
+            <div class="emp-code">{{ emp.employeeCode }}</div>
+          </td>
+
+          <!-- DAYS -->
+          <td *ngFor="let day of days" [ngClass]="getCellClass(emp, day)">
+
+            <ng-container *ngIf="getRosterCell(emp, day) as cell">
+
+              <!-- OFF DAY -->
+              <div *ngIf="cell.isOffDay" class="off-badge">
+                OFF
+              </div>
+
+              <!-- SHIFT -->
+              <div *ngIf="!cell.isOffDay"
+                   class="shift-badge"
+                   [ngClass]="shiftClass(cell.employeeShift?.id)">
+                {{ cell.employeeShift?.name }}
+              </div>
+
+            </ng-container>
+
+          </td>
+
+        </tr>
+
+      </tbody>
+    </table>
+
+  </div>
+
+</div>

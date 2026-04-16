@@ -62,8 +62,16 @@
             <ng-container *ngIf="f['statusId'].value === 2">
               <div class="col-md-4">
                 <div class="mb-3">
-                  <label class="form-label small fw-bold mb-1">Next Interview Date</label>
-                  <input class="form-control" type="datetime-local" formControlName="interviewDate" />
+              <div class="floating-field">
+  <input
+    type="datetime-local"
+    formControlName="interviewDate"
+    id="interviewDate"
+    required
+  />
+
+  <label for="interviewDate">Next Interview Date *</label>
+</div>
                 </div>
               </div>
               <div class="col-md-4">
@@ -112,7 +120,7 @@
             <h4 class="mt-3 small text-secondary fw-bold text-uppercase">Evaluation Scoring</h4>
             <div class="row g-3">
               <div *ngFor="let group of candidateEvaluationsFormArray.controls; let i = index"
-                   [formGroupName]="i" class="col-md-6 col-lg-4">
+                   [formGroupName]="i" class="col-md-12">
                 <div class="eval-box p-2 border rounded bg-white shadow-sm h-100">
                   <div class="small mb-1 font-weight-bold text-truncate">{{ evaluationCategorysList[i]?.name }}</div>
                   <mat-radio-group formControlName="candidateScoringScaleId" class="d-flex flex-wrap gap-2">
@@ -127,45 +135,104 @@
         </form>
       </div>
     </div>
-
-    <!-- ROUND HISTORY SECTION (FULL ROW) -->
-    <div class="row">
-      <div class="col-12">
-        <h3 class="section-title text-primary"><mat-icon class="align-middle me-1">history</mat-icon>Round History ({{ dataSource?.length || 0 }})</h3>
-        <mat-divider class="mb-3"></mat-divider>
-
-        <div class="history-table-container border rounded bg-white shadow-sm overflow-auto" style="max-height: 480px;">
-          <table class="table table-sm table-hover align-middle mb-0">
-            <thead class="table-light sticky-top">
-              <tr>
-                <th>Date</th>
-                <th>Status</th>
-                <th>Panel Members</th>
-                <th>Notes</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let element of dataSource">
-                <td class="text-nowrap">{{ element.interviewDate | date:'shortDate' }}<br><small class="text-muted">{{ element.interviewDate | date:'shortTime' }}</small></td>
-                <td><span class="badge rounded-pill bg-primary px-2">{{ element.status?.title }}</span></td>
-                <td class="small">{{ getAttendeesString(element) }}</td>
-                <td class="small text-muted">{{ element.comments }}</td>
-              </tr>
-              <tr *ngIf="!dataSource?.length">
-                <td colspan="4" class="text-center py-5 text-muted italic">No previous interviews recorded for this candidate.</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </mat-card-content>
-
-  <mat-divider></mat-divider>
+ <mat-divider></mat-divider>
   <div mat-dialog-actions class="justify-content-end p-3 bg-light">
     <button mat-stroked-button [mat-dialog-close]="true" class="me-2">Cancel</button>
     <button mat-flat-button color="primary" (click)="SaveData()">
       <mat-icon class="me-1">save</mat-icon>Save Decision
     </button>
   </div>
+    <!-- ROUND HISTORY SECTION (FULL ROW) -->
+    <div class="row">
+      <div class="col-12">
+        <h3 class="section-title text-primary"><mat-icon class="align-middle me-1">history</mat-icon>Round History ({{ dataSource?.length || 0 }})</h3>
+        <mat-divider class="mb-3"></mat-divider>
+
+     <div class="history-table-container border rounded bg-white shadow-sm overflow-auto" style="max-height: 480px;">
+  <table class="table table-sm table-hover align-middle mb-0">
+    
+    <thead class="table-light sticky-top">
+      <tr>
+        <th>Date</th>
+        <th>Status</th>
+        <th>Panel Members</th>
+        <th>Evaluation</th> <!-- ✅ NEW -->
+        <th>Notes</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let element of dataSource">
+
+        <!-- Date -->
+        <td class="text-nowrap">
+          {{ element.interviewDate | date:'shortDate' }}<br>
+          <small class="text-muted">{{ element.interviewDate | date:'shortTime' }}</small>
+        </td>
+
+        <!-- Status -->
+        <td>
+          <span class="badge rounded-pill bg-primary px-2">
+            {{ element.status?.title }}
+          </span>
+        </td>
+
+        <!-- Panel -->
+        <td class="small">
+          {{ getAttendeesString(element) || '-' }}
+        </td>
+
+        <!-- ✅ Evaluation Column -->
+       <td class="small">
+
+  <ng-container *ngIf="element.candidateEvaluations?.length; else noEval">
+
+    <div *ngFor="let ev of element.candidateEvaluations" class="mb-2">
+
+      <!-- Category -->
+      <div class="d-flex justify-content-between">
+        <strong>{{ ev.candidateEvaluationCategory?.name }}</strong>
+        <span class="text-muted small">
+          {{ ev.candidateScoringScale?.title }}
+        </span>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="progress" style="height: 6px;">
+        <div class="progress-bar"
+             role="progressbar"
+             [style.width.%]="getScorePercentage(ev.candidateScoringScaleId)">
+        </div>
+      </div>
+
+    </div>
+
+  </ng-container>
+
+  <ng-template #noEval>
+    <span class="text-muted">-</span>
+  </ng-template>
+
+</td>
+
+        <!-- Notes -->
+        <td class="small text-muted">
+          {{ element.comments }}
+        </td>
+
+      </tr>
+
+      <!-- Empty -->
+      <tr *ngIf="!dataSource?.length">
+        <td colspan="5" class="text-center py-5 text-muted italic">
+          No previous interviews recorded for this candidate.
+        </td>
+      </tr>
+
+    </tbody>
+  </table>
+</div>
+      </div>
+    </div>
+  </mat-card-content>
 </mat-card>

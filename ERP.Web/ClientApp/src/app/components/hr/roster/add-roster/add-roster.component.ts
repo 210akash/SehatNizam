@@ -170,43 +170,39 @@ export class AddRosterComponent {
     }
   }
 
-  SaveData() {
-    console.log(this.rosterForm.value);
-    if (this.rosterForm.invalid) {
-      this.constantService.markFormGroupTouched(this.rosterForm);
-      this.notificationsService.showNotification('Please Fill Required Fields', 'snack-bar-danger');
-      return;
-    }
+SaveData() {
+  console.log(this.rosterForm.getRawValue()); // 🔥 FIX
 
-    this.isLoading = true;
-    let _clienttemperatureForm: any = {};
-    _clienttemperatureForm = Object.assign(_clienttemperatureForm, this.rosterForm.value);
-
-    // // remove placeholder/empty rows before submit
-    // _clienttemperatureForm.rosterDetail = this.rosterDetail.controls
-    //   .map(ctrl => (ctrl as FormGroup).value)
-    //   .filter(detail =>
-    //     detail.employeeId &&
-    //     detail.employeeShiftId &&
-    //     detail.rosterDate
-    //   );
-
-    this.rosterService.saveRoster(_clienttemperatureForm).subscribe({
-      next: (data: { Status: number; Data: string; }) => {
-        if (data.Status == 200) {
-          this.notificationsService.showNotification(data.Data, 'snack-bar-success');
-        }
-        else
-          this.notificationsService.showNotification(data.Data, 'snack-bar-danger');
-        this.isLoading = false;
-      },
-      error: (error: string) => {
-        this.notificationsService.showNotification(error, 'snack-bar-danger');
-        console.error(error);
-        this.isLoading = false;
-      }
-    });
+  if (this.rosterForm.invalid) {
+    this.constantService.markFormGroupTouched(this.rosterForm);
+    this.notificationsService.showNotification('Please Fill Required Fields', 'snack-bar-danger');
+    return;
   }
+
+  this.isLoading = true;
+
+  let _clienttemperatureForm: any = {};
+  _clienttemperatureForm = Object.assign(
+    _clienttemperatureForm,
+    this.rosterForm.getRawValue() // 🔥 IMPORTANT
+  );
+
+  this.rosterService.saveRoster(_clienttemperatureForm).subscribe({
+    next: (data: { Status: number; Data: string }) => {
+      if (data.Status == 200) {
+        this.notificationsService.showNotification(data.Data, 'snack-bar-success');
+      } else {
+        this.notificationsService.showNotification(data.Data, 'snack-bar-danger');
+      }
+      this.isLoading = false;
+    },
+    error: (error: string) => {
+      this.notificationsService.showNotification(error, 'snack-bar-danger');
+      console.error(error);
+      this.isLoading = false;
+    }
+  });
+}
 
   getDepartmentList(): void {
     let _departmentsForm: any = {};

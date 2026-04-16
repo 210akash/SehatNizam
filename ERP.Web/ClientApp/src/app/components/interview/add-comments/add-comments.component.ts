@@ -63,55 +63,59 @@ export class AddCommentsComponent {
     return this.interviewForm.get('candidateEvaluations') as FormArray;
   }
 
-  SaveData() {
-    const statusId = this.interviewForm.get('statusId')?.value;
-    this.isLoading = true;
-    let _interviewForm: any = {};
-    _interviewForm = Object.assign(_interviewForm, this.interviewForm.value);
-    if (statusId === 2) {
-      _interviewForm['interviewAttendees'] = null;
-      // Only check full form for In Process
-      if ((this.interviewForm.invalid || !this.selectedUsers.length)) {
-        this.constantService.markFormGroupTouched(this.interviewForm);
-        return;
-      }
+SaveData() {
+
+  const statusId = this.interviewForm.get('statusId')?.value;
+  this.isLoading = true;
+
+  let _interviewForm: any = { ...this.interviewForm.value };
+
+  // ===== In Process =====
+  if (statusId === 2) {
+
+    _interviewForm['interviewAttendees'] = null;
+
+    if (this.interviewForm.invalid || !this.selectedUsers.length) {
+      this.constantService.markFormGroupTouched(this.interviewForm);
+      this.isLoading = false;
+      return;
     }
-    else{
-      _interviewForm['interviewAttendees'] = this.selectedUsers.map(x => x.id);
-    }
-
-      // Only check evaluation for ShortListed / Reject
-      if ((statusId === 180 || statusId === 4) && this.candidateEvaluationsFormArray.invalid) {
-        this.candidateEvaluationsFormArray.markAllAsTouched();
-        this.notificationsService.showNotification('Please complete all evaluations', 'snack-bar-danger');
-        return;
-      }
-
-      if (this.interviewForm.get('statusId')?.value == 180 || this.interviewForm.get('statusId')?.value == 4) {
-
-        if (this.candidateEvaluationsFormArray.invalid) {
-          this.candidateEvaluationsFormArray.markAllAsTouched();
-          this.notificationsService.showNotification('Please complete all evaluations', 'snack-bar-danger');
-          return;
-        }
-      }
-      this.interviewService.addComments(_interviewForm).subscribe({
-        next: (data) => {
-          if (data.Status == 200) {
-            this.notificationsService.showNotification(data.Data, 'snack-bar-success');
-            this.dialog.closeAll();
-          }
-          else
-            this.notificationsService.showNotification(data.Data, 'snack-bar-danger');
-          this.isLoading = false;
-        },
-        error: (error) => {
-          this.notificationsService.showNotification(error, 'snack-bar-danger');
-          console.error(error);
-          this.isLoading = false;
-        }
-      });
   }
+  else {
+    _interviewForm['interviewAttendees'] = this.selectedUsers.map(x => x.id);
+  }
+
+  // ===== Remove Evaluations if not needed =====
+  if (statusId !== 180 && statusId !== 4) {
+    delete _interviewForm.candidateEvaluations;
+  }
+
+  // ===== Validate Evaluations =====
+  if ((statusId === 180 || statusId === 4) && this.candidateEvaluationsFormArray.invalid) {
+    this.candidateEvaluationsFormArray.markAllAsTouched();
+    this.notificationsService.showNotification('Please complete all evaluations', 'snack-bar-danger');
+    this.isLoading = false;
+    return;
+  }
+
+  // ===== API CALL =====
+  this.interviewService.addComments(_interviewForm).subscribe({
+    next: (data) => {
+      if (data.Status == 200) {
+        this.notificationsService.showNotification(data.Data, 'snack-bar-success');
+        this.dialog.closeAll();
+      } else {
+        this.notificationsService.showNotification(data.Data, 'snack-bar-danger');
+      }
+      this.isLoading = false;
+    },
+    error: (error) => {
+      this.notificationsService.showNotification(error, 'snack-bar-danger');
+      console.error(error);
+      this.isLoading = false;
+    }
+  });
+}
 
   getInterviewAttendees(): void {
     this.interviewService.getInterviewAttendees().subscribe(data => {
@@ -258,4 +262,15 @@ export class AddCommentsComponent {
       });
     });
   }
+getScorePercentage(scaleId: number): number {
+  switch (scaleId) {
+    case 1: return 20;  // Poor
+    case 2: return 40;  // Below Avg
+    case 3: return 60;  // Average
+    case 4: return 80;  // Good
+    case 5: return 100; // Excellent
+    default: return 0;
+  }
+}
+
 }

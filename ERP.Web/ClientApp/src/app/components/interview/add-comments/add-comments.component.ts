@@ -49,7 +49,7 @@ export class AddCommentsComponent {
       statusId: ['', Validators.required],
       // interviewAttendees: ['', Validators.required],
       user: [''],
-       candidateEvaluations: this.formBuilder.array([])
+      candidateEvaluations: this.formBuilder.array([])
     });
 
     this.getInterviewAttendees();
@@ -59,48 +59,58 @@ export class AddCommentsComponent {
 
   get f() { return this.interviewForm.controls; }
 
-get candidateEvaluationsFormArray(): FormArray {
-  return this.interviewForm.get('candidateEvaluations') as FormArray;
-}
+  get candidateEvaluationsFormArray(): FormArray {
+    return this.interviewForm.get('candidateEvaluations') as FormArray;
+  }
 
   SaveData() {
-    if (this.interviewForm.invalid || (!this.selectedUsers.length && this.interviewForm.get('statusId')?.value == 2)) {
-      this.constantService.markFormGroupTouched(this.interviewForm);
-      return;
-    }
-
-
+    const statusId = this.interviewForm.get('statusId')?.value;
     this.isLoading = true;
     let _interviewForm: any = {};
     _interviewForm = Object.assign(_interviewForm, this.interviewForm.value);
-
-    _interviewForm['interviewAttendees'] = this.selectedUsers.map(x => x.id);
-
-
-   if (this.interviewForm.get('statusId')?.value == 180 || this.interviewForm.get('statusId')?.value == 4) {
-
-  if (this.candidateEvaluationsFormArray.invalid) {
-    this.candidateEvaluationsFormArray.markAllAsTouched();
-    this.notificationsService.showNotification('Please complete all evaluations', 'snack-bar-danger');
-    return;
-  }
-}
-    this.interviewService.addComments(_interviewForm).subscribe({
-      next: (data) => {
-        if (data.Status == 200) {
-          this.notificationsService.showNotification(data.Data, 'snack-bar-success');
-          this.dialog.closeAll();
-        }
-        else
-          this.notificationsService.showNotification(data.Data, 'snack-bar-danger');
-        this.isLoading = false;
-      },
-      error: (error) => {
-        this.notificationsService.showNotification(error, 'snack-bar-danger');
-        console.error(error);
-        this.isLoading = false;
+    if (statusId === 2) {
+      _interviewForm['interviewAttendees'] = null;
+      // Only check full form for In Process
+      if ((this.interviewForm.invalid || !this.selectedUsers.length)) {
+        this.constantService.markFormGroupTouched(this.interviewForm);
+        return;
       }
-    });
+    }
+    else{
+      _interviewForm['interviewAttendees'] = this.selectedUsers.map(x => x.id);
+    }
+
+      // Only check evaluation for ShortListed / Reject
+      if ((statusId === 180 || statusId === 4) && this.candidateEvaluationsFormArray.invalid) {
+        this.candidateEvaluationsFormArray.markAllAsTouched();
+        this.notificationsService.showNotification('Please complete all evaluations', 'snack-bar-danger');
+        return;
+      }
+
+      if (this.interviewForm.get('statusId')?.value == 180 || this.interviewForm.get('statusId')?.value == 4) {
+
+        if (this.candidateEvaluationsFormArray.invalid) {
+          this.candidateEvaluationsFormArray.markAllAsTouched();
+          this.notificationsService.showNotification('Please complete all evaluations', 'snack-bar-danger');
+          return;
+        }
+      }
+      this.interviewService.addComments(_interviewForm).subscribe({
+        next: (data) => {
+          if (data.Status == 200) {
+            this.notificationsService.showNotification(data.Data, 'snack-bar-success');
+            this.dialog.closeAll();
+          }
+          else
+            this.notificationsService.showNotification(data.Data, 'snack-bar-danger');
+          this.isLoading = false;
+        },
+        error: (error) => {
+          this.notificationsService.showNotification(error, 'snack-bar-danger');
+          console.error(error);
+          this.isLoading = false;
+        }
+      });
   }
 
   getInterviewAttendees(): void {
@@ -112,20 +122,46 @@ get candidateEvaluationsFormArray(): FormArray {
   updateValidity() {
     let statusId = this.interviewForm.get('statusId')?.value;
 
+    // ===== In Process =====
     if (statusId === 2) {
       this.interviewForm.get('interviewDate')?.setValidators(Validators.required);
       this.interviewForm.get('joinAfterDays')?.setValidators(Validators.required);
-      this.interviewForm.get('interviewAttendees')?.setValidators(Validators.required);
+
+      this.clearEvaluationValidators(); // ✅ IMPORTANT
     }
-    else if (statusId === 3 || statusId === 180 || statusId === 4) {
+
+    // ===== ShortListed / Reject =====
+    else if (statusId === 180 || statusId === 4) {
       this.interviewForm.get('interviewDate')?.clearValidators();
       this.interviewForm.get('joinAfterDays')?.clearValidators();
-      this.interviewForm.get('interviewAttendees')?.clearValidators();
+
+      this.applyEvaluationValidators(); // ✅ IMPORTANT
+    }
+
+    // ===== Approved =====
+    else if (statusId === 3) {
+      this.interviewForm.get('interviewDate')?.clearValidators();
+      this.interviewForm.get('joinAfterDays')?.clearValidators();
+
+      this.clearEvaluationValidators(); // ✅ IMPORTANT
     }
 
     this.interviewForm.get('interviewDate')?.updateValueAndValidity();
     this.interviewForm.get('joinAfterDays')?.updateValueAndValidity();
-    this.interviewForm.get('interviewAttendees')?.updateValueAndValidity();
+  }
+
+  applyEvaluationValidators() {
+    this.candidateEvaluationsFormArray.controls.forEach((group: any) => {
+      group.get('candidateScoringScaleId')?.setValidators(Validators.required);
+      group.get('candidateScoringScaleId')?.updateValueAndValidity();
+    });
+  }
+
+  clearEvaluationValidators() {
+    this.candidateEvaluationsFormArray.controls.forEach((group: any) => {
+      group.get('candidateScoringScaleId')?.clearValidators();
+      group.get('candidateScoringScaleId')?.updateValueAndValidity();
+    });
   }
 
   getAttendeesString(element: any) {
@@ -182,7 +218,7 @@ get candidateEvaluationsFormArray(): FormArray {
       return;
     }
 
-    const inputElement = document.querySelector('input[formControlName="plot"]') as HTMLInputElement;
+    const inputElement = document.querySelector('input[formControlName="user"]') as HTMLInputElement;
     if (inputElement) {
       inputElement.value = '';  // Clear the input field
     }
@@ -205,21 +241,21 @@ get candidateEvaluationsFormArray(): FormArray {
 
 
   getevaluationCategorysList(): void {
-   let _filterForm = {};
-  this.evaluationCategoryService.getAllCandidateEvaluationCategorys(_filterForm).subscribe(data => {
-    this.evaluationCategorysList = data.item1;
+    let _filterForm = {};
+    this.evaluationCategoryService.getAllCandidateEvaluationCategorys(_filterForm).subscribe(data => {
+      this.evaluationCategorysList = data.item1;
 
-    this.candidateEvaluationsFormArray.clear();
+      this.candidateEvaluationsFormArray.clear();
 
-    this.evaluationCategorysList.forEach((x: any) => {
-      this.candidateEvaluationsFormArray.push(
-        this.formBuilder.group({
-          interviewHistoryId: [0],
-          candidateEvaluationCategoryId: [x.id],
-          candidateScoringScaleId: [null, Validators.required] // ✅ required
-        })
-      );
+      this.evaluationCategorysList.forEach((x: any) => {
+        this.candidateEvaluationsFormArray.push(
+          this.formBuilder.group({
+            interviewHistoryId: [0],
+            candidateEvaluationCategoryId: [x.id],
+            candidateScoringScaleId: [null, Validators.required] // ✅ required
+          })
+        );
+      });
     });
-  });
   }
 }

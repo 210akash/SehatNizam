@@ -3,6 +3,7 @@
   <!-- ── Header Controls ─────────────────────────────────────────────── -->
   <div class="header-bar">
       <input type="hidden" formControlName="id" />
+      <input type="hidden" formControlName="departmentId" />
     <div class="fg">
       <label>Year</label>
       <select  formControlName="year" (change)="onMonthYearChange()" >
@@ -35,17 +36,9 @@
       <div class="sc-l">Employees</div>
       <div class="sc-v emp-color">{{ employeeList?.length }}</div>
     </div>
-    <div class="sc">
-      <div class="sc-l">Morning</div>
-      <div class="sc-v morning-color">{{ morningCount }}</div>
-    </div>
-    <div class="sc">
-      <div class="sc-l">Evening</div>
-      <div class="sc-v evening-color">{{ eveningCount }}</div>
-    </div>
-    <div class="sc">
-      <div class="sc-l">Night</div>
-      <div class="sc-v night-color">{{ nightCount }}</div>
+    <div class="sc" *ngFor="let item of dynamicShiftSummary">
+      <div class="sc-l">{{ item.code }} - {{ item.name }}</div>
+      <div class="sc-v">{{ item.count }}</div>
     </div>
     <div class="sc">
       <div class="sc-l">Off days</div>

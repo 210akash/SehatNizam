@@ -1,63 +1,32 @@
-import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ConstantService } from '../../../../Service/constant.service';
-import { AuthenticationService } from '../../../../Auth/authentication.service';
+import { Component, Inject, OnInit } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
-    selector: 'app-print-roster',
-    templateUrl: './print-roster.component.html',
-    styleUrl: './print-roster.component.css',
-    standalone: false
+  selector: 'app-print-roster',
+  templateUrl: './print-roster.component.html',
+  styleUrl: './print-roster.component.css',
+  standalone: false
 })
+export class PrintRosterComponent implements OnInit {
+  roster: any;
+  days: number[] = [];
+  groupedRoster: any[] = [];
 
-export class PrintRosterComponent {
-  isLoading = false;
-  currentUser: any;
-  currentDate : any;
-  currentTime : any;
-  TMaterialCost! : number;
-  TFillingPerPet!: number;
-  TCostOfProduction! : number;
-  CostPerPet! : number;
-  advSaleTaxAmt!: number;
-  advFEDAmt!: number;
-
-  constructor(private constantService :ConstantService, private authenticationService :AuthenticationService, @Inject(MAT_DIALOG_DATA) public data: { element: any }) { }
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public data: { element: any },
+    private dialogRef: MatDialogRef<PrintRosterComponent>
+  ) {
+    this.roster = data?.element;
+  }
 
   ngOnInit(): void {
-    this.currentUser = this.authenticationService.currentUserValue;
-    this.currentDate = this.constantService.convertDate(new Date());
-    this.currentTime = this.constantService.convertTime(new Date().getTime());
-    console.log(this.data.element.costSheetDetail);
-    this.calculateTotal();
+    if (!this.roster) return;
+    this.buildDays();
+    this.groupRosterData();
   }
- 
-  calculateTotal() {
-    this.TMaterialCost = 0;
-    this.TFillingPerPet = 0;
-    this.TCostOfProduction = 0;
-    this.CostPerPet = 0;
-    this.advSaleTaxAmt = 0;
-    this.advFEDAmt = 0;
 
-    const costDetails = this.data.element.costSheetDetail || [];
-  
-    costDetails.forEach((item: any) => {
-      const amount = item.rate * item.quantity || 0;
-      this.TMaterialCost += amount;
-    });
-  
-    const quantity = +this.data.element.quantity || 0;
-    const tollFillRate = +this.data.element.tollFillRate || 0;
-    const advSaleTaxPer = +this.data.element.advSaleTaxPer || 0;
-    const advFEDPer = +this.data.element.advFEDPer || 0;
-  
-    this.TFillingPerPet = quantity * tollFillRate;
-    this.TCostOfProduction = this.TMaterialCost + this.TFillingPerPet;
-    this.CostPerPet = quantity ? this.TCostOfProduction / quantity : 0;
-  
-    this.advSaleTaxAmt = (this.TFillingPerPet * advSaleTaxPer) / 100;
-    this.advFEDAmt = (this.TFillingPerPet * advFEDPer) / 100;
+  close(): void {
+    this.dialogRef.close();
   }
 
   printDocument() {
@@ -124,10 +93,10 @@ export class PrintRosterComponent {
 
         .container {
           width: 100%;
+          padding-right: 20px;
+          padding-left: 20px;
           margin-right: auto;
           margin-left: auto;
-          margin-top:20px;
-          margin-bottom:20px;
         }
         .container, .container-lg, .container-md, .container-sm, .container-xl {
           max-width: 1140px;
@@ -146,7 +115,7 @@ export class PrintRosterComponent {
         }
         th,td {
           border: 1px solid;
-          padding: 9px;
+          padding: 12px;
         }
 
         .bl_table td {
@@ -201,6 +170,7 @@ export class PrintRosterComponent {
           width: 100%;
           padding-right: 15px;
           padding-left: 15px;
+          padding: 0;
         }
 
         .pt-4, .py-4 {
@@ -366,10 +336,7 @@ export class PrintRosterComponent {
               page-break-after: always;
           }
           .container{
-              margin: 0 !important;
-          }
-          .printCont{
-            margin-top: 20px !important;
+              margin: 50px 0 0 !important;
           }
         }
 
@@ -397,15 +364,11 @@ export class PrintRosterComponent {
           display: inline-flex;
           align-items: end;
           flex-direction: column;
-          padding-left:0;
-        }
-        .right_side{
-          padding-right:0;
         }
         .top_left{
           border: 0;
           font-size: 16px;
-          text-align:left;
+          text-align: left;
         }
         .top_left th,
         .top_left td{
@@ -418,7 +381,7 @@ export class PrintRosterComponent {
         }
         .top_right{
           font-size: 16px;
-          text-align:left;
+          text-align: left;
         }
         .table_one{
           text-align: center;
@@ -426,16 +389,13 @@ export class PrintRosterComponent {
         }
         .table_one th{
           font-size: 16px;
-          background: #000;
-          color: #fff;
+          background: #c7c7c7;
+          color: #000000;
           border-color: #000;
         }
         .table_one td{
           font-size: 16px;
           height: 28px;
-        }
-        .sign{
-          text-transform: capitalize;
         }
         .sign_wrap{
           width: 100%;
@@ -468,14 +428,14 @@ export class PrintRosterComponent {
           border: 1px solid;
           padding: 5px;
           min-height: 100px;
-      }
+        }
         .sign td {
-            height: 70px;
+          height: 70px;
         }
         .sign td:nth-child(3) {
-            border-right: 0;
+          border-right: 0;
         }
-      </style>
+      </style>    
     `;
   
     if (printContent) {
@@ -491,5 +451,64 @@ export class PrintRosterComponent {
       }
     }
   }
-  
+
+  buildDays(): void {
+    const year = this.roster?.year;
+    const month = this.roster?.month;
+
+    if (!year || !month) return;
+
+    const totalDays = new Date(year, month, 0).getDate();
+    this.days = Array.from({ length: totalDays }, (_, i) => i + 1);
+  }
+
+  groupRosterData(): void {
+    const map = new Map<string, any>();
+    const details = this.roster?.rosterDetail || [];
+
+    for (const item of details) {
+      const empId = item.employeeId;
+      if (!map.has(empId)) {
+        map.set(empId, {
+          employeeId: empId,
+          employeeName: this.getEmployeeName(item),
+          employeeCode: item.employee?.code ?? item.employee?.hrCode ?? '',
+          data: []
+        });
+      }
+
+      map.get(empId).data.push(item);
+    }
+
+    this.groupedRoster = Array.from(map.values());
+  }
+
+  getEmployeeName(item: any): string {
+    return ((item?.employee?.firstName || '') + ' ' + (item?.employee?.lastName || '')).trim();
+  }
+
+  getRosterCell(emp: any, day: number): any {
+    if (!emp?.data) return null;
+    return emp.data.find((x: any) => new Date(x.rosterDate).getDate() === day);
+  }
+
+  getCellClass(emp: any, day: number): string {
+    const cell = this.getRosterCell(emp, day);
+    if (!cell) return '';
+    if (cell.isOffDay) return 'off-cell';
+    if (cell.employeeShiftId === 1) return 'morning-cell';
+    if (cell.employeeShiftId === 2) return 'evening-cell';
+    if (cell.employeeShiftId === 3) return 'night-cell';
+    return '';
+  }
+
+  shiftText(cell: any): string {
+    if (!cell) return '';
+    if (cell.isOffDay) return 'OFF';
+    if (cell.employeeShift?.name) return cell.employeeShift.name;
+    if (cell.employeeShiftId === 1) return 'M';
+    if (cell.employeeShiftId === 2) return 'E';
+    if (cell.employeeShiftId === 3) return 'N';
+    return '';
+  }
 }

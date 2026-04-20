@@ -15,7 +15,7 @@ export interface Employee {
   employeeShiftId: number;
 }
 
-export type ShiftCode = 'M' | 'E' | 'N' | '0' | '';
+export type ShiftCode = string;
 
 @Component({
   selector: 'app-add-roster-department',
@@ -55,6 +55,7 @@ export class AddRosterDepartmentComponent {
   eveningCount = 0;
   nightCount = 0;
   offCount = 0;
+  dynamicShiftSummary: Array<{ code: string; name: string; count: number }> = [];
 
   constructor(
     private router: Router,
@@ -187,6 +188,7 @@ export class AddRosterDepartmentComponent {
       next: (data: { Status: number; Data: string; }) => {
         if (data.Status == 200) {
           this.notificationsService.showNotification(data.Data, 'snack-bar-success');
+          this.router.navigate(['/roster']);
         }
         else
           this.notificationsService.showNotification(data.Data, 'snack-bar-danger');
@@ -219,6 +221,7 @@ export class AddRosterDepartmentComponent {
     let _filterForm = {};
     this.employeeShiftService.getAllEmployeeShifts(_filterForm).subscribe(data => {
       this.employeeShiftList = data.item1;
+      this.updateSummary();
     });
   }
 
@@ -268,6 +271,7 @@ export class AddRosterDepartmentComponent {
     this.eveningCount = 0;
     this.nightCount = 0;
     this.offCount = 0;
+    const summaryMap = new Map<string, number>();
     this.rosterDetail.controls.forEach(ctrl => {
       const fg = ctrl as FormGroup;
       if (fg.get('isOffDay')?.value) {
@@ -275,10 +279,30 @@ export class AddRosterDepartmentComponent {
         return;
       }
       const shift = this.shiftCodeFromId(fg.get('employeeShiftId')?.value);
-      if (shift === 'M') this.morningCount++;
-      else if (shift === 'E') this.eveningCount++;
-      else if (shift === 'N') this.nightCount++;
+      if (!shift) return;
+      summaryMap.set(shift, (summaryMap.get(shift) ?? 0) + 1);
     });
+
+    // keep legacy counters for any remaining references/styles
+    this.morningCount = summaryMap.get('M') ?? 0;
+    this.eveningCount = summaryMap.get('E') ?? 0;
+    this.nightCount = summaryMap.get('N') ?? 0;
+
+    const shiftMetaMap = new Map<string, string>();
+    (this.employeeShiftList ?? []).forEach((s: any) => {
+      const code = this.shiftLabel(s);
+      if (!code) return;
+      const name = (s?.name ?? s?.shiftName ?? code).toString().trim() || code;
+      shiftMetaMap.set(code, name);
+    });
+
+    const orderedCodes = Array.from(shiftMetaMap.keys());
+    const usedCodes = Array.from(summaryMap.keys()).filter(code => !shiftMetaMap.has(code));
+    this.dynamicShiftSummary = [...orderedCodes, ...usedCodes].map(code => ({
+      code,
+      name: shiftMetaMap.get(code) ?? code,
+      count: summaryMap.get(code) ?? 0
+    }));
   }
 
 
@@ -316,18 +340,21 @@ export class AddRosterDepartmentComponent {
   }
 
  shiftLabel(shift: any): string {
-  const raw = shift?.name ?? shift?.shiftName ?? shift?.code;
+  const raw = shift?.code ?? shift?.name ?? shift?.shiftName;
   if (!raw) return '?';
   const name = String(raw).trim();
   if (name.length === 0) return '?';
-  return name[0].toUpperCase();
+  return name.toUpperCase();
 }
 
   private shiftCodeFromId(id: any): ShiftCode {
     if (!id || !this.employeeShiftList) return '';
     if (id === '0') return '0';
     const found = this.employeeShiftList.find((s: any) => String(s.id) === String(id));
-    return found ? (this.shiftLabel(found) as ShiftCode) : '';
+    if (!found) return '';
+    const code = (found.code ?? '').toString().trim().toUpperCase();
+    if (code) return code;
+    return this.shiftLabel(found) as ShiftCode;
   }
 
   private getEmployeeDefaultShiftId(employeeId: string): any {

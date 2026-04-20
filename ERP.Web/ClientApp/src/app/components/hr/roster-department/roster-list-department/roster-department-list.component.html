@@ -114,7 +114,7 @@
       <td mat-cell *matCellDef="let element">
         <div class="action_btns">
           <button mat-mini-fab matTooltip="Edit" color="primary"
-            *ngIf="element.statusId == 1 && (roleList?.includes('hr manager') || roleList?.includes('store issuer'))"
+            *ngIf="element.statusId == 1 && (roleList?.includes('manager'))"
             (click)="openRosterDialog(element)">
             <mat-icon aria-label="Edit">edit</mat-icon>
           </button>
@@ -124,19 +124,19 @@
           </button>
 
           <button mat-mini-fab matTooltip="Delete" color="warn"
-            *ngIf="element.statusId == 1 && (roleList?.includes('store manager') || roleList?.includes('store issuer'))"
+            *ngIf="element.statusId == 1 && (roleList?.includes('manager'))"
             (click)="deleteRosterDialog(element)">
             <mat-icon aria-label="Delete">delete</mat-icon>
           </button>
 
           <button mat-mini-fab matTooltip="Process To Manager"
-            *ngIf="element.statusId == 1 && (roleList?.includes('store manager') || roleList?.includes('store issuer'))"
+            *ngIf="element.statusId == 1 && (roleList?.includes('manager'))"
             color="success" (click)="processRosterDialog(element)">
-            <mat-icon aria-label="Delete">send</mat-icon>
+            <mat-icon aria-label="Process">send</mat-icon>
           </button>
 
           <button mat-mini-fab matTooltip="Print"
-            *ngIf="element.statusId == 3 && (roleList?.includes('store manager') || roleList?.includes('store issuer') || roleList?.includes('audit'))"
+            *ngIf="element.statusId == 3"
             color="success" (click)="printRosterDialog(element)">
             <mat-icon aria-label="Delete">print</mat-icon>
           </button>

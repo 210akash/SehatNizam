@@ -81,7 +81,8 @@ export class PurchaseDemandTabComponent implements OnInit {
   }
 
   async filterData() {
-    await this.fillGridCount(this.selected.value);
+    this.selected.setValue(0);
+    await this.fillGridCount(0);
   }
 
   async changeTab(event: MatTabChangeEvent) {

@@ -58,19 +58,19 @@
             <mat-icon aria-label="View" >visibility</mat-icon>
           </button>
 
-          <button mat-mini-fab matTooltip="Delete" color="warn" *ngIf="element.statusId == 1 && (roleList?.includes('store manager') || roleList?.includes('store issuer'))" (click)="deleteRosterDialog(element)">
+          <button mat-mini-fab matTooltip="Delete" color="warn" *ngIf="element.statusId == 1 && (roleList?.includes('hr manager') || roleList?.includes('store issuer'))" (click)="deleteRosterDialog(element)">
             <mat-icon aria-label="Delete" >delete</mat-icon>
           </button>
 
-          <button mat-mini-fab matTooltip="Process To Manager" *ngIf="element.statusId == 1 && (roleList?.includes('store manager') || roleList?.includes('store issuer'))" color="success" (click)="processRosterDialog(element)">
+          <button mat-mini-fab matTooltip="Process To Manager" *ngIf="element.statusId == 1 && (roleList?.includes('hr manager') || roleList?.includes('store issuer'))" color="success" (click)="processRosterDialog(element)">
             <mat-icon aria-label="Delete" >send</mat-icon>
           </button>
 
-          <button mat-mini-fab matTooltip="Approve" *ngIf="element.statusId == 2 && roleList?.includes('store manager')" color="success" (click)="approveRosterDialog(element)">
+          <button mat-mini-fab matTooltip="Approve" *ngIf="element.statusId == 2 && roleList?.includes('hr manager')" color="success" (click)="approveRosterDialog(element)">
             <mat-icon aria-label="Delete" >send</mat-icon>
           </button>
 
-          <button mat-mini-fab matTooltip="Print" *ngIf="element.statusId == 3 && (roleList?.includes('store manager') || roleList?.includes('store issuer') || roleList?.includes('audit'))" color="success" (click)="printRosterDialog(element)">
+          <button mat-mini-fab matTooltip="Print" *ngIf="element.statusId == 3 && (roleList?.includes('hr manager') || roleList?.includes('store issuer') || roleList?.includes('audit'))" color="success" (click)="printRosterDialog(element)">
             <mat-icon aria-label="Delete" >print</mat-icon>
           </button>
 

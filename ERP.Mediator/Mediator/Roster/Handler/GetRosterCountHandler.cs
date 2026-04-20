@@ -28,31 +28,12 @@ namespace ERP.Mediator.Mediator.Roster.Handler
             string[] roles = this.sessionProvider.Session.Roles;
             Expression<Func<Entities.Models.Roster, bool>> predicate;
             // Check if the current user's RoleId array contains the AccountOwnerRoleId
-            if (roles.Contains("Hr Manager"))
-            {
-                predicate = x => x.IsActive == true && x.Department.CompanyId == this.sessionProvider.Session.CompanyId
-                   && x.StatusId == request.StatusId
-                   && (request.DepartmentId == 0 || x.DepartmentId == request.DepartmentId)
+         
+                predicate = x => x.IsActive == true 
+                   && (request.DepartmentId == null || x.DepartmentId == request.DepartmentId)
                    && x.Year == request.Year
                    && x.Month == request.Month;
-            }
-            //else if (roles.Contains("Purchaser"))
-            //{
-            //    //predicate = x => x.IsActive == true 
-            //    //          && x.CreatedDate >= request.FDate.Value
-            //    //          && x.CreatedById == this.sessionProvider.Session.LoggedInUserId
-            //    //          && x.CreatedDate <= request.TDate.Value.AddDays(1).AddTicks(-1)
-            //    //          && (request.ItemId == null || x.ItemId == request.ItemId)
-            //    //          && (request.Code == "" || x.Code.ToLower().Contains(request.Code));
-            //}
-            else
-            {
-                predicate = x => x.IsActive == true && x.Department.CompanyId == this.sessionProvider.Session.CompanyId
-                   && x.StatusId == request.StatusId
-                   && (request.DepartmentId == 0 || x.DepartmentId == request.DepartmentId)
-                   && x.Year == request.Year
-                   && x.Month == request.Month;
-            }
+           
 
             var entity = unitOfWork.Repository<Entities.Models.Roster>().GetPagingWhereAsNoTrackingAsync(predicate, null, null, null, null, null);
             int Created = entity.Item1.Count(item => item.StatusId == 1 );

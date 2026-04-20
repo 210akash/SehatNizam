@@ -8,11 +8,8 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
   standalone: false
 })
 export class ViewRosterComponent implements OnInit {
-
   isLoading = false;
-
   roster: any;
-
   days: number[] = [];
   groupedRoster: any[] = [];
 
@@ -66,7 +63,7 @@ export class ViewRosterComponent implements OnInit {
         map.set(empId, {
           employeeId: empId,
           employeeName: this.getEmployeeName(item),
-          employeeCode: item.employee?.code,
+          employeeCode: item.employee?.hrCode ?? item.employee?.code,
           data: []
         });
       }
@@ -97,18 +94,52 @@ export class ViewRosterComponent implements OnInit {
 
     if (cell.isOffDay) return 'off-cell';
 
-    if (cell.employeeShiftId === 1) return 'morning-cell';
-    if (cell.employeeShiftId === 2) return 'evening-cell';
-    if (cell.employeeShiftId === 3) return 'night-cell';
+    const code = this.getShiftCode(cell);
+    if (code === 'M') return 'morning-cell';
+    if (code === 'E') return 'evening-cell';
+    if (code === 'N') return 'night-cell';
 
     return '';
   }
 
-  shiftClass(id: number): string {
-    if (id === 1) return 'm';
-    if (id === 2) return 'e';
-    if (id === 3) return 'n';
+  shiftClass(cell: any): string {
+    const code = this.getShiftCode(cell);
+    if (code === 'M') return 'm';
+    if (code === 'E') return 'e';
+    if (code === 'N') return 'n';
     return '';
+  }
+
+  private getShiftCode(cell: any): string {
+    if (!cell) return '';
+    if (cell.isOffDay) return '0';
+    const code = (cell.employeeShift?.code ?? cell.employeeShift?.name ?? '').toString().trim().toUpperCase();
+    if (code) return code;
+    if (cell.employeeShiftId === 1) return 'M';
+    if (cell.employeeShiftId === 2) return 'E';
+    if (cell.employeeShiftId === 3) return 'N';
+    return '';
+  }
+
+  shiftText(cell: any): string {
+    if (!cell) return '';
+    if (cell.isOffDay) return 'OFF';
+    const code = this.getShiftCode(cell);
+    const name = (cell.employeeShift?.name ?? '').toString().trim();
+    if (code && name && code !== name.toUpperCase()) return `${code} - ${name}`;
+    return code || name;
+  }
+
+  getShiftLegend(): Array<{ code: string; name: string }> {
+    const map = new Map<string, string>();
+    const details = this.roster?.rosterDetail || [];
+    for (const item of details) {
+      const code = this.getShiftCode(item);
+      if (!code || code === '0') continue;
+      const name = (item?.employeeShift?.name ?? code).toString().trim() || code;
+      if (!map.has(code)) map.set(code, name);
+    }
+    return Array.from(map.entries()).map(([code, name]) => ({ code, name }));
   }
 
   isWeekend(day: number): boolean {
@@ -130,3 +161,4 @@ export class ViewRosterComponent implements OnInit {
     return '';
   }
 }
+

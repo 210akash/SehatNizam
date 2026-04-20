@@ -59,7 +59,7 @@ export class RosterTabComponent implements OnInit {
   async ngOnInit() {
     this.RosterFilterForm = this.formBuilder.group({
       year: [2026],
-      month: [5],
+      month: [4],
       departmentId: [26],
       statusId: [1]
     });
@@ -68,11 +68,11 @@ export class RosterTabComponent implements OnInit {
     this.roleList = this.currentUser.role.toLowerCase();
     this.getDepartmentList();
     this.buildYears();
-    this.fillGridCount(0);
+    this.fillGridCount(1);
   }
 
   tabs: any = [];
-  selected: any = new FormControl(1);
+  selected: any = new FormControl(0);
 
   buildYears(): void {
     const current = new Date().getFullYear();
@@ -94,7 +94,8 @@ export class RosterTabComponent implements OnInit {
   }
 
   async filterData() {
-    await this.fillGridCount(this.selected.value);
+    this.selected.setValue(0);
+    await this.fillGridCount(1);
   }
 
   async changeTab(event: MatTabChangeEvent) {

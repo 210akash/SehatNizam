@@ -19,6 +19,7 @@ export class ViewEmployeeShiftComponent {
 
   ngOnInit(): void {
     this.employeeShiftForm = this.formBuilder.group({
+      code: ['', Validators.required],
       name: ['', Validators.required],
       fromTime: ['', Validators.required],
       toTime: ['', Validators.required]

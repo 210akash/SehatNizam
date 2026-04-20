@@ -68,6 +68,7 @@ namespace ERP.Mediator.Mediator.Roster.Handler
                     var _Roster = mapper.Map<Entities.Models.Roster>(masterupdate);
                     _Roster.StatusId = Roster.StatusId;
                     _Roster.CreatedById = Roster.CreatedById;
+                    _Roster.DepartmentId = Roster.DepartmentId;
                     _Roster.CreatedDate = Roster.CreatedDate;
                     _Roster.ModifiedById = sessionProvider.Session.LoggedInUserId;
                     _Roster.ModifiedDate = DateTime.Now;

@@ -22,6 +22,7 @@ export class DeleteEmployeeShiftComponent {
   ngOnInit(): void {
     this.employeeShiftForm = this.formBuilder.group({
       id: [0],
+      code: ['', Validators.required],
       name: ['', Validators.required],
       fromTime: ['', Validators.required],
       toTime: ['', Validators.required]

@@ -22,7 +22,7 @@ export class EmployeeShiftListComponent {
   currentPage = 0;
   pageSize = 0;
   pageSizeOptions: number[] = [5, 10, 25, 100];
-  displayedColumns: string[] = ['name', 'createdBy', 'actions'];
+  displayedColumns: string[] = ['code', 'name', 'createdBy', 'actions'];
   dataSource: any;
   take = 50;
   totalRows = 0;

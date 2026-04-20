@@ -63,8 +63,8 @@
               <!-- SHIFT -->
               <div *ngIf="!cell.isOffDay"
                    class="shift-badge"
-                   [ngClass]="shiftClass(cell.employeeShift?.id)">
-                {{ cell.employeeShift?.name }}
+                   [ngClass]="shiftClass(cell)">
+                {{ shiftText(cell) }}
               </div>
 
             </ng-container>
@@ -76,6 +76,13 @@
       </tbody>
     </table>
 
+  </div>
+
+  <div class="legend-footer">
+    <div class="leg-item" *ngFor="let item of getShiftLegend()">
+      <strong>{{ item.code }}</strong> - {{ item.name }}
+    </div>
+    <div class="leg-item"><strong>OFF</strong> - Off Day</div>
   </div>
 
 </div>

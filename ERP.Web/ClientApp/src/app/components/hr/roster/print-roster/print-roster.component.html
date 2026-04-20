@@ -1,214 +1,39 @@
+<div class="print-roster-dialog">
+  <div class="actions no-print">
+    <button mat-flat-button color="primary" (click)="printDocument()">Print</button>
+    <button mat-flat-button color="default" (click)="close()">Close</button>
+  </div>
 
-<div class="card">
-    <div class="card-header">
-        <div class="header-container">
-            <div class="card-title">Print Cost Sheet</div>
-            <div>
-                <button  mat-flat-button color="primary" type="button" class="print-button mr-2" (click)="printDocument()">
-                    <span class="mat-button-wrapper">Print</span>
-                </button>
-                <button mat-flat-button color="default" [mat-dialog-close]="true">
-                    <span class="mat-button-wrapper">Close</span>
-                </button>
-            </div>
-        </div>
+  <div class="print-sheet" id="printDoc">
+    <div class="sheet-header">
+      <h2>{{ roster?.department?.name }} - Roster</h2>
+      <div class="meta">
+        <span><strong>Year:</strong> {{ roster?.year }}</span>
+        <span><strong>Month:</strong> {{ roster?.month }}</span>
+        <span><strong>Status:</strong> {{ roster?.status?.title }}</span>
+      </div>
     </div>
-    <div class="card-body" id="printDoc">
-        <div class="container printCont">
-            <div class="col-lg-12 col-md-12 col-sm-12">
-                <div class="row">
-                    <div class="col-lg-12 col-md-12 col-sm-12">
-                        <div class="row m-0 mb-3">
-                            <div class="col-md-4 left_side">
-                                <div class="logo mb-2">
-                                    <img [src]="this.data.element.createdBy?.department?.company?.logo" width="70px" height="70px" alt="CompanyImage">
-                                    <span>{{this.data.element.createdBy?.department?.company?.name}}</span>
-                                </div>
-                                <table class="top_left">
-                                    <tr>
-                                        <th>Adv Sale Tax %:</th>
-                                        <td><b>{{this.data.element.advSaleTaxPer}}</b></td>
-                                    </tr>
-                                    <tr>
-                                        <th>Adv Sale Tax Amount:</th>
-                                        <td><b>{{this.advSaleTaxAmt}}</b></td>
-                                    </tr>
-                                    <tr>
-                                        <th>Adv FED %:</th>
-                                        <td><b>{{this.data.element.advFEDPer}}</b></td>
-                                    </tr>
-                                    <tr>
-                                        <th>Adv FED Amount:</th>
-                                        <td><b>{{this.advFEDAmt}}</b></td>
-                                    </tr>
-                                </table>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="col-md-12 text-center">
-                                    <h2 style="font-weight: 600;"> <span style="border-bottom: 2px solid;">Cost Sheet</span> </h2>
-                                </div>
-                            </div>
-                            <div class="col-md-4 right_side">
-                                <table class="top_right">
-                                    <tr>
-                                        <th>Code:</th>
-                                        <td>{{this.data.element.code}}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Date:</th>
-                                        <td>{{this.data.element.createdDate | date : 'shortDate'}}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Product:</th>
-                                        <td>{{this.data.element.item?.name}}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Planned Quantity:</th>
-                                        <td>{{this.data.element.quantity}}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Toll Fill Rate:</th>
-                                        <td>{{this.data.element.tollFillRate}}</td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-12 col-md-12 col-sm-12">
-                        <div class="col-md-12 p-0">
-                            <table class="table_one">
-                                <colgroup>
-                                    <col span="1" style="width:10px">
-                                    <col span="1" style="width:300px">
-                                    <col span="1" style="width:100px">
-                                    <col span="1" style="width:100px">
-                                    <col span="1" style="width:100px">
-                                    <col span="1" style="width:100px">
-                                </colgroup>
-                                <thead>
-                                <tr>
-                                    <th>Sr.#</th>
-                                    <th>Item</th>
-                                    <th>UOM</th>
-                                    <th>Rate</th>
-                                    <th>Quantity</th>
-                                    <th>Amount</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr *ngFor="let detail of this.data.element.costSheetDetail; let i = index">
-                                    <td>
-                                        {{i + 1}}
-                                    </td>
-                                    <td>
-                                        {{detail.item?.name}}
-                                    </td>
-                                    <td>
-                                        {{detail.item?.uom.name}}
-                                    </td>
-                                    <td>
-                                        {{detail.rate}}
-                                    </td>
-                                    <td>
-                                        {{detail.quantity}}
-                                    </td>
-                                    <td>
-                                        {{detail.rate * detail.quantity}}
-                                    </td>
-                                </tr>
-                                <tr *ngFor="let blank of [].constructor(20 - this.data.element.costSheetDetail.length); let j = index">
-                                    <td>
-                                        {{this.data.element.costSheetDetail.length + j + 1}}
-                                    </td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td colspan="5">
-                                        <b>Total Material Cost</b>
-                                    </td>
-                                    <td>
-                                        <b>{{this.data.element.tMaterialCost}}</b>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="5">
-                                        <b>Toll Filling Per Pet</b>
-                                    </td>
-                                    <td>
-                                        <b>{{this.data.element.tFillingPerPet}}</b>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="5">
-                                        <b>Cost Per Pet</b>
-                                    </td>
-                                    <td>
-                                        <b>{{this.data.element.costPerPet}}</b>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                            <!-- <div class="remarks mt-3">
-                                <span class="fw-bold" style="margin-right: 5px;">Remarks:</span>
-                                <span></span>
-                            </div> -->
-                            <table class="mt-3">
-                                <tbody><tr class="dates">
-                                    <td style="background-color:#d9d9d9;">
-                                        <p style="color: rgb(0, 0, 0); font-weight: 600; text-align: left;;">Requested By</p>
-                                    </td>
-                                    <td style="background-color:#d9d9d9;">
-                                        <p style="color: rgb(0, 0, 0); font-weight: 600; text-align: left;;">Date</p>
-                                    </td>
-                                    <td style="background-color:#d9d9d9;">
-                                        <p style="color: rgb(0, 0, 0); font-weight: 600; text-align: left;;">Checked By</p>
-                                    </td>
-                                    <td style="background-color:#d9d9d9;">
-                                        <p style="color: rgb(0, 0, 0); font-weight: 600; text-align: left;;">Date</p>
-                                    </td>
-                                </tr>
-                                <tr class="sign">
-                                    <td class="no_border">{{this.data.element.createdBy.firstName + ' ' + this.data.element.createdBy.lastName}}</td>
-                                    <td class="no_border">{{this.data.element.createdDate | date :'mediumDate'}}</td>
-                                    <td class="">{{this.data.element.processedBy.firstName + ' ' + this.data.element.processedBy.lastName}}</td>
-                                    <td class="no_border">{{this.data.element.processedDate | date :'mediumDate'}}</td>
-                                </tr>
-                                <tr class="dates">
-                                    <td style="background-color:#d9d9d9;" colspan="2">
-                                        <p style="color: rgb(0, 0, 0); font-weight: 600; text-align: left;;">Approved By</p>
-                                    </td>
-                                    <td style="background-color:#d9d9d9;" colspan="2">
-                                        <p style="color: rgb(0, 0, 0); font-weight: 600; text-align: left;;">Date</p>
-                                    </td>
-                                </tr>
-                                <tr class="sign">
-                                    <td class="no_border" colspan="2">{{this.data.element.approvedBy.firstName + ' ' + this.data.element.approvedBy.lastName}}</td>
-                                    <td class="no_border"colspan="2">{{this.data.element.approvedDate | date :'mediumDate'}}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                            <div class="print_date mt-5">
-                                <div><b>Print Date:</b></div>
-                                <div>{{currentDate}}</div>
-                                <div><b>Print Time:</b></div>
-                                <div>{{currentTime}}</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+
+    <div class="table-wrap">
+      <table class="roster-table">
+        <thead>
+          <tr>
+            <th class="emp-col">Employee</th>
+            <th *ngFor="let day of days">{{ day }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let emp of groupedRoster">
+            <td class="emp-cell">
+              <div class="emp-name">{{ emp.employeeName }}</div>
+              <div class="emp-code">{{ emp.employeeCode }}</div>
+            </td>
+            <td *ngFor="let day of days" [ngClass]="getCellClass(emp, day)">
+              {{ shiftText(getRosterCell(emp, day)) }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <div class="card-footer">
-        <div class="button-container m-0">
-            <button mat-flat-button color="default" [mat-dialog-close]="true">
-              <span class="mat-button-wrapper">Close</span>
-            </button>
-          </div>
-    </div>
+  </div>
 </div>
-

@@ -3,6 +3,7 @@ export class RosterEndPoints {
     public readonly saveRosterByManager  = '/SaveRosterByManager';
     public readonly getAllRosters = '/GetAllRosters';
     public readonly getAllRostersByManager = '/GetAllRostersByManager';
+    public readonly getAllRostersByEmployee = '/GetAllRostersByEmployee';
     public readonly getRosterById = '/GetRosterById';
     public readonly deleteRoster = '/DeleteRoster';
     public readonly getRosterCode = '/GetRosterCode';

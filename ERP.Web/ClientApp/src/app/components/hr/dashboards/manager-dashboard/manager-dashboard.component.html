@@ -1,0 +1,88 @@
+﻿<div class="manager-dashboard">
+  <section class="dashboard-header card-shell">
+    <div class="header-content">
+      <h2>Manager Dashboard</h2>
+      <p>{{ profile?.department?.name || 'Department N/A' }} <span class="dot">•</span></p>
+    </div>
+  </section>
+
+  <section class="dashboard-section card-shell" *ngIf="loading">
+    <div class="text-center py-5">
+      <mat-spinner diameter="50"></mat-spinner>
+      <p class="mt-3 text-muted">Loading roster...</p>
+    </div>
+  </section>
+
+  <section class="dashboard-section card-shell" *ngIf="errorMessage && !loading">
+    <div class="alert alert-danger mb-0">
+      {{ errorMessage }}
+    </div>
+  </section>
+
+  <section class="dashboard-section card-shell" *ngIf="!loading && rosterData">
+    <div class="section-title">
+      <mat-icon>calendar_month</mat-icon>
+      <h3>Department Roster - {{ getMonthLabel() }} {{ currentYear }}</h3>
+    </div>
+
+    <div class="table-wrap roster-wrap">
+      <table class="roster-table">
+        <thead>
+          <tr>
+            <th class="emp-col">Employee</th>
+            <th *ngFor="let day of rosterDays" class="day-col" [class.weekend]="isWeekend(day)">
+              {{ day }}
+            </th>
+            <th class="sum-col">M</th>
+            <th class="sum-col">E</th>
+            <th class="sum-col">N</th>
+            <th class="sum-col">OFF</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let emp of groupedRoster">
+            <td class="emp-cell">
+              <div class="emp-name">{{ emp.employeeName }}</div>
+              <div class="emp-code">{{ emp.employeeCode }}</div>
+            </td>
+
+            <td *ngFor="let day of rosterDays" class="day-cell" [ngClass]="getCellClass(emp, day)" [class.weekend]="isWeekend(day)">
+              <span class="shift-badge">{{ getShiftName(emp, day) }}</span>
+            </td>
+            <td class="sum-cell sum-morning">{{ getEmployeeShiftCount(emp, 1) }}</td>
+            <td class="sum-cell sum-evening">{{ getEmployeeShiftCount(emp, 2) }}</td>
+            <td class="sum-cell sum-night">{{ getEmployeeShiftCount(emp, 3) }}</td>
+            <td class="sum-cell sum-off">{{ getEmployeeOffCount(emp) }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="summary-row mt-3">
+      <div class="summary-item morning">
+        <span>Morning</span>
+        <strong>{{ rosterSummary.morning }}</strong>
+      </div>
+      <div class="summary-item evening">
+        <span>Evening</span>
+        <strong>{{ rosterSummary.evening }}</strong>
+      </div>
+      <div class="summary-item night">
+        <span>Night</span>
+        <strong>{{ rosterSummary.night }}</strong>
+      </div>
+      <div class="summary-item off">
+        <span>Off</span>
+        <strong>{{ rosterSummary.off }}</strong>
+      </div>
+    </div>
+  </section>
+
+  <section class="dashboard-section card-shell empty-state" *ngIf="!loading && !rosterData">
+    <div class="py-4 text-center">
+      <h5 class="text-muted">No Roster Available</h5>
+      <p class="text-muted mb-0">No approved roster found for {{ getMonthLabel() }} {{ currentYear }}.</p>
+    </div>
+  </section>
+</div>

@@ -103,6 +103,7 @@ import { ManageEmployeeLeaveListComponent } from './components/hr/manage-employe
 import { ApproveEmployeeLeaveListComponent } from './components/hr/approve-employee-leave/approve-employee-leave-list/approve-employee-leave-list.component';
 import { HrDashboardComponent } from './components/hr/dashboards/hr-dashboard/hr-dashboard.component';
 import { EmployeeDashboardComponent } from './components/hr/dashboards/employee-dashboard/employee-dashboard.component';
+import { ManagerDashboardComponent } from './components/hr/dashboards/manager-dashboard/manager-dashboard.component';
 import { EmployeeWorkSiteTypeListComponent } from './components/hr/employee-worksitetype/employee-worksitetype-list/employee-worksitetype-list.component';
 import { InterviewListComponent } from './components/interview/interview-list/interview-list.component';
 import { RetailOrderListComponent } from './components/order/retail-orders/retail-order-list/retail-order-list.component';
@@ -121,6 +122,8 @@ import { RosterDepartmentListComponent } from './components/hr/roster-department
 import { AddRosterDepartmentComponent } from './components/hr/roster-department/add-roster-department/add-roster-department.component';
 import { CandidateEvaluationCategoryListComponent } from './components/hr/candidateevaluationcategory/candidateevaluationcategory-list/candidateevaluationcategory-list.component';
 import { ConductInterviewListComponent } from './components/interview/conduct-interview-list/conduct-interview-list.component';
+import { NotificationListComponent } from './components/hr/notification/notification-list/notification-list.component';
+import { AddNotificationComponent } from './components/hr/notification/add-notification/add-notification.component';
 
 const routes: Routes = [
   {
@@ -224,11 +227,13 @@ const routes: Routes = [
       { path: 'salematerialreturn', component: SaleMaterialReturnTabComponent, canActivate: [AuthGuard], data: { roles: ["store manager,store issuer"] } },
       { path: 'hryear', component: HRYearListComponent, canActivate: [AuthGuard], data: {roles: ["hr manager,hr executive,admin"] } },
       { path: 'holiday', component: HolidayListComponent, canActivate: [AuthGuard], data: {roles: ["hr manager,hr executive,admin"] } },
+      { path: 'notification', component: NotificationListComponent, canActivate: [AuthGuard], data: {roles: ["hr manager,hr executive,admin"] } },
       { path: 'employeeleave', component: EmployeeLeaveListComponent, canActivate: [AuthGuard] },
       { path: 'manageemployeeleave', component: ManageEmployeeLeaveListComponent, canActivate: [AuthGuard], data: {roles: ["hr manager,hr executive,admin"] } },
       { path: 'approveemployeeleave', component: ApproveEmployeeLeaveListComponent, canActivate: [AuthGuard], data: {roles: ["manager"] } },
       { path: 'hrdashboard', component: HrDashboardComponent, canActivate: [AuthGuard], data: {roles: ["hr manager,hr executive,admin"] } },
       { path: 'employeedashboard', component: EmployeeDashboardComponent, canActivate: [AuthGuard] },
+      { path: 'managerdashboard', component: ManagerDashboardComponent, canActivate: [AuthGuard], data: {roles: ["manager","admin"] } },
       { path: 'employeeworksitetype', component: EmployeeWorkSiteTypeListComponent, canActivate: [AuthGuard], data: { roles: ["hr manager,hr executive,admin"] } },
       { path: 'interview', component: InterviewListComponent, canActivate: [AuthGuard] },
       { path: 'retailorderreturn', component: RetailOrderReturnTabComponent, canActivate: [AuthGuard], data: { roles: ["retailer,admin"] } },

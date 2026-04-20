@@ -53,6 +53,20 @@ namespace ERP.API.Controllers
         }
 
         [HttpPost]
+        [Route("GetAllRostersByEmployee")]
+        public async Task<ActionResult<GetRoster>> GetAll(GetAllRosterByEmployeeQuery getAllRosterByEmployeeQuery)
+        {
+            try
+            {
+                return await this.mediator.Send(getAllRosterByEmployeeQuery);
+            }
+            catch (Exception ex)
+            {
+                return this.Result(ResponseStatus.Error, null, ex.Message);
+            }
+        }
+
+        [HttpPost]
         [Route("SaveRoster")]
         public async Task<IActionResult> Save(SaveRosterCommand command)
         {

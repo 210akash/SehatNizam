@@ -1,94 +1,133 @@
-<div class="container py-3">
-  <!-- Welcome Section -->
-  <div class="mb-4">
-    <h4 class="mb-1">Welcome, {{ this.profile.firstName + ' ' + this.profile.lastName}}</h4>
-    <p class="text-muted mb-0">
-       {{ this.profile.department?.name }}   {{ this.profile.employeeDesignation?.name}}
-    </p>
-  </div>
-
-  <!-- Personal Info Cards -->
-  <!-- <div class="row g-3 mb-4">
-    <div class="col-md-4">
-      <div class="card p-3 text-center">
-        <h6 class="text-muted">Leave Balance</h6>
-        <h4>{{ employeeData.leaveBalance }}</h4>
-      </div>
+﻿<div class="employee-dashboard">
+  <section class="dashboard-header card-shell">
+    <div class="header-content">
+      <h2>Welcome, {{ profile?.firstName }} {{ profile?.lastName }}</h2>
+      <p>
+        {{ profile?.department?.name || 'Department N/A' }}
+        <span class="dot">•</span>
+        {{ profile?.employeeDesignation?.name || 'Designation N/A' }}
+      </p>
     </div>
-    <div class="col-md-4">
-      <div class="card p-3 text-center">
-        <h6 class="text-muted">Upcoming Holidays</h6>
-        <ul class="list-unstyled mb-0">
-          <li *ngFor="let holiday of employeeData.upcomingHolidays">{{ holiday }}</li>
-        </ul>
-      </div>
+  </section>
+
+  <section class="dashboard-section card-shell" *ngIf="notifications.length > 0">
+    <div class="section-title">
+      <mat-icon>notifications_active</mat-icon>
+      <h3>Notifications</h3>
     </div>
-    <div class="col-md-4">
-      <div class="card p-3 text-center">
-        <h6 class="text-muted">Today's Status</h6>
-        <h4>
-        
-        </h4>
-      </div>
+
+    <div class="notification-list">
+      <article class="notification-item" *ngFor="let notification of notifications">
+        <div class="notification-head">
+          <h4>{{ notification.title }}</h4>
+          <span class="department-badge" *ngIf="notification.departmentName">{{ notification.departmentName }}</span>
+        </div>
+        <p class="notification-message">{{ notification.message }}</p>
+      </article>
     </div>
-  </div> -->
+  </section>
 
-  <!-- Attendance Table -->
-  <div class="card p-3">
-    <h1 class="mb-3 text-center">My Attendance</h1>
-      <table mat-table [dataSource]="attendanceData" class="mat-elevation-z8 full-width mt-2">
-        <!-- Date Column -->
-        <ng-container matColumnDef="date">
-          <th mat-header-cell *matHeaderCellDef>Date</th>
-          <td mat-cell *matCellDef="let record">{{ record.attendanceDate | date:'yyyy-MM-dd' }}</td>
-        </ng-container>
+  <section class="dashboard-section card-shell">
+    <div class="section-title">
+      <mat-icon>fact_check</mat-icon>
+      <h3>My Attendance</h3>
+    </div>
 
-        <!-- Check In Column -->
-        <ng-container matColumnDef="timeIn">
-          <th mat-header-cell *matHeaderCellDef>Time In</th>
-          <td mat-cell *matCellDef="let record">{{ record.timeIn | date:'hh:mm:ss' }}</td>
-        </ng-container>
+    <div class="attendance-cards" *ngIf="attendanceData?.length; else noAttendance">
+      <article class="attendance-card" *ngFor="let record of attendanceData">
+        <div class="attendance-date">{{ record.attendanceDate | date:'EEEE, MMMM d, y' }}</div>
 
-        <!-- Check In Column -->
-        <ng-container matColumnDef="inDevice">
-          <th mat-header-cell *matHeaderCellDef>In Device</th>
-          <td mat-cell *matCellDef="let record">{{record.inDevice?.name}}</td>
-        </ng-container>
+        <div class="attendance-row">
+          <span class="label">Time In</span>
+          <span class="value">{{ record.timeIn | date:'hh:mm:ss a' }}</span>
+        </div>
+        <div class="attendance-row">
+          <span class="label">In Device</span>
+          <span class="value">{{ record.inDevice?.name || '-' }}</span>
+        </div>
+        <div class="attendance-row">
+          <span class="label">Time Out</span>
+          <span class="value">{{ record.timeOut | date:'hh:mm:ss a, dd MMM y' }}</span>
+        </div>
+        <div class="attendance-row">
+          <span class="label">Out Device</span>
+          <span class="value">{{ record.outDevice?.name || '-' }}</span>
+        </div>
+        <div class="attendance-row">
+          <span class="label">Working Hours</span>
+          <span class="value">{{ record.workingHours || '-' }}</span>
+        </div>
+        <div class="attendance-row">
+          <span class="label">Status</span>
+          <span class="value status-pill">{{ record.status || '-' }}</span>
+        </div>
+      </article>
+    </div>
 
-        <!-- Check Out Column -->
-        <ng-container matColumnDef="timeOut">
-          <th mat-header-cell *matHeaderCellDef>Time Out</th>
-          <td mat-cell *matCellDef="let record">{{ record.timeOut | date:'hh:mm:ss dd-MM-yyyy' }}</td>
-        </ng-container>
+    <ng-template #noAttendance>
+      <div class="empty-inline">No attendance records found.</div>
+    </ng-template>
+  </section>
 
-        <!-- Check In Column -->
-        <ng-container matColumnDef="outDevice">
-          <th mat-header-cell *matHeaderCellDef>Out Device</th>
-          <td mat-cell *matCellDef="let record">{{record.outDevice?.name}}</td>
-        </ng-container>
+  <section class="dashboard-section card-shell"  *ngIf="groupedRoster.length > 0">
+    <div class="section-title">
+      <mat-icon>calendar_month</mat-icon>
+      <h3>My Roster</h3>
+    </div>
 
-        <!-- Check Out Column -->
-        <ng-container matColumnDef="workingHours">
-          <th mat-header-cell *matHeaderCellDef>Working Hours</th>
-          <td mat-cell *matCellDef="let record">{{ record.workingHours}}</td>
-        </ng-container>
+    <div class="month-chip">{{ getRosterMonthLabel() }}</div>
 
-        <!-- Check Out Column -->
-        <ng-container matColumnDef="status">
-          <th mat-header-cell *matHeaderCellDef>Status</th>
-          <td mat-cell *matCellDef="let record">{{ record.status}}</td>
-        </ng-container>
+    <div class="table-wrap roster-wrap">
+      <table class="roster-table">
+        <thead>
+          <tr>
+            <th class="emp-col">Employee</th>
+            <th *ngFor="let day of days">{{ day }}</th>
+          </tr>
+        </thead>
 
-        <!-- Table Header and Rows -->
-        <tr mat-header-row
-          *matHeaderRowDef="['date', 'timeIn','inDevice', 'timeOut','outDevice','workingHours','status']"></tr>
-        <tr mat-row
-          *matRowDef="let row; columns: ['date', 'timeIn', 'inDevice', 'timeOut', 'outDevice', 'workingHours','status']"
-          [ngClass]="{
-      'late-checkin': isLate(row),
-      'absent-row': row.status === 'Absent'
-    }">
-        </tr>
+        <tbody>
+          <tr *ngFor="let emp of groupedRoster">
+            <td class="emp-cell">
+              <div class="emp-name">{{ emp.employeeName }}</div>
+              <div class="emp-code">{{ emp.employeeCode }}</div>
+            </td>
+
+            <td *ngFor="let day of days" [ngClass]="getCellClass(emp, day)">
+              <ng-container *ngIf="getRosterCell(emp, day) as cell">
+                <div *ngIf="cell.isOffDay" class="off-badge">OFF</div>
+
+                <div *ngIf="!cell.isOffDay" class="shift-badge" [ngClass]="shiftClass(cell.employeeShift?.id)">
+                  {{ cell.employeeShift?.name }}
+                </div>
+              </ng-container>
+            </td>
+          </tr>
+        </tbody>
       </table>
+    </div>
+
+    <div class="summary-row mt-3">
+      <div class="summary-item morning">
+        <span>Morning</span>
+        <strong>{{ rosterSummary.morning }}</strong>
+      </div>
+      <div class="summary-item evening">
+        <span>Evening</span>
+        <strong>{{ rosterSummary.evening }}</strong>
+      </div>
+      <div class="summary-item night">
+        <span>Night</span>
+        <strong>{{ rosterSummary.night }}</strong>
+      </div>
+      <div class="summary-item off">
+        <span>Off</span>
+        <strong>{{ rosterSummary.off }}</strong>
+      </div>
+    </div>
+  </section>
+
+  <div class="card-shell empty-state" *ngIf="!rosterData">
+    <p class="text-muted mb-0">No roster available for current month.</p>
   </div>
 </div>

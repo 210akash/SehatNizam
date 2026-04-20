@@ -1,0 +1,43 @@
+<h2 mat-dialog-title>View Notification</h2>
+<mat-dialog-content>
+    <div class="pt-3">
+        <div class="row">
+            <div class="col-md-12 mb-3">
+                <label class="fw-bold">Department:</label>
+                <p>{{data.element?.departmentName}}</p>
+            </div>
+            <div class="col-md-12 mb-3">
+                <label class="fw-bold">Title:</label>
+                <p>{{data.element?.title}}</p>
+            </div>
+            <div class="col-md-12 mb-3">
+                <label class="fw-bold">Message:</label>
+                <p style="white-space: pre-wrap;">{{data.element?.message}}</p>
+            </div>
+            <div class="col-md-12 mb-3">
+                <label class="fw-bold">Expire Date:</label>
+                <p>{{data.element?.expireDate | date:'yyyy-MM-dd'}}</p>
+            </div>
+            <div class="col-md-12 mb-3">
+                <label class="fw-bold">Status:</label>
+                <p>
+                    <span class="badge" [ngClass]="data.element?.isExpired ? 'bg-danger' : 'bg-success'">
+                        {{data.element?.isExpired ? 'Expired' : 'Active'}}
+                    </span>
+                </p>
+            </div>
+            <div class="col-md-12 mb-3" *ngIf="data.element?.createdBy">
+                <label class="fw-bold">Created By:</label>
+                <p>{{data.element?.createdBy?.firstName}} {{data.element?.createdBy?.lastName}}</p>
+            </div>
+            <div class="col-md-12 mb-3" *ngIf="data.element?.createdDate">
+                <label class="fw-bold">Created Date:</label>
+                <p>{{data.element?.createdDate | date:'yyyy-MM-dd HH:mm'}}</p>
+            </div>
+        </div>
+    </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="pb-3 px-3">
+    <button mat-button (click)="close()">Close</button>
+</mat-dialog-actions>

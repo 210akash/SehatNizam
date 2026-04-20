@@ -1,0 +1,20 @@
+/* View Notification Component Styles */
+.badge {
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.bg-success {
+    background-color: #28a745;
+    color: white;
+}
+
+.bg-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+.fw-bold {
+    font-weight: bold;
+}

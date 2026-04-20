@@ -175,6 +175,7 @@
         public virtual DbSet<CandidateEvaluation> CandidateEvaluation { get; set; }
         public virtual DbSet<CandidateScoringScale> CandidateScoringScale { get; set; }
         public virtual DbSet<CandidateEvaluationCategory> CandidateEvaluationCategory { get; set; }
+        public virtual DbSet<Notification> Notification { get; set; }
 
         #endregion
 

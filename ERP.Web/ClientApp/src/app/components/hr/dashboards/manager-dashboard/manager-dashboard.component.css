@@ -1,0 +1,363 @@
+/* Manager Dashboard Styles */
+.manager-dashboard {
+  --bg: #f5f7fb;
+  --surface: #ffffff;
+  --text-main: #1f2937;
+  --line: #e5e7eb;
+  --shadow: 0 8px 22px rgba(15, 23, 42, 0.08);
+
+  display: grid;
+  gap: 16px;
+  width: 100%;
+  padding: 16px;
+  max-width: 100%;
+  overflow-x: hidden;
+  background: linear-gradient(180deg, #f8fbff 0%, var(--bg) 100%);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  box-sizing: border-box;
+}
+
+.manager-dashboard *,
+.manager-dashboard *::before,
+.manager-dashboard *::after {
+  box-sizing: border-box;
+}
+
+.card-shell {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  padding: 16px;
+  width: 100%;
+  min-width: 0;
+}
+
+.dashboard-header {
+  background: linear-gradient(120deg, #0f766e 0%, #0d9488 60%, #14b8a6 100%);
+  color: #fff;
+  border: none;
+}
+
+.header-content h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.header-content p {
+  margin: 8px 0 0;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.95rem;
+}
+
+.dot {
+  margin: 0 8px;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.section-title h3 {
+  margin: 0;
+  color: var(--text-main);
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.section-title mat-icon {
+  color: #0f766e;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  margin-top: 8px;
+}
+
+.status-approved {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.status-processed {
+  background-color: #fff3e0;
+  color: #e65100;
+}
+
+.status-created {
+  background-color: #e3f2fd;
+  color: #1565c0;
+}
+
+.empty-state {
+  text-align: center;
+}
+
+/* Roster Table Styles (same layout pattern as employee roster table) */
+.table-wrap {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  width: 100%;
+  min-width: 0;
+}
+
+.roster-wrap {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.roster-table {
+  width: max-content;
+  min-width: 100%;
+  border-collapse: collapse;
+}
+
+.roster-table th,
+.roster-table td {
+  min-width: 52px;
+  text-align: center;
+  padding: 8px;
+  white-space: nowrap;
+  border-bottom: 1px solid #eef2f7;
+}
+
+.roster-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #f1f5f9;
+  color: #334155;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.emp-col {
+  position: sticky;
+  left: 0;
+  z-index: 3;
+  min-width: 180px;
+  text-align: left;
+  background: #f1f5f9;
+}
+
+.day-col.weekend {
+  background-color: #fff1f2;
+  color: #b91c1c;
+}
+
+.sum-col {
+  min-width: 54px !important;
+  background: #f8fafc !important;
+  color: #334155;
+  font-weight: 700;
+}
+
+.emp-cell {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  min-width: 180px;
+  text-align: left;
+  background: #fff;
+}
+
+.emp-name {
+  font-weight: 700;
+  font-size: 13px;
+  color: #1f2937;
+}
+
+.emp-code {
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.day-cell {
+  vertical-align: middle;
+}
+
+.day-cell.weekend {
+  background-color: #fff7f7;
+}
+
+.sum-cell {
+  font-weight: 700;
+  min-width: 54px;
+}
+
+.sum-morning {
+  background: #eff6ff;
+  color: #1e40af;
+}
+
+.sum-evening {
+  background: #fffbeb;
+  color: #92400e;
+}
+
+.sum-night {
+  background: #f5f3ff;
+  color: #5b21b6;
+}
+
+.sum-off {
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+.shift-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* Shift Colors */
+.morning-shift {
+  background-color: #eff6ff;
+}
+
+.morning-shift .shift-badge {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.evening-shift {
+  background-color: #fffbeb;
+}
+
+.evening-shift .shift-badge {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.night-shift {
+  background-color: #f5f3ff;
+}
+
+.night-shift .shift-badge {
+  background: #ede9fe;
+  color: #5b21b6;
+}
+
+.off-day {
+  background-color: #fef2f2;
+}
+
+.off-day .shift-badge {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.summary-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.summary-item {
+  border-radius: 10px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.summary-item strong {
+  font-size: 15px;
+}
+
+.summary-item.morning {
+  background: #eff6ff;
+  color: #1e40af;
+}
+
+.summary-item.evening {
+  background: #fffbeb;
+  color: #92400e;
+}
+
+.summary-item.night {
+  background: #f5f3ff;
+  color: #5b21b6;
+}
+
+.summary-item.off {
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+/* Legend */
+.roster-legend {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 10px 0;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.badge {
+  width: 20px;
+  height: 20px;
+  border-radius: 3px;
+  display: inline-block;
+}
+
+/* Card Styles */
+.card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .manager-dashboard {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .card-shell {
+    padding: 12px;
+    border-radius: 12px;
+  }
+
+  .header-content h2 {
+    font-size: 1.2rem;
+  }
+
+  .header-content p {
+    font-size: 0.85rem;
+  }
+
+  .emp-col {
+    min-width: 120px;
+  }
+  
+  .emp-cell {
+    min-width: 120px;
+  }
+
+  .summary-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

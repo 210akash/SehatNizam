@@ -22,6 +22,14 @@
     <nav class="sidebar-nav custom-scrollbar">
 
       <!-- Dashboard -->
+      <div class="nav-group" *ngIf="hasRequiredRole(['manager'])">
+        <a routerLink="/managerdashboard" class="nav-link" [class.active-link]="isActive('/managerdashboard')">
+          <i class="fas fa-th-large"></i>
+          <span>Manager Dashboard</span>
+        </a>
+      </div>
+
+      <!-- Dashboard -->
       <div class="nav-group">
         <a routerLink="/dashboard" class="nav-link" [class.active-link]="isActive('/dashboard')" (click)="goToDashboard()">
           <i class="fas fa-th-large"></i>
@@ -566,7 +574,8 @@
             Roster</a>
           <a routerLink="/manageemployeeleave" class="submenu-link"
             [class.active-link]="isActive('/manageemployeeleave')">Manage Leave</a>
-      
+          <a routerLink="/notification" class="submenu-link"
+            [class.active-link]="isActive('/notification')">Notification/Circulation</a>      
         </div>
       </div>
 

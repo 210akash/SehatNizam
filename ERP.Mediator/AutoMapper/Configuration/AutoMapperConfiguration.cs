@@ -91,6 +91,7 @@
     using ERP.Mediator.Mediator.UserAttendance.Command;
     using ERP.Mediator.Mediator.UserTerritory.Command;
     using ERP.Mediator.Mediator.Vehicle.Command;
+    using ERP.Mediator.Mediator.Notification.Command;
     using ERP.Mediator.Mediator.Vendor.Command;
     using ERP.Mediator.Mediator.WarehouseTransfer.Command;
     using ERP.Mediator.Mediator.Zone.Command;
@@ -608,6 +609,9 @@
             this.CreateMap<CandidateEvaluationCategory, GetCandidateEvaluationCategory>().ReverseMap();
             this.CreateMap<CandidateScoringScale, GetCandidateScoringScale>().ReverseMap();
             this.CreateMap<CandidateEvaluation, GetCandidateEvaluation>().ReverseMap();
+
+            this.CreateMap<Notification, GetNotification>().ReverseMap();
+            this.CreateMap<Notification, SaveNotificationCommand>().ReverseMap();
 
         }
     }

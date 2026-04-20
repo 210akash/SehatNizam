@@ -708,6 +708,7 @@ import { ApproveEmployeeLeaveListComponent } from './components/hr/approve-emplo
 import { ProcessApproveEmployeeLeaveComponent } from './components/hr/approve-employee-leave/process-approve-employee-leave/process-approve-employee-leave.component';
 import { HrDashboardComponent } from './components/hr/dashboards/hr-dashboard/hr-dashboard.component';
 import { EmployeeDashboardComponent } from './components/hr/dashboards/employee-dashboard/employee-dashboard.component';
+import { ManagerDashboardComponent } from './components/hr/dashboards/manager-dashboard/manager-dashboard.component';
 import { DashboardEndPoints } from './components/hr/dashboards/dashboard.endpoints';
 import { DashboardService } from './components/hr/dashboards/dashboard.service';
 import { AddEmployeeWorkSiteTypeComponent } from './components/hr/employee-worksitetype/add-employee-worksitetype/add-employee-worksitetype.component';
@@ -746,6 +747,12 @@ import { DeleteHolidayComponent } from './components/hr/holiday/delete-holiday/d
 import { HolidayListComponent } from './components/hr/holiday/holiday-list/holiday-list.component';
 import { HolidayService } from './components/hr/holiday/holiday.service';
 import { HolidayEndPoints } from './components/hr/holiday/holiday.endpoints';
+import { NotificationListComponent } from './components/hr/notification/notification-list/notification-list.component';
+import { AddNotificationComponent } from './components/hr/notification/add-notification/add-notification.component';
+import { DeleteNotificationComponent } from './components/hr/notification/delete-notification/delete-notification.component';
+import { ViewNotificationComponent } from './components/hr/notification/view-notification/view-notification.component';
+import { NotificationService } from './components/hr/notification/notification.service';
+import { NotificationEndPoints } from './components/hr/notification/notification.endpoints';
 import { UpdateUserAttendanceComponent } from './components/order/user-attendance/update-user-attendance/update-user-attendance.component';
 import { RegisterMobileDeviceComponent } from './components/hr/register-mobile-device/register-mobile-device.component';
 import { AddRetailOrderReturnComponent } from './components/order/retail-orders/retail-order-return/add-retail-order-return/add-retail-order-return.component';
@@ -1340,6 +1347,7 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         ProcessManageEmployeeLeaveComponent,
         HrDashboardComponent,
         EmployeeDashboardComponent,
+        ManagerDashboardComponent,
         AddEmployeeWorkSiteTypeComponent,
         DeleteEmployeeWorkSiteTypeComponent,
         ViewEmployeeWorkSiteTypeComponent,
@@ -1354,6 +1362,10 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         AddHolidayComponent,
         DeleteHolidayComponent,
         HolidayListComponent,
+        NotificationListComponent,
+        AddNotificationComponent,
+        DeleteNotificationComponent,
+        ViewNotificationComponent,
         UpdateUserAttendanceComponent,
         RegisterMobileDeviceComponent,
         AddRetailOrderReturnComponent,
@@ -1404,7 +1416,11 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         ViewCandidateEvaluationCategoryComponent,
         DeleteCandidateEvaluationCategoryComponent,
         CandidateEvaluationCategoryListComponent,
-        ConductInterviewListComponent
+        ConductInterviewListComponent,
+        AddNotificationComponent,
+        ViewNotificationComponent,
+        DeleteNotificationComponent,
+        NotificationListComponent,
     ],
     bootstrap: [AppComponent], imports: [
         InputMaskModule,
@@ -1649,6 +1665,8 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         EmployeeEndPoints,
         HolidayService,
         HolidayEndPoints,
+        NotificationService,
+        NotificationEndPoints,
         RetailOrderReturnEndPoints,
         RetailOrderReturnService,
         AppointmentService,
@@ -1675,6 +1693,8 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         CandidateEvaluationCategoryEndPoints,
         CandidateScoringScaleService,
         CandidateScoringScaleEndPoints,
+        NotificationService,
+        NotificationEndPoints,
         { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
         { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },
         AuthenticationService, {

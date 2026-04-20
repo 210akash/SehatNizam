@@ -29,6 +29,11 @@ export class RosterService extends BaseService<any> {
             .pipe(map((data: any) => data));
     }
 
+    async getAllRostersByEmployee(categorysFilterForm: any) {
+        return this.post(categorysFilterForm, this.endPointControllerName + this.rosterEndPoints.getAllRostersByEmployee)
+            .pipe(map((data: any) => data));
+    }
+
     saveRoster(saveRosterCommand: any) {
         return this.post(saveRosterCommand, this.endPointControllerName + this.rosterEndPoints.saveRoster)
             .pipe(map((data: any) => data));

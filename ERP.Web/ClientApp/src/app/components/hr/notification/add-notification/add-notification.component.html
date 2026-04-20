@@ -1,0 +1,83 @@
+<form [formGroup]="notificationForm">
+  <mat-card>
+        <mat-card-header>
+      <mat-card-title>{{ isEditMode ? 'Edit' : 'Create' }} Notification</mat-card-title>
+    </mat-card-header>
+      <mat-divider></mat-divider>
+    <mat-card-content>
+      <input type="hidden" formControlName="id" />
+        <div class="row">
+            <!-- Department -->
+            <div class="col-md-12 mb-3">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Department</mat-label>
+                    <mat-select formControlName="departmentId">
+                          <mat-option value="">
+                            ALL
+                        </mat-option>
+                        <mat-option *ngFor="let dept of departmentList" [value]="dept.id">
+                            {{dept.name}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+            <!-- Title -->
+            <div class="col-md-12 mb-3">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Title</mat-label>
+                    <input matInput formControlName="title" placeholder="Enter notification title" required maxlength="200">
+                    <mat-hint align="end">{{notificationForm.get('title')?.value?.length || 0}}/200</mat-hint>
+                    <mat-error *ngIf="notificationForm.get('title')?.hasError('required')">
+                        Title is required
+                    </mat-error>
+                    <mat-error *ngIf="notificationForm.get('title')?.hasError('maxlength')">
+                        Title cannot exceed 200 characters
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <!-- Message -->
+            <div class="col-md-12 mb-3">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Message</mat-label>
+                    <textarea matInput formControlName="message" placeholder="Enter notification message" required maxlength="2000" rows="5"></textarea>
+                    <mat-hint align="end">{{notificationForm.get('message')?.value?.length || 0}}/2000</mat-hint>
+                    <mat-error *ngIf="notificationForm.get('message')?.hasError('required')">
+                        Message is required
+                    </mat-error>
+                    <mat-error *ngIf="notificationForm.get('message')?.hasError('maxlength')">
+                        Message cannot exceed 2000 characters
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <!-- Expire Date -->
+            <div class="col-md-12 mb-3">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Expire Date</mat-label>
+                    <input matInput [matDatepicker]="picker" formControlName="expireDate" placeholder="Select expire date" required [min]="minDate">
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                    <mat-error *ngIf="notificationForm.get('expireDate')?.hasError('required')">
+                        Expire date is required
+                    </mat-error>
+                    <mat-error *ngIf="notificationForm.get('expireDate')?.hasError('matDatepickerMin')">
+                        Expire date cannot be in the past
+                    </mat-error>
+                </mat-form-field>
+            </div>
+        </div>
+
+        <mat-divider></mat-divider>
+      <div class="button-container">
+        <button mat-flat-button color="success" type="button" (click)="SaveData()"  [disabled]="isLoading">
+          <span class="mat-button-wrapper">Save</span>
+        </button>
+        <button mat-flat-button color="default" [mat-dialog-close]="true">
+          <span class="mat-button-wrapper">Close</span>
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+    </form>

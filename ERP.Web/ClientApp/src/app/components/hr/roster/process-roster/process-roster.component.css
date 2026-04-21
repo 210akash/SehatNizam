@@ -181,3 +181,42 @@ td {
 .close-btn:hover {
   background: #e5e7eb;
 }
+
+
+/* LEGEND FOOTER */
+.legend-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  background: white;
+  padding: 16px;
+  border-radius: 10px;
+  margin-top: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.leg-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #374151;
+}
+
+.leg-item strong {
+  font-weight: 600;
+  color: #1f2937;
+  min-width: 30px;
+}
+
+/* BUTTON CONTAINER */
+.button-container {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+.button-container button {
+  min-width: 100px;
+}

@@ -10,7 +10,6 @@ using ERP.Mediator.Mediator.AccountType.Query;
 using ERP.Mediator.Mediator.AccountType.Command;
 using ERP.Mediator.Mediator.AccountSubCategory.Query;
 using Microsoft.AspNetCore.Authorization;
-
 namespace ERP.API.Controllers
 {
     [Route("api/[controller]")]

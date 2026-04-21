@@ -147,7 +147,7 @@ constructor(
     if (cell.isOffDay) return 'OFF';
     const code = this.getShiftCode(cell);
     const name = (cell.employeeShift?.name ?? '').toString().trim();
-    if (code && name && code !== name.toUpperCase()) return `${code} - ${name}`;
+    if (code && name && code !== name.toUpperCase()) return `${code}`;
     return code || name;
   }
 

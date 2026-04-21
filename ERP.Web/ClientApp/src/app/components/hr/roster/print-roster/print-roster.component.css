@@ -55,10 +55,15 @@
 .emp-cell {
   text-align: left !important;
   min-width: 180px;
+  white-space: normal; /* IMPORTANT: allow multi-line */
 }
 
 .emp-name {
   font-weight: 600;
+  line-height: 1.4;
+  font-size: 12px;
+  margin-bottom: 3px;
+  display: block;
 }
 
 .emp-code {
@@ -113,6 +118,7 @@
 
   .roster-table {
     font-size: 9px;
+    vertical-align: middle;
   }
 
   .roster-table th,
@@ -131,11 +137,16 @@
 
   .emp-col,
   .emp-cell {
-    min-width: 115px;
+    min-width: 90px;
   }
 
+   .emp-cell{
+    min-height: 40px;
+   }
+
   .emp-name {
-    font-size: 9px;
+    font-size: 8px;
+    height: 100px;
   }
 
   .emp-code {

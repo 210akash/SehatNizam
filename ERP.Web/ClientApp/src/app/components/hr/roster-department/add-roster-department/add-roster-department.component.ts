@@ -138,12 +138,7 @@ export class AddRosterDepartmentComponent {
             id: [detail.id],
             rosterId: [detail.rosterId],
             employeeId: [detail.employeeId, Validators.required],
-            employeeShiftId: [
-              detail.isOffDay === true
-                ? 0
-                : (detail.employeeShiftId ?? detail.shiftId ?? detail.shift ?? 0),
-              Validators.required
-            ],
+            employeeShiftId: [detail.employeeShiftId, Validators.required],
             rosterDate: [detail.rosterDate, Validators.required],
             isOffDay: [detail.isOffDay ?? false, []]
           });
@@ -173,7 +168,7 @@ export class AddRosterDepartmentComponent {
   }
 
   SaveData() {
-    console.log(this.rosterForm.value);
+    console.log(this.rosterForm.getRawValue());
     if (this.rosterForm.invalid) {
       this.constantService.markFormGroupTouched(this.rosterForm);
       this.notificationsService.showNotification('Please Fill Required Fields', 'snack-bar-danger');
@@ -182,7 +177,7 @@ export class AddRosterDepartmentComponent {
 
     this.isLoading = true;
     let _clienttemperatureForm: any = {};
-    _clienttemperatureForm = Object.assign(_clienttemperatureForm, this.rosterForm.value);
+    _clienttemperatureForm = Object.assign(_clienttemperatureForm, this.rosterForm.getRawValue());
 
     this.rosterService.saveRosterByManager(_clienttemperatureForm).subscribe({
       next: (data: { Status: number; Data: string; }) => {

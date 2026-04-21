@@ -128,7 +128,6 @@ namespace ERP.Mediator.Mediator.Roster.Handler
             {
                 return 409;
             }
-            return 404;
         }
     }
 }

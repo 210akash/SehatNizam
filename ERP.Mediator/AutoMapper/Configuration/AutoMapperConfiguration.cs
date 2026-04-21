@@ -92,6 +92,9 @@
     using ERP.Mediator.Mediator.UserTerritory.Command;
     using ERP.Mediator.Mediator.Vehicle.Command;
     using ERP.Mediator.Mediator.Notification.Command;
+    //using ERP.Mediator.Mediator.Payroll.EmployeeSalary.Command;
+    //using ERP.Mediator.Mediator.Payroll.Payroll.Command;
+    //using ERP.Mediator.Mediator.Payroll.SalaryHead.Command;
     using ERP.Mediator.Mediator.Vendor.Command;
     using ERP.Mediator.Mediator.WarehouseTransfer.Command;
     using ERP.Mediator.Mediator.Zone.Command;
@@ -612,6 +615,30 @@
 
             this.CreateMap<Notification, GetNotification>().ReverseMap();
             this.CreateMap<Notification, SaveNotificationCommand>().ReverseMap();
+
+            // Payroll Module Mappings
+            //this.CreateMap<SalaryHead, GetSalaryHead>().ReverseMap();
+            //this.CreateMap<SalaryHead, SaveSalaryHeadCommand>().ReverseMap();
+
+            //this.CreateMap<EmployeeSalary, GetEmployeeSalary>().ReverseMap();
+            //this.CreateMap<EmployeeSalary, SaveEmployeeSalaryCommand>().ReverseMap();
+
+            //this.CreateMap<Entities.Models.Payroll, GetPayroll>().ReverseMap();
+            //this.CreateMap<Entities.Models.Payroll, SavePayrollCommand>().ReverseMap();
+
+            //this.CreateMap<PayrollDetail, GetPayrollDetail>().ReverseMap();
+
+            //// Payroll Module Mappings
+            //this.CreateMap<SalaryHead, GetSalaryHead>().ReverseMap();
+            //this.CreateMap<SalaryHead, SaveSalaryHeadCommand>().ReverseMap();
+
+            //this.CreateMap<EmployeeSalary, GetEmployeeSalary>().ReverseMap();
+            //this.CreateMap<EmployeeSalary, SaveEmployeeSalaryCommand>().ReverseMap();
+
+            //this.CreateMap<Entities.Models.Payroll, GetPayroll>().ReverseMap();
+            //this.CreateMap<Entities.Models.Payroll, SavePayrollCommand>().ReverseMap();
+
+            //this.CreateMap<PayrollDetail, GetPayrollDetail>().ReverseMap();
 
         }
     }

@@ -6,6 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Mediator\Payroll\**" />
+    <EmbeddedResource Remove="Mediator\Payroll\**" />
+    <None Remove="Mediator\Payroll\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Mediator\Appointment\Command\SavePurchaseInvoiceWHTCommand.cs" />
     <Compile Remove="Mediator\Appointment\Handler\ApproveGRNHandler.cs" />
     <Compile Remove="Mediator\Appointment\Handler\ApprovePurchaseInvoiceHandler.cs" />

@@ -505,7 +505,7 @@ export class PrintRosterComponent implements OnInit {
   shiftText(cell: any): string {
     if (!cell) return '';
     if (cell.isOffDay) return 'OFF';
-    if (cell.employeeShift?.name) return cell.employeeShift.name;
+    if (cell.employeeShift?.name) return cell.employeeShift.code;
     if (cell.employeeShiftId === 1) return 'M';
     if (cell.employeeShiftId === 2) return 'E';
     if (cell.employeeShiftId === 3) return 'N';

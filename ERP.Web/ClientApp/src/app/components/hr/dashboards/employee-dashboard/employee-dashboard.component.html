@@ -33,35 +33,33 @@
       <h3>My Attendance</h3>
     </div>
 
-    <div class="attendance-cards" *ngIf="attendanceData?.length; else noAttendance">
-      <article class="attendance-card" *ngFor="let record of attendanceData">
-        <div class="attendance-date">{{ record.attendanceDate | date:'EEEE, MMMM d, y' }}</div>
-
-        <div class="attendance-row">
-          <span class="label">Time In</span>
-          <span class="value">{{ record.timeIn | date:'hh:mm:ss a' }}</span>
-        </div>
-        <div class="attendance-row">
-          <span class="label">In Device</span>
-          <span class="value">{{ record.inDevice?.name || '-' }}</span>
-        </div>
-        <div class="attendance-row">
-          <span class="label">Time Out</span>
-          <span class="value">{{ record.timeOut | date:'hh:mm:ss a, dd MMM y' }}</span>
-        </div>
-        <div class="attendance-row">
-          <span class="label">Out Device</span>
-          <span class="value">{{ record.outDevice?.name || '-' }}</span>
-        </div>
-        <div class="attendance-row">
-          <span class="label">Working Hours</span>
-          <span class="value">{{ record.workingHours || '-' }}</span>
-        </div>
-        <div class="attendance-row">
-          <span class="label">Status</span>
-          <span class="value status-pill">{{ record.status || '-' }}</span>
-        </div>
-      </article>
+    <div class="attendance-table-wrap" *ngIf="attendanceData?.length; else noAttendance">
+      <table class="attendance-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Time In</th>
+            <th>Time Out</th>
+            <th>Working Hours</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let record of attendanceData">
+            <td>{{ record.attendanceDate | date:'shortDate' }}</td>
+            <td><span class="status-pill">{{ record.status || '-' }}</span></td>
+            <td>
+              <div>{{ record.timeIn | date:'hh:mm a' }}</div>
+              <div class="device-info">{{ record.inDevice?.name || '-' }}</div>
+            </td>
+            <td>
+              <div>{{ record.timeOut | date:'hh:mm a' }}</div>
+              <div class="device-info">{{ record.outDevice?.name || '-' }}</div>
+            </td>
+            <td>{{ record.workingHours || '-' }}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
     <ng-template #noAttendance>

@@ -125,6 +125,7 @@ namespace ERP.Mediator.Mediator.Auth.Handler
                 _userToUpdate.Code = _user.Code;
                 _userToUpdate.IsMobileDeviceRegister = _user.IsMobileDeviceRegister;
                 _userToUpdate.EmployeeWorkSiteTypeId = _user.EmployeeWorkSiteTypeId;
+                _userToUpdate.IsRosterShift = _user.IsRosterShift;
 
                 if (user.IsMobileDeviceRegister != true && _user.IsMobileDeviceRegister == true)
                 {
@@ -226,7 +227,7 @@ namespace ERP.Mediator.Mediator.Auth.Handler
                     }
                 }
 
-                if (request.Days != null)
+                if (request.IsRosterShift == false)
                 {
                     var workingDays = await unitOfWork.Repository<EmployeeWorkingDays>().GetFirstAsNoTrackingAsync(x => x.EmployeeId == user.Id);
                     if (workingDays == null)

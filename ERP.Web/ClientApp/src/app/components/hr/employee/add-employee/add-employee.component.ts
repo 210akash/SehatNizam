@@ -188,12 +188,27 @@ export class AddEmployeeComponent {
       totalWorkExperience: [''],
       reference: [''],
       remarks: [''],
-
+      isRosterShift: [false],
       isMobileDeviceRegister: [],
       isAvailableForMobile: [false],
       isAvailableForWeb: [false],
       isDistCompForAtten: [false],
     });
+
+   this.employeeForm.get('isRosterShift')?.valueChanges.subscribe(value => {
+  if (value) {
+    this.employeeForm.get('days')?.reset({
+      employeeId: '',
+      monday: false,
+      tuesday: false,
+      wednesday: false,
+      thursday: false,
+      friday: false,
+      saturday: false,
+      sunday: false
+    });
+  }
+});
 
     this.handleResignValidation();
     this.handleDepartmentValidation();

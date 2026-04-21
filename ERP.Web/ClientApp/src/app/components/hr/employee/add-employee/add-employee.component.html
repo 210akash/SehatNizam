@@ -395,10 +395,16 @@
           </div>
         </div> -->
            <div class="col-md-12">
-          <hr style="width: 100%; margin-bottom: 20px;" />
+          <hr style="margin-bottom: 20px;" />
             <h3>Working Days</h3>
         </div>
-        <div class="col-md-12">
+        <div class="col-md-12 ">
+            <mat-label>Roster Shift </mat-label>
+          <mat-slide-toggle [matTooltip]="this.employeeForm.get('isRosterShift')?.value ? 'Roster' : 'General Shift'"
+            formControlName="isRosterShift">
+          </mat-slide-toggle>
+        </div>
+        <div class="col-md-12" *ngIf="!employeeForm.get('isRosterShift')?.value">
           <div class="row" formGroupName="days">
             <div class="col-md-4" *ngFor="let day of dayList">
               <mat-checkbox [formControlName]="day.key" [checked]="day.check">{{ day.label }}</mat-checkbox>

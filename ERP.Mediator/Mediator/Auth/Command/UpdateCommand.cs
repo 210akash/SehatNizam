@@ -92,6 +92,8 @@ namespace ERP.Mediator.Mediator.Auth.Command
         public bool? IsAvailableForWeb { get; set; }
         public bool? IsDistCompForAtten { get; set; }
         public string WeeklyOff { get; set; }
+        public bool IsRosterShift { get; set; }
+
         // Fields for KC Users (SALE) END
 
         #region HR

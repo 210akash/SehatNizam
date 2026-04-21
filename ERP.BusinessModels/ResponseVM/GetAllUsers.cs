@@ -54,7 +54,7 @@ namespace ERP.BusinessModels.ResponseVM
         public DateTime? DateOfBirth { get; set; }
         public TimeSpan? ShiftTimeStart { get; set; }
         public TimeSpan? ShiftTimeEnd { get; set; }
-
+        public bool IsRosterShift { get; set; }
         public List<GetDSFRoute> DSFRoute { get; set; }
         public List<GetAttachments> Attachments { get; set; }
         public List<GetUserTerritory> UserTerritory { get; set; }

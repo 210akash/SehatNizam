@@ -148,6 +148,7 @@ namespace ERP.Entities.Models
         public DateTime? ModifiedDate { get; set; }
         public DateTime? DeleteDate { get; set; }
         public bool? IsLogedIn { get; set; }
+        public bool IsRosterShift { get; set; }
         public string WeeklyOff { get; set; }
 
         public long? DealershipId { get; set; }

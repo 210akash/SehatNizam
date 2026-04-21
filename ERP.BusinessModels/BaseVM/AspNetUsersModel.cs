@@ -259,6 +259,8 @@ namespace ERP.BusinessModels.BaseVM
         public GetDealership Dealership { get; set; }
         // Fields for KC Users (SALE) END
 
+        public bool IsRosterShift { get; set; }
+
         //User Warehouse
         public long? SelectedWarehouseId { get; set; }
         public long? RetailUserShopId { get; set; }

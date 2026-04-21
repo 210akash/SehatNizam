@@ -155,6 +155,7 @@ namespace ERP.Mediator.Mediator.Auth.Command
         public GetEmployeeWorkingDays Days { get; set; }
         public List<ImageUploadModel> Documents { get; set; }
         public List<long> ProjectIds { get; set; }
+        public bool IsRosterShift { get; set; }
 
         #endregion
     }

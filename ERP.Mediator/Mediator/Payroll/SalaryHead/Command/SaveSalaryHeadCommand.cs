@@ -7,6 +7,6 @@ namespace ERP.Mediator.Mediator.Payroll.SalaryHead.Command
     {
         public long Id { get; set; }
         public string Name { get; set; }
-        public SalaryHeadType Type { get; set; }
+        public int Type { get; set; }
     }
 }

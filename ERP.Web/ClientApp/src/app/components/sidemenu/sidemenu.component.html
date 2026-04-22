@@ -594,6 +594,20 @@
         </div>
       </div>
 
+       <!-- PayRoll -->
+      <div class="nav-group" *ngIf="hasRequiredRole(['hr executive','hr manager','admin'])">
+            <button (click)="toggleSubMenu('payroll')" class="nav-button">
+          <i class="fas fa-user-tie"></i>
+          <span>Payroll</span>
+          <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('payroll')"></i>
+        </button>
+        <div class="submenu" *ngIf="isSubMenuVisible('payroll')">
+          <!-- HR Setup -->
+             <a routerLink="/salaryhead" class="submenu-link" [class.active-link]="isActive('/salaryhead')">Salary Head</a>
+             <a routerLink="/interview" class="submenu-link" [class.active-link]="isActive('/interview')">Payroll</a>
+        </div>
+      </div>
+
      <!-- Department Manager Approvals -->
       <div class="nav-group" *ngIf="hasRequiredRole(['manager'])">
         <button (click)="toggleSubMenu('departmentapprovals')" class="nav-button">

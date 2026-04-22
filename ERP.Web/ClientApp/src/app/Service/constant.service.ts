@@ -503,3 +503,8 @@ export enum OrderStatusEnum {
   ManagerApproved = 170,
 
 }
+
+export enum SalaryHeadTypeEnum {
+  Earning = 1,
+  Deduction = 2,
+}

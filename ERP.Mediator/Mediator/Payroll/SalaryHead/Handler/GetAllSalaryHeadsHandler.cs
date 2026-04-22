@@ -25,7 +25,7 @@ namespace ERP.Mediator.Mediator.Payroll.SalaryHead.Handler
 
         public async Task<Tuple<IEnumerable<GetSalaryHead>, long>> Handle(GetAllSalaryHeadsQuery request, CancellationToken cancellationToken)
         {
-            Expression<Func<Entities.Models.SalaryHead, bool>> predicate = x => x.IsActive == true && x.Name.ToLower().Contains(request.Name.ToLower());    
+            Expression<Func<Entities.Models.SalaryHead, bool>> predicate = x => x.IsActive == true && (request.Name == "" || x.Name.ToLower().Contains(request.Name.ToLower()));    
 
             Expression<Func<Entities.Models.SalaryHead, object>> OrderBy = null;
             Expression<Func<Entities.Models.SalaryHead, object>> OrderByDesc = x => x.CreatedDate;

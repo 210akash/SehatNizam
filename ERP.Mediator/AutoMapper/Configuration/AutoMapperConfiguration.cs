@@ -101,6 +101,8 @@
     using global::AutoMapper;
     using Microsoft.AspNetCore.Identity;
     using System.Linq;
+    using ERP.Mediator.Mediator.Payroll.SalaryHead.Command;
+    using ERP.Mediator.Mediator.Payroll.EmployeeSalary.Command;
 
     public class AutoMapperConfiguration : Profile
     {
@@ -617,11 +619,11 @@
             this.CreateMap<Notification, SaveNotificationCommand>().ReverseMap();
 
             // Payroll Module Mappings
-            //this.CreateMap<SalaryHead, GetSalaryHead>().ReverseMap();
-            //this.CreateMap<SalaryHead, SaveSalaryHeadCommand>().ReverseMap();
+            this.CreateMap<SalaryHead, GetSalaryHead>().ReverseMap();
+            this.CreateMap<SalaryHead, SaveSalaryHeadCommand>().ReverseMap();
 
-            //this.CreateMap<EmployeeSalary, GetEmployeeSalary>().ReverseMap();
-            //this.CreateMap<EmployeeSalary, SaveEmployeeSalaryCommand>().ReverseMap();
+            this.CreateMap<EmployeeSalary, GetEmployeeSalary>().ReverseMap();
+            this.CreateMap<EmployeeSalary, SaveEmployeeSalaryCommand>().ReverseMap();
 
             //this.CreateMap<Entities.Models.Payroll, GetPayroll>().ReverseMap();
             //this.CreateMap<Entities.Models.Payroll, SavePayrollCommand>().ReverseMap();

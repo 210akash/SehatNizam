@@ -124,6 +124,7 @@ import { CandidateEvaluationCategoryListComponent } from './components/hr/candid
 import { ConductInterviewListComponent } from './components/interview/conduct-interview-list/conduct-interview-list.component';
 import { NotificationListComponent } from './components/hr/notification/notification-list/notification-list.component';
 import { AddNotificationComponent } from './components/hr/notification/add-notification/add-notification.component';
+import { SalaryHeadListComponent } from './components/hr/payroll/salaryhead/salaryhead-list/salaryhead-list.component';
 
 const routes: Routes = [
   {
@@ -250,6 +251,7 @@ const routes: Routes = [
       { path: 'roster', component: RosterTabComponent, canActivate: [AuthGuard] },
       { path: 'candidateevaluationcategory', component: CandidateEvaluationCategoryListComponent, canActivate: [AuthGuard] },
       { path: 'conductinterview', component: ConductInterviewListComponent, canActivate: [AuthGuard] },
+      { path: 'salaryhead', component: SalaryHeadListComponent, canActivate: [AuthGuard], data: {roles: ["hr manager,hr executive,admin"] } },
     ]
   },
   {

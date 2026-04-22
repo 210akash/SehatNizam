@@ -9,6 +9,7 @@ using ERP.API.Extensions;
 using ERP.BusinessModels.Enums;
 using ERP.Mediator.Mediator.Payroll.SalaryHead.Query;
 using ERP.Mediator.Mediator.Payroll.SalaryHead.Command;
+using ERP.Mediator.Mediator.AccountFlow.Query;
 
 namespace ERP.API.Controllers.SalaryHead
 {
@@ -25,13 +26,13 @@ namespace ERP.API.Controllers.SalaryHead
 
         #region SalaryHead Endpoints
 
-        [HttpGet]
+        [HttpPost]
         [Route("GetAllSalaryHeads")]
-        public async Task<ActionResult<IEnumerable<GetSalaryHead>>> GetAllSalaryHeads()
+        public async Task<ActionResult<Tuple<IEnumerable<GetSalaryHead>, long>>> GetAll(GetAllSalaryHeadsQuery getAllSalaryHeadsQuery)
         {
             try
             {
-                var result = await mediator.Send(new GetAllSalaryHeadsQuery());
+                var result = await mediator.Send(getAllSalaryHeadsQuery);
                 return Ok(result);
             }
             catch (Exception ex)

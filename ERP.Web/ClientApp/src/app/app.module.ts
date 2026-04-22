@@ -830,6 +830,12 @@ import { CandidateEvaluationCategoryEndPoints } from './components/hr/candidatee
 import { CandidateScoringScaleService } from './components/hr/candidatescoringscale/candidatescoringscale.service';
 import { CandidateScoringScaleEndPoints } from './components/hr/candidatescoringscale/candidatescoringscale.endpoints';
 import { ConductInterviewListComponent } from './components/interview/conduct-interview-list/conduct-interview-list.component';
+import { SalaryHeadService } from './components/hr/payroll/salaryhead/salaryhead.service';
+import { SalaryHeadListComponent } from './components/hr/payroll/salaryhead/salaryhead-list/salaryhead-list.component';
+import { AddSalaryHeadComponent } from './components/hr/payroll/salaryhead/add-salaryhead/add-salaryhead.component';
+import { ViewSalaryHeadComponent } from './components/hr/payroll/salaryhead/view-salaryhead/view-salaryhead.component';
+import { DeleteSalaryHeadComponent } from './components/hr/payroll/salaryhead/delete-salaryhead/delete-salaryhead.component';
+import { SalaryHeadEndPoints } from './components/hr/payroll/salaryhead/salaryhead.endpoints';
 
 const matFormFieldDefaults: MatFormFieldDefaultOptions = {
     appearance: 'outline'
@@ -1421,6 +1427,10 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         ViewNotificationComponent,
         DeleteNotificationComponent,
         NotificationListComponent,
+        SalaryHeadListComponent,
+        AddSalaryHeadComponent,
+        ViewSalaryHeadComponent,
+        DeleteSalaryHeadComponent
     ],
     bootstrap: [AppComponent], imports: [
         InputMaskModule,
@@ -1695,6 +1705,8 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         CandidateScoringScaleEndPoints,
         NotificationService,
         NotificationEndPoints,
+        SalaryHeadService,
+        SalaryHeadEndPoints,
         { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
         { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },
         AuthenticationService, {

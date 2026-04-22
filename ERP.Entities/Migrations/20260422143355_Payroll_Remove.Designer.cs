@@ -4,14 +4,16 @@ using ERP.Entities.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ERP.Entities.Migrations
 {
     [DbContext(typeof(ERPDbContext))]
-    partial class ERPDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260422143355_Payroll_Remove")]
+    partial class Payroll_Remove
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -3469,59 +3471,6 @@ namespace ERP.Entities.Migrations
                     b.ToTable("EmployeeOvertimeRate");
                 });
 
-            modelBuilder.Entity("ERP.Entities.Models.EmployeeSalary", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<Guid?>("CreatedById")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeleteDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("EffectiveFrom")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("EmployeeId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDelete")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid?>("ModifiedById")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long>("SalaryHeadId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatedById");
-
-                    b.HasIndex("EmployeeId");
-
-                    b.HasIndex("ModifiedById");
-
-                    b.HasIndex("SalaryHeadId");
-
-                    b.ToTable("EmployeeSalary");
-                });
-
             modelBuilder.Entity("ERP.Entities.Models.EmployeeShift", b =>
                 {
                     b.Property<long>("Id")
@@ -5755,109 +5704,6 @@ namespace ERP.Entities.Migrations
                     b.ToTable("PaymentMode");
                 });
 
-            modelBuilder.Entity("ERP.Entities.Models.Payroll", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<Guid?>("CreatedById")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeleteDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDelete")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid?>("ModifiedById")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Month")
-                        .HasColumnType("int");
-
-                    b.Property<long>("StatusId")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("Year")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatedById");
-
-                    b.HasIndex("ModifiedById");
-
-                    b.HasIndex("StatusId");
-
-                    b.ToTable("Payroll");
-                });
-
-            modelBuilder.Entity("ERP.Entities.Models.PayrollDetail", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<Guid?>("CreatedById")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeleteDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("EmployeeId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDelete")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid?>("ModifiedById")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long>("PayrollId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("SalaryHeadId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatedById");
-
-                    b.HasIndex("EmployeeId");
-
-                    b.HasIndex("ModifiedById");
-
-                    b.HasIndex("PayrollId");
-
-                    b.HasIndex("SalaryHeadId");
-
-                    b.ToTable("PayrollDetail");
-                });
-
             modelBuilder.Entity("ERP.Entities.Models.Prescription", b =>
                 {
                     b.Property<long>("Id")
@@ -7483,51 +7329,6 @@ namespace ERP.Entities.Migrations
                     b.HasIndex("RackId");
 
                     b.ToTable("Row");
-                });
-
-            modelBuilder.Entity("ERP.Entities.Models.SalaryHead", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<Guid?>("CreatedById")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeleteDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDelete")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid?>("ModifiedById")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatedById");
-
-                    b.HasIndex("ModifiedById");
-
-                    b.ToTable("SalaryHead");
                 });
 
             modelBuilder.Entity("ERP.Entities.Models.SaleMaterial", b =>
@@ -11835,37 +11636,6 @@ namespace ERP.Entities.Migrations
                     b.Navigation("ModifiedBy");
                 });
 
-            modelBuilder.Entity("ERP.Entities.Models.EmployeeSalary", b =>
-                {
-                    b.HasOne("ERP.Entities.Models.AspNetUsers", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedById");
-
-                    b.HasOne("ERP.Entities.Models.AspNetUsers", "Employee")
-                        .WithMany()
-                        .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ERP.Entities.Models.AspNetUsers", "ModifiedBy")
-                        .WithMany()
-                        .HasForeignKey("ModifiedById");
-
-                    b.HasOne("ERP.Entities.Models.SalaryHead", "SalaryHead")
-                        .WithMany()
-                        .HasForeignKey("SalaryHeadId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CreatedBy");
-
-                    b.Navigation("Employee");
-
-                    b.Navigation("ModifiedBy");
-
-                    b.Navigation("SalaryHead");
-                });
-
             modelBuilder.Entity("ERP.Entities.Models.EmployeeShift", b =>
                 {
                     b.HasOne("ERP.Entities.Models.AspNetUsers", "CreatedBy")
@@ -12998,68 +12768,6 @@ namespace ERP.Entities.Migrations
                     b.Navigation("ModifiedBy");
                 });
 
-            modelBuilder.Entity("ERP.Entities.Models.Payroll", b =>
-                {
-                    b.HasOne("ERP.Entities.Models.AspNetUsers", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedById");
-
-                    b.HasOne("ERP.Entities.Models.AspNetUsers", "ModifiedBy")
-                        .WithMany()
-                        .HasForeignKey("ModifiedById");
-
-                    b.HasOne("ERP.Entities.Models.Status", "Status")
-                        .WithMany()
-                        .HasForeignKey("StatusId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CreatedBy");
-
-                    b.Navigation("ModifiedBy");
-
-                    b.Navigation("Status");
-                });
-
-            modelBuilder.Entity("ERP.Entities.Models.PayrollDetail", b =>
-                {
-                    b.HasOne("ERP.Entities.Models.AspNetUsers", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedById");
-
-                    b.HasOne("ERP.Entities.Models.AspNetUsers", "Employee")
-                        .WithMany()
-                        .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ERP.Entities.Models.AspNetUsers", "ModifiedBy")
-                        .WithMany()
-                        .HasForeignKey("ModifiedById");
-
-                    b.HasOne("ERP.Entities.Models.Payroll", "Payroll")
-                        .WithMany("PayrollDetails")
-                        .HasForeignKey("PayrollId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ERP.Entities.Models.SalaryHead", "SalaryHead")
-                        .WithMany()
-                        .HasForeignKey("SalaryHeadId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CreatedBy");
-
-                    b.Navigation("Employee");
-
-                    b.Navigation("ModifiedBy");
-
-                    b.Navigation("Payroll");
-
-                    b.Navigation("SalaryHead");
-                });
-
             modelBuilder.Entity("ERP.Entities.Models.Prescription", b =>
                 {
                     b.HasOne("ERP.Entities.Models.Appointment", "Appointment")
@@ -13978,21 +13686,6 @@ namespace ERP.Entities.Migrations
                     b.Navigation("ModifiedBy");
 
                     b.Navigation("Rack");
-                });
-
-            modelBuilder.Entity("ERP.Entities.Models.SalaryHead", b =>
-                {
-                    b.HasOne("ERP.Entities.Models.AspNetUsers", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedById");
-
-                    b.HasOne("ERP.Entities.Models.AspNetUsers", "ModifiedBy")
-                        .WithMany()
-                        .HasForeignKey("ModifiedById");
-
-                    b.Navigation("CreatedBy");
-
-                    b.Navigation("ModifiedBy");
                 });
 
             modelBuilder.Entity("ERP.Entities.Models.SaleMaterial", b =>
@@ -15637,11 +15330,6 @@ namespace ERP.Entities.Migrations
             modelBuilder.Entity("ERP.Entities.Models.Patient", b =>
                 {
                     b.Navigation("PatientAppointments");
-                });
-
-            modelBuilder.Entity("ERP.Entities.Models.Payroll", b =>
-                {
-                    b.Navigation("PayrollDetails");
                 });
 
             modelBuilder.Entity("ERP.Entities.Models.PriceGroup", b =>

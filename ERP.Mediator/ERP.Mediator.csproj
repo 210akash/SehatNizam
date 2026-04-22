@@ -6,9 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Mediator\Payroll\**" />
-    <EmbeddedResource Remove="Mediator\Payroll\**" />
-    <None Remove="Mediator\Payroll\**" />
+    <Compile Remove="Mediator\Payroll\Payroll\**" />
+    <EmbeddedResource Remove="Mediator\Payroll\Payroll\**" />
+    <None Remove="Mediator\Payroll\Payroll\**" />
   </ItemGroup>
 
   <ItemGroup>

@@ -176,6 +176,10 @@
         public virtual DbSet<CandidateScoringScale> CandidateScoringScale { get; set; }
         public virtual DbSet<CandidateEvaluationCategory> CandidateEvaluationCategory { get; set; }
         public virtual DbSet<Notification> Notification { get; set; }
+        public virtual DbSet<SalaryHead> SalaryHead { get; set; }
+        public virtual DbSet<EmployeeSalary> EmployeeSalary { get; set; }
+        public virtual DbSet<Payroll> Payroll { get; set; }
+        public virtual DbSet<PayrollDetail> PayrollDetail { get; set; }
 
         #endregion
 

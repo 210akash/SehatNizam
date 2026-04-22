@@ -10,7 +10,7 @@ namespace ERP.Mediator.Mediator.Payroll.EmployeeSalary.Query
     /// </summary>
     public class GetLatestEmployeeSalariesQuery : IRequest<IEnumerable<GetEmployeeSalary>>
     {
-        public long EmployeeId { get; set; }
+        public string EmployeeId { get; set; }
         public DateTime AsOfDate { get; set; }
     }
 }

@@ -5,7 +5,7 @@ namespace ERP.Entities.Models
 {
     public class EmployeeSalary : BaseEntity
     {
-        public long EmployeeId { get; set; }
+        public Guid EmployeeId { get; set; }
         public virtual AspNetUsers Employee { get; set; }
 
         public long SalaryHeadId { get; set; }

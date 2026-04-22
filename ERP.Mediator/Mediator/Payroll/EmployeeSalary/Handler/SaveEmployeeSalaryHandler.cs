@@ -26,7 +26,7 @@ namespace ERP.Mediator.Mediator.Payroll.EmployeeSalary.Handler
         public async Task<int> Handle(SaveEmployeeSalaryCommand request, CancellationToken cancellationToken)
         {
             // Validation
-            if (request.EmployeeId == 0 || request.SalaryHeadId == 0 || request.Amount < 0)
+            if (request.EmployeeId == "" || request.SalaryHeadId == 0 || request.Amount < 0)
             {
                 return 400; // Bad Request
             }
@@ -36,15 +36,15 @@ namespace ERP.Mediator.Mediator.Payroll.EmployeeSalary.Handler
             if (request.Id > 0)
             {
                 // Update existing - but we prefer creating new record with new EffectiveFrom
-                employeeSalary = await unitOfWork.Repository<Entities.Models.EmployeeSalary>().GetByIdAsync(request.Id);
+                employeeSalary = await unitOfWork.Repository<Entities.Models.EmployeeSalary>().GetFirstAsync(x => x.Id == request.Id);
                 if (employeeSalary == null)
                 {
                     return 404; // Not Found
                 }
 
                 mapper.Map(request, employeeSalary);
-                employeeSalary.UpdatedById = this.sessionProvider.Session.LoggedInUserId;
-                employeeSalary.UpdatedDate = DateTime.Now;
+                employeeSalary.ModifiedById = this.sessionProvider.Session.LoggedInUserId;
+                employeeSalary.ModifiedDate = DateTime.Now;
 
                 unitOfWork.Repository<Entities.Models.EmployeeSalary>().Update(employeeSalary);
             }
@@ -52,7 +52,7 @@ namespace ERP.Mediator.Mediator.Payroll.EmployeeSalary.Handler
             {
                 // Check for duplicate active record
                 var exists = await unitOfWork.Repository<Entities.Models.EmployeeSalary>()
-                    .AnyAsync(x => x.EmployeeId == request.EmployeeId 
+                    .GetExistsAsync(x => x.EmployeeId == new Guid(request.EmployeeId) 
                         && x.SalaryHeadId == request.SalaryHeadId 
                         && x.IsActive 
                         && !x.IsDelete);
@@ -60,30 +60,29 @@ namespace ERP.Mediator.Mediator.Payroll.EmployeeSalary.Handler
                 // If exists, mark old as inactive and create new
                 if (exists)
                 {
-                    var oldRecords = await unitOfWork.Repository<Entities.Models.EmployeeSalary>()
-                        .GetWhereAsync(x => x.EmployeeId == request.EmployeeId 
-                            && x.SalaryHeadId == request.SalaryHeadId 
-                            && x.IsActive 
-                            && !x.IsDelete);
+                    //var oldRecords = await unitOfWork.Repository<Entities.Models.EmployeeSalary>()
+                    //    .GetFirstAsync(x => x.EmployeeId == new Guid(request.EmployeeId)
+                    //        && x.SalaryHeadId == request.SalaryHeadId 
+                    //        && x.IsActive 
+                    //        && !x.IsDelete);
 
-                    foreach (var old in oldRecords)
-                    {
-                        old.IsActive = false;
-                        old.UpdatedById = this.sessionProvider.Session.LoggedInUserId;
-                        old.UpdatedDate = DateTime.Now;
-                        unitOfWork.Repository<Entities.Models.EmployeeSalary>().Update(old);
-                    }
+                    //foreach (var old in oldRecords)
+                    //{
+                    //    old.IsActive = false;
+                    //    old.ModifiedById = this.sessionProvider.Session.LoggedInUserId;
+                    //    old.ModifiedDate = DateTime.Now;
+                    //    unitOfWork.Repository<Entities.Models.EmployeeSalary>().Update(old);
+                    //}
                 }
 
                 // Create new
                 employeeSalary = mapper.Map<Entities.Models.EmployeeSalary>(request);
                 employeeSalary.CreatedById = this.sessionProvider.Session.LoggedInUserId;
-                employeeSalary.CompanyId = this.sessionProvider.Session.CompanyId;
 
                 await unitOfWork.Repository<Entities.Models.EmployeeSalary>().AddAsync(employeeSalary);
             }
 
-            await unitOfWork.CompleteAsync();
+            await unitOfWork.SaveChangesAsync();
             return 200; // Success
         }
     }

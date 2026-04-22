@@ -32,12 +32,12 @@ namespace ERP.Mediator.Mediator.Payroll.EmployeeSalary.Handler
                 x.IsActive == true &&
                 x.IsDelete == false ;
 
-            if (request.EmployeeId.HasValue && request.EmployeeId.Value > 0)
-            {
-                predicate = x => x.IsActive == true &&
-                    x.IsDelete == false &&
-                    x.EmployeeId == request.EmployeeId.Value;
-            }
+            //if (request.EmployeeId.HasValue && request.EmployeeId.Value > 0)
+            //{
+            //    predicate = x => x.IsActive == true &&
+            //        x.IsDelete == false &&
+            //        x.EmployeeId == request.EmployeeId.Value;
+            //}
 
             Expression<Func<Entities.Models.EmployeeSalary, object>>[] includes = {
                 x => x.SalaryHead

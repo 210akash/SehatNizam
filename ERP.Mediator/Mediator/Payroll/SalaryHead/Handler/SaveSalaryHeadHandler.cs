@@ -35,7 +35,7 @@ namespace ERP.Mediator.Mediator.Payroll.SalaryHead.Handler
             if (request.Id > 0)
             {
                 // Update existing
-                salaryHead = await unitOfWork.Repository<Entities.Models.SalaryHead>().GetByIdAsync(request.Id);
+                salaryHead = await unitOfWork.Repository<Entities.Models.SalaryHead>().GetFirstAsync(x => x.Id == request.Id);
                 if (salaryHead == null)
                 {
                     return 404; // Not Found
@@ -51,9 +51,9 @@ namespace ERP.Mediator.Mediator.Payroll.SalaryHead.Handler
             {
                 // Check for duplicate
                 var exists = await unitOfWork.Repository<Entities.Models.SalaryHead>()
-                    .AnyAsync(x => x.Name.ToLower() == request.Name.ToLower() && x.IsActive && !x.IsDelete);
+                    .GetFirstAsync(x => x.Name.ToLower() == request.Name.ToLower() && x.IsActive && !x.IsDelete);
 
-                if (exists)
+                if (exists != null)
                 {
                     return 409; // Conflict
                 }
@@ -61,13 +61,11 @@ namespace ERP.Mediator.Mediator.Payroll.SalaryHead.Handler
                 // Create new
                 salaryHead = mapper.Map<Entities.Models.SalaryHead>(request);
                 salaryHead.CreatedById = this.sessionProvider.Session.LoggedInUserId;
-                salaryHead.CompanyId = this.sessionProvider.Session.CompanyId;
                 salaryHead.IsActive = true;
-
                 await unitOfWork.Repository<Entities.Models.SalaryHead>().AddAsync(salaryHead);
             }
 
-            await unitOfWork.CompleteAsync();
+            await unitOfWork.SaveChangesAsync();
             return 200; // Success
         }
     }

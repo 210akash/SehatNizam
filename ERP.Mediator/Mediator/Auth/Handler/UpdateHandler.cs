@@ -249,10 +249,27 @@ namespace ERP.Mediator.Mediator.Auth.Handler
                         unitOfWork.Repository<EmployeeWorkingDays>().Update(map);
                     }
                 }
+                else
+                {
+                    var workingDays = await unitOfWork.Repository<EmployeeWorkingDays>().GetFirstAsNoTrackingAsync(x => x.EmployeeId == user.Id);
+                    if (workingDays != null)
+                    {
+                        var map = mapper.Map(request.Days, workingDays);
+                        map.EmployeeId = user.Id;
+                        map.ModifiedById = sessionProvider.Session.LoggedInUserId;
+                        map.ModifiedDate = DateTime.Now;
+                        map.CreatedById = workingDays.CreatedById;
+                        map.CreatedDate = workingDays.CreatedDate;
+                        map.DeleteDate = DateTime.Now;
+                        map.IsActive = false;
+                        map.IsDelete = true;
+                        unitOfWork.Repository<EmployeeWorkingDays>().Update(map);
+                    }
+                }
 
                 #region User Warehouse
 
-                    var UserProjectList = await unitOfWork.Repository<Entities.Models.UserProject>()
+                var UserProjectList = await unitOfWork.Repository<Entities.Models.UserProject>()
                         .GetPagingWhereAsNoTrackingAsync(y => y.UserId == request.Id && y.IsActive == true,
                         null, null, null, null, null).Item1.ToListAsync();
 

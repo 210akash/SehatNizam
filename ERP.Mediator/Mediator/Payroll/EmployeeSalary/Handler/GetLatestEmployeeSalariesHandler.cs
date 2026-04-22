@@ -31,7 +31,7 @@ namespace ERP.Mediator.Mediator.Payroll.EmployeeSalary.Handler
         {
             // Get all non-deleted salary records for this employee that were effective as of the date
             Expression<Func<Entities.Models.EmployeeSalary, bool>> predicate = x =>
-                x.EmployeeId == request.EmployeeId &&
+                x.EmployeeId == new Guid(request.EmployeeId) &&  
                 !x.IsDelete &&
                 x.EffectiveFrom <= request.AsOfDate;
 

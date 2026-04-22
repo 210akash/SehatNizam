@@ -21,7 +21,7 @@ namespace ERP.Mediator.Mediator.Payroll.SalaryHead.Handler
 
         public async Task<bool> Handle(DeleteSalaryHeadCommand request, CancellationToken cancellationToken)
         {
-            var salaryHead = await unitOfWork.Repository<Entities.Models.SalaryHead>().GetByIdAsync(request.Id);
+            var salaryHead = await unitOfWork.Repository<Entities.Models.SalaryHead>().GetFirstAsync(x => x.Id == request.Id);
             if (salaryHead == null)
             {
                 return false;
@@ -29,12 +29,11 @@ namespace ERP.Mediator.Mediator.Payroll.SalaryHead.Handler
 
             salaryHead.IsDelete = true;
             salaryHead.IsActive = false;
-            salaryHead.DeletedById = this.sessionProvider.Session.LoggedInUserId;
-            salaryHead.DeletedDate = DateTime.Now;
+            salaryHead.ModifiedById = this.sessionProvider.Session.LoggedInUserId;
+            salaryHead.DeleteDate = DateTime.Now;
 
             unitOfWork.Repository<Entities.Models.SalaryHead>().Update(salaryHead);
-            await unitOfWork.CompleteAsync();
-
+            await unitOfWork.SaveChangesAsync();
             return true;
         }
     }

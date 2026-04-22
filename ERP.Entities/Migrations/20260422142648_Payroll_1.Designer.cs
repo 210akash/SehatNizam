@@ -4,14 +4,16 @@ using ERP.Entities.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ERP.Entities.Migrations
 {
     [DbContext(typeof(ERPDbContext))]
-    partial class ERPDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260422142648_Payroll_1")]
+    partial class Payroll_1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -3491,7 +3493,10 @@ namespace ERP.Entities.Migrations
                     b.Property<DateTime>("EffectiveFrom")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("EmployeeId")
+                    b.Property<long>("EmployeeId")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid?>("EmployeeId1")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsActive")
@@ -3513,7 +3518,7 @@ namespace ERP.Entities.Migrations
 
                     b.HasIndex("CreatedById");
 
-                    b.HasIndex("EmployeeId");
+                    b.HasIndex("EmployeeId1");
 
                     b.HasIndex("ModifiedById");
 
@@ -5786,7 +5791,10 @@ namespace ERP.Entities.Migrations
                     b.Property<int>("Month")
                         .HasColumnType("int");
 
-                    b.Property<long>("StatusId")
+                    b.Property<int>("StatusId")
+                        .HasColumnType("int");
+
+                    b.Property<long?>("StatusId1")
                         .HasColumnType("bigint");
 
                     b.Property<int>("Year")
@@ -5798,7 +5806,7 @@ namespace ERP.Entities.Migrations
 
                     b.HasIndex("ModifiedById");
 
-                    b.HasIndex("StatusId");
+                    b.HasIndex("StatusId1");
 
                     b.ToTable("Payroll");
                 });
@@ -5822,7 +5830,10 @@ namespace ERP.Entities.Migrations
                     b.Property<DateTime?>("DeleteDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("EmployeeId")
+                    b.Property<long>("EmployeeId")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid?>("EmployeeId1")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsActive")
@@ -5847,7 +5858,7 @@ namespace ERP.Entities.Migrations
 
                     b.HasIndex("CreatedById");
 
-                    b.HasIndex("EmployeeId");
+                    b.HasIndex("EmployeeId1");
 
                     b.HasIndex("ModifiedById");
 
@@ -11843,9 +11854,7 @@ namespace ERP.Entities.Migrations
 
                     b.HasOne("ERP.Entities.Models.AspNetUsers", "Employee")
                         .WithMany()
-                        .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("EmployeeId1");
 
                     b.HasOne("ERP.Entities.Models.AspNetUsers", "ModifiedBy")
                         .WithMany()
@@ -13010,9 +13019,7 @@ namespace ERP.Entities.Migrations
 
                     b.HasOne("ERP.Entities.Models.Status", "Status")
                         .WithMany()
-                        .HasForeignKey("StatusId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("StatusId1");
 
                     b.Navigation("CreatedBy");
 
@@ -13029,9 +13036,7 @@ namespace ERP.Entities.Migrations
 
                     b.HasOne("ERP.Entities.Models.AspNetUsers", "Employee")
                         .WithMany()
-                        .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("EmployeeId1");
 
                     b.HasOne("ERP.Entities.Models.AspNetUsers", "ModifiedBy")
                         .WithMany()

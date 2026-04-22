@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using ERP.Entities.Models;
 
 namespace ERP.BusinessModels.ResponseVM
 {
@@ -8,8 +7,7 @@ namespace ERP.BusinessModels.ResponseVM
         public long Id { get; set; }
         public int Month { get; set; }
         public int Year { get; set; }
-        public PayrollStatus Status { get; set; }
-        public string StatusName => Status.ToString();
+        public GetStatus Status { get; set; }
         public bool IsActive { get; set; }
         public List<GetPayrollDetail> PayrollDetails { get; set; }
     }

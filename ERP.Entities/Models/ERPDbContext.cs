@@ -180,6 +180,7 @@
         public virtual DbSet<EmployeeSalary> EmployeeSalary { get; set; }
         public virtual DbSet<Payroll> Payroll { get; set; }
         public virtual DbSet<PayrollDetail> PayrollDetail { get; set; }
+        public virtual DbSet<SalaryTaxSlab> SalaryTaxSlab { get; set; }
 
         #endregion
 

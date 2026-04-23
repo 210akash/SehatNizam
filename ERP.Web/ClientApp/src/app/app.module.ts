@@ -836,6 +836,12 @@ import { AddSalaryHeadComponent } from './components/hr/payroll/salaryhead/add-s
 import { ViewSalaryHeadComponent } from './components/hr/payroll/salaryhead/view-salaryhead/view-salaryhead.component';
 import { DeleteSalaryHeadComponent } from './components/hr/payroll/salaryhead/delete-salaryhead/delete-salaryhead.component';
 import { SalaryHeadEndPoints } from './components/hr/payroll/salaryhead/salaryhead.endpoints';
+import { SalaryTaxSlabService } from './components/hr/payroll/salarytaxslab/salarytaxslab.service';
+import { SalaryTaxSlabEndPoints } from './components/hr/payroll/salarytaxslab/salarytaxslab.endpoints';
+import { AddSalaryTaxSlabComponent } from './components/hr/payroll/salarytaxslab/add-salarytaxslab/add-salarytaxslab.component';
+import { SalaryTaxSlabListComponent } from './components/hr/payroll/salarytaxslab/salarytaxslab-list/salarytaxslab-list.component';
+import { ViewSalaryTaxSlabComponent } from './components/hr/payroll/salarytaxslab/view-salarytaxslab/view-salarytaxslab.component';
+import { DeleteSalaryTaxSlabComponent } from './components/hr/payroll/salarytaxslab/delete-salarytaxslab/delete-salarytaxslab.component';
 
 const matFormFieldDefaults: MatFormFieldDefaultOptions = {
     appearance: 'outline'
@@ -1430,7 +1436,11 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         SalaryHeadListComponent,
         AddSalaryHeadComponent,
         ViewSalaryHeadComponent,
-        DeleteSalaryHeadComponent
+        DeleteSalaryHeadComponent,
+        AddSalaryTaxSlabComponent,
+        SalaryTaxSlabListComponent,
+        ViewSalaryTaxSlabComponent,
+        DeleteSalaryTaxSlabComponent,
     ],
     bootstrap: [AppComponent], imports: [
         InputMaskModule,
@@ -1707,6 +1717,8 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         NotificationEndPoints,
         SalaryHeadService,
         SalaryHeadEndPoints,
+        SalaryTaxSlabService,
+        SalaryTaxSlabEndPoints,
         { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
         { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },
         AuthenticationService, {

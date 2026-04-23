@@ -8,6 +8,8 @@ namespace ERP.Entities.Models
         [MaxLength(100)]
         public string Name { get; set; }
 
+        public bool IsTaxable { get; set; } = false;
+
         [Required]
         public SalaryHeadType Type { get; set; } // Earning or Deduction
     }

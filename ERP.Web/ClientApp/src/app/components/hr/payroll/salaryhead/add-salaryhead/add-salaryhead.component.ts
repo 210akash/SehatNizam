@@ -25,7 +25,8 @@ export class AddSalaryHeadComponent {
     this.salaryheadForm = this.formBuilder.group({
       id: [0],
       name: ['', Validators.required],
-      type: [2, Validators.required],
+      type: [1, Validators.required],
+      isTaxable: [false],
     });
 
     this.loadSalaryHeadTypes();

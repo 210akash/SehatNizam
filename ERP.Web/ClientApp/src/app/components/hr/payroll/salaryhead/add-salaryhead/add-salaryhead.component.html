@@ -1,7 +1,10 @@
 <form [formGroup]="salaryheadForm">
 <mat-card>
-  <mat-card-header>
+<mat-card-header>
+          <div class="header-container">
     <mat-card-title>{{ isEditMode ? 'Edit' : 'Create' }} Salary Head Form</mat-card-title>
+        <mat-slide-toggle [matTooltip]="this.salaryheadForm.get('isTaxable')?.value ? 'Taxable' : 'Non Taxable'" formControlName="isTaxable" color="primary"></mat-slide-toggle>
+        </div>
   </mat-card-header>
   <mat-divider></mat-divider>
   <mat-card-content>

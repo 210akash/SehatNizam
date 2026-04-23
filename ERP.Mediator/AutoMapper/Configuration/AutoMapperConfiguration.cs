@@ -103,6 +103,7 @@
     using System.Linq;
     using ERP.Mediator.Mediator.Payroll.SalaryHead.Command;
     using ERP.Mediator.Mediator.Payroll.EmployeeSalary.Command;
+    using ERP.Mediator.Mediator.Payroll.SalaryTaxSlab.Command;
 
     public class AutoMapperConfiguration : Profile
     {
@@ -624,6 +625,9 @@
 
             this.CreateMap<EmployeeSalary, GetEmployeeSalary>().ReverseMap();
             this.CreateMap<EmployeeSalary, SaveEmployeeSalaryCommand>().ReverseMap();
+
+            this.CreateMap<SalaryTaxSlab, GetSalaryTaxSlab>().ReverseMap();
+            this.CreateMap<SalaryTaxSlab, SaveSalaryTaxSlabCommand>().ReverseMap();
 
             //this.CreateMap<Entities.Models.Payroll, GetPayroll>().ReverseMap();
             //this.CreateMap<Entities.Models.Payroll, SavePayrollCommand>().ReverseMap();

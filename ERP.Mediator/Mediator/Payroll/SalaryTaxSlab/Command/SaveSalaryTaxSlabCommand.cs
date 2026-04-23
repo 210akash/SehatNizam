@@ -1,5 +1,5 @@
 ﻿using MediatR;
-namespace ERP.Mediator.Mediator.SalaryTaxSlab.Command
+namespace ERP.Mediator.Mediator.Payroll.SalaryTaxSlab.Command
 {
     public class SaveSalaryTaxSlabCommand : IRequest<long>
     {

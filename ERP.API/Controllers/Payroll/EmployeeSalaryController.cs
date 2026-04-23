@@ -65,15 +65,15 @@ namespace ERP.API.Controllers.EmployeeSalary
             try
             {
                 var result = await mediator.Send(command);
-                if (result == 200)
+                if (result.Item1 == 200)
                 {
                     return this.Result(ResponseStatus.OK, "Employee Salary Saved!", null);
                 }
-                else if (result == 400)
+                else if (result.Item1 == 400)
                 {
                     return this.Result(ResponseStatus.Error, null, "Invalid data!");
                 }
-                else if (result == 404)
+                else if (result.Item1 == 404)
                 {
                     return this.Result(ResponseStatus.Error, null, "Employee Salary not found!");
                 }

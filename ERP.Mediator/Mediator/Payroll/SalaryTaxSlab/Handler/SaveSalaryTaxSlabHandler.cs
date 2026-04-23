@@ -4,11 +4,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using ERP.Core.Provider;
-using ERP.Mediator.Mediator.SalaryTaxSlab.Command;
+using ERP.Mediator.Mediator.Payroll.SalaryTaxSlab.Command;
 using ERP.Repositories.UnitOfWork;
 using MediatR;
 
-namespace ERP.Mediator.Mediator.SalaryTaxSlab.Handler
+namespace ERP.Mediator.Mediator.Payroll.SalaryTaxSlab.Handler
 {
     public class SaveSalaryTaxSlabHandler : IRequestHandler<SaveSalaryTaxSlabCommand, long>
     {
@@ -31,7 +31,7 @@ namespace ERP.Mediator.Mediator.SalaryTaxSlab.Handler
         async Task<long> IRequestHandler<SaveSalaryTaxSlabCommand, long>.Handle(SaveSalaryTaxSlabCommand request, CancellationToken cancellationToken)
         {
             var salarytaxslab = await unitOfWork.Repository<Entities.Models.SalaryTaxSlab>().GetFirstAsNoTrackingAsync(x => x.Id == request.Id);
-            var checkDuplicate = await unitOfWork.Repository<Entities.Models.SalaryTaxSlab>().GetAsync(x => x.Name.ToLower().Trim() == request.Name.ToLower().Trim() && x.IsActive == true && x.IsDelete == false && x.Id != request.Id);
+            var checkDuplicate = await unitOfWork.Repository<Entities.Models.SalaryTaxSlab>().GetAsync(x => x.FromAmount == request.FromAmount && x.ToAmount == request.ToAmount && x.IsActive == true && x.IsDelete == false && x.Id != request.Id);
 
             if (checkDuplicate.Count() == 0)
             {

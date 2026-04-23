@@ -1,0 +1,68 @@
+<form [formGroup]="employeeSalaryForm">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Employee Salary</mat-card-title>
+    </mat-card-header>
+    <mat-divider></mat-divider>
+    <mat-card-content>
+      <input type="hidden" formControlName="employeeId" />
+
+      <div class="table-responsive">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th style="width: 70px;">Sr.#</th>
+              <th>Salary Head</th>
+              <th style="width: 180px;">Amount</th>
+              <th style="width: 200px;">Effective From</th>
+            </tr>
+          </thead>
+          <tbody formArrayName="employeeSalary">
+            <tr *ngFor="let row of employeeSalary.controls; let i = index" [formGroupName]="i">
+              <input type="hidden" formControlName="id" />
+              <td class="text-center">
+                <div class="action_btns">
+                  <span>&#40;{{ i + 1 }}&#41;</span>
+                  <mat-icon matTooltip="Add" class="icons add" (click)="addRow(i)">add</mat-icon>
+                  <mat-icon matTooltip="Delete" class="icons delete" (click)="removeRow(i)">delete</mat-icon>
+                </div>
+              </td>
+              <td>
+                <mat-form-field style="width: 100%;">
+                  <mat-label>Salary Head</mat-label>
+                  <mat-select formControlName="salaryHeadId">
+                    <mat-option *ngFor="let head of salaryHeadList" [value]="head.id">
+                      {{ head.name }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </td>
+              <td>
+                <mat-form-field style="width: 100%;">
+                  <mat-label>Amount</mat-label>
+                  <input matInput type="number" formControlName="amount" />
+                </mat-form-field>
+              </td>
+              <td>
+                <mat-form-field style="width: 100%;">
+                  <mat-label>Effective From</mat-label>
+                  <input matInput type="date" formControlName="effectiveFrom" />
+                </mat-form-field>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <mat-divider></mat-divider>
+      <div class="button-container">
+        <button mat-flat-button color="success" type="button" [disabled]="isLoading" (click)="SaveData()">
+          <span class="mat-button-wrapper">{{ isLoading ? 'Saving...' : 'Save' }}</span>
+        </button>
+        <button mat-flat-button color="default" [mat-dialog-close]="true">
+          <span class="mat-button-wrapper">Close</span>
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</form>

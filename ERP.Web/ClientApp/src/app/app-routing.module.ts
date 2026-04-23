@@ -125,6 +125,7 @@ import { ConductInterviewListComponent } from './components/interview/conduct-in
 import { NotificationListComponent } from './components/hr/notification/notification-list/notification-list.component';
 import { AddNotificationComponent } from './components/hr/notification/add-notification/add-notification.component';
 import { SalaryHeadListComponent } from './components/hr/payroll/salaryhead/salaryhead-list/salaryhead-list.component';
+import { SalaryTaxSlabListComponent } from './components/hr/payroll/salarytaxslab/salarytaxslab-list/salarytaxslab-list.component';
 
 const routes: Routes = [
   {
@@ -252,6 +253,7 @@ const routes: Routes = [
       { path: 'candidateevaluationcategory', component: CandidateEvaluationCategoryListComponent, canActivate: [AuthGuard] },
       { path: 'conductinterview', component: ConductInterviewListComponent, canActivate: [AuthGuard] },
       { path: 'salaryhead', component: SalaryHeadListComponent, canActivate: [AuthGuard], data: {roles: ["hr manager,hr executive,admin"] } },
+      { path: 'salarytaxslab', component: SalaryTaxSlabListComponent, canActivate: [AuthGuard], data: {roles: ["hr manager,hr executive,admin"] } },
     ]
   },
   {

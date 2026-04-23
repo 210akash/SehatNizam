@@ -20,7 +20,7 @@ export class SalaryTaxSlabService extends BaseService<any> {
     }
 
     getAllHryear(citiesFilterForm: any) {
-        return this.post(citiesFilterForm, this.endPointControllerName + this.salarytaxslabEndPoints.getAllHryear)
+        return this.post(citiesFilterForm, this.endPointControllerName + this.salarytaxslabEndPoints.getAllSalaryTaxSlab)
             .pipe(map((data: any) => data));
     }
 

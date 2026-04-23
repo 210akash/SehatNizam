@@ -655,6 +655,24 @@
               .HasForeignKey(u => u.EmployeeId)
               .OnDelete(DeleteBehavior.SetNull);
 
+            modelBuilder.Entity<AspNetUsers>()
+         .HasMany(u => u.EmployeeSalary)
+         .WithOne(o => o.Employee)
+         .HasForeignKey(u => u.EmployeeId)
+         .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<EmployeeSalary>()
+           .HasOne(c => c.CreatedBy)
+           .WithMany()
+           .HasForeignKey(c => c.CreatedById)
+           .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<EmployeeSalary>()
+                .HasOne(c => c.ModifiedBy)
+                .WithMany()
+                .HasForeignKey(c => c.ModifiedById)
+                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<EmployeeDevice>()
                  .HasOne(c => c.CreatedBy)
                  .WithMany()

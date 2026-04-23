@@ -842,6 +842,9 @@ import { AddSalaryTaxSlabComponent } from './components/hr/payroll/salarytaxslab
 import { SalaryTaxSlabListComponent } from './components/hr/payroll/salarytaxslab/salarytaxslab-list/salarytaxslab-list.component';
 import { ViewSalaryTaxSlabComponent } from './components/hr/payroll/salarytaxslab/view-salarytaxslab/view-salarytaxslab.component';
 import { DeleteSalaryTaxSlabComponent } from './components/hr/payroll/salarytaxslab/delete-salarytaxslab/delete-salarytaxslab.component';
+import { EmployeeSalaryService } from './components/hr/payroll/employeesalary/employeesalary.service';
+import { EmployeeSalaryEndPoints } from './components/hr/payroll/employeesalary/employeesalary.endpoints';
+import { AddEmployeeSalaryComponent } from './components/hr/payroll/employeesalary/add-employee-salary/add-employee-salary.component';
 
 const matFormFieldDefaults: MatFormFieldDefaultOptions = {
     appearance: 'outline'
@@ -1441,6 +1444,8 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         SalaryTaxSlabListComponent,
         ViewSalaryTaxSlabComponent,
         DeleteSalaryTaxSlabComponent,
+        AddEmployeeSalaryComponent,
+        AddEmployeeSalaryComponent
     ],
     bootstrap: [AppComponent], imports: [
         InputMaskModule,
@@ -1719,6 +1724,8 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         SalaryHeadEndPoints,
         SalaryTaxSlabService,
         SalaryTaxSlabEndPoints,
+        EmployeeSalaryService,
+        EmployeeSalaryEndPoints,
         { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
         { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },
         AuthenticationService, {

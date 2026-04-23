@@ -130,6 +130,7 @@ namespace ERP.BusinessModels.ResponseVM
 
         // Employee Device
         public List<GetEmployeeDevice> EmployeeDevice { get; set; }
+        public List<GetEmployeeSalary> EmployeeSalary { get; set; }
 
         #endregion
     }

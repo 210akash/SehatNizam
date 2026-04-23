@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 using AutoMapper;
 using ERP.BusinessModels.ResponseVM;
 using ERP.Core.Provider;
-using ERP.Mediator.Mediator.SalaryTaxSlab.Query;
+using ERP.Mediator.Mediator.Payroll.SalaryTaxSlab.Query;
 using ERP.Repositories.UnitOfWork;
 using MediatR;
 
-namespace ERP.Mediator.Mediator.SalaryTaxSlab.Handler
+namespace ERP.Mediator.Mediator.Payroll.SalaryTaxSlab.Handler
 {
     public class GetAllSalaryTaxSlabHandler : IRequestHandler<GetAllSalaryTaxSlabQuery, Tuple<IEnumerable<GetSalaryTaxSlab>, long>>
     {

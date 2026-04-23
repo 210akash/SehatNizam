@@ -1,38 +1,30 @@
 <form [formGroup]="salarytaxslabForm">
   <mat-card>
     <mat-card-header>
-      <mat-card-title>{{ isEditMode ? 'Edit' : 'Create' }} HR Year Form</mat-card-title>
+      <mat-card-title>{{ isEditMode ? 'Edit' : 'Create' }} Salary Tax Slab</mat-card-title>
     </mat-card-header>
     <mat-divider></mat-divider>
     <mat-card-content>
       <input type="hidden" formControlName="id" />
       <div class="row">
-          <div class="col-md-12">
-            <mat-form-field>
-              <mat-label>Name</mat-label>
-              <input matInput formControlName="name" type="text">
-            </mat-form-field>
-          </div>
-          <div class="col-md-12">
-            <div class="mt-2">
-              <mat-form-field>
-                <mat-label>Start Date</mat-label>
-                <input matInput [matDatepicker]="startDate" formControlName="startDate">
-                <mat-datepicker-toggle matIconSuffix [for]="startDate"></mat-datepicker-toggle>
-                <mat-datepicker #startDate></mat-datepicker>
-              </mat-form-field>
-            </div>
-          </div>
-          <div class="col-md-12">
-            <div class="mt-2">
-              <mat-form-field>
-                <mat-label>End Date</mat-label>
-                <input matInput [matDatepicker]="endDate" formControlName="endDate">
-                <mat-datepicker-toggle matIconSuffix [for]="endDate"></mat-datepicker-toggle>
-                <mat-datepicker #endDate></mat-datepicker>
-              </mat-form-field>
-            </div>
-          </div>
+        <div class="col-md-12">
+          <mat-form-field>
+            <mat-label>From Amount</mat-label>
+            <input matInput formControlName="fromAmount" type="number">
+          </mat-form-field>
+        </div>
+        <div class="col-md-12">
+          <mat-form-field>
+            <mat-label>To Amount</mat-label>
+            <input matInput formControlName="toAmount" type="number">
+          </mat-form-field>
+        </div>
+        <div class="col-md-12">
+          <mat-form-field>
+            <mat-label>Percentage</mat-label>
+            <input matInput formControlName="percentage" type="number">
+          </mat-form-field>
+        </div>
       </div>
       <mat-divider></mat-divider>
       <div class="button-container">

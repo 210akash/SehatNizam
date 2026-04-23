@@ -8,14 +8,25 @@
   <mat-card-content>
     <form [formGroup]="salarytaxslabForm" >
     <input type="hidden" formControlName="id" />
-    <div class="row">
+          <div class="row">
       <div class="col-md-12">
-      <mat-form-field style="width: 100%;">
-        <mat-label>Name</mat-label>
-        <input matInput formControlName="name" type="text" readonly>
-      </mat-form-field>
-    </div>
-      
+          <mat-form-field>
+            <mat-label>From Amount</mat-label>
+            <input matInput formControlName="fromAmount" type="number" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-12">
+          <mat-form-field>
+            <mat-label>To Amount</mat-label>
+            <input matInput formControlName="toAmount" type="number" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-12">
+          <mat-form-field>
+            <mat-label>Percentage</mat-label>
+            <input matInput formControlName="percentage" type="number" readonly>
+          </mat-form-field>
+        </div>
     </div>
   <mat-divider></mat-divider>
     <div class="button-container">

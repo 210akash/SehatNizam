@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace ERP.Mediator.Mediator.SalaryTaxSlab.Query
+namespace ERP.Mediator.Mediator.Payroll.SalaryTaxSlab.Query
 {
     public class DeleteSalaryTaxSlabQuery : IRequest<bool>
     {

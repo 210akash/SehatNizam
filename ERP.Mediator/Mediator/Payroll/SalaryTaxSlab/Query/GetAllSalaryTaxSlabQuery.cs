@@ -4,12 +4,10 @@ using ERP.BusinessModels.ResponseVM;
 using ERP.Entities.Models;
 using MediatR;
 
-namespace ERP.Mediator.Mediator.SalaryTaxSlab.Query
+namespace ERP.Mediator.Mediator.Payroll.SalaryTaxSlab.Query
 {
     public class GetAllSalaryTaxSlabQuery : IRequest<Tuple<IEnumerable<GetSalaryTaxSlab>, long>>
     {
-        public string Name { get; set; }
-
         public PagingData PagingData { get; set; }
     }
 }

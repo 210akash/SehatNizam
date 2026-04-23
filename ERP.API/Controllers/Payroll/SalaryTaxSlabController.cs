@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 using System;
 using ERP.BusinessModels.ResponseVM;
 using MediatR;
-using ERP.Mediator.Mediator.SalaryTaxSlab.Query;
-using ERP.Mediator.Mediator.SalaryTaxSlab.Command;
 using Microsoft.AspNetCore.Authorization;
+using ERP.Mediator.Mediator.Payroll.SalaryTaxSlab.Command;
+using ERP.Mediator.Mediator.Payroll.SalaryTaxSlab.Query;
 
-namespace ERP.API.Controllers
+namespace ERP.API.Controllers.Payroll
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -23,14 +23,14 @@ namespace ERP.API.Controllers
         {
             this.mediator = mediator;
         }
-    
+
         [HttpPost]
         [Route("GetAllSalaryTaxSlab")]
         public async Task<ActionResult<Tuple<IEnumerable<GetSalaryTaxSlab>, long>>> GetAll(GetAllSalaryTaxSlabQuery getAllSalaryTaxSlabQuery)
         {
             try
             {
-                return await this.mediator.Send(getAllSalaryTaxSlabQuery);
+                return await mediator.Send(getAllSalaryTaxSlabQuery);
             }
             catch (Exception ex)
             {
@@ -46,11 +46,11 @@ namespace ERP.API.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return this.Result(ResponseStatus.Error, null, this.GetModelValidationErrors(this.ModelState));
+                    return this.Result(ResponseStatus.Error, null, this.GetModelValidationErrors(ModelState));
                 }
                 else
                 {
-                    var result = await this.mediator.Send(command);
+                    var result = await mediator.Send(command);
                     if (result == 200)
                     {
                         return this.Result(ResponseStatus.OK, "Employee Grade Saved!", null);
@@ -77,7 +77,7 @@ namespace ERP.API.Controllers
         {
             try
             {
-                return await this.mediator.Send(new DeleteSalaryTaxSlabQuery(id));
+                return await mediator.Send(new DeleteSalaryTaxSlabQuery(id));
             }
             catch (Exception ex)
             {
@@ -85,6 +85,6 @@ namespace ERP.API.Controllers
             }
         }
 
-        
+
     }
 }

@@ -19,7 +19,10 @@ export class ViewSalaryTaxSlabComponent {
 
   ngOnInit(): void {
     this.salarytaxslabForm = this.formBuilder.group({
-      name: ['', Validators.required],
+      id: [0],
+      fromAmount: [0, [Validators.required, Validators.min(0)]],
+      toAmount: [0, [Validators.required, Validators.min(0)]],
+      percentage: [0, [Validators.required, Validators.min(0.001)]],
     });
     
     this.LoadData(this.data.element);

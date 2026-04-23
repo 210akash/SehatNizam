@@ -22,7 +22,7 @@ export class SalaryTaxSlabListComponent {
   currentPage = 0;
   pageSize = 0;
   pageSizeOptions: number[] = [5, 10, 25, 100];
-  displayedColumns: string[] = ['name', 'startDate','endDate', 'createdBy', 'actions'];
+  displayedColumns: string[] = ['fromAmount', 'toAmount', 'percentage',  'actions'];
   dataSource: any;
   take = 50;
   totalRows = 0;
@@ -37,7 +37,8 @@ export class SalaryTaxSlabListComponent {
   ) { }
 
   async ngOnInit(): Promise<void> {
-    this.SalaryTaxSlabFilterForm = this.formBuilder.group({});
+    this.SalaryTaxSlabFilterForm = this.formBuilder.group({
+    });
     await this.bindData(); // Await bindData if it's async
   }
 

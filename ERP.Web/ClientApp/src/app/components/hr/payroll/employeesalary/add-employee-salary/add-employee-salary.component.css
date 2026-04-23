@@ -1,0 +1,16 @@
+.salary-row {
+  margin-bottom: 8px;
+  align-items: center;
+}
+
+.row-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.action_btns {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}

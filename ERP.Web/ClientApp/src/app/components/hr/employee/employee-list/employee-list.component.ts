@@ -14,6 +14,7 @@ import { EmployeeDeviceComponent } from '../../employee-device/save-employee-dev
 import { ShowUserAttendanceComponent } from '../../../order/user-attendance/show-user-attendance/show-user-attendance.component';
 import { EmployeeWorkSiteTypeService } from '../../employee-worksitetype/employee-worksitetype.service';
 import { RegisterMobileDeviceComponent } from '../../register-mobile-device/register-mobile-device.component';
+import { AddEmployeeSalaryComponent } from '../../payroll/employeesalary/add-employee-salary/add-employee-salary.component';
 
 @Component({
   selector: 'app-employee-list',
@@ -170,6 +171,20 @@ export class EmployeeListComponent {
       disableClose: true
     });
        dialogRef.afterClosed().subscribe(result => {
+      this.bindData();
+    });
+  }
+
+  openEmployeeSalaryDialog(element: any): void {
+    const dialogRef = this.dialog.open(AddEmployeeSalaryComponent, {
+      panelClass: 'cstm_width_1000',
+      height: 'auto',
+      maxHeight: '90vh',
+      data: { element: element },
+      disableClose: true
+    });
+
+    dialogRef.afterClosed().subscribe(() => {
       this.bindData();
     });
   }

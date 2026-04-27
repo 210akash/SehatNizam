@@ -67,7 +67,6 @@ namespace ERP.Mediator.Mediator.Auth.Handler
                 x => x.EmployeeEducation,
                 x => x.UserProject,
                 x => x.EmployeeWorkSiteType,
-                x => x.EmployeeSalary.Where(y=>y.IsActive),
                 x => x.EmployeeDevice.Where(y=>y.IsActive)
             };
 

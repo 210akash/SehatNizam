@@ -40,6 +40,24 @@ namespace ERP.API.Controllers.EmployeeSalary
         }
 
         [HttpGet]
+        [Route("GetEmployeeSalaryByEmployeeId")]
+        public async Task<ActionResult<IEnumerable<GetEmployeeSalary>>> GetEmployeeSalaryByEmployeeId(string employeeId)
+        {
+            try
+            {
+                var result = await mediator.Send(new GetEmployeeSalaryByEmployeeIdQuery
+                {
+                    EmployeeId = employeeId
+                });
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return this.Result(ResponseStatus.Error, null, ex.Message);
+            }
+        }
+
+        [HttpGet]
         [Route("GetLatestEmployeeSalaries")]
         public async Task<ActionResult<IEnumerable<GetEmployeeSalary>>> GetLatestEmployeeSalaries(string employeeId, DateTime asOfDate)
         {
@@ -67,7 +85,7 @@ namespace ERP.API.Controllers.EmployeeSalary
                 var result = await mediator.Send(command);
                 if (result.Item1 == 200)
                 {
-                    return this.Result(ResponseStatus.OK, "Employee Salary Saved!", null);
+                    return this.Result(ResponseStatus.OK,  null, "Employee Salary Saved!");
                 }
                 else if (result.Item1 == 400)
                 {
@@ -76,6 +94,10 @@ namespace ERP.API.Controllers.EmployeeSalary
                 else if (result.Item1 == 404)
                 {
                     return this.Result(ResponseStatus.Error, null, "Employee Salary not found!");
+                }
+                else if (result.Item1 == 409)
+                {
+                    return this.Result(ResponseStatus.Error, null, result.Item2);
                 }
                 else
                 {

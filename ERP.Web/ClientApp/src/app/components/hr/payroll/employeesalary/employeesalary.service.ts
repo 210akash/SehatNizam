@@ -24,4 +24,14 @@ export class EmployeeSalaryService extends BaseService<any> {
             this.endPointControllerName + this.employeeSalaryEndPoints.saveEmployeeSalary
         ).pipe(map((data: any) => data));
     }
+
+    getEmployeeSalaryByEmployeeId(employeeId: number) {
+        return this.get( '?employeeId='+ employeeId, this.endPointControllerName + this.employeeSalaryEndPoints.getEmployeeSalaryByEmployeeId)
+            .pipe(map((data: any) => data));
+    }
+
+      deleteEmployeeSalary(id: number) {
+            return this.delete(id, this.endPointControllerName + this.employeeSalaryEndPoints.deleteEmployeeSalary)
+                .pipe();
+        }
 }

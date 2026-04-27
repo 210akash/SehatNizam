@@ -16,24 +16,24 @@ namespace ERP.Mediator.Mediator.Payroll.EmployeeSalary.Handler
     /// Gets the latest active salary records for an employee as of a specific date.
     /// For each salary head, returns the most recent record where EffectiveFrom <= AsOfDate
     /// </summary>
-    public class GetLatestEmployeeSalariesHandler : IRequestHandler<GetLatestEmployeeSalariesQuery, IEnumerable<GetEmployeeSalary>>
+    public class GetEmployeeSalaryByEmployeeIdHandler : IRequestHandler<GetEmployeeSalaryByEmployeeIdQuery, IEnumerable<GetEmployeeSalary>>
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;
 
-        public GetLatestEmployeeSalariesHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        public GetEmployeeSalaryByEmployeeIdHandler(IUnitOfWork unitOfWork, IMapper mapper)
         {
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
         }
 
-        public async Task<IEnumerable<GetEmployeeSalary>> Handle(GetLatestEmployeeSalariesQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<GetEmployeeSalary>> Handle(GetEmployeeSalaryByEmployeeIdQuery request, CancellationToken cancellationToken)
         {
             // Get all non-deleted salary records for this employee that were effective as of the date
             Expression<Func<Entities.Models.EmployeeSalary, bool>> predicate = x =>
                 x.EmployeeId == new Guid(request.EmployeeId) &&  
-                !x.IsDelete &&
-                x.EffectiveFrom <= request.AsOfDate;
+                x.IsActive &&
+                !x.IsDelete;
 
             Expression<Func<Entities.Models.EmployeeSalary, object>>[] includes = {
                 x => x.SalaryHead

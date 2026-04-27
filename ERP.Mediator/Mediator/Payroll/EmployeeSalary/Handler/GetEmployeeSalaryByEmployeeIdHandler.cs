@@ -36,20 +36,21 @@ namespace ERP.Mediator.Mediator.Payroll.EmployeeSalary.Handler
                 !x.IsDelete;
 
             Expression<Func<Entities.Models.EmployeeSalary, object>>[] includes = {
-                x => x.SalaryHead
+                x => x.SalaryHead,
+                x => x.SalaryHead.Type,
             };
 
-            var allSalaries = await unitOfWork.Repository<Entities.Models.EmployeeSalary>()
-                .GetAllAsync();
+            var allSalaries =  unitOfWork.Repository<Entities.Models.EmployeeSalary>()
+                .GetQueryable(predicate,null,null, "SalaryHead", null,null);;
 
-            // Group by SalaryHeadId and take the most recent (by EffectiveFrom) for each group
-            var latestSalaries = allSalaries
-                .GroupBy(x => x.SalaryHeadId)
-                .Select(g => g.OrderByDescending(x => x.EffectiveFrom).ThenByDescending(x => x.Id).First())
-                .Where(x => x.IsActive) // Only return if the latest is still active
-                .ToList();
+            //// Group by SalaryHeadId and take the most recent (by EffectiveFrom) for each group
+            //var latestSalaries = allSalaries
+            //    .GroupBy(x => x.SalaryHeadId)
+            //    .Select(g => g.OrderByDescending(x => x.EffectiveFrom).ThenByDescending(x => x.Id).First())
+            //    .Where(x => x.IsActive) // Only return if the latest is still active
+            //    .ToList();
 
-            var result = mapper.Map<IEnumerable<GetEmployeeSalary>>(latestSalaries);
+            var result = mapper.Map<IEnumerable<GetEmployeeSalary>>(allSalaries);
             return result;
         }
     }

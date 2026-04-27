@@ -42,16 +42,16 @@ namespace ERP.Mediator.Mediator.City.Handler
             var existingList = existingSalaries.ToList();
 
             // 🔴 Validation: Duplicate SalaryHead in request
-            var duplicateHeads = request.EmployeeSalary
-                .GroupBy(x => x.SalaryHeadId)
-                .Where(g => g.Count() > 1)
-                .Select(g => g.Key)
-                .ToList();
+            //var duplicateHeads = request.EmployeeSalary
+            //    .GroupBy(x => x.SalaryHeadId)
+            //    .Where(g => g.Count() > 1)
+            //    .Select(g => g.Key)
+            //    .ToList();
 
-            if (duplicateHeads.Any())
-            {
-                return new Tuple<long, string>(409, "Duplicate Salary Head found in request.");
-            }
+            //if (duplicateHeads.Any())
+            //{
+            //    return new Tuple<long, string>(409, "Duplicate Salary Head found in request.");
+            //}
 
             // 🔴 Delete removed SalaryHeads
             var requestIds = request.EmployeeSalary.Select(x => x.Id).ToList();

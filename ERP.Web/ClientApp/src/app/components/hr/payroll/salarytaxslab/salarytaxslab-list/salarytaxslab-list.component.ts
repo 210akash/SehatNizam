@@ -59,7 +59,7 @@ export class SalaryTaxSlabListComponent {
     };
 
     // Call the service method and subscribe with the observer
-    this.salarytaxslabService.getAllHryear(_SalaryTaxSlabFilterForm).subscribe({
+    this.salarytaxslabService.getAllSalaryTaxSlab(_SalaryTaxSlabFilterForm).subscribe({
       next: (data: any) => {
         // Update data source for MatTable
         this.dataSource = new MatTableDataSource(data.item1);

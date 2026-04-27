@@ -25,7 +25,7 @@ export class EmployeeSalaryService extends BaseService<any> {
         ).pipe(map((data: any) => data));
     }
 
-    getEmployeeSalaryByEmployeeId(employeeId: number) {
+    getEmployeeSalaryByEmployeeId(employeeId: string | number) {
         return this.get( '?employeeId='+ employeeId, this.endPointControllerName + this.employeeSalaryEndPoints.getEmployeeSalaryByEmployeeId)
             .pipe(map((data: any) => data));
     }

@@ -4,6 +4,7 @@ export class AppointmentEndPoints {
     public readonly getAllAppointmentByDoctor = '/GetAllAppointmentByDoctor';
     public readonly getAppointmentById = '/GetAppointmentById';
     public readonly getAppointmentByName = '/GetAppointmentByName';
+    public readonly getAppointmentByToken = '/getAppointmentByToken';
     public readonly deleteAppointment = '/DeleteAppointment';
     public readonly getAllAppointmentStatus = '/GetAllAppointmentStatus';
 }

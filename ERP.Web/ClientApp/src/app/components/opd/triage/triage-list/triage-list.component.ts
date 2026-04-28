@@ -4,10 +4,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { TriageService } from '../triage.service';
-import { CreateTriageComponent } from '../create-triage/create-triage.component';
 import { DeleteTriageComponent } from '../delete-triage/delete-triage.component';
 import { ViewTriageComponent } from '../view-triage/view-triage.component';
 import { ConstantService } from '../../../../Service/constant.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-triage-list',
@@ -26,7 +26,13 @@ export class TriageListComponent implements OnInit {
   totalRows = 0;
   pageSizeOptions: number[] = [5, 10, 25, 100];
 
-  constructor(private constantService: ConstantService, private dialog: MatDialog, private triageService: TriageService, private formBuilder: FormBuilder) { }
+  constructor(
+    private constantService: ConstantService,
+    private dialog: MatDialog,
+    private triageService: TriageService,
+    private formBuilder: FormBuilder,
+    private router: Router
+  ) { }
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   ngOnInit(): void {
@@ -40,16 +46,8 @@ export class TriageListComponent implements OnInit {
   }
 
   openTriageDialog(element: any): void {
-    const dialogRef = this.dialog.open(CreateTriageComponent, {
-      data: { element: element },
-      width: '70%',
-      autoFocus: true,
-      disableClose: true
-    });
-
-    dialogRef.afterClosed().subscribe(() => {
-      this.bindData();
-    });
+    const navigationExtras = element ? { state: { element } } : undefined;
+    this.router.navigate(['/newtriage'], navigationExtras);
   }
 
   openViewTriageDialog(enterAnimationDuration: string, exitAnimationDuration: string, element: any): void {

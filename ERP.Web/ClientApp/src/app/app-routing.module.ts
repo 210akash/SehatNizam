@@ -116,6 +116,7 @@ import { PatientListComponent } from './components/opd/patient/patient-list/pati
 import { DoctorListComponent } from './components/opd/doctor/doctor-list/doctor-list.component';
 import { DoctorAppointmentListComponent } from './components/opd/appointment/doctor-appointment-list/doctor-appointment-list.component';
 import { TriageListComponent } from './components/opd/triage/triage-list/triage-list.component';
+import { CreateTriageComponent } from './components/opd/triage/create-triage/create-triage.component';
 import { AddRosterComponent } from './components/hr/roster/add-roster/add-roster.component';
 import { RosterTabComponent } from './components/hr/roster/roster-tab/roster-tab.component';
 import { RosterDepartmentListComponent } from './components/hr/roster-department/roster-list-department/roster-department-list.component';
@@ -245,7 +246,8 @@ const routes: Routes = [
       { path: 'patient', component: PatientListComponent, canActivate: [AuthGuard] },
       { path: 'doctor', component: DoctorListComponent, canActivate: [AuthGuard] },
       { path: 'doctorappointment', component: DoctorAppointmentListComponent, canActivate: [AuthGuard] },
-      { path: 'triage', component: TriageListComponent, canActivate: [AuthGuard] },
+      { path: 'triage', component: CreateTriageComponent, canActivate: [AuthGuard] },
+      { path: 'newtriage', component: CreateTriageComponent, canActivate: [AuthGuard] },
       { path: 'adddepartmentroster', component: AddRosterDepartmentComponent, canActivate: [AuthGuard] },
       { path: 'rosterdepartment', component: RosterDepartmentListComponent, canActivate: [AuthGuard] },
       { path: 'addroster', component: AddRosterComponent, canActivate: [AuthGuard] },

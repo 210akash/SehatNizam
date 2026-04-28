@@ -695,6 +695,7 @@
           <i class="fas fa-chevron-right breadcrumb-separator"></i>
           <span class="breadcrumb-current">{{ breadcrumbCurrent }}</span>
         </div>
+        
       </div>
 
       <div class="header-right">
@@ -778,12 +779,27 @@
             <mat-icon> lock </mat-icon>
           </button>
         </div>
-
+ <div class="content_warehouse">
+      <div 
+        *ngIf="this.warehouseList.length > 0">
+        <div class="col-md-3">
+          <mat-form-field>
+            <mat-label>Warehouse</mat-label>
+            <mat-select [(value)]="selectedWarehouseId" (selectionChange)="onWarehouseChange($event)">
+              <mat-option *ngFor="let project of warehouseList" [value]="project.id">
+                {{ project.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
       </div>
     </header>
 
     <!-- Main Content -->
     <main class="content-viewport custom-scrollbar">
+      
       <div class="content mat-elevation-z8">
         <router-outlet></router-outlet>
       </div>

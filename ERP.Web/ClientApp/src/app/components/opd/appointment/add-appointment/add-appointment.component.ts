@@ -497,9 +497,9 @@ export class AddAppointmentComponent implements OnInit {
     }
 
     // Patch the values into the form group
-    this.appointmentForm.get('employeeId')?.patchValue(selectedValue.id);
-    this.appointmentForm.get('employeeName')?.patchValue(selectedValue?.hrCode + ' : ' + selectedValue?.firstName + ' ' + selectedValue?.lastName + ' (' + selectedValue?.designation + ')');
-    this.appointmentForm.get('employee')?.patchValue(selectedValue);
+    this.appointmentForm.get('doctorId')?.patchValue(selectedValue.id);
+    this.appointmentForm.get('doctorName')?.patchValue(selectedValue?.hrCode + ' : ' + selectedValue?.firstName + ' ' + selectedValue?.lastName + ' (' + selectedValue?.designation + ')');
+    this.appointmentForm.get('doctor')?.patchValue(selectedValue);
   }
 
   getdoctor(itemId: string) {

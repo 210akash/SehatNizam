@@ -35,6 +35,7 @@ namespace ERP.Mediator.Mediator.Triage.Handler
             {
                 var _Triage = mapper.Map<Entities.Models.Triage>(request);
                 _Triage.CreatedById = sessionProvider.Session.LoggedInUserId;
+                _Triage.NurseId = sessionProvider.Session.LoggedInUserId;
                 _Triage.CreatedDate = DateTime.Now;
                 unitOfWork.Repository<Entities.Models.Triage>().Add(_Triage);
                 SaveChanges();
@@ -43,6 +44,7 @@ namespace ERP.Mediator.Mediator.Triage.Handler
             {
                 var _Triage = mapper.Map<Entities.Models.Triage>(request);
                 _Triage.CreatedById = Triage.CreatedById;
+                _Triage.NurseId = Triage.NurseId;
                 _Triage.CreatedDate = Triage.CreatedDate;
                 _Triage.ModifiedById = sessionProvider.Session.LoggedInUserId;
                 _Triage.ModifiedDate = DateTime.Now;

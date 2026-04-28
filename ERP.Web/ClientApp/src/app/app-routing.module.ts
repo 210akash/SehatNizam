@@ -127,6 +127,7 @@ import { NotificationListComponent } from './components/hr/notification/notifica
 import { AddNotificationComponent } from './components/hr/notification/add-notification/add-notification.component';
 import { SalaryHeadListComponent } from './components/hr/payroll/salaryhead/salaryhead-list/salaryhead-list.component';
 import { SalaryTaxSlabListComponent } from './components/hr/payroll/salarytaxslab/salarytaxslab-list/salarytaxslab-list.component';
+import { TriageCategoryListComponent } from './components/opd/triage-category/triage-category-list/triage-category-list.component';
 
 const routes: Routes = [
   {
@@ -246,6 +247,7 @@ const routes: Routes = [
       { path: 'patient', component: PatientListComponent, canActivate: [AuthGuard] },
       { path: 'doctor', component: DoctorListComponent, canActivate: [AuthGuard] },
       { path: 'doctorappointment', component: DoctorAppointmentListComponent, canActivate: [AuthGuard] },
+      { path: 'triagecategory', component: TriageCategoryListComponent, canActivate: [AuthGuard], data: {roles: ["receptionist"] } },
       { path: 'triage', component: CreateTriageComponent, canActivate: [AuthGuard] },
       { path: 'newtriage', component: CreateTriageComponent, canActivate: [AuthGuard] },
       { path: 'adddepartmentroster', component: AddRosterDepartmentComponent, canActivate: [AuthGuard] },

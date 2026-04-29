@@ -28,31 +28,89 @@ namespace ERP.Mediator.Mediator.Triage.Handler
 
         public async Task<long> Handle(SaveTriageCommand request, CancellationToken cancellationToken)
         {
-            var Triage = await unitOfWork.Repository<Entities.Models.Triage>()
+            var existingTriage = await unitOfWork.Repository<Entities.Models.Triage>()
                 .GetFirstAsNoTrackingAsync(x => x.Id == request.Id);
 
-            if (Triage == null)
+            if (existingTriage == null)
             {
-                var _Triage = mapper.Map<Entities.Models.Triage>(request);
-                _Triage.CreatedById = sessionProvider.Session.LoggedInUserId;
-                _Triage.NurseId = sessionProvider.Session.LoggedInUserId;
-                _Triage.CreatedDate = DateTime.Now;
-                unitOfWork.Repository<Entities.Models.Triage>().Add(_Triage);
-                SaveChanges();
+                var newTriage = CreateTriageFromCommand(request, isNew: true);
+                unitOfWork.Repository<Entities.Models.Triage>().Add(newTriage);
+                await unitOfWork.SaveChangesAsync(cancellationToken);
+                return 200;
             }
             else
             {
-                var _Triage = mapper.Map<Entities.Models.Triage>(request);
-                _Triage.CreatedById = Triage.CreatedById;
-                _Triage.NurseId = Triage.NurseId;
-                _Triage.CreatedDate = Triage.CreatedDate;
-                _Triage.ModifiedById = sessionProvider.Session.LoggedInUserId;
-                _Triage.ModifiedDate = DateTime.Now;
-                unitOfWork.Repository<Entities.Models.Triage>().Update(_Triage);
-                SaveChanges();
-            }
+                var triageToUpdate = await unitOfWork.Repository<Entities.Models.Triage>()
+                    .GetFirstAsync(x => x.Id == request.Id);
 
-            return 200; // Success code for adding/updating
+                if (triageToUpdate != null)
+                {
+                    UpdateTriageFromCommand(triageToUpdate, request);
+                    unitOfWork.Repository<Entities.Models.Triage>().Update(triageToUpdate);
+                    await unitOfWork.SaveChangesAsync(cancellationToken);
+                }
+
+                return 200;
+            }
+        }
+
+        private Entities.Models.Triage CreateTriageFromCommand(SaveTriageCommand command, bool isNew)
+        {
+            return new Entities.Models.Triage
+            {
+                Id = command.Id,
+                AppointmentId = command.AppointmentId,
+                NurseId = sessionProvider.Session.LoggedInUserId,
+                Temperature = command.Temperature,
+                Pulse = command.Pulse,
+                SystolicBp = command.SystolicBp,
+                DiastolicBp = command.DiastolicBp,
+                Spo2 = command.Spo2,
+                Weight = command.Weight,
+                HeightFeet = command.HeightFeet,
+                HeightInches = command.HeightInches,
+                HeightCm = command.HeightCm,
+                Bmi = command.Bmi,
+                BloodSugar = command.BloodSugar,
+                SugarTypeId = command.SugarTypeId,
+                TriagePriorityId = command.TriagePriorityId,
+                ChiefComplaint = command.ChiefComplaint,
+                Allergies = command.Allergies,
+                Medications = command.Medications,
+                Notes = command.Notes,
+                TriageScore = command.TriageScore,
+                TriageCategoryId = command.TriageCategoryId,
+                CreatedById =  sessionProvider.Session.LoggedInUserId,
+                CreatedDate = DateTime.Now,
+                ModifiedById = isNew ? null : sessionProvider.Session.LoggedInUserId,
+                ModifiedDate = isNew ? null : DateTime.Now
+            };
+        }
+
+        private void UpdateTriageFromCommand(Entities.Models.Triage triage, SaveTriageCommand command)
+        {
+            triage.AppointmentId = command.AppointmentId;
+            triage.Temperature = command.Temperature;
+            triage.Pulse = command.Pulse;
+            triage.SystolicBp = command.SystolicBp;
+            triage.DiastolicBp = command.DiastolicBp;
+            triage.Spo2 = command.Spo2;
+            triage.Weight = command.Weight;
+            triage.HeightFeet = command.HeightFeet;
+            triage.HeightInches = command.HeightInches;
+            triage.HeightCm = command.HeightCm;
+            triage.Bmi = command.Bmi;
+            triage.BloodSugar = command.BloodSugar;
+            triage.SugarTypeId = command.SugarTypeId;
+            triage.TriagePriorityId = command.TriagePriorityId;
+            triage.ChiefComplaint = command.ChiefComplaint;
+            triage.Allergies = command.Allergies;
+            triage.Medications = command.Medications;
+            triage.Notes = command.Notes;
+            triage.TriageScore = command.TriageScore;
+            triage.TriageCategoryId = command.TriageCategoryId;
+            triage.ModifiedById = sessionProvider.Session.LoggedInUserId;
+            triage.ModifiedDate = DateTime.Now;
         }
     }
 }

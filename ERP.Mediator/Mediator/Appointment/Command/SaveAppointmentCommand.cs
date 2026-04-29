@@ -62,8 +62,6 @@ namespace ERP.Mediator.Mediator.Appointment.Command
         public long Id { get; set; }
 
         public long AppointmentId { get; set; }
-        public Guid PatientId { get; set; }
-        public Guid? NurseId { get; set; }
 
         public decimal? Temperature { get; set; }
         public int? Pulse { get; set; }

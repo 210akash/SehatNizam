@@ -17,14 +17,28 @@
             <span>Token {{ selectedAppointment?.tokenNumber || '-' }}</span>
           </div>
 
-          <div class="info-row">
-            <div><strong>Reason:</strong> {{ getReason() }}</div>
-            <div><strong>Doctor:</strong> {{ getDoctorName() }}</div>
-            <div><strong>Department:</strong> {{ getDepartmentName() }}</div>
+          <div class="info-grid">
+         
+            <div class="info-card">
+              <span class="info-label">Doctor</span>
+              <strong>{{ getDoctorName() }}</strong>
+            </div>
+            <div class="info-card">
+              <span class="info-label">Department</span>
+              <strong>{{ getDepartmentName() }}</strong>
+            </div>
+               <div class="info-card">
+              <span class="info-label">Reason</span>
+              <strong>{{ getReason() }}</strong>
+            </div>
           </div>
         </div>
 
         <div class="queue-stats">
+          <div class="stat-box">
+            <span class="stat-label">Position</span>
+            <span class="stat-value">{{ appointments.length ? selectedIndex + 1 : 0 }}/{{ queueCount }}</span>
+          </div>
           <div class="stat-box">
             <span class="stat-label">Checked</span>
             <span class="stat-value">{{ checkedCount }}</span>
@@ -37,38 +51,45 @@
       </div>
 
       <div class="toolbar">
-        <mat-form-field class="token-search" appearance="outline">
-          <mat-label>Jump By Token</mat-label>
-          <input
-            matInput
-            type="search"
-            placeholder="Type token number"
-            [formControl]="appointmentSearchCtrl"
-            [matAutocomplete]="appointmentAuto"
-            (input)="onAppointmentInputCleared($event)" />
-          <mat-autocomplete
-            #appointmentAuto="matAutocomplete"
-            [displayWith]="displayAppointment"
-            (optionSelected)="onAppointmentSelected($event.option.value)">
-            <mat-option *ngFor="let appointment of filteredAppointments$ | async" [value]="appointment">
-              Token {{ appointment.tokenNumber || '-' }}
-              <span *ngIf="appointment.patient?.name"> - {{ appointment.patient?.name }}</span>
-            </mat-option>
-          </mat-autocomplete>
-        </mat-form-field>
+        <div class="toolbar-copy">
+          <span class="toolbar-eyebrow">Queue navigation</span>
+          <p>Search by token or move through the queue without leaving the form.</p>
+        </div>
 
-        <div class="nav-actions">
-          <button mat-stroked-button type="button" (click)="prevAppointment()" [disabled]="selectedIndex === 0">
-            Prev
-          </button>
-          <button
-            mat-stroked-button
-            type="button"
-            color="primary"
-            (click)="nextAppointment()"
-            [disabled]="selectedIndex >= appointments.length - 1">
-            Next
-          </button>
+        <div class="toolbar-actions">
+          <mat-form-field class="token-search" appearance="outline">
+            <mat-label>Jump By Token</mat-label>
+            <input
+              matInput
+              type="search"
+              placeholder="Type token number"
+              [formControl]="appointmentSearchCtrl"
+              [matAutocomplete]="appointmentAuto"
+              (input)="onAppointmentInputCleared($event)" />
+            <mat-autocomplete
+              #appointmentAuto="matAutocomplete"
+              [displayWith]="displayAppointment"
+              (optionSelected)="onAppointmentSelected($event.option.value)">
+              <mat-option *ngFor="let appointment of filteredAppointments$ | async" [value]="appointment">
+                Token {{ appointment.tokenNumber || '-' }}
+                <span *ngIf="appointment.patient?.name"> - {{ appointment.patient?.name }}</span>
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+
+          <div class="nav-actions">
+            <button mat-stroked-button type="button" (click)="prevAppointment()" [disabled]="selectedIndex === 0">
+              Prev
+            </button>
+            <button
+              mat-stroked-button
+              type="button"
+              color="primary"
+              (click)="nextAppointment()"
+              [disabled]="selectedIndex >= appointments.length - 1">
+              Next
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -84,57 +105,66 @@
           </div>
 
           <div class="grid cols-4">
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" class="metric-field">
               <mat-label>Temperature</mat-label>
               <input matInput type="number" placeholder="Temperature" formControlName="temperature" />
+              <span class= "name" matSuffix>&deg;F</span>
             </mat-form-field>
 
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" class="metric-field">
               <mat-label>Pulse</mat-label>
               <input matInput type="number" placeholder="Pulse" formControlName="pulse" />
+              <span class= "name" matSuffix>bpm</span>
             </mat-form-field>
 
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" class="metric-field">
               <mat-label>SPO2</mat-label>
               <input matInput type="number" placeholder="SPO2" formControlName="spo2" />
+              <span class= "name" matSuffix>%</span>
             </mat-form-field>
 
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" class="metric-field">
               <mat-label>Systolic BP</mat-label>
               <input matInput type="number" placeholder="Systolic BP" formControlName="systolicBp" />
+              <span class= "name" matSuffix>mmHg</span>
             </mat-form-field>
 
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" class="metric-field">
               <mat-label>Diastolic BP</mat-label>
               <input matInput type="number" placeholder="Diastolic BP" formControlName="diastolicBp" />
+              <span class= "name" matSuffix>mmHg</span>
             </mat-form-field>
 
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" class="metric-field">
               <mat-label>Weight (kg)</mat-label>
               <input matInput type="number" placeholder="Weight" formControlName="weight" />
+              <span class= "name" matSuffix>kg</span>
             </mat-form-field>
 
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" class="metric-field">
               <mat-label>Height (cm)</mat-label>
               <input matInput type="number" placeholder="Height (cm)" formControlName="heightCm" />
+              <span class= "name" matSuffix>cm</span>
             </mat-form-field>
 
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" class="metric-field">
               <mat-label>Height (ft)</mat-label>
               <input matInput type="number" placeholder="Height (feet)" formControlName="heightFeet" />
+              <span class= "name" matSuffix>ft</span>
             </mat-form-field>
 
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" class="metric-field">
               <mat-label>Height (in)</mat-label>
               <input matInput type="number" placeholder="Height (inches)" formControlName="heightInches" />
+              <span class= "name" matSuffix>in</span>
             </mat-form-field>
 
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" class="metric-field">
               <mat-label>BMI</mat-label>
               <input matInput placeholder="BMI" formControlName="bmi" readonly />
             </mat-form-field>
 
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" class="metric-field">
               <mat-label>Triage Score</mat-label>
               <input matInput type="number" placeholder="Triage Score" formControlName="triageScore" />
             </mat-form-field>
@@ -185,7 +215,7 @@
           </div>
 
           <div class="grid cols-2">
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" class="span-2">
               <mat-label>Chief Complaint</mat-label>
               <textarea matInput rows="3" placeholder="Chief Complaint" formControlName="chiefComplaint"></textarea>
             </mat-form-field>

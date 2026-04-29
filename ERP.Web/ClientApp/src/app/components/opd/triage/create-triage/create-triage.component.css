@@ -1,12 +1,17 @@
 .triage-shell {
-  width: min(1200px, 100%);
+  width: 100%;
+  margin: 0 auto;
+  border-radius: 24px;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, #f7fbff 0%, #ffffff 30%);
 }
 
 .workspace-header {
   display: flex;
   flex-direction: column;
   gap: 18px;
-  padding: 20px 20px 12px;
+  padding: 24px 24px 14px;
 }
 
 .patient-summary {
@@ -65,6 +70,30 @@
   font-size: 13px;
 }
 
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.info-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(190, 215, 245, 0.95);
+  color: #274261;
+}
+
+.info-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #6b7d93;
+}
+
 .meta-chip {
   padding: 3px 8px;
   border-radius: 999px;
@@ -77,6 +106,7 @@
   display: flex;
   gap: 12px;
   align-items: stretch;
+  flex-wrap: wrap;
 }
 
 .stat-box {
@@ -109,7 +139,40 @@
   display: flex;
   justify-content: space-between;
   gap: 16px;
-  align-items: center;
+  align-items: flex-end;
+  padding: 18px;
+  border: 1px solid #e3ebf5;
+  border-radius: 18px;
+  background: #fff;
+}
+
+.toolbar-copy {
+  max-width: 320px;
+}
+
+.toolbar-eyebrow {
+  display: inline-block;
+  margin-bottom: 6px;
+  color: #1d4ed8;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.toolbar-copy p {
+  margin: 0;
+  color: #5d728b;
+  line-height: 1.45;
+}
+
+.toolbar-actions {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  flex: 1;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .token-search {
@@ -133,6 +196,7 @@
   border: 1px solid #e3ebf5;
   border-radius: 16px;
   background: #fff;
+  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.04);
 }
 
 .panel-head {
@@ -156,6 +220,10 @@
   gap: 14px;
 }
 
+.span-2 {
+  grid-column: span 2;
+}
+
 .cols-4 {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
@@ -164,11 +232,17 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.metric-field {
+  min-width: 0;
+}
+
 .button-container {
   margin-top: 4px;
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+  justify-content: flex-end;
+  padding: 4px 0 6px;
 }
 
 .empty-state {
@@ -186,13 +260,25 @@
   color: #6a7e94;
 }
 
+.name {
+  margin-right: 10px;
+}
+
 @media (max-width: 1024px) {
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+
   .cols-4 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 768px) {
+  .triage-shell {
+    border-radius: 18px;
+  }
+
   .workspace-header,
   .triage-form {
     gap: 14px;
@@ -210,6 +296,30 @@
 
   .stat-box {
     flex: 1 1 0;
+    min-width: calc(50% - 6px);
+  }
+
+  .toolbar {
+    align-items: stretch;
+    padding: 16px;
+  }
+
+  .toolbar-copy,
+  .toolbar-actions {
+    max-width: none;
+    width: 100%;
+  }
+
+  .toolbar-actions {
+    justify-content: stretch;
+  }
+
+  .nav-actions {
+    width: 100%;
+  }
+
+  .nav-actions button {
+    flex: 1 1 0;
   }
 
   .cols-4,
@@ -217,7 +327,39 @@
     grid-template-columns: 1fr;
   }
 
+  .span-2 {
+    grid-column: auto;
+  }
+
   .token-search {
     width: 100%;
+  }
+
+  .button-container {
+    justify-content: stretch;
+  }
+
+  .button-container button {
+    flex: 1 1 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .workspace-header {
+    padding: 18px 16px 10px;
+  }
+
+  .patient-summary,
+  .panel {
+    padding: 16px;
+    border-radius: 14px;
+  }
+
+  .summary-copy h2 {
+    font-size: 1.3rem;
+  }
+
+  .stat-box {
+    min-width: 100%;
   }
 }

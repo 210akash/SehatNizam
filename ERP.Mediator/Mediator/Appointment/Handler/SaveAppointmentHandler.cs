@@ -101,7 +101,6 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                 newAppointment.CreatedById = sessionProvider.Session.LoggedInUserId;
                 newAppointment.ProjectId = sessionProvider.Session.SelectedWarehouseId;
                 newAppointment.CreatedDate = DateTime.Now;
-                newAppointment.AppointmentStatusId = 1;  // default status
                 unitOfWork.Repository<Entities.Models.Appointment>().Add(newAppointment);
                 int check  = await unitOfWork.SaveChangesAsync();
                 if (check > 0)

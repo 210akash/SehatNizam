@@ -10,7 +10,7 @@ namespace ERP.Entities.Models
         public string Name { get; set; }
         public string FromTime { get; set; }
         public string ToTime { get; set; }
-
+        public bool IsDualDate { get; set; } = false;
         public virtual ICollection<AspNetUsers> AspNetUsers { get; set; }
     }
 }

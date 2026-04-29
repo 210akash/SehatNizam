@@ -67,6 +67,20 @@ namespace ERP.API.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("GetAppointmentByToken")]
+        public async Task<ActionResult<List<GetAppointment>>> GetAppointmentByToken(string Token)
+        {
+            try
+            {
+                return await this.mediator.Send(new GetAppointmentByTokenQuery(Token));
+            }
+            catch (Exception ex)
+            {
+                return this.Result(ResponseStatus.Error, null, ex.Message);
+            }
+        }
+
         [HttpPost]
         [Route("SaveAppointment")]
         public async Task<IActionResult> Save(SaveAppointmentCommand command)

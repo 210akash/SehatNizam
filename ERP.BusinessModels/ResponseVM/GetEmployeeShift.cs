@@ -7,6 +7,7 @@
         public string Name { get; set; }
         public string FromTime { get; set; }
         public string ToTime { get; set; }
+        public bool IsDualDate { get; set; } = false;
         public GetUser CreatedBy { get; set; }
     }
 }

@@ -659,7 +659,8 @@
           </div>
           <a routerLink="/appointment" *ngIf="hasRequiredRole(['admin','receptionist'])" class="submenu-link" [class.active-link]="isActive('/appointment')">Appointments</a>
           <a routerLink="/patient"     *ngIf="hasRequiredRole(['admin','receptionist'])" class="submenu-link"  [class.active-link]="isActive('/patient')">Patients</a>
-          <a routerLink="/doctor"      *ngIf="hasRequiredRole(['admin','receptionist'])" class="submenu-link"  [class.active-link]="isActive('/doctor')">Doctors</a>
+          <a routerLink="/doctor"      *ngIf="hasRequiredRole(['admin'])" class="submenu-link"  [class.active-link]="isActive('/doctor')">Doctors</a>
+          <a routerLink="/triage"      *ngIf="hasRequiredRole(['admin','receptionist'])" class="submenu-link"  [class.active-link]="isActive('/triage')">Triage</a>
         </div>
       </div>
     </nav>

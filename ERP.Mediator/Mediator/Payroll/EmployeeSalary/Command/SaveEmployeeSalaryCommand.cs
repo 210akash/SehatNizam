@@ -8,7 +8,7 @@ namespace ERP.Mediator.Mediator.Payroll.EmployeeSalary.Command
     public class SaveEmployeeSalaryCommand : IRequest<Tuple<long, string>>
     {
         public Guid EmployeeId { get; set; }
-
+        public bool IsLocked { get; set; }
         public List<EmployeeSalaryCommand> EmployeeSalary { get; set; }
     }
 

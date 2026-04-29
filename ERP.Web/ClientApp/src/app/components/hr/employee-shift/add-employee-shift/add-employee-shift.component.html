@@ -33,7 +33,12 @@
             <input type="time" matInput placeholder="To Time" formControlName="toTime" />
           </mat-form-field>
         </div>
-
+        <div class="col-md-12 mb-2">
+            <mat-label>Dual Date Shift </mat-label>
+          <mat-slide-toggle [matTooltip]="this.employeeShiftForm.get('isDualDate')?.value ? 'Dual' : 'Single'"
+            formControlName="isDualDate">
+          </mat-slide-toggle>
+        </div>
       </div>
       <mat-divider></mat-divider>
       <div class="button-container">

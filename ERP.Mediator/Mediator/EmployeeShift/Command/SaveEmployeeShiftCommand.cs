@@ -12,5 +12,6 @@ namespace ERP.Mediator.Mediator.EmployeeShift.Command
         public string Name { get; set; }
         public string FromTime { get; set; }
         public string ToTime { get; set; }
+        public bool IsDualDate { get; set; } = false;
     }
 }

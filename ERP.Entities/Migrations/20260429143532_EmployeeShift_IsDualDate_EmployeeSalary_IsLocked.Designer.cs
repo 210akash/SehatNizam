@@ -4,14 +4,16 @@ using ERP.Entities.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ERP.Entities.Migrations
 {
     [DbContext(typeof(ERPDbContext))]
-    partial class ERPDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260429143532_EmployeeShift_IsDualDate_EmployeeSalary_IsLocked")]
+    partial class EmployeeShift_IsDualDate_EmployeeSalary_IsLocked
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1127,9 +1129,6 @@ namespace ERP.Entities.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsRosterShift")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsSalaryLocked")
                         .HasColumnType("bit");
 
                     b.Property<DateTime?>("JoinDate")
@@ -3501,6 +3500,9 @@ namespace ERP.Entities.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsDelete")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsLocked")
                         .HasColumnType("bit");
 
                     b.Property<Guid?>("ModifiedById")

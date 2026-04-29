@@ -1,5 +1,4 @@
 using System;
-using ERP.Entities.Models;
 
 namespace ERP.BusinessModels.ResponseVM
 {

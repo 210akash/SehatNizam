@@ -104,6 +104,7 @@ namespace ERP.Entities.Models
         public string TotalWorkExperience { get; set; }
         public string Reference { get; set; }
         public string Remarks { get; set; }
+        public bool IsSalaryLocked { get; set; }
         public virtual ICollection<EmployeeWorkingDays> EmployeeWorkingDays { get; set; }
         public virtual ICollection<RosterDetail> RosterDetail { get; set; }
         public virtual ICollection<EmployeeDocument> EmployeeDocument { get; set; }

@@ -25,7 +25,8 @@ export class DeleteEmployeeShiftComponent {
       code: ['', Validators.required],
       name: ['', Validators.required],
       fromTime: ['', Validators.required],
-      toTime: ['', Validators.required]
+      toTime: ['', Validators.required],
+      isDualDate: [false],
     });
     this.LoadData(this.data.element);
   }

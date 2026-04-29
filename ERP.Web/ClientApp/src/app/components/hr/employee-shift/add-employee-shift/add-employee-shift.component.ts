@@ -28,6 +28,7 @@ export class AddEmployeeShiftComponent {
       name: ['', Validators.required],
       fromTime: [null, Validators.required],
       toTime: [null, Validators.required],
+      isDualDate: [false],
     });
     
     this.LoadData(this.data.element);

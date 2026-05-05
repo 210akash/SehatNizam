@@ -597,6 +597,7 @@
             this.CreateMap<Prescription, GetPrescription>().ReverseMap();
             this.CreateMap<PatientProblem, GetPatientProblem>().ReverseMap();
             this.CreateMap<Consultation, GetConsultation>().ReverseMap();
+            this.CreateMap<Consultation, SaveConsultationCommand>().ReverseMap();
             this.CreateMap<SaveTriageCommand, Triage>()
        .ForMember(dest => dest.Appointment, opt => opt.Ignore())
        .ForMember(dest => dest.Nurse, opt => opt.Ignore())

@@ -113,5 +113,39 @@ namespace ERP.API.Controllers
                 return this.Result(ResponseStatus.Error, null, ex.Message);
             }
         }
+
+
+        [HttpPost]
+        [Route("SaveConsultation")]
+        public async Task<IActionResult> SaveConsultation(SaveConsultationCommand command)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return this.Result(ResponseStatus.Error, null, this.GetModelValidationErrors(this.ModelState));
+                }
+                else
+                {
+                    var result = await this.mediator.Send(command);
+                    if (result == 200)
+                    {
+                        return this.Result(ResponseStatus.OK, "Consultation Saved!", null);
+                    }
+                    else if (result == 409)
+                    {
+                        return this.Result(ResponseStatus.Conflict, "Name Already Exists!", null);
+                    }
+                    else
+                    {
+                        return this.Result(ResponseStatus.Error, "There is some error!", null);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return this.Result(ResponseStatus.Error, null, ex.Message);
+            }
+        }
     }
 }

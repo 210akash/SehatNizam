@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { AppointmentService } from '../appointment.service';
+import { NotificationsService } from '../../../../Service/notification.service';
+import { TriageService } from '../../triage/triage.service';
+import { PatientProblemService } from '../../patientproblem/patientproblem.service';
 
 @Component({
   selector: 'app-doctor-appointment-list',
@@ -46,7 +49,10 @@ export class DoctorAppointmentListComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private appointmentService: AppointmentService
+    private appointmentService: AppointmentService,
+    private triageService: TriageService,
+    private notificationsService: NotificationsService,
+    private patientProblemService: PatientProblemService
   ) {
     this.soapForm = this.fb.group({
       subjective: [''],
@@ -58,7 +64,7 @@ export class DoctorAppointmentListComponent implements OnInit {
     this.appointmentFilterForm = this.fb.group({
       fdate: [new Date()],
       tdate: [new Date()],
-      statusId: [1]
+      statusId: [10]
     });
   }
 
@@ -111,8 +117,8 @@ export class DoctorAppointmentListComponent implements OnInit {
     if (this.selectedAppointment.triages && this.selectedAppointment.triages.length > 0) {
       const triage = this.selectedAppointment.triages[0];
       this.localVitals = {
-        bpSystolic: triage.bpSystolic || 120,
-        bpDiastolic: triage.bpDiastolic || 80,
+        bpSystolic: triage.systolicBp || 120,
+        bpDiastolic: triage.diastolicBp || 80,
         pulse: triage.pulse || 72,
         temperature: triage.temperature || 98.6,
         spo2: triage.spo2 || 99
@@ -164,32 +170,63 @@ export class DoctorAppointmentListComponent implements OnInit {
       prescriptions: this.localPrescriptions,
       labOrders: this.localLabOrders,
       radiologyOrders: this.localRadiologyOrders,
-      vitals: this.localVitals
+      vitals: this.localVitals,
+      statusId : 3
     };
 
-    // this.appointmentService.saveConsultation(consultationData).subscribe({
-    //   next: () => {
-    //     alert('Consultation saved successfully!');
-    //     // Optionally move to next patient
-    //     this.nextPatient();
-    //   },
-    //   error: (err) => console.error('Save failed', err)
-    // });
+    this.appointmentService.saveConsultation(consultationData).subscribe({
+      next: () => {
+        alert('Consultation saved successfully!');
+        // Optionally move to next patient
+        this.nextPatient();
+      },
+      error: (err) => console.error('Save failed', err)
+    });
   }
 
   // --- Problem Management ---
-  addProblem(): void {
-    if (!this.newProblem.name) return;
-    const problem = {
+  async addProblem(): Promise<void> {
+    if (!this.newProblem.name || !this.selectedAppointment?.id) return;
+
+    this.isLoading = true;
+    const payload = {
       id: 0,
-      name: this.newProblem.name,
-      onset: this.newProblem.onset,
-      status: this.newProblem.status,
-      isActive: this.newProblem.status === 'Active'
+      appointmentId: this.selectedAppointment.id,
+      problem: this.newProblem.name,
+      statusId: this.getStatusId(this.newProblem.status)
     };
-    this.localProblems.push(problem);
-    this.newProblem = { name: '', onset: '', status: 'Active' };
-    this.showProblemModal = false;
+
+    (await this.patientProblemService.savePatientProblem(payload)).subscribe({
+      next: (data: any) => {
+        if (data?.Status === 200 || data?.status === 200 || typeof data === 'number') {
+          const problem = {
+            id: data?.Data ?? data?.id ?? 0,
+            name: this.newProblem.name,
+            onset: this.newProblem.onset,
+            status: this.newProblem.status,
+            isActive: this.newProblem.status === 'Active'
+          };
+          this.localProblems.push(problem);
+          this.newProblem = { name: '', onset: '', status: 'Active' };
+          this.showProblemModal = false;
+          this.notificationsService.showNotification(data?.Message || 'Problem saved successfully!', 'snack-bar-success');
+        } else {
+          this.notificationsService.showNotification(data?.Message || 'Unable to save problem.', 'snack-bar-danger');
+        }
+        this.isLoading = false;
+      },
+      error: () => {
+        this.notificationsService.showNotification('Unable to save problem.', 'snack-bar-danger');
+        this.isLoading = false;
+      }
+    });
+  }
+
+  private getStatusId(status: string): number {
+    const key = (status || '').toLowerCase();
+    if (key === 'managed') return 2;
+    if (key === 'resolved') return 3;
+    return 1;
   }
 
   removeProblem(index: number): void {
@@ -246,15 +283,64 @@ export class DoctorAppointmentListComponent implements OnInit {
   }
 
   // --- Vitals Management ---
-  updateVitals(): void {
-    this.localVitals = {
-      bpSystolic: this.newVitals.sys,
-      bpDiastolic: this.newVitals.dia,
-      pulse: this.newVitals.pulse,
-      temperature: this.newVitals.temp,
-      spo2: this.newVitals.spo2
+  async updateVitals(): Promise<void> {
+    if (!this.selectedAppointment?.id) {
+      this.notificationsService.showNotification('Appointment not found.', 'snack-bar-danger');
+      return;
+    }
+
+    this.isLoading = true;
+    const latestTriage = this.getLatestTriage();
+    const payload = {
+      id: latestTriage?.id ?? 0,
+      appointmentId: this.selectedAppointment.id,
+      patientId: latestTriage?.patientId ?? this.selectedAppointment?.patientId ?? '00000000-0000-0000-0000-000000000000',
+      nurseId: latestTriage?.nurseId ?? null,
+      temperature: Number(this.newVitals.temp) || null,
+      pulse: Number(this.newVitals.pulse) || null,
+      systolicBp: Number(this.newVitals.sys) || null,
+      diastolicBp: Number(this.newVitals.dia) || null,
+      spo2: Number(this.newVitals.spo2) || null,
+      weight: latestTriage?.weight ?? null,
+      heightFeet: latestTriage?.heightFeet ?? null,
+      heightInches: latestTriage?.heightInches ?? null,
+      heightCm: latestTriage?.heightCm ?? null,
+      bmi: latestTriage?.bmi ?? null,
+      bloodSugar: latestTriage?.bloodSugar ?? null,
+      sugarTypeId: latestTriage?.sugarTypeId ?? 1,
+      triagePriorityId: latestTriage?.triagePriorityId ?? 1,
+      chiefComplaint: latestTriage?.chiefComplaint ?? '',
+      allergies: latestTriage?.allergies ?? '',
+      medications: latestTriage?.medications ?? '',
+      notes: latestTriage?.notes ?? '',
+      triageScore: latestTriage?.triageScore ?? 0,
+      triageCategoryId: latestTriage?.triageCategoryId ?? 0,
+      takenAt: latestTriage?.takenAt ?? null
     };
-    this.showVitalsModal = false;
+
+    (await this.triageService.saveTriage(payload)).subscribe({
+      next: (data: { Status: number; Message?: string }) => {
+        if (data?.Status === 200) {
+          this.localVitals = {
+            bpSystolic: payload.systolicBp || 0,
+            bpDiastolic: payload.diastolicBp || 0,
+            pulse: payload.pulse || 0,
+            temperature: payload.temperature || 0,
+            spo2: payload.spo2 || 0
+          };
+          this.showVitalsModal = false;
+          this.notificationsService.showNotification(data.Message || 'Vitals updated successfully!', 'snack-bar-success');
+          this.bindData();
+        } else {
+          this.notificationsService.showNotification(data?.Message || 'Unable to update vitals.', 'snack-bar-danger');
+        }
+        this.isLoading = false;
+      },
+      error: () => {
+        this.notificationsService.showNotification('Please fill the required fields!', 'snack-bar-danger');
+        this.isLoading = false;
+      }
+    });
   }
 
   openVitalsModal(): void {

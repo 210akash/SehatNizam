@@ -83,10 +83,9 @@
         <div class="card-body" id="problem-list">
           <div class="prob-item" *ngFor="let problem of localProblems; let i = index">
             <div class="prob-name">
-              {{ problem.name }}
-              <span class="status-badge" [class.active]="problem.status === 'Active'">{{ problem.status }}</span>
+              {{ problem.problem }}
+              <span class="status-badge" [class.active]="problem.status.title === 'Active'">{{ problem.status.title }}</span>
             </div>
-            <div class="prob-onset">Onset: {{ problem.onset || 'Unknown' }}</div>
             <button class="rem-btn" style="align-self: flex-end;" (click)="removeProblem(i)">✖</button>
           </div>
           <div class="empty" *ngIf="localProblems.length === 0">No problems added</div>

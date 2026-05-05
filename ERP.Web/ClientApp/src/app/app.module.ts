@@ -846,6 +846,8 @@ import { EmployeeSalaryService } from './components/hr/payroll/employeesalary/em
 import { EmployeeSalaryEndPoints } from './components/hr/payroll/employeesalary/employeesalary.endpoints';
 import { AddEmployeeSalaryComponent } from './components/hr/payroll/employeesalary/add-employee-salary/add-employee-salary.component';
 import { PrintAppoinmentComponent } from './components/opd/appointment/print-appoinment/print-appoinment.component';
+import { PatientProblemEndPoints } from './components/opd/patientproblem/patientproblem.endpoints';
+import { PatientProblemService } from './components/opd/patientproblem/patientproblem.service';
 
 const matFormFieldDefaults: MatFormFieldDefaultOptions = {
     appearance: 'outline'
@@ -1728,6 +1730,8 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         SalaryTaxSlabEndPoints,
         EmployeeSalaryService,
         EmployeeSalaryEndPoints,
+        PatientProblemEndPoints,
+        PatientProblemService,
         { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
         { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },
         AuthenticationService, {

@@ -35,19 +35,19 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                 x => x.CreatedBy,
                 x => x.Project,
                 x => x.Patient,
+                x => x.Problems,
                 x => x.Doctor,
                 x => x.Department,
                 x => x.PriorityLevel,
                 x => x.AppointmentType,
                 x => x.VisitType,
+                x => x.Triages.Where(y=>y.IsActive),
                 x => x.AppointmentStatus,
-                x => x.AppointmentPayments
             };
 
             List<string> thenIncludes = new()
             {
-                "AppointmentPayments.PaymentMode",
-                "AppointmentPayments.PaymentStatus",
+                "Problems.Status",
             };
 
             predicate = x => x.IsActive == true
@@ -60,7 +60,7 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
             Expression<Func<Entities.Models.Appointment, object>> OrderBy = null;
             Expression<Func<Entities.Models.Appointment, object>> OrderByDesc = x => x.Id;
             var entity = unitOfWork.Repository<Entities.Models.Appointment>()
-                .GetPagingWhereAsNoTrackingAsync(predicate, request.PagingData, OrderBy, OrderByDesc, null, includes);
+                .GetPagingWhereAsNoTrackingAsync(predicate, request.PagingData, OrderBy, OrderByDesc, thenIncludes, includes);
 
             var Appointment = mapper.Map<IEnumerable<GetAppointment>>(entity.Item1).ToList();
             return new Tuple<IEnumerable<GetAppointment>, long>(Appointment, entity.Item2);

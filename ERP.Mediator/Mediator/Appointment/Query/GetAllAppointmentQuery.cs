@@ -10,6 +10,7 @@ namespace ERP.Mediator.Mediator.Appointment.Query
     {
         public DateTime? FDate { get; set; }
         public DateTime? TDate { get; set; }
+        public long? StatusId { get; set; }
         public PagingData PagingData { get; set; }
     }
 }

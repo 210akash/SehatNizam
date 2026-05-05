@@ -69,11 +69,11 @@ namespace ERP.API.Controllers
 
         [HttpGet]
         [Route("GetAppointmentByToken")]
-        public async Task<ActionResult<List<GetAppointment>>> GetAppointmentByToken(string Token)
+        public async Task<ActionResult<List<GetAppointment>>> GetAppointmentByToken(string Token, long StatusId)
         {
             try
             {
-                return await this.mediator.Send(new GetAppointmentByTokenQuery(Token));
+                return await this.mediator.Send(new GetAppointmentByTokenQuery(Token, StatusId));
             }
             catch (Exception ex)
             {

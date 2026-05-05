@@ -49,8 +49,8 @@ export class AppointmentService extends BaseService<any> {
             .pipe(map((data: any) => data));
     }
 
-     getAppointmentByToken(token: string) {
-        return this.get('?token=' +  token, this.endPointControllerName + this.AppointmentEndPoints.getAppointmentByToken)
+     getAppointmentByToken(token: string,statusId : any) {
+        return this.get('?token=' +  token +'&statusId=' +  statusId, this.endPointControllerName + this.AppointmentEndPoints.getAppointmentByToken)
             .pipe(map((data: any) => data));
     }
 

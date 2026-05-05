@@ -87,8 +87,7 @@ export class CreateTriageComponent implements OnInit {
       allergies: [''],
       medications: [''],
       notes: [''],
-      triageScore: [null],
-      triageCategoryId: [null, Validators.required]
+      triageScore: [0],
     });
   }
 
@@ -115,7 +114,7 @@ export class CreateTriageComponent implements OnInit {
         }
 
         this.appointmentLoading = true;
-        return this.appointmentService.getAppointmentByToken(term).pipe(
+        return this.appointmentService.getAppointmentByToken(term,5).pipe(
           map((data: any) => data?.item1 ?? data ?? []),
           finalize(() => (this.appointmentLoading = false))
         );
@@ -168,6 +167,7 @@ export class CreateTriageComponent implements OnInit {
     const today = new Date().toLocaleDateString();
     const filter = {
       code: '',
+      statusId : 5,
       fdate: today,
       tdate: today,
       PagingData: { currentPage: 0, take: 100 }
@@ -294,8 +294,7 @@ export class CreateTriageComponent implements OnInit {
       allergies: '',
       medications: '',
       notes: '',
-      triageScore: null,
-      triageCategoryId: null
+      triageScore: 0
     }, { emitEvent: false });
   }
 
@@ -322,6 +321,8 @@ export class CreateTriageComponent implements OnInit {
           if (moveNext && this.selectedIndex < this.appointments.length - 1) {
             this.selectAppointment(this.selectedIndex + 1, false);
           }
+          else
+            this.closeDialog();
         } else if (data.Status == 409) {
           this.notificationsService.showNotification(data.Message || 'Record already exists!', 'snack-bar-danger');
         } else {
@@ -375,6 +376,45 @@ export class CreateTriageComponent implements OnInit {
     }
 
     this.appointmentSearchCtrl.setValue('', { emitEvent: false });
+  }
+
+  lookupAppointment(): void {
+    const value = this.appointmentSearchCtrl.value;
+
+    if (!value) {
+      return;
+    }
+
+    if (typeof value === 'object' && value?.id) {
+      this.onAppointmentSelected(value);
+      return;
+    }
+
+    const term = String(value).trim();
+    if (!term) {
+      return;
+    }
+
+    this.appointmentLoading = true;
+    this.appointmentService.getAppointmentByToken(term,5)
+      .pipe(finalize(() => (this.appointmentLoading = false)))
+      .subscribe({
+        next: (data: any) => {
+          const appointments = data?.item1 ?? data ?? [];
+          const appointment = Array.isArray(appointments) ? appointments[0] : appointments;
+
+          if (!appointment) {
+            this.notificationsService.showNotification('No appointment found for the entered token.', 'snack-bar-danger');
+            return;
+          }
+
+          this.onAppointmentSelected(appointment);
+        },
+        error: (error: any) => {
+          console.log(error);
+          this.notificationsService.showNotification('Unable to search appointment by token.', 'snack-bar-danger');
+        }
+      });
   }
 
   closeDialog(): void {

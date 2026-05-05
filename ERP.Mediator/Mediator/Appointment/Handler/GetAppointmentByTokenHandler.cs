@@ -26,7 +26,7 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
             // Get top 10 appointments where TokenNumber contains the requested token
             var appointments = await unitOfWork.Repository<Entities.Models.Appointment>()
                 .GetAsync(
-                    filter: y => y.TokenNumber.Contains(request.Token),
+                    filter: y => y.TokenNumber.Contains(request.Token) && y.AppointmentStatusId == request.StatusId,
                     orderBy: q => q.OrderBy(a => a.TokenNumber),  // ascending order
                     includeProperties: "Patient,Doctor,Department,Project",
                     take: 5

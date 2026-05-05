@@ -50,7 +50,7 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                 "AppointmentPayments.PaymentStatus",
             };
 
-            predicate = x => x.IsActive == true;
+            predicate = x => x.IsActive == true && ( request.StatusId == null ||  x.AppointmentStatusId == request.StatusId);
             //// Check if the current user's RoleId array contains the AccountOwnerRoleId
             //if (roles.Contains("Accounts Manager") || roles.Contains("Accounts Assistant"))
             //{

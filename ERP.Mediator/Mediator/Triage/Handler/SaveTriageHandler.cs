@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ERP.BusinessModels.ResponseVM;
 using ERP.Core.Provider;
 using ERP.Mediator.Mediator.Triage.Command;
 using ERP.Repositories.UnitOfWork;
@@ -28,29 +29,41 @@ namespace ERP.Mediator.Mediator.Triage.Handler
 
         public async Task<long> Handle(SaveTriageCommand request, CancellationToken cancellationToken)
         {
-            var existingTriage = await unitOfWork.Repository<Entities.Models.Triage>()
-                .GetFirstAsNoTrackingAsync(x => x.Id == request.Id);
 
-            if (existingTriage == null)
+            // 2️⃣ Check if appointment exists
+            var appointment = await unitOfWork.Repository<Entities.Models.Appointment>()
+                .GetFirstAsync(x => x.Id == request.AppointmentId);
+            if (appointment != null)
             {
-                var newTriage = CreateTriageFromCommand(request, isNew: true);
-                unitOfWork.Repository<Entities.Models.Triage>().Add(newTriage);
-                await unitOfWork.SaveChangesAsync(cancellationToken);
+
+                var existingTriage = await unitOfWork.Repository<Entities.Models.Triage>()
+                    .GetFirstAsNoTrackingAsync(x => x.Id == request.Id);
+
+                if (existingTriage == null)
+                {
+                    var newTriage = CreateTriageFromCommand(request, isNew: true);
+                    unitOfWork.Repository<Entities.Models.Triage>().Add(newTriage);
+                }
+                else
+                {
+                    var triageToUpdate = await unitOfWork.Repository<Entities.Models.Triage>()
+                        .GetFirstAsync(x => x.Id == request.Id);
+
+                    if (triageToUpdate != null)
+                    {
+                        UpdateTriageFromCommand(triageToUpdate, request);
+                        unitOfWork.Repository<Entities.Models.Triage>().Update(triageToUpdate);
+                    }
+
+                }
+                appointment.AppointmentStatusId = 10;
+                unitOfWork.Repository<Entities.Models.Appointment>().Update(appointment);
+                int check = await unitOfWork.SaveChangesAsync(cancellationToken);
                 return 200;
             }
             else
             {
-                var triageToUpdate = await unitOfWork.Repository<Entities.Models.Triage>()
-                    .GetFirstAsync(x => x.Id == request.Id);
-
-                if (triageToUpdate != null)
-                {
-                    UpdateTriageFromCommand(triageToUpdate, request);
-                    unitOfWork.Repository<Entities.Models.Triage>().Update(triageToUpdate);
-                    await unitOfWork.SaveChangesAsync(cancellationToken);
-                }
-
-                return 200;
+                return 404;
             }
         }
 
@@ -79,7 +92,6 @@ namespace ERP.Mediator.Mediator.Triage.Handler
                 Medications = command.Medications,
                 Notes = command.Notes,
                 TriageScore = command.TriageScore,
-                TriageCategoryId = command.TriageCategoryId,
                 CreatedById =  sessionProvider.Session.LoggedInUserId,
                 CreatedDate = DateTime.Now,
                 ModifiedById = isNew ? null : sessionProvider.Session.LoggedInUserId,
@@ -108,7 +120,6 @@ namespace ERP.Mediator.Mediator.Triage.Handler
             triage.Medications = command.Medications;
             triage.Notes = command.Notes;
             triage.TriageScore = command.TriageScore;
-            triage.TriageCategoryId = command.TriageCategoryId;
             triage.ModifiedById = sessionProvider.Session.LoggedInUserId;
             triage.ModifiedDate = DateTime.Now;
         }

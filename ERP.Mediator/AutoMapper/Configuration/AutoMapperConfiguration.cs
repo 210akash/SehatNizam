@@ -602,7 +602,6 @@
        .ForMember(dest => dest.Nurse, opt => opt.Ignore())
        .ForMember(dest => dest.SugarType, opt => opt.Ignore())
        .ForMember(dest => dest.TriagePriority, opt => opt.Ignore())
-       .ForMember(dest => dest.TriageCategory, opt => opt.Ignore())
        .ForMember(dest => dest.CreatedById, opt => opt.Ignore())
        .ForMember(dest => dest.CreatedDate, opt => opt.Ignore())
        .ForMember(dest => dest.ModifiedById, opt => opt.Ignore())

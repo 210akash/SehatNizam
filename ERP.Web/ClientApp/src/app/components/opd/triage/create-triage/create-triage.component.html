@@ -1,221 +1,231 @@
 <mat-card class="triage-shell">
   <ng-container *ngIf="selectedAppointment; else emptyState">
-    <div class="workspace-header">
-      <div class="patient-summary">
-        <div class="summary-copy">
-          <div class="title-row">
-            <h2>{{ getPatientName() }}</h2>
-            <span class="status-pill" [class.is-edit]="isEditMode">
-              {{ isEditMode ? 'Existing triage loaded' : 'New triage' }}
-            </span>
-          </div>
-
-          <div class="meta-row">
-            <span class="meta-chip">{{ getPatientMrn() }}</span>
-            <span>{{ getPatientAgeGender() }}</span>
-            <span>{{ getPatientPhone() }}</span>
-            <span>Token {{ selectedAppointment?.tokenNumber || '-' }}</span>
-          </div>
-
-          <div class="info-grid">
-         
-            <div class="info-card">
-              <span class="info-label">Doctor</span>
-              <strong>{{ getDoctorName() }}</strong>
-            </div>
-            <div class="info-card">
-              <span class="info-label">Department</span>
-              <strong>{{ getDepartmentName() }}</strong>
-            </div>
-               <div class="info-card">
-              <span class="info-label">Reason</span>
-              <strong>{{ getReason() }}</strong>
-            </div>
-          </div>
-        </div>
-
-        <div class="queue-stats">
-          <div class="stat-box">
-            <span class="stat-label">Position</span>
-            <span class="stat-value">{{ appointments.length ? selectedIndex + 1 : 0 }}/{{ queueCount }}</span>
-          </div>
-          <div class="stat-box">
-            <span class="stat-label">Checked</span>
-            <span class="stat-value">{{ checkedCount }}</span>
-          </div>
-          <div class="stat-box">
-            <span class="stat-label">Queue</span>
-            <span class="stat-value">{{ queueCount }}</span>
-          </div>
-        </div>
+    <div class="triage-page">
+      <div class="page-header">
+        <h1>Triage &amp; Vitals</h1>
+        <p>Record patient vital signs and initial assessment.</p>
       </div>
 
-      <div class="toolbar">
-        <div class="toolbar-copy">
-          <span class="toolbar-eyebrow">Queue navigation</span>
-          <p>Search by token or move through the queue without leaving the form.</p>
-        </div>
-
-        <div class="toolbar-actions">
-          <mat-form-field class="token-search" appearance="outline">
-            <mat-label>Jump By Token</mat-label>
-            <input
-              matInput
-              type="search"
-              placeholder="Type token number"
-              [formControl]="appointmentSearchCtrl"
-              [matAutocomplete]="appointmentAuto"
-              (input)="onAppointmentInputCleared($event)" />
-            <mat-autocomplete
-              #appointmentAuto="matAutocomplete"
-              [displayWith]="displayAppointment"
-              (optionSelected)="onAppointmentSelected($event.option.value)">
-              <mat-option *ngFor="let appointment of filteredAppointments$ | async" [value]="appointment">
-                Token {{ appointment.tokenNumber || '-' }}
-                <span *ngIf="appointment.patient?.name"> - {{ appointment.patient?.name }}</span>
-              </mat-option>
-            </mat-autocomplete>
-          </mat-form-field>
-
-          <div class="nav-actions">
-            <button mat-stroked-button type="button" (click)="prevAppointment()" [disabled]="selectedIndex === 0">
-              Prev
-            </button>
-            <button
-              mat-stroked-button
-              type="button"
-              color="primary"
-              (click)="nextAppointment()"
-              [disabled]="selectedIndex >= appointments.length - 1">
-              Next
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <mat-divider></mat-divider>
-
-    <mat-card-content>
       <form [formGroup]="createTriageForm" class="triage-form">
-        <section class="panel">
+        <div class="main-layout">
+          <section class="panel identification-panel">
+            <div class="panel-head">
+              <h3>Patient Identification</h3>
+              <p>Scan bracelet or search MRN</p>
+            </div>
+
+            <div class="lookup-row">
+              <mat-form-field class="lookup-field" appearance="outline">
+                <input
+                  matInput
+                  type="search"
+                  placeholder="Scan MRN / Barcode..."
+                  [formControl]="appointmentSearchCtrl"
+                  [matAutocomplete]="appointmentAuto"
+                  (input)="onAppointmentInputCleared($event)" />
+                <mat-autocomplete
+                  #appointmentAuto="matAutocomplete"
+                  [displayWith]="displayAppointment"
+                  (optionSelected)="onAppointmentSelected($event.option.value)">
+                  <mat-option *ngFor="let appointment of filteredAppointments$ | async" [value]="appointment">
+                    Token {{ appointment.tokenNumber || '-' }}
+                    <span *ngIf="appointment.patient?.name"> - {{ appointment.patient?.name }}</span>
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+
+              <button mat-flat-button color="primary" type="button" class="lookup-button" (click)="lookupAppointment()">
+                Lookup
+              </button>
+            </div>
+
+            <div class="patient-card">
+              <div class="patient-name-row">
+                <h4>{{ getPatientName() }} ({{ getPatientAgeGender() }})</h4>
+                <span class="status-pill" [class.is-edit]="isEditMode">
+                  {{ isEditMode ? 'Existing triage loaded' : 'New triage' }}
+                </span>
+              </div>
+              <p class="patient-mrn">{{ getPatientMrn() }}</p>
+              <div class="patient-meta">
+                <span>{{ getPatientAgeGender() }}</span>
+                <span>Token {{ selectedAppointment?.tokenNumber || '-' }}</span>
+                <span>{{ getPatientPhone() }}</span>
+              </div>
+            </div>
+
+            <!-- <div class="supporting-grid">
+              <div class="supporting-card">
+                <span class="supporting-label">Doctor</span>
+                <strong>{{ getDoctorName() }}</strong>
+              </div>
+              <div class="supporting-card">
+                <span class="supporting-label">Department</span>
+                <strong>{{ getDepartmentName() }}</strong>
+              </div>
+              <div class="supporting-card">
+                <span class="supporting-label">Reason</span>
+                <strong>{{ getReason() }}</strong>
+              </div>
+            </div> -->
+
+            <div class="queue-strip">
+              <div class="queue-box">
+                <span class="queue-label">Position</span>
+                <strong>{{ appointments.length ? selectedIndex + 1 : 0 }}/{{ queueCount }}</strong>
+              </div>
+              <div class="queue-box">
+                <span class="queue-label">Checked</span>
+                <strong>{{ checkedCount }}</strong>
+              </div>
+              <div class="queue-box">
+                <span class="queue-label">Queue</span>
+                <strong>{{ queueCount }}</strong>
+              </div>
+            </div>
+
+            <div class="nav-actions">
+              <button mat-stroked-button type="button" (click)="prevAppointment()" [disabled]="selectedIndex === 0">
+                Prev
+              </button>
+              <button
+                mat-stroked-button
+                type="button"
+                color="primary"
+                (click)="nextAppointment()"
+                [disabled]="selectedIndex >= appointments.length - 1">
+                Next
+              </button>
+            </div>
+          </section>
+
+          <section class="panel vitals-panel">
+            <div class="panel-head">
+              <h3>Vital Signs</h3>
+              <p>Enter current readings</p>
+            </div>
+
+            <div class="vitals-grid">
+              <div class="metric-block">
+                <label class="metric-label">
+                  <mat-icon class="metric-icon temp">device_thermostat</mat-icon>
+                  Temp (&deg;C)
+                </label>
+                <mat-form-field appearance="outline">
+                  <input matInput type="number" placeholder="36.5" formControlName="temperature" />
+                </mat-form-field>
+              </div>
+
+              <div class="metric-block">
+                <label class="metric-label">
+                  <mat-icon class="metric-icon pulse">favorite_border</mat-icon>
+                  Pulse (bpm)
+                </label>
+                <mat-form-field appearance="outline">
+                  <input matInput type="number" placeholder="72" formControlName="pulse" />
+                </mat-form-field>
+              </div>
+
+              <div class="metric-block">
+                <label class="metric-label">
+                  <mat-icon class="metric-icon pressure">monitor_heart</mat-icon>
+                  BP (Sys/Dia)
+                </label>
+                <div class="bp-fields">
+                  <mat-form-field appearance="outline">
+                    <input matInput type="number" placeholder="120" formControlName="systolicBp" />
+                  </mat-form-field>
+                  <span class="bp-separator">/</span>
+                  <mat-form-field appearance="outline">
+                    <input matInput type="number" placeholder="80" formControlName="diastolicBp" />
+                  </mat-form-field>
+                </div>
+              </div>
+
+              <div class="metric-block">
+                <label class="metric-label">
+                  <mat-icon class="metric-icon spo2">air</mat-icon>
+                  SpO2 (%)
+                </label>
+                <mat-form-field appearance="outline">
+                  <input matInput type="number" placeholder="98" formControlName="spo2" />
+                </mat-form-field>
+              </div>
+
+              <div class="metric-block">
+                <label class="metric-label">
+                  <mat-icon class="metric-icon weight">balance</mat-icon>
+                  Weight (kg)
+                </label>
+                <mat-form-field appearance="outline">
+                  <input matInput type="number" placeholder="70" formControlName="weight" />
+                </mat-form-field>
+              </div>
+
+              <div class="metric-block">
+                <label class="metric-label">
+                  <mat-icon class="metric-icon height">straighten</mat-icon>
+                  Height (ft/in)
+                </label>
+                <div class="height-fields">
+                  <mat-form-field appearance="outline">
+                    <input matInput type="number" placeholder="Ft" formControlName="heightFeet" />
+                  </mat-form-field>
+                  <mat-form-field appearance="outline">
+                    <input matInput type="number" placeholder="In" formControlName="heightInches" />
+                  </mat-form-field>
+                </div>
+              </div>
+
+              <div class="metric-block">
+                <label class="metric-label">
+                  <mat-icon class="metric-icon sugar">local_fire_department</mat-icon>
+                  Sugar (mg/dL)
+                </label>
+                <div class="sugar-row">
+                  <mat-form-field appearance="outline">
+                    <input matInput type="number" placeholder="RBS" formControlName="bloodSugar" />
+                  </mat-form-field>
+                  <mat-form-field appearance="outline">
+                    <mat-select formControlName="sugarTypeId" placeholder="Type">
+                      <mat-option *ngFor="let item of sugarTypes" [value]="item.id">{{ item.name }}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+
+            <div class="bmi-row">
+              <span class="bmi-label">Calculated BMI</span>
+              <strong class="bmi-value">{{ createTriageForm.get('bmi')?.value || '--' }}</strong>
+            </div>
+
+            <div class="classification-grid">
+              <mat-form-field appearance="outline">
+                <mat-label>Triage Priority</mat-label>
+                <mat-select formControlName="triagePriorityId">
+                  <mat-option *ngFor="let item of triagePriorities" [value]="item.id">
+                    {{ item.name || item.title || item.priority }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <button mat-flat-button color="primary" type="button" class="save-button" (click)="saveTriage()" [disabled]="isLoading">
+              <mat-icon>save</mat-icon>
+              {{ isEditMode ? 'Update & Queue' : 'Save & Queue' }}
+            </button>
+          </section>
+        </div>
+
+        <!-- <section class="panel notes-panel">
           <div class="panel-head">
-            <h3>Vitals & Measurements</h3>
-            <p>Triage details for the selected appointment.</p>
+            <h3>Clinical Notes</h3>
+            <p>Capture supporting observations for the consultation.</p>
           </div>
 
-          <div class="grid cols-4">
-            <mat-form-field appearance="outline" class="metric-field">
-              <mat-label>Temperature</mat-label>
-              <input matInput type="number" placeholder="Temperature" formControlName="temperature" />
-              <span class= "name" matSuffix>&deg;F</span>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="metric-field">
-              <mat-label>Pulse</mat-label>
-              <input matInput type="number" placeholder="Pulse" formControlName="pulse" />
-              <span class= "name" matSuffix>bpm</span>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="metric-field">
-              <mat-label>SPO2</mat-label>
-              <input matInput type="number" placeholder="SPO2" formControlName="spo2" />
-              <span class= "name" matSuffix>%</span>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="metric-field">
-              <mat-label>Systolic BP</mat-label>
-              <input matInput type="number" placeholder="Systolic BP" formControlName="systolicBp" />
-              <span class= "name" matSuffix>mmHg</span>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="metric-field">
-              <mat-label>Diastolic BP</mat-label>
-              <input matInput type="number" placeholder="Diastolic BP" formControlName="diastolicBp" />
-              <span class= "name" matSuffix>mmHg</span>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="metric-field">
-              <mat-label>Weight (kg)</mat-label>
-              <input matInput type="number" placeholder="Weight" formControlName="weight" />
-              <span class= "name" matSuffix>kg</span>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="metric-field">
-              <mat-label>Height (cm)</mat-label>
-              <input matInput type="number" placeholder="Height (cm)" formControlName="heightCm" />
-              <span class= "name" matSuffix>cm</span>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="metric-field">
-              <mat-label>Height (ft)</mat-label>
-              <input matInput type="number" placeholder="Height (feet)" formControlName="heightFeet" />
-              <span class= "name" matSuffix>ft</span>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="metric-field">
-              <mat-label>Height (in)</mat-label>
-              <input matInput type="number" placeholder="Height (inches)" formControlName="heightInches" />
-              <span class= "name" matSuffix>in</span>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="metric-field">
-              <mat-label>BMI</mat-label>
-              <input matInput placeholder="BMI" formControlName="bmi" readonly />
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="metric-field">
-              <mat-label>Triage Score</mat-label>
-              <input matInput type="number" placeholder="Triage Score" formControlName="triageScore" />
-            </mat-form-field>
-          </div>
-        </section>
-
-        <section class="panel">
-          <div class="panel-head">
-            <h3>Clinical Classification</h3>
-            <p>Priority and supporting values.</p>
-          </div>
-
-          <div class="grid cols-4">
-            <mat-form-field appearance="outline">
-              <mat-label>Triage Category</mat-label>
-              <mat-select formControlName="triageCategoryId">
-                <mat-option *ngFor="let item of triageCategories" [value]="item.id">{{ item.name }}</mat-option>
-              </mat-select>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Triage Priority</mat-label>
-              <mat-select formControlName="triagePriorityId">
-                <mat-option *ngFor="let item of triagePriorities" [value]="item.id">
-                  {{ item.name || item.title || item.priority }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Sugar Type</mat-label>
-              <mat-select formControlName="sugarTypeId">
-                <mat-option *ngFor="let item of sugarTypes" [value]="item.id">{{ item.name }}</mat-option>
-              </mat-select>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Blood Sugar</mat-label>
-              <input matInput type="number" placeholder="Blood Sugar" formControlName="bloodSugar" />
-            </mat-form-field>
-          </div>
-        </section>
-
-        <section class="panel">
-          <div class="panel-head">
-            <h3>Notes</h3>
-            <p>Clinical comments and observations for this appointment.</p>
-          </div>
-
-          <div class="grid cols-2">
-            <mat-form-field appearance="outline" class="span-2">
+          <div class="notes-grid">
+            <mat-form-field appearance="outline" class="notes-span">
               <mat-label>Chief Complaint</mat-label>
               <textarea matInput rows="3" placeholder="Chief Complaint" formControlName="chiefComplaint"></textarea>
             </mat-form-field>
@@ -230,29 +240,26 @@
               <textarea matInput rows="3" placeholder="Allergies" formControlName="allergies"></textarea>
             </mat-form-field>
 
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" class="notes-span">
               <mat-label>Notes</mat-label>
               <textarea matInput rows="3" placeholder="Notes" formControlName="notes"></textarea>
             </mat-form-field>
           </div>
-        </section>
 
-        <div class="button-container">
-          <button mat-flat-button color="primary" type="button" (click)="saveTriage()" [disabled]="isLoading">
-            {{ isEditMode ? 'Update Triage' : 'Save Triage' }}
-          </button>
-          <button
-            mat-flat-button
-            color="accent"
-            type="button"
-            (click)="saveTriage(true)"
-            [disabled]="isLoading || selectedIndex >= appointments.length - 1">
-            Save & Next
-          </button>
-          <button mat-stroked-button type="button" (click)="closeDialog()">Close</button>
-        </div>
+          <div class="secondary-actions">
+            <button
+              mat-flat-button
+              color="accent"
+              type="button"
+              (click)="saveTriage(true)"
+              [disabled]="isLoading || selectedIndex >= appointments.length - 1">
+              Save &amp; Next
+            </button>
+            <button mat-stroked-button type="button" (click)="closeDialog()">Close</button>
+          </div>
+        </section> -->
       </form>
-    </mat-card-content>
+    </div>
   </ng-container>
 </mat-card>
 

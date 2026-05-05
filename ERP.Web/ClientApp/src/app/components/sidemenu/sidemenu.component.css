@@ -656,12 +656,32 @@
 }
 
 .content_warehouse {
-    border-radius: 10px;
-    margin: 16px;
-    background: var(--white-color);
-    padding: 0 !important;
-    overflow: auto;
-    overflow-x: hidden;
+  display: flex;
+  align-items: center;
+  min-width: 220px;
+}
+
+.warehouse-field {
+  width: 350px;
+  margin: 0;
+}
+
+.warehouse-field ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+  display: none;
+}
+
+.warehouse-field ::ng-deep .mat-mdc-text-field-wrapper {
+  background: #ffffff;
+}
+
+@media (max-width: 991px) {
+  .content_warehouse {
+    min-width: 180px;
+  }
+
+  .warehouse-field {
+    width: 190px;
+  }
 }
 
 .employee-photo {

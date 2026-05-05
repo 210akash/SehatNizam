@@ -6,6 +6,8 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { AppointmentService } from '../appointment.service';
 import { ConstantService } from '../../../../Service/constant.service';
 import { Router } from '@angular/router';
+import { PrintAppoinmentComponent } from '../print-appoinment/print-appoinment.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-appointment-list',
@@ -51,7 +53,8 @@ export class AppointmentListComponent {
     private appointmentService: AppointmentService,
     private formBuilder: FormBuilder,
     private constantService: ConstantService,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog,
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -128,6 +131,17 @@ export class AppointmentListComponent {
     // Open the appointment form as a full page instead of a dialog.
     const navigationExtras = element ? { state: { element } } : undefined;
     this.router.navigate(['/newappointment'], navigationExtras);
+  }
+
+ printAppoinmnetDialog(element: any) {
+    const dialogRef = this.dialog.open(PrintAppoinmentComponent, {
+      panelClass: 'cstm_width_1100',
+      maxHeight: '90vh',
+      data: {
+        element: element,
+      },
+      disableClose: true
+    });
   }
 
   filterData() {

@@ -24,12 +24,10 @@ namespace ERP.Entities.Models
         public string Medications { get; set; }
         public string Notes { get; set; }
         public int TriageScore { get; set; } = 0;
-        public long TriageCategoryId { get; set; }
         public DateTime? TakenAt { get; set; }
         public Appointment Appointment { get; set; }
         public AspNetUsers? Nurse { get; set; }
         public SugarType SugarType { get; set; }
         public PriorityLevel TriagePriority { get; set; }
-        public TriageCategory TriageCategory { get; set; }
     }
 }

@@ -26,6 +26,5 @@ namespace ERP.Mediator.Mediator.Triage.Command
         public string Medications { get; set; }
         public string Notes { get; set; }
         public int TriageScore { get; set; }
-        public long TriageCategoryId { get; set; }
     }
 }

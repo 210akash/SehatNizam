@@ -845,6 +845,7 @@ import { DeleteSalaryTaxSlabComponent } from './components/hr/payroll/salarytaxs
 import { EmployeeSalaryService } from './components/hr/payroll/employeesalary/employeesalary.service';
 import { EmployeeSalaryEndPoints } from './components/hr/payroll/employeesalary/employeesalary.endpoints';
 import { AddEmployeeSalaryComponent } from './components/hr/payroll/employeesalary/add-employee-salary/add-employee-salary.component';
+import { PrintAppoinmentComponent } from './components/opd/appointment/print-appoinment/print-appoinment.component';
 
 const matFormFieldDefaults: MatFormFieldDefaultOptions = {
     appearance: 'outline'
@@ -1445,7 +1446,8 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         ViewSalaryTaxSlabComponent,
         DeleteSalaryTaxSlabComponent,
         AddEmployeeSalaryComponent,
-        AddEmployeeSalaryComponent
+        AddEmployeeSalaryComponent,
+        PrintAppoinmentComponent
     ],
     bootstrap: [AppComponent], imports: [
         InputMaskModule,

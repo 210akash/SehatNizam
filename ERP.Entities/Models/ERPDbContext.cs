@@ -208,6 +208,9 @@
         public virtual DbSet<RadiologyOrder> RadiologyOrder { get; set; }
         public virtual DbSet<AppointmentPayment> AppointmentPayment { get; set; }
         public virtual DbSet<RadiologyType> RadiologyType { get; set; }
+        public virtual DbSet<Service> Service { get; set; }
+        public virtual DbSet<DoctorServiceFee> DoctorServiceFee { get; set; }
+        public virtual DbSet<AppointmentService> AppointmentService { get; set; }
 
         #endregion
 

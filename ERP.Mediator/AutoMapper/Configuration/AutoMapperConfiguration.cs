@@ -629,6 +629,10 @@
             this.CreateMap<Notification, GetNotification>().ReverseMap();
             this.CreateMap<Notification, SaveNotificationCommand>().ReverseMap();
 
+            // Service Module Mappings
+            this.CreateMap<Entities.Models.Service, GetService>().ReverseMap();
+            this.CreateMap<Entities.Models.Service, SaveServiceCommand>().ReverseMap();
+
             // Payroll Module Mappings
             this.CreateMap<SalaryHead, GetSalaryHead>().ReverseMap();
             this.CreateMap<SalaryHead, SaveSalaryHeadCommand>().ReverseMap();

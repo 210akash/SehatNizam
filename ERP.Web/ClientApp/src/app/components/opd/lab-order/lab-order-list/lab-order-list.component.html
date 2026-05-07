@@ -1,0 +1,25 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Lab Orders</mat-card-title>
+    <span style="flex:1 1 auto"></span>
+    <button mat-flat-button color="primary" (click)="openAdd()">Add</button>
+  </mat-card-header>
+  <mat-card-content>
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z2">
+      <ng-container matColumnDef="appointmentId"><th mat-header-cell *matHeaderCellDef>Appointment</th><td mat-cell *matCellDef="let e">{{e.appointmentId}}</td></ng-container>
+      <ng-container matColumnDef="labOrderTypeId"><th mat-header-cell *matHeaderCellDef>Lab Type</th><td mat-cell *matCellDef="let e">{{e.labOrderTypeId}}</td></ng-container>
+      <ng-container matColumnDef="statusId"><th mat-header-cell *matHeaderCellDef>Status</th><td mat-cell *matCellDef="let e">{{e.statusId}}</td></ng-container>
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let e">
+          <button mat-button (click)="openAdd(e)">Edit</button>
+          <button mat-button (click)="openView(e)">View</button>
+          <button mat-button color="warn" (click)="openDelete(e)">Delete</button>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+    <mat-paginator [length]="1000" [pageSize]="pageSize" [pageSizeOptions]="[5,10,25,100]" (page)="pageChanged($event)"></mat-paginator>
+  </mat-card-content>
+</mat-card>

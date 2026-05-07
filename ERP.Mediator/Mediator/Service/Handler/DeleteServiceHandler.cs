@@ -21,7 +21,7 @@ namespace ERP.Mediator.Mediator.Service.Handler
 
         public async Task<bool> Handle(DeleteServiceCommand request, CancellationToken cancellationToken)
         {
-            var service = await unitOfWork.Repository<Entities.Models.Service>().GetByIdAsync(request.Id);
+            var service = await unitOfWork.Repository<Entities.Models.Service>().GetFirstAsync(x=>x.Id  == request.Id);
             if (service == null)
             {
                 return false;
@@ -29,11 +29,11 @@ namespace ERP.Mediator.Mediator.Service.Handler
 
             service.IsDelete = true;
             service.IsActive = false;
-            service.DeletedById = this.sessionProvider.Session.LoggedInUserId;
-            service.DeletedDate = DateTime.Now;
+            service.ModifiedById = this.sessionProvider.Session.LoggedInUserId;
+            service.DeleteDate = DateTime.Now;
 
             unitOfWork.Repository<Entities.Models.Service>().Update(service);
-            await unitOfWork.CompleteAsync();
+            await unitOfWork.SaveChangesAsync();
 
             return true;
         }

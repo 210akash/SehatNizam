@@ -1,0 +1,42 @@
+<div class="lot-wrap">
+  <h3>Lab Order Type</h3>
+
+  <div class="card" [formGroup]="form">
+    <div class="row">
+      <input type="text" placeholder="Name" formControlName="name">
+      <input type="text" placeholder="Description" formControlName="description">
+    </div>
+    <div class="row">
+      <input type="number" placeholder="Service Id" formControlName="serviceId">
+    </div>
+    <div class="row">
+      <textarea rows="6" placeholder='Custom fields schema JSON. Example: [{"key":"glucose","label":"Glucose","type":"number","unit":"mg/dL"}]'
+        formControlName="customFieldsSchema"></textarea>
+    </div>
+    <div class="row">
+      <button (click)="save()">Save</button>
+      <button (click)="resetForm()">Clear</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div *ngIf="isLoading">Loading...</div>
+    <table *ngIf="!isLoading">
+      <tr>
+        <th>Name</th>
+        <th>Service Id</th>
+        <th>Custom Fields</th>
+        <th>Actions</th>
+      </tr>
+      <tr *ngFor="let item of items">
+        <td>{{ item.name }}</td>
+        <td>{{ item.serviceId }}</td>
+        <td><pre>{{ item.customFieldsSchema }}</pre></td>
+        <td>
+          <button (click)="edit(item)">Edit</button>
+          <button (click)="remove(item.id)">Delete</button>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>

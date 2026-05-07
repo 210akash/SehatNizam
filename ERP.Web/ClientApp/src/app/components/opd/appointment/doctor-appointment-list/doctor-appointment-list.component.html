@@ -194,17 +194,15 @@
             </div>
           </div>
 
-          <!-- Imaging Panel -->
-          <div class="tab-panel" [class.active]="activeTab === 'rad'">
-            <div class="form-row">
-              <div class="form-label">Select scan</div>
-              <select [(ngModel)]="newRad.scan" [ngModelOptions]="{standalone: true}">
-                <option value="">Select scan type</option>
-                <option>CXR (Chest X-Ray)</option><option>MRI Brain</option>
-                <option>CT Abdomen</option><option>Ultrasound Abdomen</option>
-                <option>X-Ray Knee</option>
-              </select>
-            </div>
+           <!-- Imaging Panel -->
+           <div class="tab-panel" [class.active]="activeTab === 'rad'">
+             <div class="form-row">
+               <div class="form-label">Select scan</div>
+               <select [(ngModel)]="newRad.scan" [ngModelOptions]="{standalone: true}">
+                 <option value="">Select scan type</option>
+                 <option *ngFor="let radType of radiologyTypes" [value]="radType.name">{{ radType.name }}</option>
+               </select>
+             </div>
             <div class="form-row">
               <div class="form-label">Clinical notes (optional)</div>
               <textarea rows="2" placeholder="Reason for scan..." [(ngModel)]="newRad.notes" [ngModelOptions]="{standalone: true}"></textarea>

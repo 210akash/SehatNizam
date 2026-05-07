@@ -1,0 +1,15 @@
+<mat-card>
+  <mat-card-header><mat-card-title>Lab Order Form</mat-card-title></mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+    <form [formGroup]="form">
+      <mat-form-field class="form-field"><mat-label>Appointment Id</mat-label><input matInput formControlName="appointmentId" type="number" /></mat-form-field>
+      <mat-form-field class="form-field"><mat-label>Lab Order Type Id</mat-label><input matInput formControlName="labOrderTypeId" type="number" /></mat-form-field>
+      <mat-form-field class="form-field"><mat-label>Status Id</mat-label><input matInput formControlName="statusId" type="number" /></mat-form-field>
+      <div class="button-container">
+        <button mat-flat-button color="primary" type="button" (click)="save()">Save</button>
+        <button mat-flat-button [mat-dialog-close]="true">Close</button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ERP.Entities.Migrations
 {
     [DbContext(typeof(ERPDbContext))]
-    [Migration("20260506190103_ServiceFee")]
+    [Migration("20260507190721_ServiceFee")]
     partial class ServiceFee
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -5307,6 +5307,9 @@ namespace ERP.Entities.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("CustomFieldsSchema")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("DeleteDate")
                         .HasColumnType("datetime2");
 
@@ -6017,9 +6020,6 @@ namespace ERP.Entities.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Dosage")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DrugCode")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DrugName")

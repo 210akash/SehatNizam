@@ -1,18 +1,22 @@
-using System;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using ERP.API.Helper;
-using ERP.BusinessModels.ResponseVM;
-using ERP.Mediator.Mediator.Service.Command;
-using ERP.Mediator.Mediator.Service.Query;
+using System;
 using MediatR;
-using Microsoft.AspNetCore.Mvc;
+using ERP.BusinessModels.ResponseVM;
+using ERP.Mediator.Mediator.Service.Query;
+using ERP.BusinessModels.Enums;
+using ERP.API.Extensions;
+using ERP.Mediator.Mediator.Service.Command;
+using ERP.Mediator.Mediator.Row.Query;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ERP.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ServiceController : BaseController
+    [Authorize]
+    public class ServiceController : ControllerBase
     {
         private readonly IMediator mediator;
 
@@ -21,33 +25,15 @@ namespace ERP.API.Controllers
             this.mediator = mediator;
         }
 
-        [HttpPost]
-        [Route("GetAllServices")]
-        public async Task<ActionResult<IEnumerable<GetService>>> GetAllServices([FromBody] GetAllServicesQuery query)
-        {
-            try
-            {
-                var result = await this.mediator.Send(query);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return this.Result(ResponseStatus.Error, null, ex.Message);
-            }
-        }
 
-        [HttpGet]
-        [Route("GetServiceById")]
-        public async Task<ActionResult<GetService>> GetServiceById(long id)
+
+        [HttpPost]
+        [Route("GetAllService")]
+        public async Task<ActionResult<Tuple<IEnumerable<GetService>, long>>> GetAll(GetAllServicesQuery getAllServiceQuery)
         {
             try
             {
-                var result = await this.mediator.Send(new GetServiceByIdQuery(id));
-                if (result == null)
-                {
-                    return this.Result(ResponseStatus.Error, null, "Service not found!");
-                }
-                return Ok(result);
+                return await this.mediator.Send(getAllServiceQuery);
             }
             catch (Exception ex)
             {
@@ -57,30 +43,29 @@ namespace ERP.API.Controllers
 
         [HttpPost]
         [Route("SaveService")]
-        public async Task<ActionResult<int>> SaveService([FromBody] SaveServiceCommand command)
+        public async Task<IActionResult> Save(SaveServiceCommand command)
         {
             try
             {
-                var result = await this.mediator.Send(command);
-                if (result == 200)
+                if (!ModelState.IsValid)
                 {
-                    return this.Result(ResponseStatus.OK, "Service Saved!", null);
-                }
-                else if (result == 400)
-                {
-                    return this.Result(ResponseStatus.Error, null, "Invalid data! Code and Name are required, BasePrice must be non-negative.");
-                }
-                else if (result == 404)
-                {
-                    return this.Result(ResponseStatus.Error, null, "Service not found!");
-                }
-                else if (result == 409)
-                {
-                    return this.Result(ResponseStatus.Error, null, "Service with this code already exists!");
+                    return this.Result(ResponseStatus.Error, null, this.GetModelValidationErrors(this.ModelState));
                 }
                 else
                 {
-                    return this.Result(ResponseStatus.Error, null, "Error saving Service!");
+                    var result = await this.mediator.Send(command);
+                    if (result == 200)
+                    {
+                        return this.Result(ResponseStatus.OK, "Service Saved!", null);
+                    }
+                    else if (result == 409)
+                    {
+                        return this.Result(ResponseStatus.Conflict, "Name Already Exists!", null);
+                    }
+                    else
+                    {
+                        return this.Result(ResponseStatus.Error, "There is some error!", null);
+                    }
                 }
             }
             catch (Exception ex)
@@ -89,20 +74,20 @@ namespace ERP.API.Controllers
             }
         }
 
-        [HttpDelete]
+        [HttpGet]
         [Route("DeleteService")]
-        public async Task<ActionResult<bool>> DeleteService(long id)
+        public async Task<ActionResult<long>> DeleteService(long id)
         {
             try
             {
                 var result = await this.mediator.Send(new DeleteServiceCommand(id));
-                if (result)
+                if (result == true)
                 {
-                    return this.Result(ResponseStatus.OK, "Service Deleted!", null);
+                    return this.Result(ResponseStatus.OK, null, "Successfully Deleted!");
                 }
                 else
                 {
-                    return this.Result(ResponseStatus.Error, null, "Service not found!");
+                    return this.Result(ResponseStatus.Error, null, "Something went Wrong!");
                 }
             }
             catch (Exception ex)

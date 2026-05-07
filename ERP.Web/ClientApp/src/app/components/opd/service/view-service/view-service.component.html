@@ -1,0 +1,34 @@
+<mat-card>
+  <mat-card-header><mat-card-title>View Service</mat-card-title></mat-card-header>
+  <mat-card-content>
+    <form [formGroup]="form">
+      <mat-form-field class="form-field">
+        <mat-label>Code</mat-label>
+        <input matInput formControlName="code" readonly />
+      </mat-form-field>
+
+      <mat-form-field class="form-field">
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name" readonly />
+      </mat-form-field>
+
+      <mat-form-field class="form-field">
+        <mat-label>Base Price</mat-label>
+        <input matInput formControlName="basePrice" readonly />
+      </mat-form-field>
+
+      <mat-form-field class="form-field">
+        <mat-label>Department</mat-label>
+        <input matInput formControlName="departmentId" readonly />
+      </mat-form-field>
+
+      <mat-form-field class="form-field">
+        <mat-label>Active</mat-label>
+        <mat-select formControlName="isActive" disabled>
+          <mat-option [value]="true">Active</mat-option>
+          <mat-option [value]="false">Inactive</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </form>
+  </mat-card-content>
+</mat-card>

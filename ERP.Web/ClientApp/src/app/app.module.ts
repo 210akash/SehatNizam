@@ -848,6 +848,27 @@ import { AddEmployeeSalaryComponent } from './components/hr/payroll/employeesala
 import { PrintAppoinmentComponent } from './components/opd/appointment/print-appoinment/print-appoinment.component';
 import { PatientProblemEndPoints } from './components/opd/patientproblem/patientproblem.endpoints';
 import { PatientProblemService } from './components/opd/patientproblem/patientproblem.service';
+import { LabOrderTypeEndPoints } from './components/opd/lab-order-type/lab-order-type.endpoints';
+import { LabOrderTypeService } from './components/opd/lab-order-type/lab-order-type.service';
+import { LabOrderTypeComponent } from './components/opd/lab-order-type/lab-order-type.component';
+import { LabOrderListComponent } from './components/opd/lab-order/lab-order-list/lab-order-list.component';
+import { AddLabOrderComponent } from './components/opd/lab-order/add-lab-order/add-lab-order.component';
+import { ViewLabOrderComponent } from './components/opd/lab-order/view-lab-order/view-lab-order.component';
+import { DeleteLabOrderComponent } from './components/opd/lab-order/delete-lab-order/delete-lab-order.component';
+import { LabOrderService } from './components/opd/lab-order/lab-order.service';
+import { LabOrderEndPoints } from './components/opd/lab-order/lab-order.endpoints';
+import { RadiologyTypeService } from './components/opd/radiologytype/radiologytype.service';
+import { RadiologyTypeEndPoints } from './components/opd/radiologytype/radiologytype.endpoints';
+import { AddRadiologyTypeComponent } from './components/opd/radiologytype/add-radiologytype/add-radiologytype.component';
+import { ViewRadiologyTypeComponent } from './components/opd/radiologytype/view-radiologytype/view-radiologytype.component';
+import { DeleteRadiologyTypeComponent } from './components/opd/radiologytype/delete-radiologytype/delete-radiologytype.component';
+import { RadiologyTypeListComponent } from './components/opd/radiologytype/radiologytype-list/radiologytype-list.component';
+import { RadiologyOrderService } from './components/opd/radiologyorder/radiologyorder.service';
+import { RadiologyOrderEndPoints } from './components/opd/radiologyorder/radiologyorder.endpoints';
+import { ServiceService } from './components/opd/service/service.service';
+import { ServiceEndPoints } from './components/opd/service/service.endpoints';
+import { PrescriptionEndPoints } from './components/opd/prescription/prescription.endpoints';
+import { PrescriptionService } from './components/opd/prescription/prescription.service';
 
 const matFormFieldDefaults: MatFormFieldDefaultOptions = {
     appearance: 'outline'
@@ -1420,6 +1441,15 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
          ViewTriageCategoryComponent,
         DeleteTriageCategoryComponent,
         TriageCategoryListComponent,
+        LabOrderTypeComponent,
+        LabOrderListComponent,
+        AddLabOrderComponent,
+        ViewLabOrderComponent,
+        DeleteLabOrderComponent,
+        RadiologyTypeListComponent,
+        AddRadiologyTypeComponent,
+        ViewRadiologyTypeComponent,
+        DeleteRadiologyTypeComponent,
         AddRosterComponent,
         DeleteRosterComponent,
         RosterListComponent,
@@ -1449,7 +1479,11 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         DeleteSalaryTaxSlabComponent,
         AddEmployeeSalaryComponent,
         AddEmployeeSalaryComponent,
-        PrintAppoinmentComponent
+        PrintAppoinmentComponent,
+        LabOrderListComponent,
+        AddLabOrderComponent,
+        ViewLabOrderComponent,
+        DeleteLabOrderComponent,
     ],
     bootstrap: [AppComponent], imports: [
         InputMaskModule,
@@ -1732,6 +1766,14 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         EmployeeSalaryEndPoints,
         PatientProblemEndPoints,
         PatientProblemService,
+        LabOrderTypeEndPoints,
+        LabOrderTypeService,
+        LabOrderService,
+        LabOrderEndPoints,
+        ServiceService,
+        ServiceEndPoints,
+        PrescriptionEndPoints,
+        PrescriptionService,
         { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
         { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },
         AuthenticationService, {

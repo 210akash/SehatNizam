@@ -7,12 +7,22 @@ namespace ERP.Entities.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropColumn(
+                name: "DrugCode",
+                table: "Prescription");
+
             migrationBuilder.AddColumn<long>(
                 name: "ServiceId",
                 table: "RadiologyType",
                 type: "bigint",
                 nullable: false,
                 defaultValue: 0L);
+
+            migrationBuilder.AddColumn<string>(
+                name: "CustomFieldsSchema",
+                table: "LabOrderType",
+                type: "nvarchar(max)",
+                nullable: true);
 
             migrationBuilder.AddColumn<long>(
                 name: "ServiceId",
@@ -287,8 +297,18 @@ namespace ERP.Entities.Migrations
                 table: "RadiologyType");
 
             migrationBuilder.DropColumn(
+                name: "CustomFieldsSchema",
+                table: "LabOrderType");
+
+            migrationBuilder.DropColumn(
                 name: "ServiceId",
                 table: "LabOrderType");
+
+            migrationBuilder.AddColumn<string>(
+                name: "DrugCode",
+                table: "Prescription",
+                type: "nvarchar(max)",
+                nullable: true);
         }
     }
 }

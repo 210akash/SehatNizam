@@ -4,6 +4,11 @@ import { AppointmentService } from '../appointment.service';
 import { NotificationsService } from '../../../../Service/notification.service';
 import { TriageService } from '../../triage/triage.service';
 import { PatientProblemService } from '../../patientproblem/patientproblem.service';
+import { PrescriptionService } from '../../prescription/prescription.service';
+import { LabOrderService } from '../../lab-order/lab-order.service';
+import { LabOrderTypeService } from '../../lab-order-type/lab-order-type.service';
+import { RadiologyTypeService } from '../../radiologytype/radiologytype.service';
+import { RadiologyOrderService } from '../../radiologyorder/radiologyorder.service';
 
 @Component({
   selector: 'app-doctor-appointment-list',
@@ -12,37 +17,33 @@ import { PatientProblemService } from '../../patientproblem/patientproblem.servi
   standalone: false
 })
 export class DoctorAppointmentListComponent implements OnInit {
-  // Data from API
   appointments: any[] = [];
   selectedAppointment: any = null;
   selectedIndex: number = 0;
   totalCount: number = 0;
   isLoading = false;
 
-  // UI state
   activeTab: 'meds' | 'labs' | 'rad' = 'meds';
-  checkedCount: number = 0;        // Number of patients checked (next button clicks)
-  queueCount: number = 0;           // Remaining patients in queue
+  checkedCount: number = 0;
+  queueCount: number = 0;
 
-  // Form groups
   soapForm: FormGroup;
   appointmentFilterForm: FormGroup;
 
-  // Local editable copies (to be sent to API)
   localProblems: any[] = [];
   localPrescriptions: any[] = [];
   localLabOrders: any[] = [];
   localRadiologyOrders: any[] = [];
+  labOrderTypes: any[] = [];
+  radiologyTypes: any[] = [];
   localVitals: any = { bpSystolic: 120, bpDiastolic: 80, pulse: 72, temperature: 98.6, spo2: 99 };
 
-  // Modals visibility
   showProblemModal = false;
   showVitalsModal = false;
 
   newProblem = { name: '', onset: '', status: 'Active' };
   newVitals = { sys: 120, dia: 80, pulse: 72, temp: 98.6, spo2: 99 };
 
-  // Temporary fields for adding orders
   newMed = { drug: '', dose: '', frequency: '', duration: '' };
   newLab = { test: '' };
   newRad = { scan: '', notes: '' };
@@ -52,7 +53,12 @@ export class DoctorAppointmentListComponent implements OnInit {
     private appointmentService: AppointmentService,
     private triageService: TriageService,
     private notificationsService: NotificationsService,
-    private patientProblemService: PatientProblemService
+    private patientProblemService: PatientProblemService,
+    private prescriptionService: PrescriptionService,
+    private labOrderService: LabOrderService,
+    private labOrderTypeService: LabOrderTypeService,
+    private radiologyTypeService: RadiologyTypeService,
+    private radiologyOrderService: RadiologyOrderService
   ) {
     this.soapForm = this.fb.group({
       subjective: [''],
@@ -70,6 +76,24 @@ export class DoctorAppointmentListComponent implements OnInit {
 
   ngOnInit(): void {
     this.bindData();
+    this.loadLabOrderTypes();
+    this.loadRadiologyTypes();
+  }
+
+  loadLabOrderTypes(): void {
+    const filter = { pagingData: { currentPage: 0, take: 200 } };
+    this.labOrderTypeService.getAllLabOrderTypes(filter).subscribe({
+      next: (res: any) => this.labOrderTypes = res?.item1 || [],
+      error: () => this.labOrderTypes = []
+    });
+  }
+
+  loadRadiologyTypes(): void {
+    const filter = { pagingData: { currentPage: 0, take: 200 } };
+    this.radiologyTypeService.getAllRadiologyTypes(filter).subscribe({
+      next: (res: any) => this.radiologyTypes = res?.Data || [],
+      error: () => this.radiologyTypes = []
+    });
   }
 
   async bindData(): Promise<void> {
@@ -90,7 +114,7 @@ export class DoctorAppointmentListComponent implements OnInit {
         }
         this.isLoading = false;
       },
-      error: (err: any) => {
+      error: (err) => {
         console.error(err);
         this.isLoading = false;
       }
@@ -101,19 +125,11 @@ export class DoctorAppointmentListComponent implements OnInit {
     this.selectedIndex = index;
     this.selectedAppointment = this.appointments[index];
 
-    // Load problems from API
     this.localProblems = this.selectedAppointment.problems ? [...this.selectedAppointment.problems] : [];
-
-    // Load prescriptions (medications)
     this.localPrescriptions = this.selectedAppointment.prescriptions ? [...this.selectedAppointment.prescriptions] : [];
-
-    // Load lab orders
     this.localLabOrders = this.selectedAppointment.labOrders ? [...this.selectedAppointment.labOrders] : [];
-
-    // Load radiology orders
     this.localRadiologyOrders = this.selectedAppointment.radiologyOrders ? [...this.selectedAppointment.radiologyOrders] : [];
 
-    // Load latest triage (vitals)
     if (this.selectedAppointment.triages && this.selectedAppointment.triages.length > 0) {
       const triage = this.selectedAppointment.triages[0];
       this.localVitals = {
@@ -125,7 +141,6 @@ export class DoctorAppointmentListComponent implements OnInit {
       };
     }
 
-    // Load consultations (SOAP)
     if (this.selectedAppointment.consultations && this.selectedAppointment.consultations.length > 0) {
       const consultation = this.selectedAppointment.consultations[0];
       this.soapForm.patchValue({
@@ -139,7 +154,6 @@ export class DoctorAppointmentListComponent implements OnInit {
     }
   }
 
-  // Navigation
   nextPatient(): void {
     if (this.selectedIndex < this.appointments.length - 1) {
       this.selectAppointment(this.selectedIndex + 1);
@@ -158,7 +172,6 @@ export class DoctorAppointmentListComponent implements OnInit {
     }
   }
 
-  // Finish / Save consultation
   finishConsultation(): void {
     const consultationData = {
       appointmentId: this.selectedAppointment.id,
@@ -177,14 +190,12 @@ export class DoctorAppointmentListComponent implements OnInit {
     this.appointmentService.saveConsultation(consultationData).subscribe({
       next: () => {
         alert('Consultation saved successfully!');
-        // Optionally move to next patient
         this.nextPatient();
       },
       error: (err) => console.error('Save failed', err)
     });
   }
 
-  // --- Problem Management ---
   async addProblem(): Promise<void> {
     if (!this.newProblem.name || !this.selectedAppointment?.id) return;
 
@@ -233,56 +244,141 @@ export class DoctorAppointmentListComponent implements OnInit {
     this.localProblems.splice(index, 1);
   }
 
-  // --- Medication Management ---
-  addMedication(): void {
-    if (!this.newMed.drug) return;
-    const med = {
+  async addMedication(): Promise<void> {
+    if (!this.newMed.drug || !this.selectedAppointment?.id) {
+      return;
+    }
+
+    this.isLoading = true;
+    const payload = {
       id: 0,
+      appointmentId: this.selectedAppointment.id,
       drugName: this.newMed.drug,
-      dose: this.newMed.dose,
+      dosage: this.newMed.dose,
       frequency: this.newMed.frequency,
-      duration: this.newMed.duration
+      duration: this.newMed.duration,
+      instructions: ''
     };
-    this.localPrescriptions.push(med);
-    this.newMed = { drug: '', dose: '', frequency: '', duration: '' };
+
+    (await this.prescriptionService.savePrescription(payload)).subscribe({
+      next: (data: any) => {
+        if (data?.Status === 200 || data?.status === 200 || typeof data === 'number') {
+          const med = {
+            id: data?.Data ?? data?.id ?? 0,
+            drugName: payload.drugName,
+            dose: payload.dosage,
+            frequency: payload.frequency,
+            duration: payload.duration
+          };
+          this.localPrescriptions.push(med);
+          this.newMed = { drug: '', dose: '', frequency: '', duration: '' };
+          this.notificationsService.showNotification(data?.Message || 'Medication saved successfully!', 'snack-bar-success');
+        } else {
+          this.notificationsService.showNotification(data?.Message || 'Unable to save medication.', 'snack-bar-danger');
+        }
+        this.isLoading = false;
+      },
+      error: () => {
+        this.notificationsService.showNotification('Unable to save medication.', 'snack-bar-danger');
+        this.isLoading = false;
+      }
+    });
   }
 
   removeMedication(index: number): void {
     this.localPrescriptions.splice(index, 1);
   }
 
-  // --- Lab Order Management ---
-  addLabOrder(): void {
-    if (!this.newLab.test) return;
-    const lab = {
+  async addLabOrder(): Promise<void> {
+    if (!this.newLab.test || !this.selectedAppointment?.id) return;
+
+    this.isLoading = true;
+    const selectedTypeId = Number(this.newLab.test);
+    if (!selectedTypeId) {
+      this.notificationsService.showNotification('Please select a valid lab test.', 'snack-bar-danger');
+      this.isLoading = false;
+      return;
+    }
+
+    const payload = {
       id: 0,
-      testName: this.newLab.test
+      appointmentId: this.selectedAppointment.id,
+      labOrderTypeId: selectedTypeId,
+      statusId: 1
     };
-    this.localLabOrders.push(lab);
-    this.newLab = { test: '' };
+
+    (await this.labOrderService.saveLabOrder(payload)).subscribe({
+      next: (data: any) => {
+        if (data?.Status === 200 || data?.status === 200 || typeof data === 'number') {
+          const label = this.getLabOrderTypeName(selectedTypeId);
+          this.localLabOrders.push({ id: data?.Data ?? 0, labOrderTypeId: selectedTypeId, testName: label });
+          this.newLab = { test: '' };
+          this.notificationsService.showNotification(data?.Message || 'Lab order saved successfully!', 'snack-bar-success');
+        } else {
+          this.notificationsService.showNotification(data?.Message || 'Unable to save lab order.', 'snack-bar-danger');
+        }
+        this.isLoading = false;
+      },
+      error: () => {
+        this.notificationsService.showNotification('Unable to save lab order.', 'snack-bar-danger');
+        this.isLoading = false;
+      }
+    });
+  }
+
+  getLabOrderTypeName(id: number): string {
+    const option = this.labOrderTypes.find(x => Number(x.id) === Number(id));
+    return option?.name || 'Selected Test';
   }
 
   removeLabOrder(index: number): void {
     this.localLabOrders.splice(index, 1);
   }
 
-  // --- Radiology Order Management ---
   addRadiologyOrder(): void {
     if (!this.newRad.scan) return;
-    const rad = {
-      id: 0,
-      scanType: this.newRad.scan,
-      clinicalNotes: this.newRad.notes
+
+    const selectedRadType = this.radiologyTypes.find(r => r.name === this.newRad.scan);
+    if (!selectedRadType) {
+      this.notificationsService.showNotification('Invalid radiology type selected.', 'snack-bar-danger');
+      return;
+    }
+
+    const payload = {
+      appointmentId: this.selectedAppointment.id,
+      radiologyTypeId: selectedRadType.id,
+      clinicalNotes: this.newRad.notes || '',
+      statusId: 1
     };
-    this.localRadiologyOrders.push(rad);
-    this.newRad = { scan: '', notes: '' };
+
+    this.isLoading = true;
+    this.radiologyOrderService.saveRadiologyOrder(payload).subscribe({
+      next: (res: any) => {
+        this.isLoading = false;
+        if (res.Status === 200) {
+          const radId = res.Data || 0;
+          this.localRadiologyOrders.push({
+            id: radId,
+            scanType: this.newRad.scan,
+            clinicalNotes: this.newRad.notes
+          });
+          this.newRad = { scan: '', notes: '' };
+          this.notificationsService.showNotification('Imaging order saved!', 'snack-bar-success');
+        } else {
+          this.notificationsService.showNotification(res.Message || 'Error saving imaging order.', 'snack-bar-danger');
+        }
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.notificationsService.showNotification('Error saving imaging order.', 'snack-bar-danger');
+      }
+    });
   }
 
   removeRadiologyOrder(index: number): void {
     this.localRadiologyOrders.splice(index, 1);
   }
 
-  // --- Vitals Management ---
   async updateVitals(): Promise<void> {
     if (!this.selectedAppointment?.id) {
       this.notificationsService.showNotification('Appointment not found.', 'snack-bar-danger');
@@ -354,7 +450,6 @@ export class DoctorAppointmentListComponent implements OnInit {
     this.showVitalsModal = true;
   }
 
-  // Helper for patient display
   getPatientName(): string {
     return this.selectedAppointment?.patient?.name || 'Unknown';
   }

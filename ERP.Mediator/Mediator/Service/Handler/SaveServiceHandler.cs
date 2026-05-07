@@ -40,15 +40,15 @@ namespace ERP.Mediator.Mediator.Service.Handler
             if (request.Id > 0)
             {
                 // Update existing
-                service = await unitOfWork.Repository<Entities.Models.Service>().GetByIdAsync(request.Id);
+                service = await unitOfWork.Repository<Entities.Models.Service>().FindAsync(y=>y.Id == request.Id);
                 if (service == null)
                 {
                     return 404; // Not Found
                 }
 
                 mapper.Map(request, service);
-                service.UpdatedById = this.sessionProvider.Session.LoggedInUserId;
-                service.UpdatedDate = DateTime.Now;
+                service.ModifiedById = this.sessionProvider.Session.LoggedInUserId;
+                service.ModifiedDate = DateTime.Now;
 
                 unitOfWork.Repository<Entities.Models.Service>().Update(service);
             }
@@ -56,10 +56,9 @@ namespace ERP.Mediator.Mediator.Service.Handler
             {
                 // Check for duplicate code
                 var exists = await unitOfWork.Repository<Entities.Models.Service>()
-                    .AnyAsync(x => x.Code.ToLower() == request.Code.ToLower() 
+                    .GetExistsAsync(x => x.Code.ToLower() == request.Code.ToLower() 
                         && x.IsActive 
-                        && !x.IsDelete
-                        && x.CompanyId == this.sessionProvider.Session.CompanyId);
+                        && !x.IsDelete);
 
                 if (exists)
                 {
@@ -69,13 +68,12 @@ namespace ERP.Mediator.Mediator.Service.Handler
                 // Create new
                 service = mapper.Map<Entities.Models.Service>(request);
                 service.CreatedById = this.sessionProvider.Session.LoggedInUserId;
-                service.CompanyId = this.sessionProvider.Session.CompanyId;
                 service.IsActive = true;
 
                 await unitOfWork.Repository<Entities.Models.Service>().AddAsync(service);
             }
 
-            await unitOfWork.CompleteAsync();
+            await unitOfWork.SaveChangesAsync();
             return 200; // Success
         }
     }

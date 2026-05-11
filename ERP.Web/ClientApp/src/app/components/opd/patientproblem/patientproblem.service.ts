@@ -23,4 +23,10 @@ export class PatientProblemService extends BaseService<any> {
         return await this.post(patientproblemForm, this.endPointControllerName + this.patientproblemEndPoints.savePatientProblem)
             .pipe(map((data: any) => data));
     }
+
+      deletePatientProblem(id: number) {
+        return this.delete(id, this.endPointControllerName + this.patientproblemEndPoints.deletePatientProblem)
+            .pipe();
+    }
+  
 }

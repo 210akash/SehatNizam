@@ -13,7 +13,7 @@ using MediatR;
 
 namespace ERP.Mediator.Mediator.RadiologyType.Handler
 {
-    public class GetAllRadiologyTypesHandler : IRequestHandler<GetAllRadiologyTypesQuery, IEnumerable<GetRadiologyType>>
+    public class GetAllRadiologyTypesHandler : IRequestHandler<GetAllRadiologyTypesQuery, Tuple<IEnumerable<GetRadiologyType>, long>>
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;
@@ -26,12 +26,11 @@ namespace ERP.Mediator.Mediator.RadiologyType.Handler
             this.sessionProvider = sessionProvider;
         }
 
-        public async Task<IEnumerable<GetRadiologyType>> Handle(GetAllRadiologyTypesQuery request, CancellationToken cancellationToken)
+        public async Task<Tuple<IEnumerable<GetRadiologyType>, long>> Handle(GetAllRadiologyTypesQuery request, CancellationToken cancellationToken)
         {
             Expression<Func<ERP.Entities.Models.RadiologyType, bool>> predicate = x =>
                 x.IsActive == true &&
-                x.IsDelete == false &&
-                x.CompanyId == this.sessionProvider.Session.CompanyId;
+                x.IsDelete == false;
 
             if (request.ServiceId.HasValue && request.ServiceId.Value > 0)
             {
@@ -41,23 +40,15 @@ namespace ERP.Mediator.Mediator.RadiologyType.Handler
                     x.ServiceId == request.ServiceId.Value;
             }
 
+            Expression<Func<Entities.Models.RadiologyType, object>> OrderBy = null;
+            Expression<Func<Entities.Models.RadiologyType, object>> OrderByDesc = x => x.Id;
             Expression<Func<ERP.Entities.Models.RadiologyType, object>>[] includes = {
                 x => x.Service
             };
 
-            var radiologyTypes = await unitOfWork.Repository<ERP.Entities.Models.RadiologyType>().GetWhereAsync(predicate, null, includes);
-            var result = mapper.Map<IEnumerable<GetRadiologyType>>(radiologyTypes.ToList());
-
-            foreach (var item in result)
-            {
-                var entity = radiologyTypes.FirstOrDefault(x => x.Id == item.Id);
-                if (entity != null && entity.Service != null)
-                {
-                    item.ServiceName = entity.Service.Name;
-                }
-            }
-
-            return result.OrderBy(x => x.Name);
+            var entity = unitOfWork.Repository<Entities.Models.RadiologyType>().GetPagingWhereAsNoTrackingAsync(predicate, request.PagingData, OrderBy, OrderByDesc, null, includes);
+            var radiologyType = mapper.Map<IEnumerable<GetRadiologyType>>(entity.Item1.ToList()).ToList();
+            return new Tuple<IEnumerable<GetRadiologyType>, long>(radiologyType, entity.Item2);
         }
     }
 }

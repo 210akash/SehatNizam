@@ -1,0 +1,41 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>{{ isEdit ? 'Edit Lab Order Type' : 'Add Lab Order Type' }}</mat-card-title>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+    <form [formGroup]="form">
+      <mat-form-field class="form-field">
+        <mat-label>Name *</mat-label>
+        <input matInput formControlName="name" placeholder="Enter lab order type name" />
+        <mat-error *ngIf="form.get('name')?.hasError('required')">Name is required</mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="form-field">
+        <mat-label>Description</mat-label>
+        <textarea matInput formControlName="description" placeholder="Enter description" rows="3"></textarea>
+      </mat-form-field>
+
+      <mat-form-field class="form-field">
+        <mat-label>Service *</mat-label>
+        <mat-select formControlName="serviceId">
+          <mat-option value="">Select Service</mat-option>
+          <mat-option *ngFor="let svc of services" [value]="svc.id">{{ svc.name }}</mat-option>
+        </mat-select>
+        <mat-error *ngIf="form.get('serviceId')?.hasError('required')">Service is required</mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="form-field">
+        <mat-label>Custom Fields Schema</mat-label>
+        <textarea matInput formControlName="customFieldsSchema" placeholder='JSON schema. Example: [{"key":"glucose","label":"Glucose","type":"number","unit":"mg/dL"}]' rows="6"></textarea>
+      </mat-form-field>
+
+      <div class="button-container">
+        <button mat-flat-button color="primary" type="button" (click)="save()" [disabled]="isLoading || form.invalid">
+          {{ isEdit ? 'Update' : 'Save' }}
+        </button>
+        <button mat-flat-button [mat-dialog-close]="true">Cancel</button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

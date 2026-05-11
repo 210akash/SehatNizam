@@ -1,5 +1,6 @@
 using ERP.API.Extensions;
 using ERP.BusinessModels.Enums;
+using ERP.Mediator.Mediator.PatientProblem.Command;
 using ERP.Mediator.Mediator.Prescription.Command;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -45,6 +46,20 @@ namespace ERP.API.Controllers
                 {
                     return this.Result(ResponseStatus.Error, "There is some error!", null);
                 }
+            }
+            catch (Exception ex)
+            {
+                return this.Result(ResponseStatus.Error, null, ex.Message);
+            }
+        }
+
+        [HttpDelete]
+        [Route("DeletePrescription")]
+        public async Task<ActionResult<bool>> DeletePrescription(long id)
+        {
+            try
+            {
+                return await this.mediator.Send(new DeletePrescriptionCommand(id));
             }
             catch (Exception ex)
             {

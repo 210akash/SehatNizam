@@ -21,7 +21,7 @@ namespace ERP.Mediator.Mediator.RadiologyType.Handler
 
         public async Task<bool> Handle(DeleteRadiologyTypeCommand request, CancellationToken cancellationToken)
         {
-            var radiologyType = await unitOfWork.Repository<ERP.Entities.Models.RadiologyType>().GetByIdAsync(request.Id);
+            var radiologyType = await unitOfWork.Repository<ERP.Entities.Models.RadiologyType>().GetFirstAsync(x => x.Id == request.Id);
             if (radiologyType == null)
             {
                 return false;
@@ -29,11 +29,11 @@ namespace ERP.Mediator.Mediator.RadiologyType.Handler
 
             radiologyType.IsDelete = true;
             radiologyType.IsActive = false;
-            radiologyType.DeletedById = this.sessionProvider.Session.LoggedInUserId;
-            radiologyType.DeletedDate = DateTime.Now;
+            radiologyType.ModifiedById = this.sessionProvider.Session.LoggedInUserId;
+            radiologyType.DeleteDate = DateTime.Now;
 
             unitOfWork.Repository<ERP.Entities.Models.RadiologyType>().Update(radiologyType);
-            await unitOfWork.CompleteAsync();
+            await unitOfWork.SaveChangesAsync();
 
             return true;
         }

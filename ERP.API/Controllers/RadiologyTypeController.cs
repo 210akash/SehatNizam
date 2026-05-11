@@ -38,26 +38,7 @@ namespace ERP.API.Controllers
                 return this.Result(ResponseStatus.Error, null, ex.Message);
             }
         }
-
-        [HttpGet]
-        [Route("GetRadiologyTypeById")]
-        public async Task<ActionResult<GetRadiologyType>> GetRadiologyTypeById(long id)
-        {
-            try
-            {
-                var result = await this.mediator.Send(new GetRadiologyTypeByIdQuery(id));
-                if (result == null)
-                {
-                    return this.Result(ResponseStatus.Error, null, "Radiology Type not found!");
-                }
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return this.Result(ResponseStatus.Error, null, ex.Message);
-            }
-        }
-
+     
         [HttpPost]
         [Route("SaveRadiologyType")]
         public async Task<ActionResult<int>> SaveRadiologyType([FromBody] SaveRadiologyTypeCommand command)

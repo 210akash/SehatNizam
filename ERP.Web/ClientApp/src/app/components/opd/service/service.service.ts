@@ -20,7 +20,7 @@ export class ServiceService extends BaseService<any> {
     }
 
     getAllServices(query: { departmentId?: number }) {
-        return this.post(query, this.endPointControllerName + this.ServiceEndPoints.getAllServices)
+        return this.post(query, this.endPointControllerName + this.ServiceEndPoints.getAllService)
             .pipe(map((data: any) => data));
     }
 

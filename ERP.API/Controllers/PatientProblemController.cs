@@ -1,11 +1,12 @@
 ﻿using ERP.API.Extensions;
 using ERP.BusinessModels.Enums;
-using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
-using System;
-using MediatR;
+using ERP.Mediator.Mediator.City.Query;
 using ERP.Mediator.Mediator.PatientProblem.Command;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading.Tasks;
 
 namespace ERP.API.Controllers
 {
@@ -47,6 +48,20 @@ namespace ERP.API.Controllers
                         return this.Result(ResponseStatus.Error, "There is some error!", null);
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                return this.Result(ResponseStatus.Error, null, ex.Message);
+            }
+        }
+
+        [HttpDelete]
+        [Route("DeletePatientProblem")]
+        public async Task<ActionResult<bool>> DeletePatientProblem(long id)
+        {
+            try
+            {
+                return await this.mediator.Send(new DeletePatientProblemCommand(id));
             }
             catch (Exception ex)
             {

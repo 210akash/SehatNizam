@@ -23,9 +23,4 @@ export class RadiologyOrderService extends BaseService<any> {
         return this.post(command, this.endPointControllerName + this.RadiologyOrderEndPoints.saveRadiologyOrder)
             .pipe(map((data: any) => data));
     }
-
-    getRadiologyOrderById(id: number) {
-        return this.get(id, this.endPointControllerName + this.RadiologyOrderEndPoints.getRadiologyOrderById)
-            .pipe(map((data: any) => data));
-    }
 }

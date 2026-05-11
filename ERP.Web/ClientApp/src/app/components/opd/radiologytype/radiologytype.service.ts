@@ -19,7 +19,7 @@ export class RadiologyTypeService extends BaseService<any> {
         );
     }
 
-    getAllRadiologyTypes(query: { serviceId?: number }) {
+    getAllRadiologyTypes(query: any) {
         return this.post(query, this.endPointControllerName + this.RadiologyTypeEndPoints.getAllRadiologyTypes)
             .pipe(map((data: any) => data));
     }

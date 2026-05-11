@@ -850,7 +850,10 @@ import { PatientProblemEndPoints } from './components/opd/patientproblem/patient
 import { PatientProblemService } from './components/opd/patientproblem/patientproblem.service';
 import { LabOrderTypeEndPoints } from './components/opd/lab-order-type/lab-order-type.endpoints';
 import { LabOrderTypeService } from './components/opd/lab-order-type/lab-order-type.service';
-import { LabOrderTypeComponent } from './components/opd/lab-order-type/lab-order-type.component';
+import { LabOrderTypeListComponent } from './components/opd/lab-order-type/lab-order-type-list/lab-order-type-list.component';
+import { AddLabOrderTypeComponent } from './components/opd/lab-order-type/add-lab-order-type/add-lab-order-type.component';
+import { ViewLabOrderTypeComponent } from './components/opd/lab-order-type/view-lab-order-type/view-lab-order-type.component';
+import { DeleteLabOrderTypeComponent } from './components/opd/lab-order-type/delete-lab-order-type/delete-lab-order-type.component';
 import { LabOrderListComponent } from './components/opd/lab-order/lab-order-list/lab-order-list.component';
 import { AddLabOrderComponent } from './components/opd/lab-order/add-lab-order/add-lab-order.component';
 import { ViewLabOrderComponent } from './components/opd/lab-order/view-lab-order/view-lab-order.component';
@@ -869,6 +872,10 @@ import { ServiceService } from './components/opd/service/service.service';
 import { ServiceEndPoints } from './components/opd/service/service.endpoints';
 import { PrescriptionEndPoints } from './components/opd/prescription/prescription.endpoints';
 import { PrescriptionService } from './components/opd/prescription/prescription.service';
+import { ServiceListComponent } from './components/opd/service/service-list/service-list.component';
+import { AddServiceComponent } from './components/opd/service/add-service/add-service.component';
+import { DeleteServiceComponent } from './components/opd/service/delete-service/delete-service.component';
+import { ViewServiceComponent } from './components/opd/service/view-service/view-service.component';
 
 const matFormFieldDefaults: MatFormFieldDefaultOptions = {
     appearance: 'outline'
@@ -1440,9 +1447,12 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         CreateTriageCategoryComponent,
          ViewTriageCategoryComponent,
         DeleteTriageCategoryComponent,
-        TriageCategoryListComponent,
-        LabOrderTypeComponent,
-        LabOrderListComponent,
+         TriageCategoryListComponent,
+         LabOrderTypeListComponent,
+         AddLabOrderTypeComponent,
+         ViewLabOrderTypeComponent,
+         DeleteLabOrderTypeComponent,
+         LabOrderListComponent,
         AddLabOrderComponent,
         ViewLabOrderComponent,
         DeleteLabOrderComponent,
@@ -1484,6 +1494,10 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         AddLabOrderComponent,
         ViewLabOrderComponent,
         DeleteLabOrderComponent,
+        ServiceListComponent,
+        AddServiceComponent,
+        DeleteServiceComponent,
+        ViewServiceComponent
     ],
     bootstrap: [AppComponent], imports: [
         InputMaskModule,
@@ -1774,6 +1788,10 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         ServiceEndPoints,
         PrescriptionEndPoints,
         PrescriptionService,
+        RadiologyTypeService,
+        RadiologyTypeEndPoints,
+        RadiologyOrderService,
+        RadiologyOrderEndPoints,
         { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
         { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },
         AuthenticationService, {

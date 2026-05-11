@@ -41,10 +41,10 @@ export class DoctorAppointmentListComponent implements OnInit {
   showProblemModal = false;
   showVitalsModal = false;
 
-  newProblem = { name: '', onset: '', status: 'Active' };
+  newProblem = { problem: '', onset: '', status: { id: 200, title: 'Active' } };
   newVitals = { sys: 120, dia: 80, pulse: 72, temp: 98.6, spo2: 99 };
 
-  newMed = { drug: '', dose: '', frequency: '', duration: '' };
+  newMed = { drug: '', dose: '', frequency: '', duration: '', instructions: '' };
   newLab = { test: '' };
   newRad = { scan: '', notes: '' };
 
@@ -197,28 +197,31 @@ export class DoctorAppointmentListComponent implements OnInit {
   }
 
   async addProblem(): Promise<void> {
-    if (!this.newProblem.name || !this.selectedAppointment?.id) return;
+    if (!this.newProblem.problem || !this.selectedAppointment?.id) return;
 
     this.isLoading = true;
+    const statusId = Number(this.newProblem.status.id);
     const payload = {
       id: 0,
       appointmentId: this.selectedAppointment.id,
-      problem: this.newProblem.name,
-      statusId: this.getStatusId(this.newProblem.status)
+      problem: this.newProblem.problem,
+      onset: this.newProblem.onset,
+      statusId: statusId,
     };
 
     (await this.patientProblemService.savePatientProblem(payload)).subscribe({
       next: (data: any) => {
         if (data?.Status === 200 || data?.status === 200 || typeof data === 'number') {
+          const statusTitle = this.getStatusTitle(statusId);
           const problem = {
             id: data?.Data ?? data?.id ?? 0,
-            name: this.newProblem.name,
+            problem: this.newProblem.problem,
             onset: this.newProblem.onset,
-            status: this.newProblem.status,
-            isActive: this.newProblem.status === 'Active'
+            status: { id: statusId, title: statusTitle },
+            isActive: statusId === 200
           };
           this.localProblems.push(problem);
-          this.newProblem = { name: '', onset: '', status: 'Active' };
+          this.newProblem = { problem: '', onset: '', status: { id: 200, title: 'Active' } };
           this.showProblemModal = false;
           this.notificationsService.showNotification(data?.Message || 'Problem saved successfully!', 'snack-bar-success');
         } else {
@@ -233,15 +236,39 @@ export class DoctorAppointmentListComponent implements OnInit {
     });
   }
 
-  private getStatusId(status: string): number {
-    const key = (status || '').toLowerCase();
-    if (key === 'managed') return 2;
-    if (key === 'resolved') return 3;
-    return 1;
+  getStatusTitle(statusId: number | string): string {
+    const id = Number(statusId);
+    switch (id) {
+      case 200: return 'Active';
+      case 201: return 'Managed';
+      case 202: return 'Resolved';
+      default: return 'Active';
+    }
   }
 
-  removeProblem(index: number): void {
-    this.localProblems.splice(index, 1);
+  async removeProblem(index: number): Promise<void> {
+    const problem = this.localProblems[index];
+    if (problem?.id == null) {
+      this.localProblems.splice(index, 1);
+      return;
+    }
+
+    this.isLoading = true;
+    (await this.patientProblemService.deletePatientProblem(problem.id)).subscribe({
+      next: (data: any) => {
+        if (data === true) {
+          this.localProblems.splice(index, 1);
+          this.notificationsService.showNotification(data?.Message || 'Problem deleted successfully!', 'snack-bar-success');
+        } else {
+          this.notificationsService.showNotification(data?.Message || 'Unable to delete problem.', 'snack-bar-danger');
+        }
+        this.isLoading = false;
+      },
+      error: () => {
+        this.notificationsService.showNotification('Unable to delete problem.', 'snack-bar-danger');
+        this.isLoading = false;
+      }
+    });
   }
 
   async addMedication(): Promise<void> {
@@ -257,7 +284,7 @@ export class DoctorAppointmentListComponent implements OnInit {
       dosage: this.newMed.dose,
       frequency: this.newMed.frequency,
       duration: this.newMed.duration,
-      instructions: ''
+      instructions: this.newMed.instructions || ''
     };
 
     (await this.prescriptionService.savePrescription(payload)).subscribe({
@@ -271,7 +298,7 @@ export class DoctorAppointmentListComponent implements OnInit {
             duration: payload.duration
           };
           this.localPrescriptions.push(med);
-          this.newMed = { drug: '', dose: '', frequency: '', duration: '' };
+          this.newMed = { drug: '', dose: '', frequency: '', duration: '', instructions: '' };
           this.notificationsService.showNotification(data?.Message || 'Medication saved successfully!', 'snack-bar-success');
         } else {
           this.notificationsService.showNotification(data?.Message || 'Unable to save medication.', 'snack-bar-danger');
@@ -285,8 +312,29 @@ export class DoctorAppointmentListComponent implements OnInit {
     });
   }
 
-  removeMedication(index: number): void {
-    this.localPrescriptions.splice(index, 1);
+  async removeMedication(index: number): Promise<void> {
+    const prescription = this.localPrescriptions[index];
+    if (prescription?.id == null) {
+      this.localPrescriptions.splice(index, 1);
+      return;
+    }
+
+    this.isLoading = true;
+    (await this.prescriptionService.deletePrescription(prescription.id)).subscribe({
+      next: (data: any) => {
+        if (data === true) {
+          this.localPrescriptions.splice(index, 1);
+          this.notificationsService.showNotification(data?.Message || 'Medication deleted successfully!', 'snack-bar-success');
+        } else {
+          this.notificationsService.showNotification(data?.Message || 'Unable to delete medication.', 'snack-bar-danger');
+        }
+        this.isLoading = false;
+      },
+      error: () => {
+        this.notificationsService.showNotification('Unable to delete medication.', 'snack-bar-danger');
+        this.isLoading = false;
+      }
+    });
   }
 
   async addLabOrder(): Promise<void> {
@@ -331,8 +379,29 @@ export class DoctorAppointmentListComponent implements OnInit {
     return option?.name || 'Selected Test';
   }
 
-  removeLabOrder(index: number): void {
-    this.localLabOrders.splice(index, 1);
+  async removeLabOrder(index: number): Promise<void> {
+    const labOrder = this.localLabOrders[index];
+    if (!labOrder?.id) {
+      this.localLabOrders.splice(index, 1);
+      return;
+    }
+
+    this.isLoading = true;
+    (await this.labOrderService.deleteLabOrder(labOrder.id)).subscribe({
+      next: (res: any) => {
+        this.isLoading = false;
+        if (res.Status === 200 || res === true) {
+          this.localLabOrders.splice(index, 1);
+          this.notificationsService.showNotification(res?.Message || 'Lab order deleted successfully!', 'snack-bar-success');
+        } else {
+          this.notificationsService.showNotification(res?.Message || 'Unable to delete lab order.', 'snack-bar-danger');
+        }
+      },
+      error: () => {
+        this.isLoading = false;
+        this.notificationsService.showNotification('Error deleting lab order.', 'snack-bar-danger');
+      }
+    });
   }
 
   addRadiologyOrder(): void {

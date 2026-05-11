@@ -61,6 +61,7 @@ namespace ERP.Mediator.Mediator.PatientProblem.Handler
                 Id = command.Id,
                 AppointmentId = command.AppointmentId,
                 Problem = command.Problem,
+                Onset = command.Onset,
                 StatusId = command.StatusId,
                 CreatedById = sessionProvider.Session.LoggedInUserId,
                 CreatedDate = DateTime.Now,
@@ -73,6 +74,7 @@ namespace ERP.Mediator.Mediator.PatientProblem.Handler
         {
             PatientProblem.AppointmentId = command.AppointmentId;
             PatientProblem.Problem = command.Problem;
+            PatientProblem.Onset = command.Onset;
             PatientProblem.StatusId = command.StatusId;
             PatientProblem.ModifiedById = sessionProvider.Session.LoggedInUserId;
             PatientProblem.ModifiedDate = DateTime.Now;

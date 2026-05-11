@@ -24,20 +24,6 @@ namespace ERP.API.Controllers
             this.mediator = mediator;
         }
 
-        [HttpGet]
-        [Route("GetLabOrderTypeById")]
-        public async Task<ActionResult<GetLabOrderType>> GetById(long id)
-        {
-            try
-            {
-                return await this.mediator.Send(new GetLabOrderTypeByIdQuery(id));
-            }
-            catch (Exception ex)
-            {
-                return this.Result(ResponseStatus.Error, null, ex.Message);
-            }
-        }
-
         [HttpPost]
         [Route("GetAllLabOrderTypes")]
         public async Task<ActionResult<Tuple<IEnumerable<GetLabOrderType>, long>>> GetAll(GetAllLabOrderTypeQuery query)

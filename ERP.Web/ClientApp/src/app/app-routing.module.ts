@@ -130,6 +130,8 @@ import { SalaryTaxSlabListComponent } from './components/hr/payroll/salarytaxsla
 import { TriageCategoryListComponent } from './components/opd/triage-category/triage-category-list/triage-category-list.component';
 import { LabOrderListComponent } from './components/opd/lab-order/lab-order-list/lab-order-list.component';
 import { RadiologyTypeListComponent } from './components/opd/radiologytype/radiologytype-list/radiologytype-list.component';
+import { ServiceListComponent } from './components/opd/service/service-list/service-list.component';
+import { LabOrderTypeListComponent } from './components/opd/lab-order-type/lab-order-type-list/lab-order-type-list.component';
 
 const routes: Routes = [
   {
@@ -251,9 +253,10 @@ const routes: Routes = [
       { path: 'doctorappointment', component: DoctorAppointmentListComponent, canActivate: [AuthGuard] },
       { path: 'triagecategory', component: TriageCategoryListComponent, canActivate: [AuthGuard], data: {roles: ["receptionist"] } },
       { path: 'triage', component: CreateTriageComponent, canActivate: [AuthGuard] },
-      { path: 'laborder', component: LabOrderListComponent, canActivate: [AuthGuard] },
-      { path: 'radiologytype', component: RadiologyTypeListComponent, canActivate: [AuthGuard] },
-      { path: 'newtriage', component: CreateTriageComponent, canActivate: [AuthGuard] },
+       { path: 'laborder', component: LabOrderListComponent, canActivate: [AuthGuard] },
+       { path: 'radiologytype', component: RadiologyTypeListComponent, canActivate: [AuthGuard] },
+       { path: 'labordertype', component: LabOrderTypeListComponent, canActivate: [AuthGuard] },
+       { path: 'newtriage', component: CreateTriageComponent, canActivate: [AuthGuard] },
       { path: 'adddepartmentroster', component: AddRosterDepartmentComponent, canActivate: [AuthGuard] },
       { path: 'rosterdepartment', component: RosterDepartmentListComponent, canActivate: [AuthGuard] },
       { path: 'addroster', component: AddRosterComponent, canActivate: [AuthGuard] },
@@ -262,6 +265,7 @@ const routes: Routes = [
       { path: 'conductinterview', component: ConductInterviewListComponent, canActivate: [AuthGuard] },
       { path: 'salaryhead', component: SalaryHeadListComponent, canActivate: [AuthGuard], data: {roles: ["hr manager,hr executive,admin"] } },
       { path: 'salarytaxslab', component: SalaryTaxSlabListComponent, canActivate: [AuthGuard], data: {roles: ["hr manager,hr executive,admin"] } },
+      { path: 'services', component: ServiceListComponent, canActivate: [AuthGuard] },
     ]
   },
   {

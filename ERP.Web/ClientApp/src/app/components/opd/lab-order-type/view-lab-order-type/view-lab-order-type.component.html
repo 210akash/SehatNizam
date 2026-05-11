@@ -1,0 +1,26 @@
+<mat-card>
+  <mat-card-header><mat-card-title>View Lab Order Type</mat-card-title></mat-card-header>
+  <mat-card-content>
+    <form [formGroup]="form">
+      <mat-form-field class="form-field">
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name" readonly />
+      </mat-form-field>
+
+      <mat-form-field class="form-field">
+        <mat-label>Description</mat-label>
+        <textarea matInput formControlName="description" readonly rows="3"></textarea>
+      </mat-form-field>
+
+      <mat-form-field class="form-field">
+        <mat-label>Service</mat-label>
+        <input matInput formControlName="serviceId" [value]="data.element?.serviceName || '-'" readonly />
+      </mat-form-field>
+
+      <mat-form-field class="form-field">
+        <mat-label>Custom Fields Schema</mat-label>
+        <textarea matInput formControlName="customFieldsSchema" readonly rows="6"></textarea>
+      </mat-form-field>
+    </form>
+  </mat-card-content>
+</mat-card>

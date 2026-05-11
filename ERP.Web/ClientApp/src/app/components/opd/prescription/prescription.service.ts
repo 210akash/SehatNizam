@@ -23,4 +23,9 @@ export class PrescriptionService extends BaseService<any> {
         return await this.post(prescriptionForm, this.endPointControllerName + this.prescriptionEndPoints.savePrescription)
             .pipe(map((data: any) => data));
     }
+
+     deletePrescription(id: number) {
+        return this.delete(id, this.endPointControllerName + this.prescriptionEndPoints.deletePrescription)
+            .pipe();
+    }
 }

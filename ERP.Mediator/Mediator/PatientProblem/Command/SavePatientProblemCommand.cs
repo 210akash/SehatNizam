@@ -7,6 +7,7 @@ namespace ERP.Mediator.Mediator.PatientProblem.Command
         public long Id { get; set; }
         public long AppointmentId { get; set; }
         public string Problem { get; set; }
+        public string Onset { get; set; }
         public long StatusId { get; set; }
     }
 }

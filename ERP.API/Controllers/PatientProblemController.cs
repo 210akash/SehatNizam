@@ -30,23 +30,34 @@ namespace ERP.API.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return this.Result(ResponseStatus.Error, null, this.GetModelValidationErrors(this.ModelState));
+                    return this.Result(ResponseStatus.Error, null,
+                        this.GetModelValidationErrors(this.ModelState));
+                }
+
+                var result = await this.mediator.Send(command);
+
+                if (result > 0)
+                {
+                    return this.Result(ResponseStatus.OK,result,
+                        "Patient Problem Saved!");
+                }
+                else if (result == -404)
+                {
+                    return this.Result(ResponseStatus.Error,
+                        null,
+                        "Patient Problem not found!");
+                }
+                else if (result == 409)
+                {
+                    return this.Result(ResponseStatus.Conflict,
+                        "Already Exists!",
+                        null);
                 }
                 else
                 {
-                    var result = await this.mediator.Send(command);
-                    if (result == 200)
-                    {
-                        return this.Result(ResponseStatus.OK, "Patient Problem Saved!", null);
-                    }
-                    else if (result == 409)
-                    {
-                        return this.Result(ResponseStatus.Conflict, "Already Exists!", null);
-                    }
-                    else
-                    {
-                        return this.Result(ResponseStatus.Error, "There is some error!", null);
-                    }
+                    return this.Result(ResponseStatus.Error,
+                        "There is some error!",
+                        null);
                 }
             }
             catch (Exception ex)

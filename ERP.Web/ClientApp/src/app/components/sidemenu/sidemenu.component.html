@@ -722,14 +722,19 @@
         </button> -->
 
         <div class="content_warehouse" *ngIf="warehouseList.length > 0">
-          <mat-form-field appearance="outline" class="warehouse-field">
-            <mat-label>Building/Site</mat-label>
-            <mat-select [(value)]="selectedWarehouseId" (selectionChange)="onWarehouseChange($event)">
-              <mat-option *ngFor="let project of warehouseList" [value]="project.id">
-                {{ project.name }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+          <div ngbDropdown class="warehouse-dropdown">
+            <button ngbDropdownToggle class="btn btn-outline-secondary warehouse-btn" type="button" id="warehouseDropdown">
+              <i class="fas fa-building me-1"></i>
+              <span class="warehouse-text">{{ warehouseList.find(w => w.id === selectedWarehouseId)?.name || 'Building/Site' }}</span>
+            </button>
+            <ul ngbDropdownMenu class="warehouse-dropdown-menu" aria-labelledby="warehouseDropdown">
+              <li *ngFor="let project of warehouseList">
+                <a ngbDropdownItem class="warehouse-option" [class.active]="project.id === selectedWarehouseId" (click)="onWarehouseSelect(project.id)">
+                  {{ project.name }}
+                </a>
+              </li>
+            </ul>
+          </div>
         </div>
 
         <div class="row m-0" style="gap: 5px;flex-wrap: nowrap;">

@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { NotificationsService } from '../../../../Service/notification.service';
 import { RadiologyTypeService } from '../radiologytype.service';
+import { ServiceService } from '../../service/service.service';
 
 @Component({
   selector: 'app-add-radiologytype',
@@ -20,6 +21,7 @@ export class AddRadiologyTypeComponent implements OnInit {
     private fb: FormBuilder,
     private dialog: MatDialog,
     private service: RadiologyTypeService,
+    private serviceService: ServiceService,
     private notifications: NotificationsService,
     @Inject(MAT_DIALOG_DATA) public data: { element: any; services: any[] }
   ) { }
@@ -33,7 +35,16 @@ export class AddRadiologyTypeComponent implements OnInit {
       name: [this.isEdit ? this.data.element.name : '', Validators.required],
       serviceId: [this.isEdit ? this.data.element.serviceId : null, Validators.required]
     });
+        this.getservicesList();
   }
+
+ getservicesList() {
+    let _CategoryFilter: any = {DepartmentId : 28};
+    this.serviceService.getAllServices(_CategoryFilter).subscribe((data: any) => {
+      this.services = data.item1;
+    });
+  }
+
 
   save(): void {
     if (this.form.invalid) return;

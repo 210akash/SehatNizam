@@ -142,7 +142,7 @@ const routes: Routes = [
       { path: 'rack', component: RackListComponent, canActivate: [AuthGuard], data: { roles: ["Admin,store manager,store issuer", "purchase manager,purchaser,accounts manager,accounts assistant,retailer,gate clerk,inspection"] } },
       { path: 'row', component: RowListComponent, canActivate: [AuthGuard], data: { roles: ["Admin,store manager,store issuer", "purchase manager,purchaser,accounts manager,accounts assistant,retailer,gate clerk,inspection"] } },
       { path: 'section', component: SectionListComponent, canActivate: [AuthGuard], data: { roles: ["Admin,store manager,store issuer", "purchase manager,purchaser,accounts manager,accounts assistant,retailer,gate clerk,inspection"] } },
-      { path: 'roles', component: RoleListComponent, canActivate: [AuthGuard], data: { roles: ["Admin"] } },
+      { path: 'roles', component: RoleListComponent, canActivate: [AuthGuard], data: { roles: ["hr manager,Admin"] } },
       { path: 'users', component: UserListComponent, canActivate: [AuthGuard], data: { roles: ["Admin"] } },
       { path: 'companies', component: CompanyListComponent, canActivate: [AuthGuard], data: { roles: ["Admin"] } },
       { path: 'departments', component: DepartmentListComponent, canActivate: [AuthGuard], data: { roles: ["Admin,hr manager,hr executive"] } },

@@ -9,7 +9,7 @@ using MediatR;
 
 namespace ERP.Mediator.Mediator.RadiologyOrder.Handler
 {
-    public class SaveRadiologyOrderHandler : IRequestHandler<SaveRadiologyOrderCommand, int>
+    public class SaveRadiologyOrderHandler : IRequestHandler<SaveRadiologyOrderCommand, long>
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;
@@ -22,24 +22,27 @@ namespace ERP.Mediator.Mediator.RadiologyOrder.Handler
             this.sessionProvider = sessionProvider;
         }
 
-        public async Task<int> Handle(SaveRadiologyOrderCommand request, CancellationToken cancellationToken)
+        public async Task<long> Handle(SaveRadiologyOrderCommand request, CancellationToken cancellationToken)
         {
             if (request.AppointmentId <= 0 || request.RadiologyTypeId <= 0 || request.StatusId <= 0)
             {
-                return 400;
+                return -400;
             }
 
             Entities.Models.RadiologyOrder radiologyOrder;
 
             if (request.Id > 0)
             {
-                radiologyOrder = await unitOfWork.Repository<Entities.Models.RadiologyOrder>().FindAsync(y => y.Id == request.Id);
+                radiologyOrder = await unitOfWork.Repository<Entities.Models.RadiologyOrder>()
+                    .FindAsync(y => y.Id == request.Id);
+
                 if (radiologyOrder == null)
                 {
-                    return 404;
+                    return -404;
                 }
 
                 mapper.Map(request, radiologyOrder);
+
                 radiologyOrder.ModifiedById = this.sessionProvider.Session.LoggedInUserId;
                 radiologyOrder.ModifiedDate = DateTime.Now;
 
@@ -48,14 +51,18 @@ namespace ERP.Mediator.Mediator.RadiologyOrder.Handler
             else
             {
                 radiologyOrder = mapper.Map<Entities.Models.RadiologyOrder>(request);
+
                 radiologyOrder.CreatedById = this.sessionProvider.Session.LoggedInUserId;
+                radiologyOrder.CreatedDate = DateTime.Now;
                 radiologyOrder.IsActive = true;
 
-                await unitOfWork.Repository<Entities.Models.RadiologyOrder>().AddAsync(radiologyOrder);
+                await unitOfWork.Repository<Entities.Models.RadiologyOrder>()
+                    .AddAsync(radiologyOrder);
             }
 
-            await unitOfWork.SaveChangesAsync();
-            return 200;
+            var check = await unitOfWork.SaveChangesAsync(cancellationToken);
+
+            return check > 0 ? radiologyOrder.Id : 0;
         }
     }
 }

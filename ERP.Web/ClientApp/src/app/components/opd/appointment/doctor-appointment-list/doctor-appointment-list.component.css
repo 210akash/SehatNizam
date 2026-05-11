@@ -612,7 +612,49 @@
     }
 
     /* Copy all the styles from the original <style> block, but wrap in :host for encapsulation */
-:host {
+/* No appointments state */
+    .no-appointments-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 400px;
+    }
+    .no-appointments-card {
+      text-align: center;
+      padding: 48px 32px;
+      background: var(--color-background-primary);
+      border: 0.5px solid var(--color-border-tertiary);
+      border-radius: var(--border-radius-lg);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+      max-width: 420px;
+      width: 100%;
+    }
+    .no-appointments-icon {
+      margin-bottom: 16px;
+      color: var(--color-text-secondary);
+    }
+    .no-appointments-card h3 {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--color-text-primary);
+      margin-bottom: 8px;
+    }
+    .no-appointments-card p {
+      font-size: 13px;
+      color: var(--color-text-secondary);
+      line-height: 1.5;
+    }
+    .spinner {
+      width: 48px;
+      height: 48px;
+      animation: spin 1s linear infinite;
+      color: var(--color-primary);
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    :host {
   display: block;
   height: 100%;
   --color-background-primary: #ffffff;

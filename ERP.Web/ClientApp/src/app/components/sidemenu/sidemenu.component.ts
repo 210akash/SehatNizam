@@ -91,9 +91,7 @@ export class SidemenuComponent implements OnDestroy {
 
   }
 
-  // Optional: if you want to handle changes explicitly
-  onWarehouseChange(event: any) {
-    const selectedId = event.value;
+  onWarehouseSelect(selectedId: any) {
     const currentUser = JSON.parse(localStorage.getItem("currentUser") || '{}');
     currentUser.selectedWarehouseId = selectedId;
     this.selectedWarehouseId = selectedId;
@@ -101,17 +99,11 @@ export class SidemenuComponent implements OnDestroy {
     this.authenticationService.updateSelectedWarehouse(selectedId).subscribe({
       next: (response: any) => {
         if (response?.token) {
-          // Get the current user from localStorage
           const currentUserupdate = JSON.parse(localStorage.getItem("currentUser") || '{}');
-          // Replace only the token with the new one
           currentUserupdate.token = response.token;
-
-          // Save it back to localStorage
           localStorage.setItem("currentUser", JSON.stringify(currentUserupdate));
-          this.authenticationService.updateToken(response.token); // ✅ Update in memory & localStorage
+          this.authenticationService.updateToken(response.token);
         }
-
-        // Reload the page or component
         const currentUrl = this.router.url;
         this.router.navigateByUrl('/refresh', { skipLocationChange: true }).then(() => {
           this.router.navigate([currentUrl]);

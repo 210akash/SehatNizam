@@ -75,7 +75,31 @@
     </div>
   </div>
 
-  <div class="grid3" *ngIf="selectedAppointment; else loading">
+  <!-- No Appointments / Loading State -->
+  <div class="no-appointments-container" *ngIf="appointments.length === 0">
+    <div class="no-appointments-card">
+      <div class="no-appointments-icon">
+        <svg viewBox="0 0 24 24" *ngIf="!isLoading; else loadingSpinner">
+          <path d="M19 4H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z" />
+          <path d="M16 2v4M8 2v4M3 10h18" />
+        </svg>
+        <ng-template #loadingSpinner>
+          <svg viewBox="0 0 24 24" class="spinner">
+            <circle cx="12" cy="12" r="10" fill="none" stroke="var(--color-primary)" stroke-width="2.5"
+              stroke-dasharray="60" stroke-dashoffset="0" stroke-linecap="round">
+              <animateTransform attributeName="transform" type="rotate" values="0 12 12;360 12 12" dur="1s"
+                repeatCount="indefinite" />
+            </circle>
+          </svg>
+        </ng-template>
+      </div>
+      <h3>{{ isLoading ? 'Loading appointments...' : 'No Appointments Pending' }}</h3>
+      <p *ngIf="!isLoading">There are no patients in the queue at the moment.</p>
+    </div>
+  </div>
+
+  <!-- Main Content Grid -->
+  <div class="grid3" *ngIf="selectedAppointment">
     <!-- LEFT COLUMN: Vitals & Problem List -->
     <div class="col scroll">
       <div class="card">
@@ -283,7 +307,7 @@
               </svg>
               Follow up
             </div>
-            <!-- <input type="date" [(ngModel)]="followUpDate" [ngModelOptions]="{standalone: true}"> -->
+            <input type="date" [(ngModel)]="followUpDate" [ngModelOptions]="{standalone: true}">
           </div>
 
           <!-- Labs Panel -->
@@ -295,11 +319,19 @@
                 <option *ngFor="let labType of labOrderTypes" [value]="labType.id">{{ labType.name }}</option>
               </select>
             </div>
+             <div class="form-row">
+              <div class="form-label">Clinical notes (optional)</div>
+              <textarea rows="2" placeholder="Reason for scan..." [(ngModel)]="newLab.notes"
+                [ngModelOptions]="{standalone: true}"></textarea>
+            </div>
             <button class="btn blue" style="width:100%;justify-content:center;font-size:11px;margin-bottom:10px"
               (click)="addLabOrder()">Add lab test</button>
             <div id="lab-list">
               <div class="lab-item" *ngFor="let lab of localLabOrders; let i = index">
-                <span>{{ lab.testName }}</span>
+                <span>{{ lab.labOrderType.name }}</span>
+                <span *ngIf="lab.clinicalNotes"
+                  style="font-size:10px; color:var(--color-text-secondary); margin-left:8px;">({{ lab.clinicalNotes }})
+                </span>
                 <button class="rem-btn" (click)="removeLabOrder(i)"><svg viewBox="0 0 24 24">
                     <path d="M18 6 6 18" />
                     <path d="m6 6 12 12" />
@@ -327,7 +359,7 @@
               (click)="addRadiologyOrder()">Add imaging order</button>
             <div id="rad-list">
               <div class="lab-item" *ngFor="let rad of localRadiologyOrders; let i = index">
-                <span>{{ rad.scanType }}</span>
+                <span>{{ rad.radiologyType?.name }}</span>
                 <span *ngIf="rad.clinicalNotes"
                   style="font-size:10px; color:var(--color-text-secondary); margin-left:8px;">({{ rad.clinicalNotes
                   }})</span>
@@ -368,12 +400,7 @@
     </div>
   </div>
 
-  <ng-template #loading>
-    <div class="loading-state">Loading appointments...</div>
-  </ng-template>
-</div>
-
-<!-- Problem Modal -->
+  <!-- Problem Modal -->
 <div class="modal-overlay" [class.show]="showProblemModal" (click)="showProblemModal = false">
   <div class="modal-box" (click)="$event.stopPropagation()">
     <div class="modal-title">Add problem / diagnosis <button class="close-btn"

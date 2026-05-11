@@ -2,7 +2,7 @@ using MediatR;
 
 namespace ERP.Mediator.Mediator.RadiologyOrder.Command
 {
-    public class SaveRadiologyOrderCommand : IRequest<int>
+    public class SaveRadiologyOrderCommand : IRequest<long>
     {
         public long Id { get; set; }
         public long AppointmentId { get; set; }

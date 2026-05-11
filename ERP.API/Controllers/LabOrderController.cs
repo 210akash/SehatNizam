@@ -35,7 +35,10 @@ namespace ERP.API.Controllers
             try
             {
                 var result = await mediator.Send(command);
-                if (result == 200) return this.Result(ResponseStatus.OK, "Lab Order Saved!", null);
+
+                if (result > 0)
+                    return this.Result(ResponseStatus.OK, result, "Lab Order Saved!");
+
                 return this.Result(ResponseStatus.Error, "There is some error!", null);
             }
             catch (Exception ex)

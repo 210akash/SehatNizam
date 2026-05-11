@@ -28,7 +28,7 @@ export class LabOrderService extends BaseService<any> {
     }
 
     async deleteLabOrder(id: number) {
-        return this.get('?id=' + id, this.endPointControllerName + this.endPoints.deleteLabOrder)
+        return this.delete(id, this.endPointControllerName + this.endPoints.deleteLabOrder)
             .pipe();
     }
 }

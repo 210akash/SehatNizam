@@ -50,21 +50,44 @@ namespace ERP.API.Controllers
             try
             {
                 var result = await this.mediator.Send(command);
-                if (result == 200)
+
+                if (result > 0)
                 {
-                    return this.Result(ResponseStatus.OK, "Radiology Order Saved!", null);
+                    return this.Result(ResponseStatus.OK, result, "Radiology Order Saved!");
                 }
-                else if (result == 400)
+                else if (result == -400)
                 {
                     return this.Result(ResponseStatus.Error, null, "Invalid data! Please fill all required fields.");
                 }
-                else if (result == 404)
+                else if (result == -404)
                 {
                     return this.Result(ResponseStatus.Error, null, "Radiology Order not found!");
                 }
                 else
                 {
                     return this.Result(ResponseStatus.Error, null, "Error saving Radiology Order!");
+                }
+            }
+            catch (Exception ex)
+            {
+                return this.Result(ResponseStatus.Error, null, ex.Message);
+            }
+        }
+
+        [HttpDelete]
+        [Route("DeleteRadiologyOrder")]
+        public async Task<ActionResult<bool>> DeleteRadiologyOrder(long id)
+        {
+            try
+            {
+                var result = await this.mediator.Send(new DeleteRadiologyOrderCommand(id));
+                if (result)
+                {
+                    return this.Result(ResponseStatus.OK, "Radiology Order Deleted!", null);
+                }
+                else
+                {
+                    return this.Result(ResponseStatus.Error, null, "Radiology Order not found!");
                 }
             }
             catch (Exception ex)

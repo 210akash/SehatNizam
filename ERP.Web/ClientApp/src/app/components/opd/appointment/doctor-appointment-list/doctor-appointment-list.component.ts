@@ -45,9 +45,9 @@ export class DoctorAppointmentListComponent implements OnInit {
   newVitals = { sys: 120, dia: 80, pulse: 72, temp: 98.6, spo2: 99 };
 
   newMed = { drug: '', dose: '', frequency: '', duration: '', instructions: '' };
-  newLab = { test: '' };
+  newLab = { test: '', notes: '' };
   newRad = { scan: '', notes: '' };
-
+  followUpDate !: Date;
   constructor(
     private fb: FormBuilder,
     private appointmentService: AppointmentService,
@@ -81,7 +81,7 @@ export class DoctorAppointmentListComponent implements OnInit {
   }
 
   loadLabOrderTypes(): void {
-    const filter = { pagingData: { currentPage: 0, take: 200 } };
+    const filter = {};
     this.labOrderTypeService.getAllLabOrderTypes(filter).subscribe({
       next: (res: any) => this.labOrderTypes = res?.item1 || [],
       error: () => this.labOrderTypes = []
@@ -89,9 +89,9 @@ export class DoctorAppointmentListComponent implements OnInit {
   }
 
   loadRadiologyTypes(): void {
-    const filter = { pagingData: { currentPage: 0, take: 200 } };
+    const filter = {};
     this.radiologyTypeService.getAllRadiologyTypes(filter).subscribe({
-      next: (res: any) => this.radiologyTypes = res?.Data || [],
+      next: (res: any) => this.radiologyTypes = res?.item1 || [],
       error: () => this.radiologyTypes = []
     });
   }
@@ -128,7 +128,12 @@ export class DoctorAppointmentListComponent implements OnInit {
     this.localProblems = this.selectedAppointment.problems ? [...this.selectedAppointment.problems] : [];
     this.localPrescriptions = this.selectedAppointment.prescriptions ? [...this.selectedAppointment.prescriptions] : [];
     this.localLabOrders = this.selectedAppointment.labOrders ? [...this.selectedAppointment.labOrders] : [];
-    this.localRadiologyOrders = this.selectedAppointment.radiologyOrders ? [...this.selectedAppointment.radiologyOrders] : [];
+    this.localRadiologyOrders = this.selectedAppointment.radiologyOrders
+      ? this.selectedAppointment.radiologyOrders.map((r: any) => ({
+          ...r,
+          radiologyType: { name: r.radiologyTypeName || '' }
+        }))
+      : [];
 
     if (this.selectedAppointment.triages && this.selectedAppointment.triages.length > 0) {
       const triage = this.selectedAppointment.triages[0];
@@ -161,6 +166,7 @@ export class DoctorAppointmentListComponent implements OnInit {
       this.queueCount--;
     } else {
       alert('No more patients in the queue.');
+      window.location.reload(); // Refresh to get updated queue or navigate to another page as needed
     }
   }
 
@@ -172,20 +178,21 @@ export class DoctorAppointmentListComponent implements OnInit {
     }
   }
 
-  finishConsultation(): void {
-    const consultationData = {
-      appointmentId: this.selectedAppointment.id,
-      subjective: this.soapForm.value.subjective,
-      objective: this.soapForm.value.objective,
-      assessment: this.soapForm.value.assessment,
-      plan: this.soapForm.value.plan,
-      problems: this.localProblems,
-      prescriptions: this.localPrescriptions,
-      labOrders: this.localLabOrders,
-      radiologyOrders: this.localRadiologyOrders,
-      vitals: this.localVitals,
-      statusId : 3
-    };
+finishConsultation(): void {
+     const consultationData = {
+       appointmentId: this.selectedAppointment.id,
+       subjective: this.soapForm.value.subjective,
+       objective: this.soapForm.value.objective,
+       assessment: this.soapForm.value.assessment,
+       plan: this.soapForm.value.plan,
+       problems: this.localProblems,
+       prescriptions: this.localPrescriptions,
+       labOrders: this.localLabOrders,
+       radiologyOrders: this.localRadiologyOrders,
+       vitals: this.localVitals,
+       statusId : 3,
+       followUpDate: this.followUpDate
+     };
 
     this.appointmentService.saveConsultation(consultationData).subscribe({
       next: () => {
@@ -210,11 +217,12 @@ export class DoctorAppointmentListComponent implements OnInit {
     };
 
     (await this.patientProblemService.savePatientProblem(payload)).subscribe({
-      next: (data: any) => {
-        if (data?.Status === 200 || data?.status === 200 || typeof data === 'number') {
+      next: (res: any) => {
+        this.isLoading = false;
+        if (res.Status === 200) {
           const statusTitle = this.getStatusTitle(statusId);
           const problem = {
-            id: data?.Data ?? data?.id ?? 0,
+            id: res.Data ?? 0,
             problem: this.newProblem.problem,
             onset: this.newProblem.onset,
             status: { id: statusId, title: statusTitle },
@@ -223,11 +231,10 @@ export class DoctorAppointmentListComponent implements OnInit {
           this.localProblems.push(problem);
           this.newProblem = { problem: '', onset: '', status: { id: 200, title: 'Active' } };
           this.showProblemModal = false;
-          this.notificationsService.showNotification(data?.Message || 'Problem saved successfully!', 'snack-bar-success');
+          this.notificationsService.showNotification(res?.Message || 'Problem saved successfully!', 'snack-bar-success');
         } else {
-          this.notificationsService.showNotification(data?.Message || 'Unable to save problem.', 'snack-bar-danger');
+          this.notificationsService.showNotification(res?.Message || 'Unable to save problem.', 'snack-bar-danger');
         }
-        this.isLoading = false;
       },
       error: () => {
         this.notificationsService.showNotification('Unable to save problem.', 'snack-bar-danger');
@@ -288,10 +295,11 @@ export class DoctorAppointmentListComponent implements OnInit {
     };
 
     (await this.prescriptionService.savePrescription(payload)).subscribe({
-      next: (data: any) => {
-        if (data?.Status === 200 || data?.status === 200 || typeof data === 'number') {
+      next: (res: any) => {
+        this.isLoading = false;
+        if (res.Status === 200) {
           const med = {
-            id: data?.Data ?? data?.id ?? 0,
+            id: res.Data ?? 0,
             drugName: payload.drugName,
             dose: payload.dosage,
             frequency: payload.frequency,
@@ -299,11 +307,10 @@ export class DoctorAppointmentListComponent implements OnInit {
           };
           this.localPrescriptions.push(med);
           this.newMed = { drug: '', dose: '', frequency: '', duration: '', instructions: '' };
-          this.notificationsService.showNotification(data?.Message || 'Medication saved successfully!', 'snack-bar-success');
+          this.notificationsService.showNotification(res?.Message || 'Medication saved successfully!', 'snack-bar-success');
         } else {
-          this.notificationsService.showNotification(data?.Message || 'Unable to save medication.', 'snack-bar-danger');
+          this.notificationsService.showNotification(res?.Message || 'Unable to save medication.', 'snack-bar-danger');
         }
-        this.isLoading = false;
       },
       error: () => {
         this.notificationsService.showNotification('Unable to save medication.', 'snack-bar-danger');
@@ -352,31 +359,33 @@ export class DoctorAppointmentListComponent implements OnInit {
       id: 0,
       appointmentId: this.selectedAppointment.id,
       labOrderTypeId: selectedTypeId,
+      clinicalNotes: this.newLab.notes || '',
       statusId: 1
     };
 
-    (await this.labOrderService.saveLabOrder(payload)).subscribe({
-      next: (data: any) => {
-        if (data?.Status === 200 || data?.status === 200 || typeof data === 'number') {
+    (await (this.labOrderService.saveLabOrder(payload))).subscribe({
+      next: (res: any) => {
+        this.isLoading = false;
+        if (res.Status === 200) {
           const label = this.getLabOrderTypeName(selectedTypeId);
-          this.localLabOrders.push({ id: data?.Data ?? 0, labOrderTypeId: selectedTypeId, testName: label });
-          this.newLab = { test: '' };
-          this.notificationsService.showNotification(data?.Message || 'Lab order saved successfully!', 'snack-bar-success');
+          const labId = res.Data || 0;
+          this.localLabOrders.push({ id: labId, labOrderTypeId: selectedTypeId, labOrderType: label, clinicalNotes: this.newLab.notes});
+          this.newLab = { test: '',notes: '' };
+          this.notificationsService.showNotification(res?.Message || 'Lab order saved successfully!', 'snack-bar-success');
         } else {
-          this.notificationsService.showNotification(data?.Message || 'Unable to save lab order.', 'snack-bar-danger');
+          this.notificationsService.showNotification(res?.Message || 'Unable to save lab order.', 'snack-bar-danger');
         }
-        this.isLoading = false;
       },
-      error: () => {
-        this.notificationsService.showNotification('Unable to save lab order.', 'snack-bar-danger');
+      error: (err) => {
         this.isLoading = false;
+        this.notificationsService.showNotification('Unable to save lab order.', 'snack-bar-danger');
       }
     });
   }
 
   getLabOrderTypeName(id: number): string {
     const option = this.labOrderTypes.find(x => Number(x.id) === Number(id));
-    return option?.name || 'Selected Test';
+    return option;
   }
 
   async removeLabOrder(index: number): Promise<void> {
@@ -390,7 +399,7 @@ export class DoctorAppointmentListComponent implements OnInit {
     (await this.labOrderService.deleteLabOrder(labOrder.id)).subscribe({
       next: (res: any) => {
         this.isLoading = false;
-        if (res.Status === 200 || res === true) {
+        if (res === true) {
           this.localLabOrders.splice(index, 1);
           this.notificationsService.showNotification(res?.Message || 'Lab order deleted successfully!', 'snack-bar-success');
         } else {
@@ -428,7 +437,8 @@ export class DoctorAppointmentListComponent implements OnInit {
           const radId = res.Data || 0;
           this.localRadiologyOrders.push({
             id: radId,
-            scanType: this.newRad.scan,
+            radiologyTypeName: this.newRad.scan,
+            radiologyType: { name: this.newRad.scan },
             clinicalNotes: this.newRad.notes
           });
           this.newRad = { scan: '', notes: '' };
@@ -444,8 +454,29 @@ export class DoctorAppointmentListComponent implements OnInit {
     });
   }
 
-  removeRadiologyOrder(index: number): void {
-    this.localRadiologyOrders.splice(index, 1);
+  async removeRadiologyOrder(index: number): Promise<void> {
+    const radOrder = this.localRadiologyOrders[index];
+    if (!radOrder?.id) {
+      this.localRadiologyOrders.splice(index, 1);
+      return;
+    }
+
+    this.isLoading = true;
+    (await this.radiologyOrderService.deleteRadiologyOrder(radOrder.id)).subscribe({
+      next: (res: any) => {
+        this.isLoading = false;
+        if (res.Status === 200) {
+          this.localRadiologyOrders.splice(index, 1);
+          this.notificationsService.showNotification(res?.Message || 'Radiology order deleted successfully!', 'snack-bar-success');
+        } else {
+          this.notificationsService.showNotification(res?.Message || 'Unable to delete radiology order.', 'snack-bar-danger');
+        }
+      },
+      error: () => {
+        this.isLoading = false;
+        this.notificationsService.showNotification('Error deleting radiology order.', 'snack-bar-danger');
+      }
+    });
   }
 
   async updateVitals(): Promise<void> {

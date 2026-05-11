@@ -7,6 +7,7 @@ namespace ERP.Mediator.Mediator.LabOrder.Command
         public long Id { get; set; }
         public long AppointmentId { get; set; }
         public long LabOrderTypeId { get; set; }
+        public string ClinicalNotes { get; set; }
         public long StatusId { get; set; }
     }
 }

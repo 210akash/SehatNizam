@@ -37,8 +37,8 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                 x => x.Patient,
                 x => x.Problems.Where(y=>y.IsActive),
                 x => x.Prescriptions.Where(y=>y.IsActive),
-                x => x.LabOrders,
-                x => x.RadiologyOrders,
+                x => x.LabOrders.Where(y=>y.IsActive),
+                x => x.RadiologyOrders.Where(y=>y.IsActive),
                 x => x.Doctor,
                 x => x.Department,
                 x => x.PriorityLevel,
@@ -51,14 +51,15 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
             List<string> thenIncludes = new()
             {
                 "Problems.Status",
+                "LabOrders.LabOrderType",
+                "RadiologyOrders.RadiologyType",
             };
 
             predicate = x => x.IsActive == true
-           // && x.DoctorId == sessionProvider.Session.LoggedInUserId
-           // && x.ProjectId == sessionProvider.Session.SelectedWarehouseId
-                      && x.AppointmentStatusId == request.StatusId;
-                      //&& x.CreatedDate >= request.FDate.Value
-                      //&& x.CreatedDate <= request.TDate.Value.AddDays(1).AddTicks(-1);
+                      && x.DoctorId == sessionProvider.Session.LoggedInUserId
+                      && x.ProjectId == sessionProvider.Session.SelectedWarehouseId
+                      && x.AppointmentStatusId == request.StatusId
+                      && x.CreatedDate.Value.Date == DateTime.Now.Date;
 
             Expression<Func<Entities.Models.Appointment, object>> OrderBy = null;
             Expression<Func<Entities.Models.Appointment, object>> OrderByDesc = x => x.Id;

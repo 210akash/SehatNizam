@@ -30,21 +30,29 @@ namespace ERP.API.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return this.Result(ResponseStatus.Error, null, this.GetModelValidationErrors(this.ModelState));
+                    return this.Result(ResponseStatus.Error, null,
+                        this.GetModelValidationErrors(this.ModelState));
                 }
 
                 var result = await this.mediator.Send(command);
-                if (result == 200)
+
+                if (result > 0)
                 {
-                    return this.Result(ResponseStatus.OK, "Prescription Saved!", null);
+                    return this.Result(ResponseStatus.OK, result,
+                        "Prescription Saved!"
+                        );
                 }
-                else if (result == 404)
+                else if (result == -404)
                 {
-                    return this.Result(ResponseStatus.RecordNotFound, null, "Prescription not found!");
+                    return this.Result(ResponseStatus.RecordNotFound,
+                        null,
+                        "Prescription not found!");
                 }
                 else
                 {
-                    return this.Result(ResponseStatus.Error, "There is some error!", null);
+                    return this.Result(ResponseStatus.Error,
+                        "There is some error!",
+                        null);
                 }
             }
             catch (Exception ex)

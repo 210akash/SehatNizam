@@ -21,12 +21,14 @@ namespace ERP.Mediator.Mediator.Prescription.Handler
 
         public async Task<long> Handle(SavePrescriptionCommand request, CancellationToken cancellationToken)
         {
+            Entities.Models.Prescription prescription;
+
             var existingPrescription = await unitOfWork.Repository<Entities.Models.Prescription>()
                 .GetFirstAsNoTrackingAsync(x => x.Id == request.Id);
 
             if (existingPrescription == null)
             {
-                var prescription = new Entities.Models.Prescription
+                prescription = new Entities.Models.Prescription
                 {
                     AppointmentId = request.AppointmentId,
                     DrugName = request.DrugName,
@@ -38,31 +40,35 @@ namespace ERP.Mediator.Mediator.Prescription.Handler
                     CreatedDate = DateTime.Now
                 };
 
-                unitOfWork.Repository<Entities.Models.Prescription>().Add(prescription);
-                await unitOfWork.SaveChangesAsync(cancellationToken);
-                return 200;
+                unitOfWork.Repository<Entities.Models.Prescription>()
+                    .Add(prescription);
             }
-
-            var prescriptionToUpdate = await unitOfWork.Repository<Entities.Models.Prescription>()
-                .GetFirstAsync(x => x.Id == request.Id);
-
-            if (prescriptionToUpdate == null)
+            else
             {
-                return 404;
+                prescription = await unitOfWork.Repository<Entities.Models.Prescription>()
+                    .GetFirstAsync(x => x.Id == request.Id);
+
+                if (prescription == null)
+                {
+                    return -404;
+                }
+
+                prescription.AppointmentId = request.AppointmentId;
+                prescription.DrugName = request.DrugName;
+                prescription.Dosage = request.Dosage;
+                prescription.Frequency = request.Frequency;
+                prescription.Duration = request.Duration;
+                prescription.Instructions = request.Instructions;
+                prescription.ModifiedById = sessionProvider.Session.LoggedInUserId;
+                prescription.ModifiedDate = DateTime.Now;
+
+                unitOfWork.Repository<Entities.Models.Prescription>()
+                    .Update(prescription);
             }
 
-            prescriptionToUpdate.AppointmentId = request.AppointmentId;
-            prescriptionToUpdate.DrugName = request.DrugName;
-            prescriptionToUpdate.Dosage = request.Dosage;
-            prescriptionToUpdate.Frequency = request.Frequency;
-            prescriptionToUpdate.Duration = request.Duration;
-            prescriptionToUpdate.Instructions = request.Instructions;
-            prescriptionToUpdate.ModifiedById = sessionProvider.Session.LoggedInUserId;
-            prescriptionToUpdate.ModifiedDate = DateTime.Now;
+            var check = await unitOfWork.SaveChangesAsync(cancellationToken);
 
-            unitOfWork.Repository<Entities.Models.Prescription>().Update(prescriptionToUpdate);
-            await unitOfWork.SaveChangesAsync(cancellationToken);
-            return 200;
+            return check > 0 ? prescription.Id : 0;
         }
     }
 }

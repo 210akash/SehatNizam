@@ -29,29 +29,37 @@ namespace ERP.Mediator.Mediator.PatientProblem.Handler
 
         public async Task<long> Handle(SavePatientProblemCommand request, CancellationToken cancellationToken)
         {
+            Entities.Models.PatientProblem patientProblem;
 
             var existingPatientProblem = await unitOfWork.Repository<Entities.Models.PatientProblem>()
                 .GetFirstAsNoTrackingAsync(x => x.Id == request.Id);
 
             if (existingPatientProblem == null)
             {
-                var newPatientProblem = CreatePatientProblemFromCommand(request, isNew: true);
-                unitOfWork.Repository<Entities.Models.PatientProblem>().Add(newPatientProblem);
+                patientProblem = CreatePatientProblemFromCommand(request, isNew: true);
+
+                unitOfWork.Repository<Entities.Models.PatientProblem>()
+                    .Add(patientProblem);
             }
             else
             {
-                var PatientProblemToUpdate = await unitOfWork.Repository<Entities.Models.PatientProblem>()
+                patientProblem = await unitOfWork.Repository<Entities.Models.PatientProblem>()
                     .GetFirstAsync(x => x.Id == request.Id);
 
-                if (PatientProblemToUpdate != null)
+                if (patientProblem == null)
                 {
-                    UpdatePatientProblemFromCommand(PatientProblemToUpdate, request);
-                    unitOfWork.Repository<Entities.Models.PatientProblem>().Update(PatientProblemToUpdate);
+                    return -404;
                 }
 
+                UpdatePatientProblemFromCommand(patientProblem, request);
+
+                unitOfWork.Repository<Entities.Models.PatientProblem>()
+                    .Update(patientProblem);
             }
+
             int check = await unitOfWork.SaveChangesAsync(cancellationToken);
-            return 200;
+
+            return check > 0 ? patientProblem.Id : 0;
         }
 
         private Entities.Models.PatientProblem CreatePatientProblemFromCommand(SavePatientProblemCommand command, bool isNew)

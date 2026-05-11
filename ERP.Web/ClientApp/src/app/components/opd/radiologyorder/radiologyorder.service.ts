@@ -23,4 +23,10 @@ export class RadiologyOrderService extends BaseService<any> {
         return this.post(command, this.endPointControllerName + this.RadiologyOrderEndPoints.saveRadiologyOrder)
             .pipe(map((data: any) => data));
     }
+
+
+    deleteRadiologyOrder(id: number) {
+        return this.delete(id, this.endPointControllerName + this.RadiologyOrderEndPoints.deleteRadiologyOrder)
+            .pipe();
+    }
 }

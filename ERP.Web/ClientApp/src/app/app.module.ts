@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { NgbDatepickerModule, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDatepickerModule, NgbDropdownModule, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule, DatePipe, JsonPipe } from '@angular/common';
 import { AuthenticationService } from './Auth/authentication.service';
@@ -1504,6 +1504,7 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         BrowserModule,
         AppRoutingModule,
         NgbDatepickerModule,
+        NgbDropdownModule,
         FormsModule,
         NgbTypeaheadModule,
         CommonModule,

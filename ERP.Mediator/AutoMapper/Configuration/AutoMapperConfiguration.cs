@@ -107,6 +107,7 @@
     using ERP.Mediator.Mediator.Service.Command;
     using ERP.Mediator.Mediator.RadiologyType.Command;
     using ERP.Mediator.Mediator.RadiologyOrder.Command;
+    using ERP.Mediator.Mediator.Doctor.Command;
 
     public class AutoMapperConfiguration : Profile
     {
@@ -659,9 +660,11 @@
             //this.CreateMap<EmployeeSalary, GetEmployeeSalary>().ReverseMap();
             //this.CreateMap<EmployeeSalary, SaveEmployeeSalaryCommand>().ReverseMap();
 
-            this.CreateMap<Entities.Models.RadiologyType, GetRadiologyType>().ReverseMap();
-            this.CreateMap<Entities.Models.RadiologyType, SaveRadiologyTypeCommand>().ReverseMap();
-            this.CreateMap<Entities.Models.RadiologyOrder, SaveRadiologyOrderCommand>().ReverseMap();
+            this.CreateMap<RadiologyType, GetRadiologyType>().ReverseMap();
+            this.CreateMap<RadiologyType, SaveRadiologyTypeCommand>().ReverseMap();
+            this.CreateMap<RadiologyOrder, SaveRadiologyOrderCommand>().ReverseMap();
+            this.CreateMap<DoctorProfile, SaveDoctorProfileCommand>().ReverseMap();
+            this.CreateMap<DoctorProfile, GetDoctorProfile>().ReverseMap();
 
             //this.CreateMap<PayrollDetail, GetPayrollDetail>().ReverseMap();
 

@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { NotificationsService } from '../../../../Service/notification.service';
 import { LabOrderTypeService } from '../lab-order-type.service';
 import { ServiceService } from '../../service/service.service';
@@ -19,7 +19,7 @@ export class AddLabOrderTypeComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private dialog: MatDialog,
+    private dialogRef: MatDialogRef<AddLabOrderTypeComponent>,
     private serviceService: ServiceService,
     private service: LabOrderTypeService,
     private notifications: NotificationsService,
@@ -34,8 +34,7 @@ export class AddLabOrderTypeComponent implements OnInit {
       id: [this.isEdit ? this.data.element.id : 0],
       name: [this.isEdit ? this.data.element.name : '', Validators.required],
       description: [this.isEdit ? this.data.element.description : ''],
-      serviceId: [this.isEdit ? this.data.element.serviceId : null, Validators.required],
-      customFieldsSchema: [this.isEdit ? this.data.element.customFieldsSchema : '[]']
+      serviceId: [this.isEdit ? this.data.element.serviceId : null, Validators.required]
     });
     this.getservicesList();
   }
@@ -48,7 +47,12 @@ export class AddLabOrderTypeComponent implements OnInit {
   }
 
   save(): void {
-    if (this.form.invalid) return;
+    if (this.isLoading) return;
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      this.notifications.showNotification('Please fill all required fields.', 'snack-bar-danger');
+      return;
+    }
 
     this.isLoading = true;
     const command = this.form.value;
@@ -58,7 +62,7 @@ export class AddLabOrderTypeComponent implements OnInit {
         this.isLoading = false;
         if (res.Status === 200) {
           this.notifications.showNotification(res.Data || 'Lab Order Type Saved Successfully!', 'snack-bar-success');
-          this.dialog.closeAll();
+          this.dialogRef.close(true);
         } else if (res.Status === 409) {
           this.notifications.showNotification('Lab Order Type with this name already exists!', 'snack-bar-danger');
         } else {

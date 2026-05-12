@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace ERP.Entities.Models
 {
@@ -19,13 +21,21 @@ namespace ERP.Entities.Models
         public string Specialization { get; set; }
 
         public decimal? ConsultationFee { get; set; }
+        public decimal? HospitalPercentage { get; set; }      // e.g. 50%
 
         public bool IsAvailableForOPD { get; set; } = true;
 
         public bool IsAvailableForIPD { get; set; } = true;
 
-        // Dynamic fields
-        public JsonDocument CustomFields { get; set; }
+        // Dynamic fields - stored as JSON string in database
+        public string CustomFieldsJson { get; set; }
+
+        [NotMapped]
+        public JsonDocument CustomFields
+        {
+            get => string.IsNullOrEmpty(CustomFieldsJson) ? null : JsonDocument.Parse(CustomFieldsJson);
+            set => CustomFieldsJson = value?.ToString();
+        }
 
         public AspNetUsers Doctor { get; set; }
 

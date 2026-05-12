@@ -1,0 +1,62 @@
+<mat-card>
+  <mat-card-header><mat-card-title>View Doctor Profile</mat-card-title></mat-card-header>
+  <mat-card-content>
+    <form [formGroup]="form">
+      <mat-form-field class="form-field">
+        <mat-label>Doctor Name</mat-label>
+        <input matInput formControlName="doctorName" readonly />
+      </mat-form-field>
+
+      <mat-form-field class="form-field">
+        <mat-label>PMDC Number</mat-label>
+        <input matInput formControlName="pmdcNumber" readonly />
+      </mat-form-field>
+
+      <mat-form-field class="form-field">
+        <mat-label>Qualification</mat-label>
+        <input matInput formControlName="qualification" readonly />
+      </mat-form-field>
+
+      <mat-form-field class="form-field">
+        <mat-label>Experience (Years)</mat-label>
+        <input matInput formControlName="experienceYears" readonly />
+      </mat-form-field>
+
+      <mat-form-field class="form-field">
+        <mat-label>Specialization</mat-label>
+        <input matInput formControlName="specialization" readonly />
+      </mat-form-field>
+
+      <mat-form-field class="form-field">
+        <mat-label>Consultation Fee</mat-label>
+        <input matInput formControlName="consultationFee" readonly />
+      </mat-form-field>
+
+      <mat-form-field class="form-field">
+        <mat-label>Hospital Percentage (%)</mat-label>
+        <input matInput formControlName="hospitalPercentage" readonly />
+      </mat-form-field>
+
+      <mat-form-field class="form-field">
+        <mat-label>Biography</mat-label>
+        <textarea matInput formControlName="biography" rows="3" readonly></textarea>
+      </mat-form-field>
+
+      <mat-form-field class="form-field">
+        <mat-label>Available For OPD</mat-label>
+        <mat-select formControlName="isAvailableForOPD">
+          <mat-option [value]="true">Yes</mat-option>
+          <mat-option [value]="false">No</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field class="form-field">
+        <mat-label>Available For IPD</mat-label>
+        <mat-select formControlName="isAvailableForIPD">
+          <mat-option [value]="true">Yes</mat-option>
+          <mat-option [value]="false">No</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </form>
+  </mat-card-content>
+</mat-card>

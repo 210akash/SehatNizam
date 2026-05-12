@@ -570,6 +570,7 @@
           </div>
           <a routerLink="/employee" class="submenu-link" [class.active-link]="isActive('/employee')">Manage
             Employees</a>
+          <a routerLink="/doctor"   class="submenu-link"  [class.active-link]="isActive('/doctor')">Doctors</a>
            <a routerLink="/roster" class="submenu-link" [class.active-link]="isActive('/roster')">Manage
             Roster</a>
           <a routerLink="/manageemployeeleave" class="submenu-link"
@@ -660,8 +661,19 @@
           <a routerLink="/doctorappointment" *ngIf="hasRequiredRole(['doctor'])" class="submenu-link" [class.active-link]="isActive('/doctorappointment')">My Appointments</a>
           <a routerLink="/appointment" *ngIf="hasRequiredRole(['admin','receptionist'])" class="submenu-link" [class.active-link]="isActive('/appointment')">Appointments</a>
           <a routerLink="/patient"     *ngIf="hasRequiredRole(['admin','receptionist'])" class="submenu-link"  [class.active-link]="isActive('/patient')">Patients</a>
-          <a routerLink="/doctor"      *ngIf="hasRequiredRole(['admin'])" class="submenu-link"  [class.active-link]="isActive('/doctor')">Doctors</a>
           <a routerLink="/triage"      *ngIf="hasRequiredRole(['admin','receptionist'])" class="submenu-link"  [class.active-link]="isActive('/triage')">Triage</a>
+        </div>
+      </div>
+
+      <!-- Manage Laboratory -->
+      <div class="nav-group" *ngIf="hasRequiredRole(['lab technician'])">
+        <button (click)="toggleSubMenu('laboratory')" class="nav-button">
+          <i class="fas fa-flask"></i>
+          <span>Manage Laboratory</span>
+          <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('laboratory')"></i>
+        </button>
+        <div class="submenu" *ngIf="isSubMenuVisible('laboratory')">
+          <a routerLink="/labordertype" class="submenu-link" [class.active-link]="isActive('/labordertype')">Lab Order Type</a>
         </div>
       </div>
     </nav>

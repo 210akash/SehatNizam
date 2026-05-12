@@ -17,7 +17,7 @@ import { ServiceService } from '../../service/service.service';
 export class LabOrderTypeListComponent implements OnInit {
   dataSource: any = [];
   form!: FormGroup;
-  displayedColumns: string[] = ['name', 'service', 'customFields', 'actions'];
+  displayedColumns: string[] = ['name', 'service', 'actions'];
   isLoading = false;
   services: any[] = [];
 

@@ -1,28 +1,49 @@
 <div class="header-container">
   <h2>Doctors</h2>
-  <button mat-mini-fab color="primary" (click)="bindData()" matTooltip="Refresh">
+ 
+</div>
+<div class="body-container">
+ <form [formGroup]="doctorFilterForm" class="form-horizontal form-label-left">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="mt-2">
+          <mat-form-field>
+            <mat-label>Name</mat-label>
+            <input type="text" matInput placeholder="Name" formControlName="name" (keyup)="bindData()" />
+          </mat-form-field>
+        </div>
+      </div>
+
+       <div class="col-md-2">
+        <div class="mt-2">
+          <mat-form-field>
+            <mat-label>HR Code</mat-label>
+            <input type="text" matInput placeholder="HR Code" formControlName="hrCode" (keyup)="bindData()" />
+          </mat-form-field>
+        </div>
+      </div>
+        <div class="col-md-4">
+         <div class="mt-2">
+          <mat-form-field class="form-field">
+            <mat-label>Department</mat-label>
+            <mat-select formControlName="departmentId"  (selectionChange)="bindData()">
+                    <mat-option value="0"> --ALL-- </mat-option>
+              <mat-option *ngFor="let department of departmentList" [value]="department.id">
+                {{ department.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          </div>
+        </div>
+        <div class="col-md-2">
+         <div class="mt-2">
+         <button mat-mini-fab color="primary" (click)="bindData()" matTooltip="Refresh">
     <mat-icon>refresh</mat-icon>
   </button>
-</div>
-
-<form class="filters" [formGroup]="doctorFilterForm">
-  <mat-form-field appearance="outline">
-    <mat-label>Name</mat-label>
-    <input matInput formControlName="name" placeholder="Search doctor name">
-  </mat-form-field>
-
-  <mat-form-field appearance="outline">
-    <mat-label>Department Id</mat-label>
-    <input matInput type="number" formControlName="departmentId">
-  </mat-form-field>
-
-  <mat-form-field appearance="outline">
-    <mat-label>Designation Id</mat-label>
-    <input matInput type="number" formControlName="employeeDesignationId">
-  </mat-form-field>
-
-  <button mat-flat-button color="primary" (click)="bindData()">Filter</button>
-</form>
+          </div>
+        </div>
+    </div>
+  </form>
 
 <div class="mat-elevation-z8 table-responsive" [class.loading]="isLoading">
   <table mat-table [dataSource]="dataSource" matSort>
@@ -39,7 +60,7 @@
 
     <ng-container matColumnDef="designation">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Designation</th>
-      <td mat-cell *matCellDef="let element">{{ element.designation?.name || element.designationName }}</td>
+      <td mat-cell *matCellDef="let element">{{ element.employeeDesignation?.name || element.designationName }}</td>
     </ng-container>
 
     <ng-container matColumnDef="phoneNumber">
@@ -60,6 +81,18 @@
         </span>
       </td>
     </ng-container>
+     <!-- Actions column definition -->
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef style="width: 11%;"> Actions </th>
+      <td mat-cell *matCellDef="let element">
+        <div class="action_btns">
+
+          <button mat-mini-fab matTooltip="Profile" color="primary" (click)="adddoctorProfileDialog(element)">
+            <mat-icon aria-label="View">person_pin</mat-icon>
+          </button>
+        </div>
+      </td>
+    </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
@@ -75,4 +108,5 @@
     [pageSizeOptions]="pageSizeOptions"
     (page)="pageChanged($event)">
   </mat-paginator>
+</div>
 </div>

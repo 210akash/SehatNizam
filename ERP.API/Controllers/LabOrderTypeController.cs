@@ -76,5 +76,31 @@ namespace ERP.API.Controllers
                 return this.Result(ResponseStatus.Error, null, ex.Message);
             }
         }
+
+        [HttpPost]
+        [Route("SaveLabTestVariables")]
+        public async Task<ActionResult<int>> SaveLabTestVariables([FromBody] SaveLabTestVariableCommand command)
+        {
+            try
+            {
+                var result = await this.mediator.Send(command);
+                if (result == 200)
+                {
+                    return this.Result(ResponseStatus.OK, "Lab Test Variables Saved!", null);
+                }
+                else if (result == 400)
+                {
+                    return this.Result(ResponseStatus.Error, null, "Invalid data! Please provide variables.");
+                }
+                else
+                {
+                    return this.Result(ResponseStatus.Error, null, "Error saving Lab Test Variables!");
+                }
+            }
+            catch (Exception ex)
+            {
+                return this.Result(ResponseStatus.Error, null, ex.Message);
+            }
+        }
     }
 }

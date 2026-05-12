@@ -1,3 +1,5 @@
+.header-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
 table { width: 100%; }
-.filter-section { display: flex; gap: 12px; margin-bottom: 16px; align-items: flex-end; }
-.filter-field { flex: 1; min-width: 200px; }
+.filter-section { display: flex; gap: 12px; align-items: flex-end; padding: 12px; }
+.filter-field { min-width: 220px; }
+.action_btns { display: flex; gap: 6px; }

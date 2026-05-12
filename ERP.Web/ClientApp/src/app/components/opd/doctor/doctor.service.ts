@@ -14,7 +14,7 @@ export class DoctorService extends BaseService<any> {
   constructor(
     private http: HttpClient,
     httpClient: HttpClient,
-    private doctorEndPoints: DoctorEndPoints
+    private doctorEndPoints: DoctorEndPoints,
   ) {
     super(httpClient, environment.dev_uri);
   }
@@ -26,8 +26,8 @@ export class DoctorService extends BaseService<any> {
     ).pipe(map((data: any) => data));
   }
 
-   getDoctorByName(employeeFilterForm: any) {
-        return this.post(employeeFilterForm, this.endPointControllerName + this.doctorEndPoints.getDoctorByName)
-            .pipe(map((data: any) => data));
-    }
+  saveDoctorProfile(command: any) {
+    return this.post(command, this.endPointControllerName + this.doctorEndPoints.saveDoctorProfile)
+      .pipe(map((data: any) => data));
+  }
 }

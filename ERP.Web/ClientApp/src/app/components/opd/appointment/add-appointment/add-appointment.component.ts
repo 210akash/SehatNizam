@@ -464,24 +464,24 @@ export class AddAppointmentComponent implements OnInit {
     return `${hours}:${minutes}`;
   }
 
-  getDoctorList(event: any) {
-    var filter = event.currentTarget.value;
-    var departmentId = this.appointmentForm.get('departmentId')?.value;
-    if (departmentId == 0 || departmentId == null) {
-      this.appointmentForm.get('doctorId')?.patchValue(0);
-      this.appointmentForm.get('doctorName')?.patchValue('');
-      this.appointmentForm.get('doctor')?.patchValue('');
-      this.notifications.showNotification('Please Select Department', 'snack-bar-danger');
-    }
-    var getDoctorFilter = {
-      name: filter,
-      departmentId: departmentId
-    }
-    this.doctorService.getDoctorByName(getDoctorFilter)
-      .subscribe((data: any) => {
-        this.doctorList = data;
-      });
-  }
+  // getDoctorList(event: any) {
+  //   var filter = event.currentTarget.value;
+  //   var departmentId = this.appointmentForm.get('departmentId')?.value;
+  //   if (departmentId == 0 || departmentId == null) {
+  //     this.appointmentForm.get('doctorId')?.patchValue(0);
+  //     this.appointmentForm.get('doctorName')?.patchValue('');
+  //     this.appointmentForm.get('doctor')?.patchValue('');
+  //     this.notifications.showNotification('Please Select Department', 'snack-bar-danger');
+  //   }
+  //   var getDoctorFilter = {
+  //     name: filter,
+  //     departmentId: departmentId
+  //   }
+  //   this.doctorService.getDoctorByName(getDoctorFilter)
+  //     .subscribe((data: any) => {
+  //       this.doctorList = data;
+  //     });
+  // }
 
   onOptionSelected(event: MatAutocompleteSelectedEvent): void {
     const selectedValue = event.option.value;

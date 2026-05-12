@@ -1,1 +1,2 @@
-.button-container { display: flex; gap: 8px; margin-top: 12px; }
+.delete-text { margin: 12px 0 8px; color: #374151; }
+.button-container { display: flex; justify-content: flex-end; gap: 10px; margin-top: 12px; }

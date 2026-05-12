@@ -5,6 +5,10 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { ConstantService } from '../../../../Service/constant.service';
 import { DoctorService } from '../doctor.service';
+import { AddDoctorProfileComponent } from '../add-doctor-profile/add-doctor-profile.component';
+import { ViewDoctorProfileComponent } from '../view-doctor-profile/view-doctor-profile.component';
+import { MatDialog } from '@angular/material/dialog';
+import { DepartmentService } from '../../../department/department.service';
 
 @Component({
   selector: 'app-doctor-list',
@@ -21,7 +25,8 @@ export class DoctorListComponent implements OnInit {
     'designation',
     'phoneNumber',
     'email',
-    'status'
+    'status',
+    'actions'
   ];
   isLoading = false;
 
@@ -29,11 +34,13 @@ export class DoctorListComponent implements OnInit {
   pageSize = 0;
   totalRows = 0;
   pageSizeOptions: number[] = [5, 10, 25, 100];
-
+ departmentList : any;
   constructor(
     private formBuilder: FormBuilder,
+        private dialog: MatDialog,
     private doctorService: DoctorService,
-    private constantService: ConstantService
+    private constantService: ConstantService,
+      private departmentService: DepartmentService,
   ) {}
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -47,6 +54,13 @@ export class DoctorListComponent implements OnInit {
       employeeDesignationId: [null],
     });
     this.bindData();
+     this.getDepartmentList();
+  }
+
+  getDepartmentList(): void {
+    this.departmentService.getClinicalDepartment().subscribe(data => {
+      this.departmentList = data;
+    });
   }
 
   async bindData(): Promise<void> {
@@ -86,5 +100,26 @@ export class DoctorListComponent implements OnInit {
     this.pageSize = event.pageSize;
     this.currentPage = event.pageIndex;
     this.bindData();
+  }
+
+  adddoctorProfileDialog(element: any): void {
+    const dialogRef = this.dialog.open(AddDoctorProfileComponent, {
+      data: { element: element },
+      panelClass: 'cstm_width_800',
+      maxHeight: '90vh',
+      disableClose: true
+    });
+     dialogRef.afterClosed().subscribe(result => {
+      this.bindData();
+    });
+  }
+
+   viewdoctorProfileDialog(element: any): void {
+    this.dialog.open(ViewDoctorProfileComponent, {
+      data: { element: element },
+      panelClass: 'cstm_width_800',
+      maxHeight: '90vh',
+      disableClose: true
+    });
   }
 }

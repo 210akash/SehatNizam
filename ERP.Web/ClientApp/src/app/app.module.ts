@@ -791,6 +791,8 @@ import { DoctorEndPoints } from './components/opd/doctor/doctor.endpoints';
 import { DoctorService } from './components/opd/doctor/doctor.service';
 import { DoctorListComponent } from './components/opd/doctor/doctor-list/doctor-list.component';
 import { DoctorAppointmentListComponent } from './components/opd/appointment/doctor-appointment-list/doctor-appointment-list.component';
+import { AddDoctorProfileComponent } from './components/opd/doctor/add-doctor-profile/add-doctor-profile.component';
+import { ViewDoctorProfileComponent } from './components/opd/doctor/view-doctor-profile/view-doctor-profile.component';
 import { SugarTypeService } from './components/opd/sugar-type/sugar-type.service';
 import { SugarTypeEndPoints } from './components/opd/sugar-type/sugar-type.endpoints';
 import { TriageService } from './components/opd/triage/triage.service';
@@ -1436,6 +1438,8 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         ViewPatientComponent,
         DoctorListComponent,
         DoctorAppointmentListComponent,
+        AddDoctorProfileComponent,
+        ViewDoctorProfileComponent,
         CreateSugarTypeComponent,
         ViewSugarTypeComponent,
         DeleteSugarTypeComponent,
@@ -1497,7 +1501,8 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         ServiceListComponent,
         AddServiceComponent,
         DeleteServiceComponent,
-        ViewServiceComponent
+        ViewServiceComponent,
+        AddDoctorProfileComponent
     ],
     bootstrap: [AppComponent], imports: [
         InputMaskModule,

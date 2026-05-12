@@ -1,0 +1,80 @@
+<mat-card class="doctor-profile-card">
+  <mat-card-header class="profile-header">
+    <mat-card-title>{{ isEdit ? 'Edit Doctor Profile' : 'Add Doctor Profile' }}</mat-card-title>
+    <mat-card-subtitle>Manage fee structure, and OPD/IPD availability.</mat-card-subtitle>
+  </mat-card-header>
+
+  <div class="doctor-summary" *ngIf="doctorName">
+    <div class="summary-name">{{ doctorName }}</div>
+    <div class="summary-meta">
+      <span matTooltip="Department" *ngIf="doctorDepartment">{{ doctorDepartment }}</span>
+      <span matTooltip="Designation" *ngIf="doctorDesignation">{{ doctorDesignation }}</span>
+      <span matTooltip="Code" *ngIf="doctorCode">{{ doctorCode }}</span>
+      <span matTooltip="Email" *ngIf="doctorEmail">{{ doctorEmail }}</span>
+      <span matTooltip="Phone" *ngIf="doctorPhone">{{ doctorPhone }}</span>
+    </div>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <mat-card-content>
+    <form [formGroup]="form" class="profile-form">
+      <div class="form-grid">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>PMDC Number</mat-label>
+          <input matInput formControlName="pmdcNumber" placeholder="Enter PMDC number" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Qualification</mat-label>
+          <input matInput formControlName="qualification" placeholder="e.g. MBBS, FCPS" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Experience (Years)</mat-label>
+          <input matInput formControlName="experienceYears" type="number" placeholder="Years of experience" min="0" />
+          <mat-error *ngIf="form.get('experienceYears')?.hasError('required')">Experience is required</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Specialization</mat-label>
+          <input matInput formControlName="specialization" placeholder="e.g. Cardiology" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Consultation Fee</mat-label>
+          <input matInput formControlName="consultationFee" type="number" placeholder="Fee amount" min="0" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Hospital Percentage (%)</mat-label>
+          <input matInput formControlName="hospitalPercentage" type="number" placeholder="e.g. 50" min="0" max="100" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Hospital Amount</mat-label>
+          <input matInput formControlName="hospitalAmount" type="number" readonly />
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline" class="form-field bio-field">
+        <mat-label>Biography</mat-label>
+        <textarea matInput formControlName="biography" rows="1" placeholder="Doctor's biography..."></textarea>
+      </mat-form-field>
+
+      <div class="switch-row">
+        <mat-slide-toggle color="primary" formControlName="isAvailableForOPD">Available For OPD</mat-slide-toggle>
+        <mat-slide-toggle color="primary" formControlName="isAvailableForIPD">Available For IPD</mat-slide-toggle>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <div class="button-container">
+        <button mat-flat-button color="primary" type="button" (click)="save()" [disabled]="isLoading">
+          {{ isLoading ? 'Saving...' : (isEdit ? 'Update Profile' : 'Save Profile') }}
+        </button>
+        <button mat-stroked-button type="button" [mat-dialog-close]="true" [disabled]="isLoading">Cancel</button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

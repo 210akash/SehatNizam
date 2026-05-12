@@ -12,8 +12,11 @@ import { LabOrderTypeService } from './lab-order-type.service';
 export class LabOrderTypeComponent implements OnInit {
   isLoading = false;
   items: any[] = [];
+  variables: any[] = [];
+  selectedLabOrderTypeId: number | null = null;
 
   form: FormGroup;
+  variableForm: FormGroup;
 
   constructor(
     private fb: FormBuilder,
@@ -26,6 +29,16 @@ export class LabOrderTypeComponent implements OnInit {
       description: [''],
       serviceId: [0],
       customFieldsSchema: ['[]']
+    });
+
+    this.variableForm = this.fb.group({
+      name: [''],
+      unit: [''],
+      maleMin: [null],
+      maleMax: [null],
+      femaleMin: [null],
+      femaleMax: [null],
+      hasGenderRange: [false]
     });
   }
 
@@ -55,10 +68,14 @@ export class LabOrderTypeComponent implements OnInit {
       serviceId: item.serviceId || 0,
       customFieldsSchema: item.customFieldsSchema || '[]'
     });
+    this.selectedLabOrderTypeId = item.id;
+    this.loadVariables(item.id);
   }
 
   resetForm(): void {
     this.form.reset({ id: 0, name: '', description: '', serviceId: 0, customFieldsSchema: '[]' });
+    this.selectedLabOrderTypeId = null;
+    this.variables = [];
   }
 
   save(): void {
@@ -84,6 +101,56 @@ export class LabOrderTypeComponent implements OnInit {
         this.load();
       },
       error: () => this.notifications.showNotification('Unable to delete lab order type.', 'snack-bar-danger')
+    });
+  }
+
+  // Lab Test Variables Management
+  loadVariables(labOrderTypeId: number): void {
+    // For now, we'll just show empty list. In real app, you'd have a GET endpoint.
+    this.variables = [];
+  }
+
+  addVariable(): void {
+    if (this.variableForm.invalid || !this.selectedLabOrderTypeId) return;
+
+    const variable = this.variableForm.value;
+    this.variables.push({ ...variable, id: 0 });
+    this.variableForm.reset();
+  }
+
+  removeVariable(index: number): void {
+    this.variables.splice(index, 1);
+  }
+
+  saveVariables(): void {
+    if (!this.selectedLabOrderTypeId || this.variables.length === 0) {
+      this.notifications.showNotification('Please select a lab order type and add at least one variable.', 'snack-bar-danger');
+      return;
+    }
+
+    const command = {
+      labOrderTypeId: this.selectedLabOrderTypeId,
+      variables: this.variables.map(v => ({
+        id: v.id || 0,
+        name: v.name,
+        unit: v.unit,
+        maleMin: v.maleMin,
+        maleMax: v.maleMax,
+        femaleMin: v.femaleMin,
+        femaleMax: v.femaleMax,
+        hasGenderRange: v.hasGenderRange
+      }))
+    };
+
+    this.service.saveLabTestVariables(command).subscribe({
+      next: (res: any) => {
+        if (res?.Status === 200) {
+          this.notifications.showNotification('Lab test variables saved successfully!', 'snack-bar-success');
+        } else {
+          this.notifications.showNotification(res?.Message || 'Error saving variables.', 'snack-bar-danger');
+        }
+      },
+      error: () => this.notifications.showNotification('Error saving variables.', 'snack-bar-danger')
     });
   }
 }

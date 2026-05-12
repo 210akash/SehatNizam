@@ -29,7 +29,7 @@ export class LabOrderTypeService extends BaseService<any> {
             .pipe(map((data: any) => data));
     }
 
-    saveLabOrderType(command: { id?: number; name: string }) {
+    saveLabOrderType(command: { id?: number; name: string; description?: string; serviceId: number }) {
         return this.post(command, this.endPointControllerName + this.endPoints.saveLabOrderType)
             .pipe(map((data: any) => data));
     }
@@ -37,5 +37,10 @@ export class LabOrderTypeService extends BaseService<any> {
     deleteLabOrderType(id: number) {
         return this.delete(id, this.endPointControllerName + this.endPoints.deleteLabOrderType)
             .pipe();
+    }
+
+    saveLabTestVariables(command: { labOrderTypeId: number; variables: any[] }) {
+        return this.post(command, this.endPointControllerName + this.endPoints.saveLabTestVariables)
+            .pipe(map((data: any) => data));
     }
 }

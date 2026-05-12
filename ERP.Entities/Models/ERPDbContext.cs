@@ -991,6 +991,18 @@
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<DoctorProfile>()
+          .HasOne(c => c.CreatedBy)
+          .WithMany()
+          .HasForeignKey(c => c.CreatedById)
+          .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<DoctorProfile>()
+                .HasOne(c => c.ModifiedBy)
+                .WithMany()
+                .HasForeignKey(c => c.ModifiedById)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<DoctorProfile>()
                 .HasOne(x => x.Doctor)
                 .WithOne(x => x.DoctorProfile)
                 .HasForeignKey<DoctorProfile>(x => x.DoctorId)

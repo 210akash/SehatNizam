@@ -53,6 +53,7 @@ namespace ERP.Mediator.Mediator.Doctor.Handler
         x => x.Store,
         x => x.Attachments,
         x => x.EmployeeDesignation,
+        x => x.DoctorProfile,
     };
 
             List<string> thenIncludes = new()

@@ -722,14 +722,14 @@
         </button> -->
 
         <div class="content_warehouse" *ngIf="warehouseList.length > 0">
-          <div ngbDropdown class="warehouse-dropdown">
-            <button ngbDropdownToggle class="btn btn-outline-secondary warehouse-btn" type="button" id="warehouseDropdown">
+          <div class="warehouse-dropdown-simple">
+            <button class="btn btn-outline-secondary warehouse-btn" type="button" (click)="toggleWarehouseDropdown()">
               <i class="fas fa-building me-1"></i>
-              <span class="warehouse-text">{{ warehouseList.find(w => w.id === selectedWarehouseId)?.name || 'Building/Site' }}</span>
+              <span class="warehouse-text">{{ selectedWarehouseName }}</span>
             </button>
-            <ul ngbDropdownMenu class="warehouse-dropdown-menu" aria-labelledby="warehouseDropdown">
+            <ul class="warehouse-dropdown-menu" *ngIf="isWarehouseDropdownOpen">
               <li *ngFor="let project of warehouseList">
-                <a ngbDropdownItem class="warehouse-option" [class.active]="project.id === selectedWarehouseId" (click)="onWarehouseSelect(project.id)">
+                <a class="warehouse-option" [class.active]="project.id === selectedWarehouseId" (click)="onWarehouseSelect(project.id)">
                   {{ project.name }}
                 </a>
               </li>

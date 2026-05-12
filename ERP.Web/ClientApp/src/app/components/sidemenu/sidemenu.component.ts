@@ -1,5 +1,5 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { Component, EventEmitter, Input, Output, ViewChild, OnDestroy, HostListener } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild, OnDestroy, HostListener, ViewChildren, QueryList, ElementRef } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
 import { Subject, filter, takeUntil } from 'rxjs';
 import { NavigationEnd, Router, Event, ActivatedRoute } from '@angular/router';
@@ -37,6 +37,7 @@ export class SidemenuComponent implements OnDestroy {
   selectedWarehouseId: any;
   profile: any;
   breadcrumbCurrent : any;
+  isWarehouseDropdownOpen = false;
   constructor(private dialog: MatDialog, location: Location,
     private observer: BreakpointObserver,
     private router: Router,
@@ -96,6 +97,10 @@ export class SidemenuComponent implements OnDestroy {
     currentUser.selectedWarehouseId = selectedId;
     this.selectedWarehouseId = selectedId;
     localStorage.setItem("currentUser", JSON.stringify(currentUser));
+    
+    // Close dropdown
+    this.isWarehouseDropdownOpen = false;
+    
     this.authenticationService.updateSelectedWarehouse(selectedId).subscribe({
       next: (response: any) => {
         if (response?.token) {
@@ -161,9 +166,18 @@ export class SidemenuComponent implements OnDestroy {
     return this.openSubMenus.has(menuKey);
   }
 
-  isActive(routePath: string): boolean {
-    return this.router.url === routePath;
+  toggleWarehouseDropdown(): void {
+    this.isWarehouseDropdownOpen = !this.isWarehouseDropdownOpen;
   }
+
+   isActive(routePath: string): boolean {
+     return this.router.url === routePath;
+   }
+
+   get selectedWarehouseName(): string {
+     const warehouse = this.warehouseList.find((w: { id: any; }) => w.id === this.selectedWarehouseId);
+     return warehouse?.name || 'Building/Site';
+   }
 
   hasRequiredRole(requiredRoles: string[]): boolean {
     return requiredRoles.some(role => this.roleList.includes(role.toLowerCase()));

@@ -181,6 +181,8 @@
         public virtual DbSet<Payroll> Payroll { get; set; }
         public virtual DbSet<PayrollDetail> PayrollDetail { get; set; }
         public virtual DbSet<SalaryTaxSlab> SalaryTaxSlab { get; set; }
+        public virtual DbSet<DoctorProfile> DoctorProfile { get; set; }
+        public virtual DbSet<DoctorServiceFee> DoctorServiceFee { get; set; }
 
         #endregion
 
@@ -204,12 +206,14 @@
         public virtual DbSet<PatientProblem> PatientProblem { get; set; }
         public virtual DbSet<Prescription> Prescription { get; set; }
         public virtual DbSet<AppointmentAttachment> AppointmentAttachment { get; set; }
+        public virtual DbSet<LabOrderType> LabOrderType { get; set; }
         public virtual DbSet<LabOrder> LabOrder { get; set; }
+        public virtual DbSet<LabTestVariable> LabTestVariable { get; set; }
+        public virtual DbSet<LabResult> LabResult { get; set; }
         public virtual DbSet<RadiologyOrder> RadiologyOrder { get; set; }
         public virtual DbSet<AppointmentPayment> AppointmentPayment { get; set; }
         public virtual DbSet<RadiologyType> RadiologyType { get; set; }
         public virtual DbSet<Service> Service { get; set; }
-        public virtual DbSet<DoctorServiceFee> DoctorServiceFee { get; set; }
         public virtual DbSet<AppointmentService> AppointmentService { get; set; }
 
         #endregion
@@ -984,6 +988,12 @@
                 .HasOne(c => c.ModifiedBy)
                 .WithMany()
                 .HasForeignKey(c => c.ModifiedById)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<DoctorProfile>()
+                .HasOne(x => x.Doctor)
+                .WithOne(x => x.DoctorProfile)
+                .HasForeignKey<DoctorProfile>(x => x.DoctorId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             #endregion

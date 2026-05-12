@@ -1,0 +1,15 @@
+﻿namespace ERP.Entities.Models
+{
+    public class LabTestVariable : BaseEntity
+    {
+        public long LabOrderTypeId { get; set; }
+        public string Name { get; set; }   // Hb
+        public string Unit { get; set; }   // g/dL
+        public decimal? MaleMin { get; set; }
+        public decimal? MaleMax { get; set; }
+        public decimal? FemaleMin { get; set; }
+        public decimal? FemaleMax { get; set; }
+        public bool HasGenderRange { get; set; }
+        public LabOrderType LabOrderType { get; set; }
+    }
+}

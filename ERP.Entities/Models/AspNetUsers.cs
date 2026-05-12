@@ -171,6 +171,8 @@ namespace ERP.Entities.Models
         public virtual ICollection<EmployeeDevice> EmployeeDevice { get; set; }
         public virtual ICollection<EmployeeSalary> EmployeeSalary { get; set; }
 
+        public DoctorProfile DoctorProfile { get; set; }
+
         #region Appoinment 
         public ICollection<Appointment> DoctorAppointments { get; set; } = new List<Appointment>();
         #endregion

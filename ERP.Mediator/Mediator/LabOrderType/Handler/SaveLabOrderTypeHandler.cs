@@ -30,7 +30,6 @@ namespace ERP.Mediator.Mediator.LabOrderType.Handler
                 {
                     Name = request.Name,
                     Description = request.Description,
-                    CustomFieldsSchema = request.CustomFieldsSchema,
                     ServiceId = request.ServiceId,
                     CreatedById = sessionProvider.Session.LoggedInUserId,
                     CreatedDate = DateTime.Now
@@ -51,7 +50,6 @@ namespace ERP.Mediator.Mediator.LabOrderType.Handler
 
             updateEntity.Name = request.Name;
             updateEntity.Description = request.Description;
-            updateEntity.CustomFieldsSchema = request.CustomFieldsSchema;
             updateEntity.ServiceId = request.ServiceId;
             updateEntity.ModifiedById = sessionProvider.Session.LoggedInUserId;
             updateEntity.ModifiedDate = DateTime.Now;

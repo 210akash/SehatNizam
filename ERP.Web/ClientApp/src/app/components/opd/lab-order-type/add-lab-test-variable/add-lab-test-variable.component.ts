@@ -1,8 +1,8 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { NotificationsService } from '../../../../Service/notification.service';
 import { LabOrderTypeService } from '../lab-order-type.service';
+import { NotificationsService } from '../../../../Service/notification.service';
 
 @Component({
   selector: 'app-add-lab-test-variable',
@@ -11,19 +11,21 @@ import { LabOrderTypeService } from '../lab-order-type.service';
   standalone: false
 })
 export class AddLabTestVariableComponent implements OnInit {
+
   form!: FormGroup;
   isLoading = false;
   labOrderTypeId = 0;
 
   constructor(
     private fb: FormBuilder,
-    private dialogRef: MatDialogRef<AddLabTestVariableComponent>,
+    private dialogRef: MatDialogRef<any>,
     private service: LabOrderTypeService,
-    private notifications: NotificationsService,
-    @Inject(MAT_DIALOG_DATA) public data: { element: any }
-  ) { }
+    private notify: NotificationsService,
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {}
 
   ngOnInit(): void {
+
     this.labOrderTypeId = this.data?.element?.id ?? 0;
 
     this.form = this.fb.group({
@@ -34,45 +36,79 @@ export class AddLabTestVariableComponent implements OnInit {
     this.loadVariables();
   }
 
+  // -----------------------------
+  // GET VARIABLES ARRAY
+  // -----------------------------
   get variables(): FormArray {
     return this.form.get('variables') as FormArray;
   }
 
-  createVariableGroup(variable?: any): FormGroup {
+  // -----------------------------
+  // CREATE VARIABLE
+  // -----------------------------
+  createVariableGroup(v: any = {}): FormGroup {
     return this.fb.group({
-      id: [variable?.id ?? 0],
-      name: [variable?.name ?? '', Validators.required],
-      unit: [variable?.unit ?? ''],
-      maleMin: [variable?.maleMin ?? null],
-      maleMax: [variable?.maleMax ?? null],
-      femaleMin: [variable?.femaleMin ?? null],
-      femaleMax: [variable?.femaleMax ?? null],
-      hasGenderRange: [variable?.hasGenderRange ?? false]
+      id: [v.id ?? 0],
+      name: [v.name ?? '', Validators.required],
+      unit: [v.unit ?? ''],
+
+      resultType: [v.resultType ?? 1, Validators.required],
+      displayOrder: [v.displayOrder ?? 0],
+
+      maleMin: [v.maleMin ?? null],
+      maleMax: [v.maleMax ?? null],
+      femaleMin: [v.femaleMin ?? null],
+      femaleMax: [v.femaleMax ?? null],
+
+      hasGenderRange: [v.hasGenderRange ?? false],
+
+      options: this.fb.array(
+        (v.options ?? []).map((o: any) =>
+          this.createOption(o)
+        )
+      )
     });
   }
 
-  loadVariables(): void {
-    const rawVariables =
-      this.data?.element?.variables ??
-      this.data?.element?.labTestVariables ??
-      [];
-
-    const existingVariables = Array.isArray(rawVariables)
-      ? rawVariables
-      : rawVariables
-        ? [rawVariables]
-        : [];
-
-    if (existingVariables.length > 0) {
-      existingVariables.forEach((variable: any) => {
-        this.variables.push(this.createVariableGroup(variable));
-      });
-      return;
-    }
-
-    this.variables.push(this.createVariableGroup());
+  // -----------------------------
+  // CREATE OPTION
+  // -----------------------------
+  createOption(o: any = {}): FormGroup {
+    return this.fb.group({
+      id: [o.id ?? 0],
+      name: [o.name ?? '', Validators.required],
+      displayOrder: [o.displayOrder ?? 0]
+    });
   }
 
+  // -----------------------------
+  // LOAD DATA
+  // -----------------------------
+  loadVariables(): void {
+
+    const raw = this.data?.element?.variables ?? [];
+
+    if (raw.length > 0) {
+      raw.forEach((v: any) => this.variables.push(this.createVariableGroup(v)));
+    } else {
+      this.variables.push(this.createVariableGroup());
+    }
+  }
+
+  // -----------------------------
+  // OPTIONS HELPERS
+  // -----------------------------
+  getOptions(index: number): FormArray {
+    return this.variables.at(index).get('options') as FormArray;
+  }
+
+  addOption(index: number): void {
+    this.getOptions(index).push(this.createOption());
+  }
+
+  // -----------------------------
+  // VARIABLE ROWS
+  // -----------------------------
   addVariable(index: number): void {
     this.variables.insert(index + 1, this.createVariableGroup());
   }
@@ -80,67 +116,41 @@ export class AddLabTestVariableComponent implements OnInit {
   removeVariable(index: number): void {
     if (this.variables.length > 1) {
       this.variables.removeAt(index);
-    } else {
-      this.notifications.showNotification(
-        'At least one variable is required.',
-        'snack-bar-danger'
-      );
     }
   }
 
-  private toNullableDecimal(value: any): number | null {
-    if (value === '' || value === null || value === undefined) {
-      return null;
-    }
-
-    const parsedValue = Number(value);
-    return Number.isNaN(parsedValue) ? null : parsedValue;
-  }
-
+  // -----------------------------
+  // SAVE
+  // -----------------------------
   saveLabTestVariables(): void {
-    if (this.isLoading) {
-      return;
-    }
 
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      this.notifications.showNotification('Please fill all required fields.', 'snack-bar-danger');
+      this.notify.showNotification('Please fill required fields', 'danger');
       return;
     }
 
     this.isLoading = true;
 
     const command = {
-      labOrderTypeId: this.form.get('labOrderTypeId')?.value,
-      variables: this.variables.controls.map((control) => {
-        const value = control.value;
-        return {
-          id: value.id ?? 0,
-          name: value.name,
-          unit: value.unit,
-          maleMin: this.toNullableDecimal(value.maleMin),
-          maleMax: this.toNullableDecimal(value.maleMax),
-          femaleMin: this.toNullableDecimal(value.femaleMin),
-          femaleMax: this.toNullableDecimal(value.femaleMax),
-          hasGenderRange: !!value.hasGenderRange
-        };
-      })
+      labOrderTypeId: this.labOrderTypeId,
+      variables: this.variables.value
     };
 
     this.service.saveLabTestVariables(command).subscribe({
       next: (res: any) => {
         this.isLoading = false;
+
         if (res.Status === 200) {
-          this.notifications.showNotification(res.Data || 'Lab test variables saved successfully!', 'snack-bar-success');
+          this.notify.showNotification('Saved successfully', 'success');
           this.dialogRef.close(true);
         } else {
-          this.notifications.showNotification(res.Message || res.Data || 'Error saving lab test variables!', 'snack-bar-danger');
+          this.notify.showNotification(res.Message || 'Error', 'danger');
         }
       },
-      error: (error: any) => {
+      error: () => {
         this.isLoading = false;
-        const message = error?.error?.Message || 'An error occurred';
-        this.notifications.showNotification(message, 'snack-bar-danger');
+        this.notify.showNotification('Server error', 'danger');
       }
     });
   }

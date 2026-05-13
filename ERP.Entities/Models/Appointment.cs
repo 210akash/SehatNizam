@@ -12,7 +12,7 @@ namespace ERP.Entities.Models
         public long PriorityLevelId { get; set; }
         public long DepartmentId { get; set; }
         public long PatientId { get; set; }
-        public Guid DoctorId { get; set; }
+        public Guid? DoctorId { get; set; }
         public Guid? ConfirmedById { get; set; }
         public long? VisitTypeId { get; set; }
         public string Reason { get; set; }

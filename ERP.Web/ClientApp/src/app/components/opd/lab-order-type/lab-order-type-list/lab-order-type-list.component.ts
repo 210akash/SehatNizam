@@ -7,6 +7,7 @@ import { AddLabOrderTypeComponent } from '../add-lab-order-type/add-lab-order-ty
 import { ViewLabOrderTypeComponent } from '../view-lab-order-type/view-lab-order-type.component';
 import { DeleteLabOrderTypeComponent } from '../delete-lab-order-type/delete-lab-order-type.component';
 import { ServiceService } from '../../service/service.service';
+import { AddLabTestVariableComponent } from '../add-lab-test-variable/add-lab-test-variable.component';
 
 @Component({
   selector: 'app-lab-order-type-list',
@@ -40,8 +41,8 @@ export class LabOrderTypeListComponent implements OnInit {
 
   loadServices(): void {
     this.serviceService.getAllServices({ departmentId: 27 }).subscribe({
-      next: (res: any) => {
-        this.services = res?.Data || [];
+      next: (data: any) => {
+        this.services = data.item1 || [];
       },
       error: () => {
         this.services = [];
@@ -106,5 +107,20 @@ export class LabOrderTypeListComponent implements OnInit {
       width: '30%',
       disableClose: true
     }).afterClosed().subscribe(() => this.bindData());
+  }
+
+  openTestVariable(element: any) {
+    const dialogRef = this.dialog.open(AddLabTestVariableComponent, {
+      panelClass: 'cstm_width_1400',
+      height: 'auto',
+      data: {
+        element: element,
+      },
+      disableClose: true
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.bindData();
+    });
   }
 }

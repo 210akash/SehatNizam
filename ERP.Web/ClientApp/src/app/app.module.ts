@@ -878,6 +878,7 @@ import { ServiceListComponent } from './components/opd/service/service-list/serv
 import { AddServiceComponent } from './components/opd/service/add-service/add-service.component';
 import { DeleteServiceComponent } from './components/opd/service/delete-service/delete-service.component';
 import { ViewServiceComponent } from './components/opd/service/view-service/view-service.component';
+import { AddLabTestVariableComponent } from './components/opd/lab-order-type/add-lab-test-variable/add-lab-test-variable.component';
 
 const matFormFieldDefaults: MatFormFieldDefaultOptions = {
     appearance: 'outline'
@@ -1502,7 +1503,8 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         AddServiceComponent,
         DeleteServiceComponent,
         ViewServiceComponent,
-        AddDoctorProfileComponent
+        AddDoctorProfileComponent,
+        AddLabTestVariableComponent
     ],
     bootstrap: [AppComponent], imports: [
         InputMaskModule,

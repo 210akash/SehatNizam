@@ -29,9 +29,14 @@ namespace ERP.Mediator.Mediator.LabOrderType.Handler
         public async Task<Tuple<IEnumerable<GetLabOrderType>, long>> Handle(GetAllLabOrderTypeQuery request, CancellationToken cancellationToken)
         {
             Expression<Func<Entities.Models.LabOrderType, bool>> predicate =
-                x => x.IsActive == true;
+                x => x.IsActive == true && (request.ServiceId == null || x.ServiceId == request.ServiceId)
+            && (string.IsNullOrEmpty(request.Name) || x.Name.ToLower().Contains(request.Name.ToLower()));
 
-            Expression<Func<Entities.Models.LabOrderType, object>>[] includes = { x => x.Service };
+            Expression<Func<Entities.Models.LabOrderType, object>>[] includes = {
+                x => x.Service,
+                x => x.Variables.Where(y=>y.IsActive),
+            };
+
             Expression<Func<Entities.Models.LabOrderType, object>> orderBy = null;
             Expression<Func<Entities.Models.LabOrderType, object>> orderByDesc = x => x.Id;
 

@@ -597,7 +597,6 @@
             this.CreateMap<AppointmentPayment, GetAppointmentPayment>().ReverseMap();
             this.CreateMap<RadiologyOrder, GetRadiologyOrder>().ReverseMap();
             this.CreateMap<LabOrder, GetLabOrder>().ReverseMap();
-            this.CreateMap<LabOrderType, GetLabOrderType>().ReverseMap();
             this.CreateMap<AppointmentAttachment, GetAppointmentAttachment>().ReverseMap();
             this.CreateMap<Prescription, GetPrescription>().ReverseMap();
             this.CreateMap<PatientProblem, GetPatientProblem>().ReverseMap();
@@ -665,7 +664,8 @@
             this.CreateMap<RadiologyOrder, SaveRadiologyOrderCommand>().ReverseMap();
             this.CreateMap<DoctorProfile, SaveDoctorProfileCommand>().ReverseMap();
             this.CreateMap<DoctorProfile, GetDoctorProfile>().ReverseMap();
-
+            this.CreateMap<LabTestVariable, GetLabTestVariable>().ReverseMap();
+            CreateMap<LabOrderType, GetLabOrderType>().ReverseMap();
             //this.CreateMap<PayrollDetail, GetPayrollDetail>().ReverseMap();
 
         }

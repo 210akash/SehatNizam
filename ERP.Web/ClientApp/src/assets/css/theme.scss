@@ -78,12 +78,8 @@ table {
 .table-bordered thead td, .table-bordered thead th {
   border-bottom-width: 2px;
 }
-.table-bordered tbody tr:nth-child(even) td {
-  background: #f7f9fd;
-}
-.table-bordered tbody tr:hover td {
-  background: #eef3fc;
-}
+
+
 .mat-mdc-mini-fab{
   box-shadow: unset !important;
 }
@@ -403,10 +399,6 @@ html .mat-mdc-mini-fab.mat-accent {
 
 .table-responsive tr:nth-child(even) td{
   background: #ffffff;
-}
-
-.table-responsive tr:hover td{
-  background: #f3f6ff;
 }
 
 .table-responsive .muted{

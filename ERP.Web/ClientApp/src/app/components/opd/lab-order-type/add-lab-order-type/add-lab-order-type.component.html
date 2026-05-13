@@ -10,7 +10,6 @@
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>Name *</mat-label>
         <input matInput formControlName="name" placeholder="Enter lab order type name" />
-        <mat-error *ngIf="form.get('name')?.hasError('required')">Name is required</mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="form-field">
@@ -19,7 +18,6 @@
           <mat-option value="">Select Service</mat-option>
           <mat-option *ngFor="let svc of services" [value]="svc.id">{{ svc.name }}</mat-option>
         </mat-select>
-        <mat-error *ngIf="form.get('serviceId')?.hasError('required')">Service is required</mat-error>
       </mat-form-field>
       </div>
 

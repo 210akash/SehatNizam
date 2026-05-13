@@ -26,6 +26,7 @@ namespace ERP.Mediator.Mediator.Services.Handler
         public async Task<Tuple<IEnumerable<GetService>, long>> Handle(GetAllServicesQuery request, CancellationToken cancellationToken)
         {
             Expression<Func<Entities.Models.Service, bool>> predicate = x => x.IsActive == true
+            && (request.DepartmentId  == null || x.DepartmentId  == request.DepartmentId)
             && (string.IsNullOrEmpty(request.Name) || x.Name.ToLower().Contains(request.Name.ToLower()))
             ;
 

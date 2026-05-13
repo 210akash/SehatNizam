@@ -1,0 +1,17 @@
+.dialog-form { padding-top: 8px; }
+.table-responsive { overflow-x: auto; }
+.table { width: 100%; margin-bottom: 0; }
+.action-cell { min-width: 90px; white-space: nowrap; }
+.table-field { width: 140px; }
+.checkbox-cell { min-width: 120px; text-align: center; }
+.checkbox-label { display: inline-flex; align-items: center; gap: 6px; margin: 0; }
+.action_btns { display: flex; align-items: center; gap: 6px; }
+.icons { cursor: pointer; font-size: 20px; width: 20px; height: 20px; }
+.icons.add { color: #198754; }
+.icons.delete { color: #dc3545; }
+.button-container { display: flex; justify-content: flex-end; gap: 10px; margin-top: 12px; }
+
+@media (max-width: 768px) {
+  .table-field { width: 120px; }
+  .button-container { justify-content: flex-start; }
+}

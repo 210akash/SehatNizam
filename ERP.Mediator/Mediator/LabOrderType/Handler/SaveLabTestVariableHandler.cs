@@ -124,15 +124,20 @@ namespace ERP.Mediator.Mediator.LabOrderType.Handler
 
         private void UpdateOptions(Entities.Models.LabTestVariable entity, LabTestVariableDto dto)
         {
-            entity.LabTestVariableOptions ??= new List<LabTestVariableOption>();
+            var optionRepo = unitOfWork.Repository<LabTestVariableOption>();
+            var existingOptionList = optionRepo
+                .FindAllAsync(x => x.LabTestVariableId == entity.Id && x.IsActive && !x.IsDelete)
+                .GetAwaiter()
+                .GetResult()
+                .ToList();
 
-            var existingOptions = entity.LabTestVariableOptions.ToDictionary(x => x.Id);
+            var existingOptions = existingOptionList.ToDictionary(x => x.Id);
 
             var requestOptionIds = dto.Options?.Where(x => x.Id > 0).Select(x => x.Id).ToHashSet()
                                     ?? new HashSet<long>();
 
             // delete removed
-            var toDelete = entity.LabTestVariableOptions
+            var toDelete = existingOptionList
                 .Where(x => !requestOptionIds.Contains(x.Id))
                 .ToList();
 
@@ -140,6 +145,9 @@ namespace ERP.Mediator.Mediator.LabOrderType.Handler
             {
                 opt.IsActive = false;
                 opt.IsDelete = true;
+                opt.ModifiedById = sessionProvider.Session.LoggedInUserId;
+                opt.ModifiedDate = DateTime.Now;
+                optionRepo.Update(opt);
             }
 
             // add/update
@@ -149,66 +157,24 @@ namespace ERP.Mediator.Mediator.LabOrderType.Handler
                 {
                     existing.Name = optDto.Name;
                     existing.DisplayOrder = optDto.DisplayOrder;
+                    existing.ModifiedById = sessionProvider.Session.LoggedInUserId;
+                    existing.ModifiedDate = DateTime.Now;
+                    optionRepo.Update(existing);
                 }
                 else
                 {
-                    entity.LabTestVariableOptions.Add(new LabTestVariableOption
+                    optionRepo.Add(new LabTestVariableOption
                     {
+                        LabTestVariableId = entity.Id,
                         Name = optDto.Name,
                         DisplayOrder = optDto.DisplayOrder,
                         IsActive = true,
                         IsDelete = false,
-                        CreatedById = entity.CreatedById,
+                        CreatedById = sessionProvider.Session.LoggedInUserId,
                         CreatedDate = DateTime.Now
                     });
                 }
             }
-        }
-
-        public async Task<int> Handle1(SaveLabTestVariableCommand request, CancellationToken cancellationToken)
-        {
-            if (request.LabOrderTypeId <= 0 || request.Variables == null || !request.Variables.Any())
-            {
-                return 400;
-            }
-
-            // Delete existing variables for this LabOrderType (soft delete)
-            var existingVariables = await unitOfWork.Repository<Entities.Models.LabTestVariable>()
-                .FindAllAsync(x => x.LabOrderTypeId == request.LabOrderTypeId && x.IsActive && !x.IsDelete);
-
-            foreach (var existing in existingVariables)
-            {
-                existing.IsDelete = true;
-                existing.IsActive = false;
-                existing.ModifiedById = this.sessionProvider.Session.LoggedInUserId;
-                existing.DeleteDate = DateTime.Now;
-                unitOfWork.Repository<Entities.Models.LabTestVariable>().Update(existing);
-            }
-
-            // Add new variables
-            foreach (var variableDto in request.Variables)
-            {
-                var variable = new Entities.Models.LabTestVariable
-                {
-                    LabOrderTypeId = request.LabOrderTypeId,
-                    Name = variableDto.Name,
-                    Unit = variableDto.Unit,
-                    MaleMin = variableDto.MaleMin,
-                    MaleMax = variableDto.MaleMax,
-                    FemaleMin = variableDto.FemaleMin,
-                    FemaleMax = variableDto.FemaleMax,
-                    HasGenderRange = variableDto.HasGenderRange,
-                    CreatedById = this.sessionProvider.Session.LoggedInUserId,
-                    CreatedDate = DateTime.Now,
-                    IsActive = true,
-                    IsDelete = false
-                };
-
-                await unitOfWork.Repository<Entities.Models.LabTestVariable>().AddAsync(variable);
-            }
-
-            await unitOfWork.SaveChangesAsync();
-            return 200;
         }
     }
 }

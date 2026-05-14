@@ -34,16 +34,41 @@ namespace ERP.Mediator.Mediator.LabOrderType.Handler
 
             Expression<Func<Entities.Models.LabOrderType, object>>[] includes = {
                 x => x.Service,
-                x => x.Variables.Where(y=>y.IsActive),
+                x => x.Variables,
+            };
+
+            List<string> thenIncludes = new()
+            {
+                "Variables.LabTestVariableOptions"
             };
 
             Expression<Func<Entities.Models.LabOrderType, object>> orderBy = null;
             Expression<Func<Entities.Models.LabOrderType, object>> orderByDesc = x => x.Id;
 
             var result = unitOfWork.Repository<Entities.Models.LabOrderType>()
-                .GetPagingWhereAsNoTrackingAsync(predicate, request.PagingData, orderBy, orderByDesc, null, includes);
+                .GetPagingWhereAsNoTrackingAsync(predicate, request.PagingData, orderBy, orderByDesc, thenIncludes, includes);
 
-            var mapped = mapper.Map<IEnumerable<GetLabOrderType>>(result.Item1);
+            var entities = result.Item1?.ToList() ?? new List<Entities.Models.LabOrderType>();
+            foreach (var entity in entities)
+            {
+                if (entity?.Variables != null)
+                {
+                    entity.Variables = entity.Variables
+                        .Where(v => v != null && v.IsActive && !v.IsDelete)
+                        .ToList();
+
+                    foreach (var variable in entity.Variables)
+                    {
+                        if (variable?.LabTestVariableOptions != null)
+                        {
+                            variable.LabTestVariableOptions = variable.LabTestVariableOptions
+                                .Where(o => o != null && o.IsActive && !o.IsDelete)
+                                .ToList();
+                        }
+                    }
+                }
+            }
+            var mapped = mapper.Map<IEnumerable<GetLabOrderType>>(entities);
             return new Tuple<IEnumerable<GetLabOrderType>, long>(mapped, result.Item2);
         }
     }

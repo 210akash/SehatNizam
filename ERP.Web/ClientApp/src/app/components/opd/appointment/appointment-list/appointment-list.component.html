@@ -84,11 +84,12 @@
           <button
             mat-mini-fab
             matTooltip="Edit"
+            *ngIf="element.appointmentStatusId == 1"
             color="primary"
             (click)="openAppointmentDialog(element)">
             <mat-icon aria-label="Edit">edit</mat-icon>
           </button>
-            <button mat-mini-fab matTooltip="Print" *ngIf="element.appointmentStatusId == 5 || element.appointmentStatusId == 10" color="pink"
+            <button mat-mini-fab matTooltip="Print" *ngIf="element.appointmentStatusId > 1" color="pink"
             (click)="printAppoinmnetDialog(element)">
             <mat-icon aria-label="Print">print</mat-icon>
           </button>

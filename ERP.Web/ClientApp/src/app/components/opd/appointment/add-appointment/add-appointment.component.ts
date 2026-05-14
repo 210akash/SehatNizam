@@ -87,6 +87,7 @@ export class AddAppointmentComponent implements OnInit {
     this.patchEditData();
     this.setupCalculations();
     this.setupPatientAutocomplete();
+    this.setupAppointmentStatusWatcher();
   }
 
 
@@ -107,7 +108,7 @@ export class AddAppointmentComponent implements OnInit {
       reason: ['', Validators.required],
       confirmationNotes: [''],
       confirmedDate: [null],
-      appointmentStatusId: [0, Validators.required],
+      appointmentStatusId: [1, Validators.required],
       patient: this.fb.group({
         name: ['', Validators.required],
         phoneNo: ['', Validators.required],
@@ -176,10 +177,15 @@ export class AddAppointmentComponent implements OnInit {
       element.appointmentPayment ||
       {};
 
+    const doctorObj = element.doctor ?? null;
+    const doctorDisplay = this.formatDoctorDisplay(doctorObj);
+
     this.appointmentForm.patchValue({
       ...element,
       appointmentDate: this.toInputDate(element.appointmentDate),
       appointmentTime: this.toInputTime(element.appointmentDate),
+      doctor: doctorObj,
+      doctorName: doctorDisplay,
       patient: {
         ...element.patient,
         dateOfBirth: element.patient?.dateOfBirth ? this.toInputDate(element.patient.dateOfBirth) : null,
@@ -206,6 +212,25 @@ export class AddAppointmentComponent implements OnInit {
 
     this.updateAge(element.patient?.dateOfBirth);
     this.updateTotalPayable();
+  }
+
+  private setupAppointmentStatusWatcher(): void {
+    this.appointmentForm.get('appointmentStatusId')?.valueChanges.subscribe((statusId: number) => {
+      if (Number(statusId) === 5) {
+        return;
+      }
+      const paymentGroup = this.appointmentForm.get('appointmentPayment') as FormGroup;
+      paymentGroup.reset({
+        id: 0,
+        appointmentId: this.appointmentForm.get('id')?.value || 0,
+        visitFee: 0,
+        discount: 0,
+        totalPayable: 0,
+        paymentModeId: 1,
+        paymentDate: this.minDate,
+        paymentStatusId: 0
+      });
+    });
   }
 
   private loadDepartments(): void {
@@ -357,6 +382,16 @@ export class AddAppointmentComponent implements OnInit {
       return;
     }
 
+    const statusId = Number(this.appointmentForm.get('appointmentStatusId')?.value);
+    const paymentGroup = this.appointmentForm.get('appointmentPayment') as FormGroup;
+    const visitFee = Number(paymentGroup.get('visitFee')?.value) || 0;
+    const totalPayable = this.calculateTotalPayable();
+    if (statusId === 5 && (visitFee <= 0 || totalPayable <= 0)) {
+      this.errorMessage = 'For confirmed appointments, Visit Fee and Total Payable must be greater than 0.';
+      this.notifications.showNotification(this.errorMessage, 'snack-bar-danger');
+      return;
+    }
+
     this.isSubmitting = true;
     const formValue = this.appointmentForm.getRawValue();
 
@@ -464,24 +499,24 @@ export class AddAppointmentComponent implements OnInit {
     return `${hours}:${minutes}`;
   }
 
-  // getDoctorList(event: any) {
-  //   var filter = event.currentTarget.value;
-  //   var departmentId = this.appointmentForm.get('departmentId')?.value;
-  //   if (departmentId == 0 || departmentId == null) {
-  //     this.appointmentForm.get('doctorId')?.patchValue(0);
-  //     this.appointmentForm.get('doctorName')?.patchValue('');
-  //     this.appointmentForm.get('doctor')?.patchValue('');
-  //     this.notifications.showNotification('Please Select Department', 'snack-bar-danger');
-  //   }
-  //   var getDoctorFilter = {
-  //     name: filter,
-  //     departmentId: departmentId
-  //   }
-  //   this.doctorService.getDoctorByName(getDoctorFilter)
-  //     .subscribe((data: any) => {
-  //       this.doctorList = data;
-  //     });
-  // }
+  async getDoctorList(event: any) {
+    var filter = event.currentTarget.value;
+    var departmentId = this.appointmentForm.get('departmentId')?.value;
+    if (departmentId == 0 || departmentId == null) {
+      this.appointmentForm.get('doctorId')?.patchValue(0);
+      this.appointmentForm.get('doctorName')?.patchValue('');
+      this.appointmentForm.get('doctor')?.patchValue('');
+      this.notifications.showNotification('Please Select Department', 'snack-bar-danger');
+    }
+    var getDoctorFilter = {
+      name: filter,
+      departmentId: departmentId
+    }
+    ;(await this.doctorService.getAllDoctors(getDoctorFilter))
+      .subscribe((data: any) => {
+        this.doctorList = data.item1;
+      });
+  }
 
   onOptionSelected(event: MatAutocompleteSelectedEvent): void {
     const selectedValue = event.option.value;
@@ -498,8 +533,13 @@ export class AddAppointmentComponent implements OnInit {
 
     // Patch the values into the form group
     this.appointmentForm.get('doctorId')?.patchValue(selectedValue.id);
-    this.appointmentForm.get('doctorName')?.patchValue(selectedValue?.hrCode + ' : ' + selectedValue?.firstName + ' ' + selectedValue?.lastName + ' (' + selectedValue?.designation + ')');
+    this.appointmentForm.get('doctorName')?.patchValue(this.formatDoctorDisplay(selectedValue));
     this.appointmentForm.get('doctor')?.patchValue(selectedValue);
+
+    const consultationFee = Number(selectedValue?.doctorProfile?.consultationFee ?? 0);
+    const paymentGroup = this.appointmentForm.get('appointmentPayment') as FormGroup;
+    paymentGroup.get('visitFee')?.setValue(consultationFee, { emitEvent: true });
+    paymentGroup.get('visitFee')?.disable({ emitEvent: false });
   }
 
   getdoctor(itemId: string) {
@@ -512,6 +552,18 @@ export class AddAppointmentComponent implements OnInit {
       this.appointmentForm.get('doctorId')?.patchValue(0);
       this.appointmentForm.get('doctorName')?.patchValue('');
       this.appointmentForm.get('doctor')?.patchValue('');
+      const paymentGroup = this.appointmentForm.get('appointmentPayment') as FormGroup;
+      paymentGroup.get('visitFee')?.enable({ emitEvent: false });
+      paymentGroup.get('visitFee')?.setValue(0, { emitEvent: true });
     }
+  }
+
+  private formatDoctorDisplay(doctor: any): string {
+    if (!doctor) return '';
+    const code = doctor?.hrCode || '';
+    const firstName = doctor?.firstName || '';
+    const lastName = doctor?.lastName || '';
+    const designation = doctor?.designation || '';
+    return `${code} : ${firstName} ${lastName}${designation ? ` (${designation})` : ''}`.trim();
   }
 }

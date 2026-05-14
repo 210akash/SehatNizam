@@ -1,5 +1,4 @@
 using ERP.Core.Provider;
-using ERP.Entities.Models;
 using ERP.Mediator.Mediator.LabOrder.Command;
 using ERP.Repositories.UnitOfWork;
 using MediatR;
@@ -23,6 +22,8 @@ namespace ERP.Mediator.Mediator.LabOrder.Handler
         {
             var existing = await unitOfWork.Repository<Entities.Models.LabOrder>()
                 .GetFirstAsNoTrackingAsync(x => x.Id == request.Id);
+            var appoinment = await unitOfWork.Repository<Entities.Models.Appointment>()
+             .GetFirstAsNoTrackingAsync(x => x.Id == request.AppointmentId,null,null, "Doctor");
 
             if (existing == null)
             {
@@ -31,15 +32,14 @@ namespace ERP.Mediator.Mediator.LabOrder.Handler
                     AppointmentId = request.AppointmentId,
                     LabOrderTypeId = request.LabOrderTypeId,
                     StatusId = request.StatusId,
+                    Reference = appoinment.Doctor != null ? appoinment.Doctor.FirstName + " " + appoinment.Doctor.LastName : request.Reference,
                     ClinicalNotes = request.ClinicalNotes,
                     CreatedById = sessionProvider.Session.LoggedInUserId,
                     CreatedDate = DateTime.Now
                 };
 
                 unitOfWork.Repository<Entities.Models.LabOrder>().Add(labOrder);
-
                 var check = await unitOfWork.SaveChangesAsync(cancellationToken);
-
                 return check > 0 ? labOrder.Id : 0;
             }
             else
@@ -53,6 +53,7 @@ namespace ERP.Mediator.Mediator.LabOrder.Handler
                 entity.AppointmentId = request.AppointmentId;
                 entity.LabOrderTypeId = request.LabOrderTypeId;
                 entity.StatusId = request.StatusId;
+                entity.Reference = appoinment.Doctor != null ? appoinment.Doctor.FirstName + " " + appoinment.Doctor.LastName : request.Reference;
                 entity.ClinicalNotes = request.ClinicalNotes;
                 entity.ModifiedById = sessionProvider.Session.LoggedInUserId;
                 entity.ModifiedDate = DateTime.Now;

@@ -1,17 +1,88 @@
-.dialog-form { padding-top: 8px; }
-.table-responsive { overflow-x: auto; }
-.table { width: 100%; margin-bottom: 0; }
-.action-cell { min-width: 90px; white-space: nowrap; }
-.table-field { width: 140px; }
-.checkbox-cell { min-width: 120px; text-align: center; }
-.checkbox-label { display: inline-flex; align-items: center; gap: 6px; margin: 0; }
-.action_btns { display: flex; align-items: center; gap: 6px; }
-.icons { cursor: pointer; font-size: 20px; width: 20px; height: 20px; }
-.icons.add { color: #198754; }
-.icons.delete { color: #dc3545; }
-.button-container { display: flex; justify-content: flex-end; gap: 10px; margin-top: 12px; }
+.variable-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px;
+}
 
-@media (max-width: 768px) {
-  .table-field { width: 120px; }
-  .button-container { justify-content: flex-start; }
+.variable-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 12px;
+  background: #ffffff;
+}
+
+.card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.var-index {
+  font-weight: 600;
+  color: #334155;
+}
+
+.card-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.field-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(120px, 1fr));
+  gap: 10px;
+}
+
+.range-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(140px, 1fr));
+  gap: 10px;
+}
+
+.toggle-row {
+  margin-top: 6px;
+  margin-bottom: 8px;
+}
+
+.options-wrap {
+  border-top: 1px dashed #cbd5e1;
+  padding-top: 10px;
+}
+
+.options-head {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.option-row {
+  display: flex;
+  gap: 8px;
+}
+
+.field-option-name {
+  width: 170px;
+}
+
+.field-option-order {
+  width: 80px;
+}
+
+.save-row {
+  margin-top: 14px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media (max-width: 900px) {
+  .field-grid,
+  .range-grid {
+    grid-template-columns: repeat(2, minmax(140px, 1fr));
+  }
+
+  .field-option-name {
+    width: 170px;
+  }
 }

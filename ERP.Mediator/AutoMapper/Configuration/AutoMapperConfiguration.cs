@@ -665,6 +665,7 @@
             this.CreateMap<DoctorProfile, SaveDoctorProfileCommand>().ReverseMap();
             this.CreateMap<DoctorProfile, GetDoctorProfile>().ReverseMap();
             this.CreateMap<LabTestVariable, GetLabTestVariable>().ReverseMap();
+            this.CreateMap<LabTestVariableOption, GetLabTestVariableOption>().ReverseMap();
             CreateMap<LabOrderType, GetLabOrderType>().ReverseMap();
             //this.CreateMap<PayrollDetail, GetPayrollDetail>().ReverseMap();
 

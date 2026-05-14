@@ -1,0 +1,146 @@
+﻿using AutoMapper;
+using ERP.BusinessModels.ResponseVM;
+using ERP.Core.Provider;
+using ERP.Entities.Models;
+using ERP.Mediator.Mediator.Appointment.Command;
+using ERP.Repositories.UnitOfWork;
+using MediatR;
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace ERP.Mediator.Mediator.Appointment.Handler
+{
+    public class SaveAppointmentHandler_1 : IRequestHandler<SaveAppointmentCommand, long>
+    {
+        private readonly IMapper mapper;
+        private readonly IUnitOfWork unitOfWork;
+        private readonly SessionProvider sessionProvider;
+        public SaveAppointmentHandler_1(IMapper mapper, IUnitOfWork unitOfWork, SessionProvider sessionProvider)
+        {
+            this.mapper = mapper;
+            this.unitOfWork = unitOfWork;
+            this.sessionProvider = sessionProvider;
+        }
+
+        public long SaveChanges()
+        {
+            return unitOfWork.SaveChanges();
+        }
+
+        public async Task<long> Handle(SaveAppointmentCommand request, CancellationToken cancellationToken)
+        {
+            // 1️⃣ If PatientId is null, register a new patient
+            if (request.PatientId == null)
+            {
+                var registerCommand = new Entities.Models.Patient
+                {
+                    Name = request.Patient.Name,
+                    Email = request.Patient.Email,
+                    PhoneNo = request.Patient.PhoneNo,
+                    SecondaryPhoneNo = request.Patient.SecondaryPhoneNo,
+                    Address = request.Patient.Address,
+                    CNIC = request.Patient.CNIC,
+                    Age = request.Patient.Age,
+                    Gender = request.Patient.Gender,
+                    DateOfBirth = request.Patient.DateOfBirth,
+                    CityId = request.Patient.CityId,
+                    ProjectId = sessionProvider.Session.SelectedWarehouseId,
+                    CreatedById = sessionProvider.Session.LoggedInUserId,
+                };
+
+                var currentProject = await unitOfWork.Repository<Entities.Models.Project>()
+                  .GetOneAsync(u => u.IsActive && u.Id == 1);
+
+                // 4️⃣ Generate MRN (AspNetUsers.Code) like H1-000001
+                string prefix = currentProject.Code;
+                var lastPatientWithMrn = await unitOfWork.Repository<Entities.Models.Patient>()
+                    .GetOneAsync(u => !string.IsNullOrEmpty(u.MRN) && u.MRN.StartsWith(prefix),
+                                 query => query.OrderByDescending(x => x.MRN));
+
+                int newNumber = 1;
+                if (lastPatientWithMrn != null)
+                {
+                    string numericPart = lastPatientWithMrn.MRN.Substring(prefix.Length); // get the number part
+                    if (!int.TryParse(numericPart, out newNumber))
+                    {
+                        newNumber = 1;
+                    }
+                    else
+                    {
+                        newNumber += 1; // increment
+                    }
+                }
+
+                registerCommand.MRN = prefix + newNumber.ToString().PadLeft(6, '0'); // H1-000001
+
+                // Call your Register handler logic
+                var identityResponse = await RegisterNewPatientAsync(registerCommand);
+
+                if (identityResponse.Id == 0)
+                    throw new Exception($"Failed to register patient: {identityResponse.Error}");
+
+                request.PatientId = identityResponse.Id; // set newly created patient ID
+            }
+
+            // 2️⃣ Check if appointment exists
+            var appointment = await unitOfWork.Repository<Entities.Models.Appointment>()
+                .GetFirstAsNoTrackingAsync(x => x.Id == request.Id);
+
+            if (appointment == null)
+            {
+                // Create new appointment
+                string newCode = await GenerateAppointmentCodeAsync();
+
+                var appoinment = request;
+                appoinment.Patient = null;
+
+                var newAppointment = mapper.Map<Entities.Models.Appointment>(appoinment);
+                newAppointment.TokenNumber = newCode;
+                newAppointment.CreatedById = sessionProvider.Session.LoggedInUserId;
+                newAppointment.ProjectId = sessionProvider.Session.SelectedWarehouseId;
+                newAppointment.CreatedDate = DateTime.Now;
+                unitOfWork.Repository<Entities.Models.Appointment>().Add(newAppointment);
+                int check  = await unitOfWork.SaveChangesAsync();
+                if (check > 0)
+                {
+                    var newAppointmentPayment = mapper.Map<AppointmentPayment>(appoinment.AppointmentPayment);
+                    newAppointmentPayment.AppointmentId = newAppointment.Id;
+                    newAppointmentPayment.CreatedById = sessionProvider.Session.LoggedInUserId;
+                    newAppointmentPayment.PaymentDate = DateTime.Now;
+                    newAppointmentPayment.PaymentStatusId = 1;
+                    unitOfWork.Repository<AppointmentPayment>().Add(newAppointmentPayment);
+                    await unitOfWork.SaveChangesAsync();
+                    return 200; // success
+                }
+                return 200; // success
+            }
+            return 200; // success
+        }
+
+        // Helper: Generate next appointment code
+        private async Task<string> GenerateAppointmentCodeAsync()
+        {
+            if (await unitOfWork.Repository<Entities.Models.Appointment>().GetExistsAsync())
+            {
+                Func<IQueryable<Entities.Models.Appointment>, IOrderedQueryable<Entities.Models.Appointment>> orderByDesc = q => q.OrderByDescending(x => x.TokenNumber);
+                var lastAppointment = await unitOfWork.Repository<Entities.Models.Appointment>().GetOneAsync(x => x.IsActive, orderByDesc);
+                int nextNumber = int.TryParse(lastAppointment.TokenNumber, out int n) ? n + 1 : 1;
+                return nextNumber.ToString().PadLeft(7, '0');
+            }
+            return "0000001";
+        }
+
+        // Helper: Register a new patient
+        private async Task<IdentityResponse> RegisterNewPatientAsync(Entities.Models.Patient request)
+        {
+            var result = new IdentityResponse();
+
+            unitOfWork.Repository<Entities.Models.Patient>().Add(request);
+            SaveChanges();
+            result.Id = request.Id;
+            return result;
+        }
+    }
+}

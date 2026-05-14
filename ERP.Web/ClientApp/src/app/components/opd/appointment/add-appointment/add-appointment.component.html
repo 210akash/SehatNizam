@@ -149,7 +149,7 @@
             </mat-select>
           </mat-form-field>
 
-          <!-- <mat-form-field appearance="outline">
+          <mat-form-field appearance="outline">
             <mat-label>Doctor</mat-label>
             <input matInput formControlName="doctorName" [matAutocomplete]="auto" (keyup)="getDoctorList($event);"
               class="form-control" (input)="onDoctorInputCleared($event)" type="search"
@@ -160,7 +160,7 @@
               {{ doctor?.hrCode }} :  {{ doctor?.firstName }} {{ doctor?.lastName }} ({{doctor?.designation}})
               </mat-option>
             </mat-autocomplete>
-          </mat-form-field> -->
+          </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Visit Type</mat-label>
@@ -174,19 +174,18 @@
             <input matInput formControlName="reason" placeholder="e.g. Fever, Headache, Checkup" />
           </mat-form-field>
 
-           <mat-form-field appearance="outline">
-            <mat-label>Appointment Status</mat-label>
-            <mat-select formControlName="appointmentStatusId">
-              <mat-option *ngFor="let appointmentStatus of appointmentStatusList" [value]="appointmentStatus.id">{{ appointmentStatus.title }}</mat-option>
-            </mat-select>
-          </mat-form-field>
-
+      <div class="span-2">
+        <label class="text-sm label-inline">Appointment Status</label>
+        <mat-radio-group formControlName="appointmentStatusId" class="priority-radio">
+          <mat-radio-button [value]="1">Pending</mat-radio-button>
+          <mat-radio-button [value]="5">Confirm</mat-radio-button>
+        </mat-radio-group>
+      </div>
         </div>
-           
       </section>
 
       <!-- Payment -->
-      <section class="section" formGroupName="appointmentPayment">
+      <section class="section" formGroupName="appointmentPayment" *ngIf="appointmentForm.get('appointmentStatusId')?.value === 5">
         <div class="section-head">
           <mat-icon fontIcon="credit_card" class="icon"></mat-icon>
           <div>

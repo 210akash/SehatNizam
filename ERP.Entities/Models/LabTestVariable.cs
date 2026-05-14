@@ -22,11 +22,8 @@ namespace ERP.Entities.Models
     public enum ResultType
     {
         Numeric = 1,
-
         Text = 2,
-
         Option = 3,
-
         Boolean = 4
     }
 

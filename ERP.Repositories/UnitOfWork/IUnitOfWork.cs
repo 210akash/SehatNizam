@@ -11,6 +11,7 @@ namespace ERP.Repositories.UnitOfWork
     using Microsoft.EntityFrameworkCore.Infrastructure;
     using ERP.Repositories.GenericRepository;
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.EntityFrameworkCore.Storage;
 
     /// <summary>
     /// Unit of work interface
@@ -35,6 +36,10 @@ namespace ERP.Repositories.UnitOfWork
         /// </summary>
         /// <returns>Response integer</returns>
         Task<int> SaveChangesAsync();
+
+        IDbContextTransaction BeginTransaction();
+
+        Task<IDbContextTransaction> BeginTransactionAsync();
 
         /// <summary>
         /// Save transaction async with cancellation token

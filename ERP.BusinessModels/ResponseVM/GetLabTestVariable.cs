@@ -1,4 +1,7 @@
-﻿namespace ERP.BusinessModels.ResponseVM
+﻿using ERP.Entities.Models;
+using System.Collections.Generic;
+
+namespace ERP.BusinessModels.ResponseVM
 {
     public class GetLabTestVariable
     {
@@ -11,6 +14,10 @@
         public decimal? FemaleMin { get; set; }
         public decimal? FemaleMax { get; set; }
         public bool HasGenderRange { get; set; }
+        public int DisplayOrder { get; set; }
+        public ResultType ResultType { get; set; }
         public GetLabOrderType LabOrderType { get; set; }
+        public List<GetLabTestVariableOption> LabTestVariableOptions { get; set; }
     }
+  
 }

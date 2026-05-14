@@ -29,118 +29,530 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
             return unitOfWork.SaveChanges();
         }
 
-        public async Task<long> Handle(SaveAppointmentCommand request, CancellationToken cancellationToken)
+        public async Task<long> Handle(SaveAppointmentCommand request,CancellationToken cancellationToken)
         {
-            // 1️⃣ If PatientId is null, register a new patient
-            if (request.PatientId == null)
+            using var transaction =
+                await unitOfWork.BeginTransactionAsync();
+
+            try
             {
-                var registerCommand = new Entities.Models.Patient
+                long result;
+
+                if (request.Id > 0)
                 {
-                    Name = request.Patient.Name,
-                    Email = request.Patient.Email,
-                    PhoneNo = request.Patient.PhoneNo,
-                    SecondaryPhoneNo = request.Patient.SecondaryPhoneNo,
-                    Address = request.Patient.Address,
-                    CNIC = request.Patient.CNIC,
-                    Age = request.Patient.Age,
-                    Gender = request.Patient.Gender,
-                    DateOfBirth = request.Patient.DateOfBirth,
-                    CityId = request.Patient.CityId,
+                    result = await UpdateAppointmentAsync(
+                        request,
+                        cancellationToken);
+                }
+                else
+                {
+                    result = await CreateAppointmentAsync(
+                        request,
+                        cancellationToken);
+                }
+
+                await transaction.CommitAsync(cancellationToken);
+
+                return result;
+            }
+            catch
+            {
+                await transaction.RollbackAsync(cancellationToken);
+                throw;
+            }
+        }
+
+        private async Task<long> CreateAppointmentAsync(SaveAppointmentCommand request,CancellationToken cancellationToken)
+        {
+
+            try
+            {
+                // =====================================================
+                // 1️⃣ CREATE / GET PATIENT
+                // =====================================================
+
+                long patientId = await GetOrCreatePatientAsync(request);
+
+                // =====================================================
+                // 2️⃣ CREATE APPOINTMENT
+                // =====================================================
+
+                var appointment = new Entities.Models.Appointment
+                {
+                    AppointmentDate = request.AppointmentDate,
+
+                    TokenNumber = await GenerateAppointmentCodeAsync(),
+
                     ProjectId = sessionProvider.Session.SelectedWarehouseId,
+
+                    DepartmentId = request.DepartmentId,
+
+                    AppointmentTypeId = request.AppointmentTypeId,
+
+                    PriorityLevelId = request.PriorityLevelId,
+
+                    VisitTypeId = request.VisitTypeId,
+
+                    PatientId = patientId,
+
+                    DoctorId = request.DoctorId,
+
+                    Reason = request.Reason,
+
+                    ConfirmationNotes = request.ConfirmationNotes,
+
+                    ConfirmedDate = request.ConfirmedDate,
+
+                    AppointmentStatusId = request.AppointmentStatusId,
+
                     CreatedById = sessionProvider.Session.LoggedInUserId,
+
+                    CreatedDate = DateTime.Now,
+
+                    IsActive = true,
+
+                    IsDelete = false
                 };
 
-                var currentProject = await unitOfWork.Repository<Entities.Models.Project>()
-                  .GetOneAsync(u => u.IsActive && u.Id == 1);
+                await unitOfWork.Repository<Entities.Models.Appointment>()
+                    .AddAsync(appointment);
 
-                // 4️⃣ Generate MRN (AspNetUsers.Code) like H1-000001
-                string prefix = currentProject.Code;
-                var lastPatientWithMrn = await unitOfWork.Repository<Entities.Models.Patient>()
-                    .GetOneAsync(u => !string.IsNullOrEmpty(u.MRN) && u.MRN.StartsWith(prefix),
-                                 query => query.OrderByDescending(x => x.MRN));
+                await unitOfWork.SaveChangesAsync(cancellationToken);
 
-                int newNumber = 1;
-                if (lastPatientWithMrn != null)
+                // =====================================================
+                // 3️⃣ PAYMENT
+                // =====================================================
+
+                if (request.AppointmentPayment != null)
                 {
-                    string numericPart = lastPatientWithMrn.MRN.Substring(prefix.Length); // get the number part
-                    if (!int.TryParse(numericPart, out newNumber))
+                    var payment = new AppointmentPayment
                     {
-                        newNumber = 1;
-                    }
-                    else
+                        AppointmentId = appointment.Id,
+
+                        VisitFee = request.AppointmentPayment.VisitFee,
+
+                        Discount = request.AppointmentPayment.Discount,
+
+                        TotalPayable = request.AppointmentPayment.TotalPayable,
+
+                        PaymentModeId = request.AppointmentPayment.PaymentModeId,
+
+                        PaymentDate = DateTime.Now,
+
+                        PaymentStatusId = request.AppointmentPayment.PaymentStatusId,
+
+                        CreatedById = sessionProvider.Session.LoggedInUserId,
+
+                        CreatedDate = DateTime.Now,
+
+                        IsActive = true,
+
+                        IsDelete = false
+                    };
+
+                    await unitOfWork.Repository<AppointmentPayment>()
+                        .AddAsync(payment);
+                }
+
+                // =====================================================
+                // 4️⃣ LAB ORDERS
+                // =====================================================
+
+                if (request.LabOrders != null && request.LabOrders.Any())
+                {
+                    foreach (var item in request.LabOrders)
                     {
-                        newNumber += 1; // increment
+                        var labOrder = new Entities.Models.LabOrder
+                        {
+                            AppointmentId = appointment.Id,
+
+                            LabOrderTypeId = item.LabOrderTypeId,
+
+                            ClinicalNotes = item.ClinicalNotes,
+
+                            StatusId = 1,
+
+                            CreatedById = sessionProvider.Session.LoggedInUserId,
+
+                            CreatedDate = DateTime.Now,
+
+                            IsActive = true,
+
+                            IsDelete = false
+                        };
+
+                        await unitOfWork.Repository<Entities.Models.LabOrder>()
+                            .AddAsync(labOrder);
                     }
                 }
 
-                registerCommand.MRN = prefix + newNumber.ToString().PadLeft(6, '0'); // H1-000001
+                // =====================================================
+                // 5️⃣ RADIOLOGY ORDERS
+                // =====================================================
 
-                // Call your Register handler logic
-                var identityResponse = await RegisterNewPatientAsync(registerCommand);
+                if (request.RadiologyOrders != null && request.RadiologyOrders.Any())
+                {
+                    foreach (var item in request.RadiologyOrders)
+                    {
+                        var radiologyOrder = new Entities.Models.RadiologyOrder
+                        {
+                            AppointmentId = appointment.Id,
 
-                if (identityResponse.Id == 0)
-                    throw new Exception($"Failed to register patient: {identityResponse.Error}");
+                            RadiologyTypeId = item.RadiologyTypeId,
 
-                request.PatientId = identityResponse.Id; // set newly created patient ID
+                            ClinicalNotes = item.ClinicalNotes,
+
+                            StatusId = 1,
+
+                            CreatedById = sessionProvider.Session.LoggedInUserId,
+
+                            CreatedDate = DateTime.Now,
+
+                            IsActive = true,
+
+                            IsDelete = false
+                        };
+
+                        await unitOfWork.Repository<Entities.Models.RadiologyOrder>()
+                            .AddAsync(radiologyOrder);
+                    }
+                }
+
+                // =====================================================
+                // 6️⃣ SAVE ALL
+                // =====================================================
+
+                await unitOfWork.SaveChangesAsync(cancellationToken);
+
+                return 200;
+            }
+            catch
+            {
+                return 500;
+                throw;
+            }
+        }
+
+        private async Task<long> GetOrCreatePatientAsync(SaveAppointmentCommand request)
+        {
+            if (request.PatientId.HasValue &&
+                request.PatientId.Value > 0)
+            {
+                return request.PatientId.Value;
             }
 
-            // 2️⃣ Check if appointment exists
-            var appointment = await unitOfWork.Repository<Entities.Models.Appointment>()
-                .GetFirstAsNoTrackingAsync(x => x.Id == request.Id);
+            if (request.Patient == null)
+            {
+                throw new Exception("Patient information is required.");
+            }
+
+            var project = await unitOfWork.Repository<Entities.Models.Project>()
+                .GetOneAsync(x => x.Id == sessionProvider.Session.SelectedWarehouseId);
+
+            string mrn = await GenerateMrnAsync();
+
+            var patient = new Entities.Models.Patient
+            {
+                Name = request.Patient.Name,
+
+                Email = request.Patient.Email,
+
+                PhoneNo = request.Patient.PhoneNo,
+
+                SecondaryPhoneNo = request.Patient.SecondaryPhoneNo,
+
+                Address = request.Patient.Address,
+
+                CNIC = request.Patient.CNIC,
+
+                Gender = request.Patient.Gender,
+
+                Age = request.Patient.Age,
+
+                DateOfBirth = request.Patient.DateOfBirth,
+
+                CityId = request.Patient.CityId,
+
+                ProjectId = sessionProvider.Session.SelectedWarehouseId,
+
+                MRN = mrn,
+
+                CreatedById = sessionProvider.Session.LoggedInUserId,
+
+                CreatedDate = DateTime.Now,
+
+                IsActive = true,
+
+                IsDelete = false
+            };
+
+            await unitOfWork.Repository<Entities.Models.Patient>()
+                .AddAsync(patient);
+
+            await unitOfWork.SaveChangesAsync();
+
+            return patient.Id;
+        }
+
+        private async Task<string> GenerateMrnAsync()
+        {
+            var lastPatient = await unitOfWork.Repository<Entities.Models.Patient>()
+                .GetOneAsync(
+                    x => !string.IsNullOrEmpty(x.MRN),
+                    q => q.OrderByDescending(x => x.Id));
+
+            int next = 1;
+
+            if (lastPatient != null &&
+                int.TryParse(lastPatient.MRN, out int lastNo))
+            {
+                next = lastNo + 1;
+            }
+
+            return next.ToString("D6");
+        }
+
+        private async Task<string> GenerateAppointmentCodeAsync()
+        {
+            Func<IQueryable<Entities.Models.Appointment>,
+                IOrderedQueryable<Entities.Models.Appointment>> orderBy =
+                    q => q.OrderByDescending(x => x.Id);
+
+            var lastAppointment =
+                await unitOfWork.Repository<Entities.Models.Appointment>()
+                .GetOneAsync(x => x.IsActive, orderBy);
+
+            int nextNumber = 1;
+
+            if (lastAppointment != null &&
+                !string.IsNullOrWhiteSpace(lastAppointment.TokenNumber))
+            {
+                int.TryParse(lastAppointment.TokenNumber, out nextNumber);
+
+                nextNumber++;
+            }
+
+            return nextNumber.ToString("D7");
+        }
+
+        private async Task<long> UpdateAppointmentAsync(SaveAppointmentCommand request,CancellationToken cancellationToken)
+        {
+            var appointment =
+                await unitOfWork.Repository<Entities.Models.Appointment>()
+                .GetFirstAsync(x => x.Id == request.Id);
 
             if (appointment == null)
             {
-                // Create new appointment
-                string newCode = await GenerateAppointmentCodeAsync();
-
-                var appoinment = request;
-                appoinment.Patient = null;
-
-                var newAppointment = mapper.Map<Entities.Models.Appointment>(appoinment);
-                newAppointment.TokenNumber = newCode;
-                newAppointment.CreatedById = sessionProvider.Session.LoggedInUserId;
-                newAppointment.ProjectId = sessionProvider.Session.SelectedWarehouseId;
-                newAppointment.CreatedDate = DateTime.Now;
-                unitOfWork.Repository<Entities.Models.Appointment>().Add(newAppointment);
-                int check  = await unitOfWork.SaveChangesAsync();
-                if (check > 0)
-                {
-                    var newAppointmentPayment = mapper.Map<AppointmentPayment>(appoinment.AppointmentPayment);
-                    newAppointmentPayment.AppointmentId = newAppointment.Id;
-                    newAppointmentPayment.CreatedById = sessionProvider.Session.LoggedInUserId;
-                    newAppointmentPayment.PaymentDate = DateTime.Now;
-                    newAppointmentPayment.PaymentStatusId = 1;
-                    unitOfWork.Repository<AppointmentPayment>().Add(newAppointmentPayment);
-                    await unitOfWork.SaveChangesAsync();
-                    return 200; // success
-                }
-                return 200; // success
+                return 404;
             }
-            return 200; // success
-        }
 
-        // Helper: Generate next appointment code
-        private async Task<string> GenerateAppointmentCodeAsync()
-        {
-            if (await unitOfWork.Repository<Entities.Models.Appointment>().GetExistsAsync())
+            // =========================================
+            // UPDATE APPOINTMENT
+            // =========================================
+
+            appointment.AppointmentDate = request.AppointmentDate;
+
+            appointment.DepartmentId = request.DepartmentId;
+
+            appointment.AppointmentTypeId = request.AppointmentTypeId;
+
+            appointment.PriorityLevelId = request.PriorityLevelId;
+
+            appointment.VisitTypeId = request.VisitTypeId;
+
+            appointment.DoctorId = request.DoctorId;
+
+            appointment.Reason = request.Reason;
+
+            appointment.ConfirmationNotes =
+                request.ConfirmationNotes;
+
+            appointment.ConfirmedDate =
+                request.ConfirmedDate;
+
+            appointment.AppointmentStatusId =
+                request.AppointmentStatusId;
+
+            appointment.ModifiedById =
+                sessionProvider.Session.LoggedInUserId;
+
+            appointment.ModifiedDate = DateTime.Now;
+
+            unitOfWork.Repository<Entities.Models.Appointment>()
+                .Update(appointment);
+
+            // =========================================
+            // PAYMENT
+            // =========================================
+
+            if (request.AppointmentPayment != null)
             {
-                Func<IQueryable<Entities.Models.Appointment>, IOrderedQueryable<Entities.Models.Appointment>> orderByDesc = q => q.OrderByDescending(x => x.TokenNumber);
-                var lastAppointment = await unitOfWork.Repository<Entities.Models.Appointment>().GetOneAsync(x => x.IsActive, orderByDesc);
-                int nextNumber = int.TryParse(lastAppointment.TokenNumber, out int n) ? n + 1 : 1;
-                return nextNumber.ToString().PadLeft(7, '0');
+                var payment =
+                    await unitOfWork.Repository<AppointmentPayment>()
+                    .GetFirstAsync(x => x.AppointmentId == appointment.Id);
+
+                if (payment == null)
+                {
+                    payment = new AppointmentPayment
+                    {
+                        AppointmentId = appointment.Id,
+
+                        CreatedById =
+                            sessionProvider.Session.LoggedInUserId,
+
+                        CreatedDate = DateTime.Now,
+
+                        IsActive = true,
+
+                        IsDelete = false
+                    };
+
+                    await unitOfWork.Repository<AppointmentPayment>()
+                        .AddAsync(payment);
+                }
+
+                payment.VisitFee =
+                    request.AppointmentPayment.VisitFee;
+
+                payment.Discount =
+                    request.AppointmentPayment.Discount;
+
+                payment.TotalPayable =
+                    request.AppointmentPayment.TotalPayable;
+
+                payment.PaymentModeId =
+                    request.AppointmentPayment.PaymentModeId;
+
+                payment.PaymentStatusId =
+                    request.AppointmentPayment.PaymentStatusId;
+
+                payment.PaymentDate = DateTime.Now;
+
+                payment.ModifiedById =
+                    sessionProvider.Session.LoggedInUserId;
+
+                payment.ModifiedDate = DateTime.Now;
             }
-            return "0000001";
+
+            // =========================================
+            // REMOVE OLD LAB ORDERS
+            // =========================================
+
+            var oldLabOrders =
+                await unitOfWork.Repository<Entities.Models.LabOrder>()
+                .FindAllAsync(x => x.AppointmentId == appointment.Id);
+
+            foreach (var old in oldLabOrders)
+            {
+                old.IsDelete = true;
+
+                old.IsActive = false;
+
+                old.ModifiedById =
+                    sessionProvider.Session.LoggedInUserId;
+
+                old.DeleteDate = DateTime.Now;
+
+                unitOfWork.Repository<Entities.Models.LabOrder>()
+                    .Update(old);
+            }
+
+            // =========================================
+            // ADD NEW LAB ORDERS
+            // =========================================
+
+            if (request.LabOrders != null)
+            {
+                foreach (var item in request.LabOrders)
+                {
+                    var labOrder = new Entities.Models.LabOrder
+                    {
+                        AppointmentId = appointment.Id,
+
+                        LabOrderTypeId = item.LabOrderTypeId,
+
+                        ClinicalNotes = item.ClinicalNotes,
+
+                        StatusId = 1,
+
+                        CreatedById =
+                            sessionProvider.Session.LoggedInUserId,
+
+                        CreatedDate = DateTime.Now,
+
+                        IsActive = true,
+
+                        IsDelete = false
+                    };
+
+                    await unitOfWork.Repository<Entities.Models.LabOrder>()
+                        .AddAsync(labOrder);
+                }
+            }
+
+            // =========================================
+            // REMOVE OLD RADIOLOGY
+            // =========================================
+
+            var oldRadiology =
+                await unitOfWork.Repository<Entities.Models.RadiologyOrder>()
+                .FindAllAsync(x => x.AppointmentId == appointment.Id);
+
+            foreach (var old in oldRadiology)
+            {
+                old.IsDelete = true;
+
+                old.IsActive = false;
+
+                old.ModifiedById =
+                    sessionProvider.Session.LoggedInUserId;
+
+                old.DeleteDate = DateTime.Now;
+
+                unitOfWork.Repository<Entities.Models.RadiologyOrder>()
+                    .Update(old);
+            }
+
+            // =========================================
+            // ADD NEW RADIOLOGY
+            // =========================================
+
+            if (request.RadiologyOrders != null)
+            {
+                foreach (var item in request.RadiologyOrders)
+                {
+                    var radiologyOrder =
+                        new Entities.Models.RadiologyOrder
+                        {
+                            AppointmentId = appointment.Id,
+
+                            RadiologyTypeId =
+                                item.RadiologyTypeId,
+
+                            ClinicalNotes =
+                                item.ClinicalNotes,
+
+                            StatusId = 1,
+
+                            CreatedById =
+                                sessionProvider.Session.LoggedInUserId,
+
+                            CreatedDate = DateTime.Now,
+
+                            IsActive = true,
+
+                            IsDelete = false
+                        };
+
+                    await unitOfWork.Repository<Entities.Models.RadiologyOrder>()
+                        .AddAsync(radiologyOrder);
+                }
+            }
+
+            await unitOfWork.SaveChangesAsync(cancellationToken);
+
+            return 200;
         }
 
-        // Helper: Register a new patient
-        private async Task<IdentityResponse> RegisterNewPatientAsync(Entities.Models.Patient request)
-        {
-            var result = new IdentityResponse();
-
-            unitOfWork.Repository<Entities.Models.Patient>().Add(request);
-            SaveChanges();
-            result.Id = request.Id;
-            return result;
-        }
     }
 }

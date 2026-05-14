@@ -209,6 +209,7 @@
         public virtual DbSet<LabOrderType> LabOrderType { get; set; }
         public virtual DbSet<LabOrder> LabOrder { get; set; }
         public virtual DbSet<LabTestVariable> LabTestVariable { get; set; }
+        public virtual DbSet<LabTestVariableOption> LabTestVariableOption { get; set; }
         public virtual DbSet<LabResult> LabResult { get; set; }
         public virtual DbSet<RadiologyOrder> RadiologyOrder { get; set; }
         public virtual DbSet<AppointmentPayment> AppointmentPayment { get; set; }

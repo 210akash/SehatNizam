@@ -63,7 +63,7 @@ export class AddLabTestVariableComponent implements OnInit {
       hasGenderRange: [v.hasGenderRange ?? false],
 
       options: this.fb.array(
-        (v.options ?? []).map((o: any) =>
+        (v.options ?? v.labTestVariableOptions ?? []).map((o: any) =>
           this.createOption(o)
         )
       )
@@ -104,6 +104,24 @@ export class AddLabTestVariableComponent implements OnInit {
 
   addOption(index: number): void {
     this.getOptions(index).push(this.createOption());
+  }
+
+  removeOption(variableIndex: number, optionIndex: number): void {
+    const options = this.getOptions(variableIndex);
+    if (options.length > 1) {
+      options.removeAt(optionIndex);
+    } else {
+      options.at(0).patchValue({ id: 0, name: '', displayOrder: 0 });
+    }
+  }
+
+  closeDialog(): void {
+    this.dialogRef.close(false);
+  }
+
+  isOptionType(index: number): boolean {
+    const value = this.variables.at(index)?.get('resultType')?.value;
+    return Number(value) === 3;
   }
 
   // -----------------------------

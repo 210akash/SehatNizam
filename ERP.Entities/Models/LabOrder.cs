@@ -6,7 +6,7 @@ namespace ERP.Entities.Models
     {
         public long? AppointmentId { get; set; }
         public long LabOrderTypeId { get; set; }
-        public int Reference { get; set; }
+        public string Reference { get; set; }
         public string ClinicalNotes { get; set; }
         public long StatusId { get; set; }
         public Status Status { get; set; }

@@ -1,168 +1,68 @@
 <mat-card class="dialog-card">
   <mat-card-header>
     <mat-card-title>Lab Test Variables</mat-card-title>
-    <mat-card-subtitle>
-      Configure variables for the selected lab order type.
-    </mat-card-subtitle>
+    <mat-card-subtitle>Configure variables for the selected lab order type.</mat-card-subtitle>
   </mat-card-header>
 
   <mat-divider></mat-divider>
 
   <mat-card-content>
     <form [formGroup]="form">
+      <div class="variable-list" formArrayName="variables">
+        <div class="variable-card" *ngFor="let variable of variables.controls; let i = index" [formGroupName]="i">
+          <div class="card-head">
+            <div class="var-index">Variable #{{ i + 1 }}</div>
+            <div class="card-actions">
+              <button mat-stroked-button color="primary" type="button" (click)="addVariable(i)">Add Below</button>
+              <button mat-stroked-button color="warn" type="button" (click)="removeVariable(i)">Remove</button>
+            </div>
+          </div>
 
-      <div class="table-responsive">
-        <table class="table table-bordered">
+          <div class="field-grid">
+            <mat-form-field><mat-label>Name</mat-label><input matInput formControlName="name"></mat-form-field>
+            <mat-form-field><mat-label>Unit</mat-label><input matInput formControlName="unit"></mat-form-field>
+            <mat-form-field>
+              <mat-label>Type</mat-label>
+              <mat-select formControlName="resultType">
+                <mat-option [value]="1">Numeric</mat-option>
+                <mat-option [value]="2">Text</mat-option>
+                <mat-option [value]="3">Option</mat-option>
+                <mat-option [value]="4">Boolean</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field><mat-label>Display Order</mat-label><input matInput type="number" formControlName="displayOrder"></mat-form-field>
+            <mat-form-field><mat-label>Male Min</mat-label><input matInput type="number" formControlName="maleMin"></mat-form-field>
+            <mat-form-field><mat-label>Male Max</mat-label><input matInput type="number" formControlName="maleMax"></mat-form-field>
+            <mat-form-field><mat-label>Female Min</mat-label><input matInput type="number" formControlName="femaleMin"></mat-form-field>
+            <mat-form-field><mat-label>Female Max</mat-label><input matInput type="number" formControlName="femaleMax"></mat-form-field>
+          </div>
 
-          <thead>
-            <tr>
-              <th>Sr</th>
-              <th>Name</th>
-              <th>Unit</th>
-              <th>Type</th>
-              <th>Order</th>
-              <th>Male Min</th>
-              <th>Male Max</th>
-              <th>Female Min</th>
-              <th>Female Max</th>
-              <th>Gender Range</th>
-              <th>Options</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
+          <div class="range-grid">
+          
+          </div>
 
-          <tbody formArrayName="variables">
+          <div class="toggle-row">
+            <mat-checkbox formControlName="hasGenderRange">Has Gender Range</mat-checkbox>
+          </div>
 
-            <tr *ngFor="let variable of variables.controls; let i = index"
-                [formGroupName]="i">
-
-              <!-- Sr -->
-              <td>{{ i + 1 }}</td>
-
-              <!-- Name -->
-              <td>
-                <mat-form-field style="width: 200px;">
-                  <input matInput formControlName="name" placeholder="Name">
-                </mat-form-field>
-              </td>
-
-              <!-- Unit -->
-              <td>
-                <mat-form-field style="width: 100px;">
-                  <input matInput formControlName="unit" placeholder="Unit">
-                </mat-form-field>
-              </td>
-
-              <!-- Type -->
-              <td>
-                <mat-form-field style="width: 130px;">
-                  <mat-select formControlName="resultType">
-
-                    <mat-option [value]="1">Numeric</mat-option>
-                    <mat-option [value]="2">Text</mat-option>
-                    <mat-option [value]="3">Option</mat-option>
-                    <mat-option [value]="4">Boolean</mat-option>
-
-                  </mat-select>
-                </mat-form-field>
-              </td>
-
-              <!-- Order -->
-              <td>
-                <mat-form-field style="width: 80px;">
-                  <input matInput type="number" formControlName="displayOrder">
-                </mat-form-field>
-              </td>
-
-              <!-- Male Min -->
-              <td>
-                <mat-form-field style="width: 90px;">
-                  <input matInput type="number" formControlName="maleMin">
-                </mat-form-field>
-              </td>
-
-              <!-- Male Max -->
-              <td>
-                <mat-form-field style="width: 90px;">
-                  <input matInput type="number" formControlName="maleMax">
-                </mat-form-field>
-              </td>
-
-              <!-- Female Min -->
-              <td>
-                <mat-form-field style="width: 90px;">
-                  <input matInput type="number" formControlName="femaleMin">
-                </mat-form-field>
-              </td>
-
-              <!-- Female Max -->
-              <td>
-                <mat-form-field style="width: 90px;">
-                  <input matInput type="number" formControlName="femaleMax">
-                </mat-form-field>
-              </td>
-
-              <!-- Gender Range -->
-              <td>
-                <mat-checkbox formControlName="hasGenderRange">
-                  Yes
-                </mat-checkbox>
-              </td>
-
-              <!-- Options -->
-              <td style="min-width: 220px;">
-
-                <div *ngIf="variable.get('resultType')?.value === 3"
-                     formArrayName="options">
-
-                  <div *ngFor="let opt of getOptions(i).controls; let j = index"
-                       [formGroupName]="j"
-                       style="display:flex; gap:5px; margin-bottom:5px;">
-
-                    <mat-form-field style="width: 120px;">
-                      <input matInput formControlName="name" placeholder="Option">
-                    </mat-form-field>
-
-                    <mat-form-field style="width: 60px;">
-                      <input matInput type="number" formControlName="displayOrder">
-                    </mat-form-field>
-
-                  </div>
-
-                  <button mat-button type="button" (click)="addOption(i)">
-                    + Add Option
-                  </button>
-
-                </div>
-
-              </td>
-
-              <!-- Actions -->
-              <td>
-                <button mat-icon-button color="primary" (click)="addVariable(i)">
-                  +
-                </button>
-
-                <button mat-icon-button color="warn" (click)="removeVariable(i)">
-                  🗑
-                </button>
-
-              </td>
-
-            </tr>
-
-          </tbody>
-        </table>
+          <div class="options-wrap" *ngIf="isOptionType(i)" formArrayName="options">
+            <div class="options-head">Options</div>
+            <div class="option-row" *ngFor="let opt of getOptions(i).controls; let j = index" [formGroupName]="j">
+              <mat-form-field class="field-option-name"><mat-label>Option</mat-label><input matInput formControlName="name"></mat-form-field>
+              <mat-form-field class="field-option-order"><mat-label>Order</mat-label><input matInput type="number" formControlName="displayOrder"></mat-form-field>
+              <button mat-icon-button color="warn" type="button" (click)="removeOption(i, j)" aria-label="Remove option">×</button>
+            </div>
+            <button mat-button type="button" (click)="addOption(i)">+ Add Option</button>
+          </div>
+        </div>
       </div>
 
-      <div style="margin-top: 15px;">
-        <button mat-raised-button color="primary"
-                (click)="saveLabTestVariables()"
-                [disabled]="isLoading">
+      <div class="save-row">
+        <button mat-stroked-button type="button" (click)="closeDialog()">Close</button>
+        <button mat-raised-button color="primary" (click)="saveLabTestVariables()" [disabled]="isLoading">
           {{ isLoading ? 'Saving...' : 'Save' }}
         </button>
       </div>
-
     </form>
   </mat-card-content>
 </mat-card>

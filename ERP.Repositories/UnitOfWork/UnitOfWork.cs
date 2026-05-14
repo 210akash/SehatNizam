@@ -7,6 +7,7 @@
     using Microsoft.EntityFrameworkCore.Infrastructure;
     using ERP.Repositories.GenericRepository;
     using ERP.Entities.Models;
+    using Microsoft.EntityFrameworkCore.Storage;
 
     public class UnitOfWork : IUnitOfWork
     {
@@ -109,6 +110,15 @@
             return context; // or whatever your internal field is
         }
 
+        public IDbContextTransaction BeginTransaction()
+        {
+            return context.Database.BeginTransaction();
+        }
+
+        public async Task<IDbContextTransaction> BeginTransactionAsync()
+        {
+            return await context.Database.BeginTransactionAsync();
+        }
 
         #region IDisposable Members
 

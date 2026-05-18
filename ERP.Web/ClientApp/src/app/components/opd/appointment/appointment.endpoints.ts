@@ -8,4 +8,6 @@ export class AppointmentEndPoints {
     public readonly deleteAppointment = '/DeleteAppointment';
     public readonly getAllAppointmentStatus = '/GetAllAppointmentStatus';
     public readonly saveConsultation = '/SaveConsultation';
+    public readonly confirmAppointment = '/ConfirmAppointment';
+    public readonly cancelAppoinment = '/CancelAppoinment';
 }

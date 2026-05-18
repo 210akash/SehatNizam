@@ -27,6 +27,7 @@
     using ERP.Mediator.Mediator.Department.Command;
     using ERP.Mediator.Mediator.Device.Command;
     using ERP.Mediator.Mediator.Dispatch.Command;
+    using ERP.Mediator.Mediator.Doctor.Command;
     using ERP.Mediator.Mediator.EmployeeBank.Command;
     using ERP.Mediator.Mediator.EmployeeDesignation.Command;
     using ERP.Mediator.Mediator.EmployeeDocumentType.Command;
@@ -53,7 +54,11 @@
     using ERP.Mediator.Mediator.Item.Command;
     using ERP.Mediator.Mediator.ItemType.Command;
     using ERP.Mediator.Mediator.Location.Command;
+    using ERP.Mediator.Mediator.Notification.Command;
     using ERP.Mediator.Mediator.PaymentMode.Command;
+    using ERP.Mediator.Mediator.Payroll.EmployeeSalary.Command;
+    using ERP.Mediator.Mediator.Payroll.SalaryHead.Command;
+    using ERP.Mediator.Mediator.Payroll.SalaryTaxSlab.Command;
     using ERP.Mediator.Mediator.PriceGroup.Command;
     using ERP.Mediator.Mediator.PrimaryOrder.Command;
     using ERP.Mediator.Mediator.Priority.Command;
@@ -62,6 +67,8 @@
     using ERP.Mediator.Mediator.PurchaseOrder.Command;
     using ERP.Mediator.Mediator.PurchaseReturn.Command;
     using ERP.Mediator.Mediator.Rack.Command;
+    using ERP.Mediator.Mediator.RadiologyOrder.Command;
+    using ERP.Mediator.Mediator.RadiologyType.Command;
     using ERP.Mediator.Mediator.Region.Command;
     using ERP.Mediator.Mediator.RejectReason.Command;
     using ERP.Mediator.Mediator.RetailOrder.Command;
@@ -74,6 +81,8 @@
     using ERP.Mediator.Mediator.SaleReturn.Command;
     using ERP.Mediator.Mediator.SalesTarget.Command;
     using ERP.Mediator.Mediator.Section.Command;
+    using ERP.Mediator.Mediator.Service.Command;
+    using ERP.Mediator.Mediator.ServiceType.Command;
     using ERP.Mediator.Mediator.ShipmentMode.Command;
     using ERP.Mediator.Mediator.Shop.Command;
     using ERP.Mediator.Mediator.ShopDispatch.Command;
@@ -91,7 +100,6 @@
     using ERP.Mediator.Mediator.UserAttendance.Command;
     using ERP.Mediator.Mediator.UserTerritory.Command;
     using ERP.Mediator.Mediator.Vehicle.Command;
-    using ERP.Mediator.Mediator.Notification.Command;
     //using ERP.Mediator.Mediator.Payroll.EmployeeSalary.Command;
     //using ERP.Mediator.Mediator.Payroll.Payroll.Command;
     //using ERP.Mediator.Mediator.Payroll.SalaryHead.Command;
@@ -101,13 +109,6 @@
     using global::AutoMapper;
     using Microsoft.AspNetCore.Identity;
     using System.Linq;
-    using ERP.Mediator.Mediator.Payroll.SalaryHead.Command;
-    using ERP.Mediator.Mediator.Payroll.EmployeeSalary.Command;
-    using ERP.Mediator.Mediator.Payroll.SalaryTaxSlab.Command;
-    using ERP.Mediator.Mediator.Service.Command;
-    using ERP.Mediator.Mediator.RadiologyType.Command;
-    using ERP.Mediator.Mediator.RadiologyOrder.Command;
-    using ERP.Mediator.Mediator.Doctor.Command;
 
     public class AutoMapperConfiguration : Profile
     {
@@ -667,6 +668,8 @@
             this.CreateMap<LabTestVariable, GetLabTestVariable>().ReverseMap();
             this.CreateMap<LabTestVariableOption, GetLabTestVariableOption>().ReverseMap();
             CreateMap<LabOrderType, GetLabOrderType>().ReverseMap();
+            CreateMap<ServiceType, SaveServiceTypeCommand>().ReverseMap();
+            CreateMap<ServiceType, GetServiceType>().ReverseMap();
             //this.CreateMap<PayrollDetail, GetPayrollDetail>().ReverseMap();
 
         }

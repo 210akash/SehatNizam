@@ -4,6 +4,7 @@ import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { NotificationsService } from '../../../../Service/notification.service';
 import { ServiceService } from '../service.service';
 import { DepartmentService } from '../../../department/department.service';
+import { ServiceTypeService } from '../../service-type/service-type.service';
 
 @Component({
   selector: 'app-add-service',
@@ -16,6 +17,7 @@ export class AddServiceComponent implements OnInit {
   isLoading = false;
   isEdit = false;
   departments: any[] = [];
+  serviceType : any[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -23,6 +25,7 @@ export class AddServiceComponent implements OnInit {
     private service: ServiceService,
     private notifications: NotificationsService,
     private departmentService: DepartmentService,
+    private serviceTypeService: ServiceTypeService,
     @Inject(MAT_DIALOG_DATA) public data: { element: any }
   ) { }
 
@@ -34,9 +37,21 @@ export class AddServiceComponent implements OnInit {
       name: [this.isEdit ? this.data.element.name : '', Validators.required],
       basePrice: [this.isEdit ? this.data.element.basePrice : 0, [Validators.required, Validators.min(0)]],
       departmentId: [this.isEdit ? this.data.element.departmentId : null],
-      isActive: [this.isEdit ? this.data.element.isActive : true]
+      serviceTypeId: [this.isEdit ? this.data.element.serviceTypeId : null]
     });
+    this.loadServiceType();
     this.loadDepartments();
+  }
+
+  loadServiceType(): void {
+    this.serviceTypeService.getAllServiceTypes({}).subscribe({
+      next: (res: any) => {
+        this.serviceType = res?.item1 ?? res ?? [];
+      },
+      error: () => {
+        this.serviceType = [];
+      }
+    });
   }
 
   loadDepartments(): void {

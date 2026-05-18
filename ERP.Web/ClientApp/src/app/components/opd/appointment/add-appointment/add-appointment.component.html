@@ -143,7 +143,7 @@
 
           <mat-form-field appearance="outline">
             <mat-label>Department / Specialty</mat-label>
-            <mat-select formControlName="departmentId">
+            <mat-select formControlName="departmentId" (selectionChange)="getOPDServiceByDepartment()">
               <mat-option [value]="null">Select Department</mat-option>
               <mat-option *ngFor="let dept of departments" [value]="dept.id">{{ dept.name }}</mat-option>
             </mat-select>
@@ -177,7 +177,7 @@
       <div class="span-2">
         <label class="text-sm label-inline">Appointment Status</label>
         <mat-radio-group formControlName="appointmentStatusId" class="priority-radio">
-          <mat-radio-button [value]="1">Pending</mat-radio-button>
+          <mat-radio-button [value]="1">Booked</mat-radio-button>
           <mat-radio-button [value]="5">Confirm</mat-radio-button>
         </mat-radio-group>
       </div>
@@ -185,7 +185,7 @@
       </section>
 
       <!-- Payment -->
-      <section class="section" formGroupName="appointmentPayment" *ngIf="appointmentForm.get('appointmentStatusId')?.value === 5">
+      <section class="section" formGroupName="appointmentPayment">
         <div class="section-head">
           <mat-icon fontIcon="credit_card" class="icon"></mat-icon>
           <div>

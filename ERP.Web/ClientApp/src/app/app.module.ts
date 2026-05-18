@@ -848,6 +848,7 @@ import { EmployeeSalaryService } from './components/hr/payroll/employeesalary/em
 import { EmployeeSalaryEndPoints } from './components/hr/payroll/employeesalary/employeesalary.endpoints';
 import { AddEmployeeSalaryComponent } from './components/hr/payroll/employeesalary/add-employee-salary/add-employee-salary.component';
 import { PrintAppoinmentComponent } from './components/opd/appointment/print-appoinment/print-appoinment.component';
+import { ConfirmAppointmentComponent } from './components/opd/appointment/confirm-appointment/confirm-appointment.component';
 import { PatientProblemEndPoints } from './components/opd/patientproblem/patientproblem.endpoints';
 import { PatientProblemService } from './components/opd/patientproblem/patientproblem.service';
 import { LabOrderTypeEndPoints } from './components/opd/lab-order-type/lab-order-type.endpoints';
@@ -879,6 +880,12 @@ import { AddServiceComponent } from './components/opd/service/add-service/add-se
 import { DeleteServiceComponent } from './components/opd/service/delete-service/delete-service.component';
 import { ViewServiceComponent } from './components/opd/service/view-service/view-service.component';
 import { AddLabTestVariableComponent } from './components/opd/lab-order-type/add-lab-test-variable/add-lab-test-variable.component';
+import { ServiceTypeService } from './components/opd/service-type/service-type.service';
+import { ServiceTypeEndPoints } from './components/opd/service-type/service-type.endpoints';
+import { AddServiceTypeComponent } from './components/opd/service-type/add-service-type/add-service-type.component';
+import { DeleteServiceTypeComponent } from './components/opd/service-type/delete-service-type/delete-service-type.component';
+import { ViewServiceTypeComponent } from './components/opd/service-type/view-service-type/view-service-type.component';
+import { ServiceTypeListComponent } from './components/opd/service-type/service-type-list/service-type-list.component';
 
 const matFormFieldDefaults: MatFormFieldDefaultOptions = {
     appearance: 'outline'
@@ -1495,6 +1502,7 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         AddEmployeeSalaryComponent,
         AddEmployeeSalaryComponent,
         PrintAppoinmentComponent,
+        ConfirmAppointmentComponent,
         LabOrderListComponent,
         AddLabOrderComponent,
         ViewLabOrderComponent,
@@ -1504,7 +1512,12 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         DeleteServiceComponent,
         ViewServiceComponent,
         AddDoctorProfileComponent,
-        AddLabTestVariableComponent
+        AddLabTestVariableComponent,
+        AddServiceTypeComponent,
+        DeleteServiceTypeComponent,
+        ViewServiceTypeComponent,
+        ServiceTypeListComponent,
+        ConfirmAppointmentComponent
     ],
     bootstrap: [AppComponent], imports: [
         InputMaskModule,
@@ -1800,6 +1813,8 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         RadiologyTypeEndPoints,
         RadiologyOrderService,
         RadiologyOrderEndPoints,
+        ServiceTypeService,
+        ServiceTypeEndPoints,
         { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
         { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },
         AuthenticationService, {

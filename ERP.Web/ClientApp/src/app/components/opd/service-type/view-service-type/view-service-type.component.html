@@ -1,5 +1,5 @@
 <mat-card>
-  <mat-card-header><mat-card-title>View Service</mat-card-title></mat-card-header>
+  <mat-card-header><mat-card-title>View ServiceType</mat-card-title></mat-card-header>
   <mat-card-content>
     <form [formGroup]="form">
       <mat-form-field class="form-field">
@@ -11,23 +11,6 @@
         <mat-label>Name</mat-label>
         <input matInput formControlName="name" readonly />
       </mat-form-field>
-
-      <mat-form-field class="form-field">
-        <mat-label>Base Price</mat-label>
-        <input matInput formControlName="basePrice" readonly />
-      </mat-form-field>
-
-      <mat-form-field class="form-field">
-        <mat-label>Department</mat-label>
-        <input matInput formControlName="departmentId" readonly />
-      </mat-form-field>
-
-            <mat-form-field class="form-field">
-        <mat-label>Service Type</mat-label>
-        <input matInput formControlName="serviceTypeId" readonly />
-      </mat-form-field>
-
-
       <mat-form-field class="form-field">
         <mat-label>Active</mat-label>
         <mat-select formControlName="isActive" >

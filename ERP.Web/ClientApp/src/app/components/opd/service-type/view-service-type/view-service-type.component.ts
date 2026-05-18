@@ -4,29 +4,25 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ConstantService } from '../../../../Service/constant.service';
 
 @Component({
-  selector: 'app-view-service',
-  templateUrl: './view-service.component.html',
-  styleUrls: ['./view-service.component.css'],
+  selector: 'app-view-service-type',
+  templateUrl: './view-service-type.component.html',
+  styleUrls: ['./view-service-type.component.css'],
   standalone: false
 })
-export class ViewServiceComponent implements OnInit {
+export class ViewServiceTypeComponent implements OnInit {
   form!: FormGroup;
 
   constructor(
     private fb: FormBuilder,
-    private constantService: ConstantService,
+    private constantServiceType: ConstantService,
     @Inject(MAT_DIALOG_DATA) public data: { element: any }
   ) { }
 
   ngOnInit(): void {
     this.form = this.fb.group({
-      code: [''],
       name: [''],
-      basePrice: [0],
-      departmentId: [''],
-      serviceTypeId: [''],
       isActive: [false]
     });
-    this.constantService.LoadData(this.data.element, this.form);
+    this.constantServiceType.LoadData(this.data.element, this.form);
   }
 }

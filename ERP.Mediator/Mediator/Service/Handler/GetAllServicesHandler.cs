@@ -32,6 +32,7 @@ namespace ERP.Mediator.Mediator.Services.Handler
 
             Expression<Func<Entities.Models.Service, object>>[] includes = {
                 x => x.Department,
+                x => x.ServiceType,
             };
 
             Expression<Func<Entities.Models.Service, object>> OrderBy = null;

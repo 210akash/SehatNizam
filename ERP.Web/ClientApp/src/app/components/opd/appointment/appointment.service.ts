@@ -64,4 +64,14 @@ export class AppointmentService extends BaseService<any> {
         return this.post(saveConsultationCommand, this.endPointControllerName + this.AppointmentEndPoints.saveConsultation)
             .pipe(map((data: any) => data));
     }
+
+    confirmAppointment(id: number) {
+        return this.get('?id=' + id, this.endPointControllerName + this.AppointmentEndPoints.confirmAppointment)
+            .pipe(map((data: any) => data));
+    }
+
+      cancelAppoinment(id: number) {
+        return this.get('?id=' + id, this.endPointControllerName + this.AppointmentEndPoints.cancelAppoinment)
+            .pipe(map((data: any) => data));
+    }
 }

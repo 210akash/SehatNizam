@@ -7,6 +7,7 @@ import { AppointmentService } from '../appointment.service';
 import { ConstantService } from '../../../../Service/constant.service';
 import { Router } from '@angular/router';
 import { PrintAppoinmentComponent } from '../print-appoinment/print-appoinment.component';
+import { ConfirmAppointmentComponent } from '../confirm-appointment/confirm-appointment.component';
 import { MatDialog } from '@angular/material/dialog';
 
 @Component({
@@ -133,7 +134,7 @@ export class AppointmentListComponent {
     this.router.navigate(['/newappointment'], navigationExtras);
   }
 
- printAppoinmnetDialog(element: any) {
+   printAppoinmnetDialog(element: any) {
     const dialogRef = this.dialog.open(PrintAppoinmentComponent, {
       panelClass: 'cstm_width_1100',
       maxHeight: '90vh',
@@ -141,6 +142,22 @@ export class AppointmentListComponent {
         element: element,
       },
       disableClose: true
+    });
+  }
+
+  openConfirmDialog(element: any) {
+    const dialogRef = this.dialog.open(ConfirmAppointmentComponent, {
+      maxWidth: '560px',
+      disableClose: true,
+      data: {
+        element: element,
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((confirmed: boolean) => {
+      if (confirmed) {
+        this.bindData();
+      }
     });
   }
 

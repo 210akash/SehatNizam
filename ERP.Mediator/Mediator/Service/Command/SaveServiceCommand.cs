@@ -9,5 +9,6 @@ namespace ERP.Mediator.Mediator.Service.Command
         public string Name { get; set; }
         public decimal BasePrice { get; set; }
         public long? DepartmentId { get; set; }
+        public long ServiceTypeId { get; set; }
     }
 }

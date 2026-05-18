@@ -1,0 +1,65 @@
+<div mat-dialog-title class="dialog-title">
+  <mat-icon fontIcon="event_note" class="title-icon"></mat-icon>
+  Confirm Appointment
+</div>
+
+<mat-dialog-content>
+  <div class="info-card">
+    <div class="appointment-summary">
+      <div class="summary-field">
+        <span class="summary-label">Patient Name</span>
+        <span class="summary-value">{{ getPatientName() }}</span>
+      </div>
+      <div class="summary-field">
+        <span class="summary-label">Phone Number</span>
+        <span class="summary-value">{{ getPatientPhone() }}</span>
+      </div>
+      <div class="summary-field">
+        <span class="summary-label">Age / Gender</span>
+        <span class="summary-value">{{ getAgeGender() }}</span>
+      </div>
+      <div class="summary-field">
+        <span class="summary-label">Doctor</span>
+        <span class="summary-value">{{ getDoctorName() }}</span>
+      </div>
+      <div class="summary-field">
+        <span class="summary-label">Department</span>
+        <span class="summary-value">{{ getDepartmentName() }}</span>
+      </div>
+      <div class="summary-field">
+        <span class="summary-label">Date &amp; Time</span>
+        <span class="summary-value">{{ getAppointmentDateTime() }}</span>
+      </div>
+      <div class="summary-field">
+        <span class="summary-label">Visit Type</span>
+        <span class="summary-value">{{ getVisitType() }}</span>
+      </div>
+      <div class="summary-field">
+        <span class="summary-label">Reason</span>
+        <span class="summary-value">{{ getReason() }}</span>
+      </div>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions class="dialog-actions">
+  <button mat-flat-button color="default" mat-dialog-close>
+    <span>Close</span>
+  </button>
+  <button
+    mat-flat-button
+    color="success"
+    (click)="onConfirm()"
+    [disabled]="isSubmitting">
+    <span *ngIf="!isSubmitting">Confirm</span>
+    <span *ngIf="isSubmitting">Confirming...</span>
+  </button>
+  <button
+    mat-flat-button
+    color="danger"
+    (click)="onCancel()"
+    [disabled]="isSubmitting">
+    <span *ngIf="!isSubmitting">Cancel</span>
+    <span *ngIf="isSubmitting">Canceling...</span>
+  </button>
+</mat-dialog-actions>

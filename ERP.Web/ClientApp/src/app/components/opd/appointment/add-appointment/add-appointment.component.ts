@@ -18,6 +18,7 @@ import { debounceTime, distinctUntilChanged, finalize, map, startWith, switchMap
 import { EmployeeService } from '../../../hr/employee/employee.service';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { DoctorService } from '../../doctor/doctor.service';
+import { ServiceService } from '../../service/service.service';
 
 type Option<T = any> = { id: T; label: string };
 
@@ -44,6 +45,7 @@ export class AddAppointmentComponent implements OnInit {
   priorityLevelList: any;
   paymentStatusList: any;
   departments: any[] = [];
+  services: any[] = [];
   patientSearchCtrl = new FormControl<string | any>('');
   filteredPatients$!: Observable<any[]>;
   patientLoading = false;
@@ -71,6 +73,7 @@ export class AddAppointmentComponent implements OnInit {
     private patientService: PatientService,
     private doctorService: DoctorService,
     private router: Router,
+    private serviceService: ServiceService,
     @Optional() @Inject(MAT_DIALOG_DATA) public data: { element: any } | null
   ) { }
 
@@ -89,7 +92,6 @@ export class AddAppointmentComponent implements OnInit {
     this.setupPatientAutocomplete();
     this.setupAppointmentStatusWatcher();
   }
-
 
   private buildForm(): void {
     this.appointmentForm = this.fb.group({
@@ -129,6 +131,7 @@ export class AddAppointmentComponent implements OnInit {
         discount: [0, Validators.min(0)],
         totalPayable: [{ value: 0, disabled: true }],
         paymentModeId: [1, Validators.required],
+        serviceId: [Validators.required],
         paymentDate: [this.minDate, Validators.required],
         paymentStatusId: [0, Validators.required]
       })
@@ -200,6 +203,7 @@ export class AddAppointmentComponent implements OnInit {
         totalPayable: payment.totalPayable ?? element.appointmentPayment?.totalPayable ?? 0,
         paymentModeId: payment.paymentModeId ?? element.appointmentPayment?.paymentModeId ?? 1,
         paymentStatusId: payment.paymentStatusId ?? element.appointmentPayment?.paymentStatusId ?? element.appointmentStatusId ?? 0,
+        serviceId: payment.serviceId ?? 0,
         paymentDate: payment.paymentDate
           ? this.toInputDate(payment.paymentDate)
           : this.minDate
@@ -214,24 +218,18 @@ export class AddAppointmentComponent implements OnInit {
     this.updateTotalPayable();
   }
 
-  private setupAppointmentStatusWatcher(): void {
-    this.appointmentForm.get('appointmentStatusId')?.valueChanges.subscribe((statusId: number) => {
-      if (Number(statusId) === 5) {
-        return;
-      }
-      const paymentGroup = this.appointmentForm.get('appointmentPayment') as FormGroup;
-      paymentGroup.reset({
-        id: 0,
-        appointmentId: this.appointmentForm.get('id')?.value || 0,
-        visitFee: 0,
-        discount: 0,
-        totalPayable: 0,
-        paymentModeId: 1,
-        paymentDate: this.minDate,
-        paymentStatusId: 0
+private setupAppointmentStatusWatcher(): void {
+  this.appointmentForm.get('appointmentStatusId')?.valueChanges.subscribe((statusId: number) => {
+    const paymentGroup = this.appointmentForm.get('appointmentPayment') as FormGroup;
+
+    if (Number(statusId) === 5) {
+      // Set paymentStatusId = 3 without affecting other fields
+      paymentGroup.patchValue({
+        paymentStatusId: 3
       });
-    });
-  }
+    } 
+  });
+}
 
   private loadDepartments(): void {
     this.departmentService.getClinicalDepartment().subscribe({
@@ -244,6 +242,38 @@ export class AddAppointmentComponent implements OnInit {
       }
     });
   }
+
+  public getOPDServiceByDepartment(): void {
+  const departmentId = this.appointmentForm.get('departmentId')?.value;
+  if (departmentId > 0) {
+    const _filterForm = { departmentId: departmentId };
+    this.serviceService.getAllServices(_filterForm).subscribe({
+      next: (res: any) => {
+        // Assign services from response
+        this.services = res?.item1 ?? res ?? [];
+
+        // Check if an OPD service exists
+        const opdService = this.services.find(
+          (s: any) => s.serviceType?.name === 'OPD' && s.name === 'OPD'
+        );
+
+        if (opdService) {
+          // Patch the serviceId in the appointmentPayment form group
+          this.appointmentForm.get('appointmentPayment')?.patchValue({
+            serviceId: opdService.id
+          });
+        }
+        else{
+           this.notifications.showNotification('No OPD Service Found Against Department', 'snack-bar-danger');
+        }
+      },
+      error: () => {
+        // Fallback: keep an empty list; UI will show required validation
+        this.services = [];
+      }
+    });
+  }
+}
 
   getCityList(): void {
     let _filterForm = {};
@@ -382,6 +412,7 @@ export class AddAppointmentComponent implements OnInit {
       return;
     }
 
+
     const statusId = Number(this.appointmentForm.get('appointmentStatusId')?.value);
     const paymentGroup = this.appointmentForm.get('appointmentPayment') as FormGroup;
     const visitFee = Number(paymentGroup.get('visitFee')?.value) || 0;
@@ -394,7 +425,6 @@ export class AddAppointmentComponent implements OnInit {
 
     this.isSubmitting = true;
     const formValue = this.appointmentForm.getRawValue();
-
     const appointmentDateTime = this.combineDateAndTime(formValue.appointmentDate, formValue.appointmentTime);
     const payload: any = {
       ...formValue,
@@ -479,10 +509,10 @@ export class AddAppointmentComponent implements OnInit {
   }
 
   private combineDateAndTime(date: string | Date, time: string): Date {
-    const baseDate = new Date(date);
+    const dateStr = typeof date === 'string' ? date : this.toInputDate(date);
+    const [y, m, d] = dateStr.split('-').map(Number);
     const [hours, minutes] = time?.split(':').map((v) => Number(v)) ?? [0, 0];
-    baseDate.setHours(hours, minutes, 0, 0);
-    return baseDate;
+    return new Date(Date.UTC(y, m - 1, d, hours, minutes, 0, 0));
   }
 
   private toInputDate(date: Date | string): string {
@@ -512,10 +542,10 @@ export class AddAppointmentComponent implements OnInit {
       name: filter,
       departmentId: departmentId
     }
-    ;(await this.doctorService.getAllDoctors(getDoctorFilter))
-      .subscribe((data: any) => {
-        this.doctorList = data.item1;
-      });
+      ; (await this.doctorService.getAllDoctors(getDoctorFilter))
+        .subscribe((data: any) => {
+          this.doctorList = data.item1;
+        });
   }
 
   onOptionSelected(event: MatAutocompleteSelectedEvent): void {

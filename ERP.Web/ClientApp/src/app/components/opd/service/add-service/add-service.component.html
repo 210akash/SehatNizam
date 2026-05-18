@@ -8,20 +8,16 @@
       <mat-form-field class="form-field">
         <mat-label>Code *</mat-label>
         <input matInput formControlName="code" placeholder="Enter code" />
-        <mat-error *ngIf="form.get('code')?.hasError('required')">Code is required</mat-error>
       </mat-form-field>
 
       <mat-form-field class="form-field">
         <mat-label>Name *</mat-label>
         <input matInput formControlName="name" placeholder="Enter name" />
-        <mat-error *ngIf="form.get('name')?.hasError('required')">Name is required</mat-error>
       </mat-form-field>
 
       <mat-form-field class="form-field">
         <mat-label>Base Price *</mat-label>
         <input matInput formControlName="basePrice" type="number" placeholder="Enter base price" />
-        <mat-error *ngIf="form.get('basePrice')?.hasError('required')">Base price is required</mat-error>
-        <mat-error *ngIf="form.get('basePrice')?.hasError('min')">Base price must be non-negative</mat-error>
       </mat-form-field>
 
       <mat-form-field class="form-field">
@@ -32,9 +28,12 @@
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field class="form-field">
-        <mat-label>Active</mat-label>
-        <mat-switch formControlName="isActive"></mat-switch>
+       <mat-form-field class="form-field">
+        <mat-label>Service Type</mat-label>
+        <mat-select formControlName="serviceTypeId">
+          <mat-option value="">Select Service Type</mat-option>
+          <mat-option *ngFor="let serviceType of serviceType" [value]="serviceType.id">{{ serviceType.name }}</mat-option>
+        </mat-select>
       </mat-form-field>
 
       <div class="button-container">

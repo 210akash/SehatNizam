@@ -10,5 +10,7 @@ namespace ERP.Entities.Models
         public decimal BasePrice { get; set; }
         public long? DepartmentId { get; set; }
         public Department Department { get; set; }
+        public long ServiceTypeId { get; set; }
+        public ServiceType ServiceType { get; set; }
     }
 }

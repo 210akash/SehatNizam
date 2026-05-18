@@ -10,6 +10,8 @@ namespace ERP.Entities.Models
         public decimal TotalPayable { get; set; } = 0m;
         public PaymentMode PaymentMode { get; set; }
         public long PaymentModeId { get; set; }
+        public long ServiceId { get; set; }
+        public Service Service { get; set; }
         public DateTime PaymentDate { get; set; }
         public Status PaymentStatus { get; set; }
         public long PaymentStatusId { get; set; }

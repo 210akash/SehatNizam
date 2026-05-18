@@ -1,15 +1,80 @@
-<mat-card>
-  <mat-card-header><mat-card-title>Lab Order Form</mat-card-title></mat-card-header>
-  <mat-divider></mat-divider>
-  <mat-card-content>
-    <form [formGroup]="form">
-      <mat-form-field class="form-field"><mat-label>Appointment Id</mat-label><input matInput formControlName="appointmentId" type="number" /></mat-form-field>
-      <mat-form-field class="form-field"><mat-label>Lab Order Type Id</mat-label><input matInput formControlName="labOrderTypeId" type="number" /></mat-form-field>
-      <mat-form-field class="form-field"><mat-label>Status Id</mat-label><input matInput formControlName="statusId" type="number" /></mat-form-field>
-      <div class="button-container">
-        <button mat-flat-button color="primary" type="button" (click)="save()">Save</button>
-        <button mat-flat-button [mat-dialog-close]="true">Close</button>
+<form [formGroup]="form" class="modern-form">
+  <mat-card class="modern-card">
+    <mat-card-header>
+      <div>
+        <mat-card-title>Direct Lab Order</mat-card-title>
+        <mat-card-subtitle>Reception workflow for fast lab booking and billing.</mat-card-subtitle>
       </div>
-    </form>
-  </mat-card-content>
-</mat-card>
+    </mat-card-header>
+    <mat-divider></mat-divider>
+    <mat-card-content>
+      <section class="section">
+        <div class="section-title">Patient</div>
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Search Existing Patient</mat-label>
+          <input matInput [formControl]="patientSearchCtrl" [matAutocomplete]="patientAuto" placeholder="MRN / Name / Phone" />
+          <mat-autocomplete #patientAuto="matAutocomplete" [displayWith]="displayPatient" (optionSelected)="onPatientSelected($event.option.value)">
+            <mat-option *ngFor="let patient of filteredPatients$ | async" [value]="patient">{{ patient.name }} - {{ patient.phoneNo }}</mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+        <div formGroupName="patient" class="grid-3">
+          <mat-form-field appearance="outline"><mat-label>Name</mat-label><input matInput formControlName="name" /></mat-form-field>
+          <mat-form-field appearance="outline"><mat-label>Phone</mat-label><input matInput formControlName="phoneNo" /></mat-form-field>
+          <mat-form-field appearance="outline"><mat-label>Secondary Phone</mat-label><input matInput formControlName="secondaryPhoneNo" /></mat-form-field>
+          <mat-form-field appearance="outline"><mat-label>Gender</mat-label><mat-select formControlName="gender"><mat-option value="male">Male</mat-option><mat-option value="female">Female</mat-option></mat-select></mat-form-field>
+          <mat-form-field appearance="outline"><mat-label>Date Of Birth</mat-label><input matInput [matDatepicker]="dobPicker" formControlName="dateOfBirth" /><mat-datepicker-toggle matIconSuffix [for]="dobPicker"></mat-datepicker-toggle><mat-datepicker #dobPicker></mat-datepicker></mat-form-field>
+          <mat-form-field appearance="outline"><mat-label>Age</mat-label><input matInput formControlName="age" readonly /></mat-form-field>
+          <mat-form-field appearance="outline"><mat-label>CNIC</mat-label><input matInput formControlName="cnic" /></mat-form-field>
+          <mat-form-field appearance="outline"><mat-label>City Id</mat-label><input matInput type="number" formControlName="cityId" /></mat-form-field>
+          <mat-form-field appearance="outline"><mat-label>Email</mat-label><input matInput formControlName="email" /></mat-form-field>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-title">Lab Tests</div>
+        <div class="row-actions">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Select Lab Test</mat-label>
+            <mat-select [(value)]="selectedLabOrderTypeId">
+              <mat-option *ngFor="let test of labOrderTypes" [value]="test.id">{{ test.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <button mat-flat-button color="primary" type="button" (click)="addLabOrder()">Add Test</button>
+        </div>
+        <table mat-table [dataSource]="labOrders.controls" class="w-100 mat-elevation-z1" *ngIf="labOrders.length > 0">
+          <ng-container matColumnDef="name"><th mat-header-cell *matHeaderCellDef>Test Name</th><td mat-cell *matCellDef="let row">{{ getLabOrderTypeName(row.get('labOrderTypeId')?.value) }}</td></ng-container>
+          <ng-container matColumnDef="notes"><th mat-header-cell *matHeaderCellDef>Clinical Notes</th><td mat-cell *matCellDef="let row; let i = index"><div [formGroup]="labOrders.at(i)"><mat-form-field appearance="outline" class="w-100"><input matInput formControlName="clinicalNotes" /></mat-form-field></div></td></ng-container>
+          <ng-container matColumnDef="remove"><th mat-header-cell *matHeaderCellDef>Remove</th><td mat-cell *matCellDef="let row; let i = index"><button mat-icon-button color="warn" (click)="removeLabOrder(i)"><mat-icon>delete</mat-icon></button></td></ng-container>
+          <tr mat-header-row *matHeaderRowDef="['name','notes','remove']"></tr>
+          <tr mat-row *matRowDef="let row; columns: ['name','notes','remove'];"></tr>
+        </table>
+      </section>
+
+      <section class="section" formGroupName="appointmentPayment">
+        <div class="section-title">Payment</div>
+        <div class="grid-3">
+          <mat-form-field appearance="outline"><mat-label>Visit Fee</mat-label><input matInput type="number" formControlName="visitFee" /></mat-form-field>
+          <mat-form-field appearance="outline"><mat-label>Discount</mat-label><input matInput type="number" formControlName="discount" /></mat-form-field>
+          <mat-form-field appearance="outline"><mat-label>Total Payable</mat-label><input matInput formControlName="totalPayable" readonly /></mat-form-field>
+          <mat-form-field appearance="outline"><mat-label>Paid Amount</mat-label><input matInput type="number" formControlName="paidAmount" /></mat-form-field>
+          <mat-form-field appearance="outline"><mat-label>Balance</mat-label><input matInput formControlName="balanceAmount" readonly /></mat-form-field>
+          <mat-form-field appearance="outline"><mat-label>Payment Mode</mat-label><mat-select formControlName="paymentModeId"><mat-option *ngFor="let p of paymentModesList" [value]="p.id">{{ p.name }}</mat-option></mat-select></mat-form-field>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-title">Encounter</div>
+        <div class="grid-3">
+          <mat-form-field appearance="outline"><mat-label>Department</mat-label><mat-select formControlName="departmentId"><mat-option *ngFor="let d of departments" [value]="d.id">{{ d.name }}</mat-option></mat-select></mat-form-field>
+          <mat-form-field appearance="outline"><mat-label>Appointment Type</mat-label><mat-select formControlName="appointmentTypeId"><mat-option *ngFor="let a of appointmentTypeList" [value]="a.id">{{ a.name }}</mat-option></mat-select></mat-form-field>
+          <mat-form-field appearance="outline"><mat-label>Priority</mat-label><mat-select formControlName="priorityLevelId"><mat-option *ngFor="let p of priorityLevelList" [value]="p.id">{{ p.name }}</mat-option></mat-select></mat-form-field>
+        </div>
+      </section>
+
+      <div class="button-container">
+        <button mat-flat-button color="primary" type="button" [disabled]="isSubmitting" (click)="onSubmit()">{{ isSubmitting ? 'Saving...' : 'Save Lab Order' }}</button>
+        <button mat-stroked-button type="button" [mat-dialog-close]="true">Cancel</button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</form>

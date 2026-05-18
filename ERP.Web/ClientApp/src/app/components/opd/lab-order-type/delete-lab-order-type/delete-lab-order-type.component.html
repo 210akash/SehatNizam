@@ -8,19 +8,19 @@
       <div class="col-md-12">
         <mat-form-field style="width: 100%;">
           <mat-label>Name</mat-label>
-          <input matInput [value]="data?.element?.name || '-'" readonly />
+          <input matInput [value]="data.element.name || '-'" readonly />
         </mat-form-field>
       </div>
       <div class="col-md-12">
         <mat-form-field style="width: 100%;">
           <mat-label>Description</mat-label>
-          <textarea matInput rows="3" [value]="data?.element?.description || '-'" readonly></textarea>
+          <textarea matInput rows="3" [value]="data.element.description || '-'" readonly></textarea>
         </mat-form-field>
       </div>
       <div class="col-md-12">
         <mat-form-field style="width: 100%;">
           <mat-label>Service</mat-label>
-          <input matInput [value]="data?.element?.service.name" readonly />
+          <input matInput [value]="data.element.service?.name || '-'" readonly />
         </mat-form-field>
       </div>
     </div>

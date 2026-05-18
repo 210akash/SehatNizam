@@ -128,25 +128,16 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                     var payment = new AppointmentPayment
                     {
                         AppointmentId = appointment.Id,
-
                         VisitFee = request.AppointmentPayment.VisitFee,
-
                         Discount = request.AppointmentPayment.Discount,
-
                         TotalPayable = request.AppointmentPayment.TotalPayable,
-
                         PaymentModeId = request.AppointmentPayment.PaymentModeId,
-
+                        ServiceId = request.AppointmentPayment.ServiceId,
                         PaymentDate = DateTime.Now,
-
                         PaymentStatusId = request.AppointmentPayment.PaymentStatusId,
-
                         CreatedById = sessionProvider.Session.LoggedInUserId,
-
                         CreatedDate = DateTime.Now,
-
                         IsActive = true,
-
                         IsDelete = false
                     };
 
@@ -420,8 +411,8 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                 payment.TotalPayable =
                     request.AppointmentPayment.TotalPayable;
 
-                payment.PaymentModeId =
-                    request.AppointmentPayment.PaymentModeId;
+                payment.PaymentModeId = request.AppointmentPayment.PaymentModeId;
+                payment.ServiceId = request.AppointmentPayment.ServiceId;
 
                 payment.PaymentStatusId =
                     request.AppointmentPayment.PaymentStatusId;

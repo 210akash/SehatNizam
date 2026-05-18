@@ -121,6 +121,7 @@ namespace ERP.Mediator.Mediator.Appointment.Command
     {
         public long Id { get; set; }   // Id (for update)
         public long AppointmentId { get; set; }
+        public long ServiceId { get; set; }   // ✔️ ADD THIS ONLY
         public decimal VisitFee { get; set; } = 0m;
         public decimal Discount { get; set; } = 0m;
         public decimal TotalPayable { get; set; } = 0m;

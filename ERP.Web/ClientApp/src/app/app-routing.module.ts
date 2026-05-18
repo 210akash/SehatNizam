@@ -129,6 +129,7 @@ import { SalaryHeadListComponent } from './components/hr/payroll/salaryhead/sala
 import { SalaryTaxSlabListComponent } from './components/hr/payroll/salarytaxslab/salarytaxslab-list/salarytaxslab-list.component';
 import { TriageCategoryListComponent } from './components/opd/triage-category/triage-category-list/triage-category-list.component';
 import { LabOrderListComponent } from './components/opd/lab-order/lab-order-list/lab-order-list.component';
+import { AddLabOrderComponent } from './components/opd/lab-order/add-lab-order/add-lab-order.component';
 import { RadiologyTypeListComponent } from './components/opd/radiologytype/radiologytype-list/radiologytype-list.component';
 import { ServiceListComponent } from './components/opd/service/service-list/service-list.component';
 import { LabOrderTypeListComponent } from './components/opd/lab-order-type/lab-order-type-list/lab-order-type-list.component';
@@ -252,8 +253,9 @@ const routes: Routes = [
       { path: 'doctor', component: DoctorListComponent, canActivate: [AuthGuard] },
       { path: 'doctorappointment', component: DoctorAppointmentListComponent, canActivate: [AuthGuard] },
       { path: 'triagecategory', component: TriageCategoryListComponent, canActivate: [AuthGuard], data: {roles: ["receptionist"] } },
-      { path: 'triage', component: CreateTriageComponent, canActivate: [AuthGuard] },
+       { path: 'triage', component: CreateTriageComponent, canActivate: [AuthGuard] },
        { path: 'laborder', component: LabOrderListComponent, canActivate: [AuthGuard] },
+       { path: 'newlaborder', component: AddLabOrderComponent, canActivate: [AuthGuard] },
        { path: 'radiologytype', component: RadiologyTypeListComponent, canActivate: [AuthGuard] },
        { path: 'labordertype', component: LabOrderTypeListComponent, canActivate: [AuthGuard] },
        { path: 'newtriage', component: CreateTriageComponent, canActivate: [AuthGuard] },

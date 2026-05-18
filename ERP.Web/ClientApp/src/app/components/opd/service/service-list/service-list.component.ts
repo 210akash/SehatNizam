@@ -58,7 +58,7 @@ export class ServiceListComponent implements OnInit {
     }
     this.service.getAllServices(filter).subscribe({
       next: (data: any) => {
-        this.dataSource = data.Data || [];
+        this.dataSource = data.item1 || [];
         this.isLoading = false;
       },
       error: () => {

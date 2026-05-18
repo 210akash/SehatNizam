@@ -40,7 +40,7 @@ export class ServiceTypeListComponent implements OnInit {
     const filter: any = {};
     this.serviceType.getAllServiceTypes(filter).subscribe({
       next: (data: any) => {
-        this.dataSource = data.Data || [];
+        this.dataSource = data.item1 || [];
         this.isLoading = false;
       },
       error: () => {

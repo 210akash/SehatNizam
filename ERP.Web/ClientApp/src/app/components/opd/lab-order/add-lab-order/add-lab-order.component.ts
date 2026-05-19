@@ -39,12 +39,6 @@ export class AddLabOrderComponent implements OnInit, OnDestroy {
   form!: FormGroup;
   isLoading = false;
   isSubmitting = false;
-  successMessage = '';
-  errorMessage = '';
-  cnicInputMask = createMask('99999-9999999-9');
-  phoneNoInputMask = createMask('0399-9999999');
-  emailInputMask = createMask('*[*{0,50}]@*[*{0,50}].*[*{0,5}]');
-  cityList: any;
   minDate = this.toInputDate(new Date());
   patientSearchCtrl = new FormControl<string | any>('');
   filteredPatients$!: Observable<any[]>;
@@ -54,18 +48,13 @@ export class AddLabOrderComponent implements OnInit, OnDestroy {
   // Lookup data
   labOrderTypes: Array<{ id: number; name: string; price: number,serviceId : number }> = [];
   selectedLabOrderTypeId: number | null = null;
-  labTestSearchCtrl = new FormControl('');
-  activeCategory: string | null = null;
-  readonly CATEGORY_ALL = 'all';
   departments: Array<{ id: number; name: string }> = [];
   appointmentTypeList: Array<{ id: number; name: string }> = [];
   priorityLevelList: Array<{ id: number; name: string }> = [];
-  visitTypeList: Array<{ id: number; name: string }> = [];
   paymentModesList: Array<{ id: number; name: string }> = [];
   paymentStatusList: Array<{ id: number; name: string }> = [];
   visitTypeList: Array<{ id: number; name: string }> = [];
   labDepartmentId: number | null = null;
-  testsByCategory$!: Observable<Array<{ category: string; tests: Array<{ id: number; name: string; service?: { name: string } }> }>>;
 
   currentProjectId = 1; // TODO: inject ProjectService
   private labOrderSubscriptions: Subscription[] = [];
@@ -103,150 +92,8 @@ export class AddLabOrderComponent implements OnInit, OnDestroy {
     return this.form.get('labOrders') as FormArray<FormGroup>;
   }
 
-  /* ── Derived lists ────────────────────────────── */
-
-  get testCategories(): string[] {
-    const cats = new Set<string>();
-    this.labOrderTypes.forEach(t => {
-      const cat = (t.service?.name || 'Uncategorized').trim();
-      if (cat) cats.add(cat);
-    });
-    return Array.from(cats).sort();
-  }
-
-  get totalTestCount(): number {
-    return this.labOrderTypes.length;
-  }
-
-  /* ── Category helpers ─────────────────────────── */
-
-  getCategoryCount(cat: string): number {
-    return this.labOrderTypes.filter(
-      t => (t.service?.name || 'Uncategorized').trim() === cat
-    ).length;
-  }
-
-  setCategory(cat: string): void {
-    this.activeCategory = cat === this.CATEGORY_ALL ? null : cat;
-    this.buildTestsByCategory();
-  }
-
-  /* ── Test selection ───────────────────────────── */
-
-  toggleLabOrderType(test: { id: number; name: string; service?: { name: string } }): void {
-    if (this.isTestSelected(test.id)) {
-      return;
-    }
-    this.labOrders.push(this.fb.group({
-      labOrderTypeId: [test.id, Validators.required],
-      clinicalNotes: ['']
-    }));
-  }
-
-  isTestSelected(id: number): boolean {
-    return this.labOrders.controls.some(
-      c => Number(c.get('labOrderTypeId')?.value) === Number(id)
-    );
-  }
-
-  removeTestById(id: number): void {
-    const idx = this.labOrders.controls.findIndex(
-      c => Number(c.get('labOrderTypeId')?.value) === Number(id)
-    );
-    if (idx !== -1) {
-      this.labOrders.removeAt(idx);
-      this.labOrders.updateValueAndValidity();
-    }
-  }
-
-  /* ── Legacy single-select fallback ─────────────── */
-
-  addLabOrder(): void {
-    this.labTestSearchCtrl.setValue('');
-    if (!this.selectedLabOrderTypeId) return;
-    const exists = this.labOrders.controls.some(
-      c => Number(c.get('labOrderTypeId')?.value) === Number(this.selectedLabOrderTypeId)
-    );
-    if (exists) {
-      this.notifications.showNotification('This test is already selected.', 'snack-bar-danger');
-      return;
-    }
-    this.labOrders.push(this.fb.group({
-      labOrderTypeId: [this.selectedLabOrderTypeId, Validators.required],
-      clinicalNotes: ['']
-    }));
-    this.selectedLabOrderTypeId = null;
-  }
-
-  removeLabOrder(index: number): void {
-    this.labOrders.removeAt(index);
-  }
-
-  /* ── Patient search ───────────────────────────── */
-
   displayPatient = (patient: any): string =>
     patient ? `${patient.name}${patient.phoneNo ? ' - ' + patient.phoneNo : ''}` : '';
-
-  onPatientSelected(patient: any): void {
-    if (!patient) return;
-    this.patientSearchCtrl.setValue(patient, { emitEvent: false });
-    this.form.patchValue({ patientId: patient.id });
-    const patientGroup = this.form.get('patient') as FormGroup;
-    patientGroup.patchValue({
-      name: patient.name,
-      phoneNo: patient.phoneNo,
-      secondaryPhoneNo: patient.secondaryPhoneNo,
-      gender: patient.gender || 'male',
-      dateOfBirth: patient.dateOfBirth ? this.toInputDate(patient.dateOfBirth) : null,
-      age: patient.age,
-      cnic: patient.cnic,
-      address: patient.address,
-      cityId: patient.cityId ?? 1,
-      email: patient.email
-    });
-    this.updateAge(patient.dateOfBirth);
-  }
-
-  onInputCleared(event: Event): void {
-    const value = (event.target as HTMLInputElement)?.value?.trim() ?? '';
-    if (value.length > 0) return;
-    this.patientSearchCtrl.setValue('', { emitEvent: false });
-    const patientGroup = this.form.get('patient') as FormGroup;
-    patientGroup.reset({
-      name: '',
-      phoneNo: '',
-      secondaryPhoneNo: '',
-      gender: 'male',
-      dateOfBirth: null,
-      age: null,
-      cityId: 1,
-      cnic: '',
-      address: '',
-      email: '',
-      projectId: 0
-    });
-    this.form.patchValue({ patientId: null });
-  }
-
-  onTestSearch(_event: Event): void {
-    // Search is reactive via the test-search form control / filteredTestsForChip getter.
-    // This handler exists for any inline search-time side effects if needed later.
-  }
-
-  /* ── Payment calculations ─────────────────────── */
-
-  calculateTotals(): void {
-    const paymentGroup = this.form.get('appointmentPayment') as FormGroup;
-    const visitFee = Number(paymentGroup.get('visitFee')?.value) || 0;
-    const discount = Number(paymentGroup.get('discount')?.value) || 0;
-    const paidAmount = Number(paymentGroup.get('paidAmount')?.value) || 0;
-    const totalPayable = Math.max(0, Number((visitFee - discount).toFixed(2)));
-    const balanceAmount = Math.max(0, Number((totalPayable - paidAmount).toFixed(2)));
-    paymentGroup.get('totalPayable')?.setValue(totalPayable, { emitEvent: false });
-    paymentGroup.get('balanceAmount')?.setValue(balanceAmount, { emitEvent: false });
-  }
-
-  /* ── Form building ────────────────────────────── */
 
   private buildForm(): void {
     this.form = this.fb.group({
@@ -295,8 +142,6 @@ export class AddLabOrderComponent implements OnInit, OnDestroy {
     });
   }
 
-  /* ── Patient autocomplete ─────────────────────── */
-
   private setupPatientAutocomplete(): void {
     this.filteredPatients$ = this.patientSearchCtrl.valueChanges.pipe(
       startWith(''),
@@ -329,37 +174,6 @@ export class AddLabOrderComponent implements OnInit, OnDestroy {
     paymentGroup.get('discount')?.valueChanges.subscribe(() => this.calculateTotals());
     paymentGroup.get('paidAmount')?.valueChanges.subscribe(() => this.calculateTotals());
   }
-
-  /* ── Category group builder ───────────────────── */
-
-  private buildTestsByCategory(): void {
-    const safeLabOrderTypes = Array.isArray(this.labOrderTypes) ? this.labOrderTypes : [];
-    const searchTerm = this.labTestSearchCtrl.value?.trim().toLowerCase() || '';
-    const categoryFilter = this.activeCategory || 'ALL';
-
-    let tests = safeLabOrderTypes;
-    if (searchTerm) {
-      tests = tests.filter(t => t.name.toLowerCase().includes(searchTerm));
-    }
-    if (categoryFilter !== 'ALL') {
-      tests = tests.filter(t => (t.service?.name || 'Uncategorized').trim() === categoryFilter);
-    }
-
-    const groupsMap = new Map<string, Array<{ id: number; name: string; service?: { name: string } }>>();
-    tests.forEach(t => {
-      const key = t.service?.name || 'Uncategorized';
-      if (!groupsMap.has(key)) groupsMap.set(key, []);
-      groupsMap.get(key)!.push(t);
-    });
-
-    this.testsByCategory$ = of(
-      Array.from(groupsMap.entries())
-        .filter(([_, items]) => items.length > 0)
-        .map(([category, tests]) => ({ category, tests }))
-    );
-  }
-
-  /* ── Lookup loading ───────────────────────────── */
 
   private loadLookups(): void {
     this.isLoading = true;
@@ -491,22 +305,7 @@ export class AddLabOrderComponent implements OnInit, OnDestroy {
       cityId: patient.cityId ?? 1,
       email: patient.email
     });
-    this.appointmentTypeService.getAllAppointmentType({}).then((obs) =>
-      obs.subscribe((d: any) => this.appointmentTypeList = d?.item1 ?? [])
-    );
-    this.priorityLevelService.getAllPriorityLevel({}).then((obs) =>
-      obs.subscribe((d: any) => this.priorityLevelList = d?.item1 ?? [])
-    );
-    this.paymentModeService.getAllPaymentModes({}).subscribe(
-      (d: any) => this.paymentModesList = d?.item1 ?? []
-    );
-    this.primaryOrderService.getAllOrderStatus().then((obs) =>
-      obs.subscribe((d: any) => this.paymentStatusList = d ?? [])
-    );
-    this.visitTypeService.getAllVisitType({}).then((obs) =>
-      obs.subscribe((d: any) => this.visitTypeList = d?.item1 ?? [])
-    );
-    this.cityService.getAllCities({}).subscribe(obs => { this.cityList = obs.item1; });
+    this.updateAge(patient.dateOfBirth);
   }
 
   calculateTotals(): void {
@@ -523,15 +322,9 @@ export class AddLabOrderComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(): void {
-    if (this.isSubmitting) return;
-    this.errorMessage = '';
-    this.successMessage = '';
     if (this.form.invalid || this.labOrders.length === 0) {
       this.form.markAllAsTouched();
-      this.form.get('patient')?.markAllAsTouched();
-      this.notifications.showNotification(
-        'Please complete required fields and add at least one lab test.', 'snack-bar-danger'
-      );
+      this.notifications.showNotification('Please complete required fields and add at least one lab test.', 'snack-bar-danger');
       return;
     }
 
@@ -545,9 +338,7 @@ export class AddLabOrderComponent implements OnInit, OnDestroy {
           this.notifications.showNotification(res?.Data || 'Direct Lab Order Saved Successfully!', 'snack-bar-success');
         this.router.navigate(['/appointment']);
         } else {
-          this.notifications.showNotification(
-            res?.Message || 'Unable to save lab order.', 'snack-bar-danger'
-          );
+          this.notifications.showNotification(res?.Message || 'Unable to save lab order.', 'snack-bar-danger');
         }
       },
       error: (error: any) => {
@@ -557,19 +348,6 @@ export class AddLabOrderComponent implements OnInit, OnDestroy {
       }
     });
   }
-
-  onCancel(): void {
-    if (this.dialog) {
-      this.dialog.closeAll();
-      return;
-    }
-    const canGoBack = window.history.length > 1;
-    if (canGoBack) {
-      window.history.back();
-    }
-  }
-
-  /* ── Command / payload ────────────────────────── */
 
   buildCommand(): any {
     const raw = this.form.getRawValue();
@@ -620,8 +398,6 @@ export class AddLabOrderComponent implements OnInit, OnDestroy {
     };
   }
 
-  /* ── Reset ────────────────────────────────────── */
-
   resetForm(): void {
     this.form.reset();
     this.labOrders.clear();
@@ -630,8 +406,6 @@ export class AddLabOrderComponent implements OnInit, OnDestroy {
     this.form.get('appointmentPayment.paymentDate')?.setValue(new Date().toISOString().split('T')[0]);
     this.form.get('projectId')?.setValue(this.currentProjectId);
   }
-
-  /* ── Helpers ──────────────────────────────────── */
 
   getLabOrderTypeName(id: number): string {
     return this.labOrderTypes.find(x => x.id === id)?.name || '-';

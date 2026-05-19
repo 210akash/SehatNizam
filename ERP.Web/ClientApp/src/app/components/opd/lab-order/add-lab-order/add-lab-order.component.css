@@ -1,350 +1,80 @@
-.modern-form {
-  display: block;
-}
-
 .modern-card {
-  border-radius: 16px;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
+  margin: 0 auto;
 }
 
-.title {
-  font-weight: 700;
-  font-size: 22px;
-}
-
-.subtitle {
-  color: #60748a;
-  font-size: 13px;
-  margin-top: 4px;
-}
-
-.section {
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 16px 20px 10px;
-  margin-top: 18px;
-}
-
-.section-head {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 12px;
-}
-
-.section-title {
-  font-weight: 700;
-  font-size: 15px;
-}
-
-.section-sub {
-  color: #6b7280;
-  font-size: 12px;
-}
-
-.icon {
-  color: #2563eb;
-}
-
-.grid-2,
-.grid-3,
-.grid-4 {
+.two-columns {
   display: grid;
-  gap: 12px;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 24px;
 }
 
-.grid-2 {
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-}
-
-.grid-3 {
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-}
-
-.grid-4 {
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-}
-
-.span-2 {
-  grid-column: span 2;
-}
-
-@media (max-width: 768px) {
-  .span-2 {
-    grid-column: span 1;
+@media (max-width: 992px) {
+  .two-columns {
+    grid-template-columns: 1fr;
   }
 }
 
-.priority-radio {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px;
-  padding-top: 6px;
+.section-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2c3e50;
+  border-left: 4px solid #1976d2;
+  padding-left: 12px;
+  margin-bottom: 16px;
+  margin-top: 8px;
 }
 
-.label-inline {
-  display: block;
-  margin-bottom: 6px;
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.full-width {
+  grid-column: span 2;
+}
+
+.flex-grow {
+  flex: 1;
+}
+
+.row-actions {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.table-responsive {
+  overflow-x: auto;
+  margin-bottom: 20px;
+}
+
+.table {
+  width: 100%;
+  margin-top: 8px;
+  background: white;
+}
+
+.table th {
+  background-color: #f5f7fa;
   font-weight: 600;
-  color: #4b5563;
 }
 
 .button-container {
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
-  margin-top: 18px;
-}
-
-/* ── Selected Tests Bar ─────────────────────────── */
-
-.selected-bar {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-bottom: 14px;
-  padding: 10px 14px;
-  background: #eff6ff;
-  border: 1px solid #bfdbfe;
-  border-radius: 10px;
-}
-
-.selected-label {
-  font-weight: 600;
-  font-size: 13px;
-  color: #1e40af;
-  padding-top: 3px;
-  white-space: nowrap;
-}
-
-.selected-pills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.selected-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 3px 10px 3px 8px;
-  border-radius: 6px;
-  background: #2563eb;
-  color: #fff;
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 1.6;
-  user-select: none;
-}
-
-.pill-remove {
-  margin-left: 2px;
-  margin-right: -6px;
-  width: 20px;
-  height: 20px;
-  padding: 0;
-  line-height: 0;
-}
-
-.close-icon {
-  font-size: 14px;
-  width: 14px;
-  height: 14px;
-  opacity: 0.85;
-}
-
-.pill-remove mat-icon {
-  font-size: 14px;
-  width: 14px;
-  height: 14px;
-  color: #fff;
-}
-
-.selected-bar-empty {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #9ca3af;
-  font-size: 13px;
-  padding: 10px 14px;
-  margin-bottom: 14px;
-  background: #f9fafb;
-  border: 1px dashed #e5e7eb;
-  border-radius: 10px;
-}
-
-.selected-bar-empty mat-icon {
-  font-size: 18px;
-  width: 18px;
-  height: 18px;
-  opacity: 0.6;
-}
-
-/* ── Category Tabs ──────────────────────────────── */
-
-.test-picker {
-  margin-bottom: 4px;
-}
-
-.test-search {
-  max-width: 380px;
-  margin-bottom: 10px;
-}
-
-.test-search .search-icon {
-  color: #9ca3af;
-}
-
-.category-tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 14px;
-}
-
-.category-tab {
-  border: 1px solid #e5e7eb;
-  border-radius: 20px;
-  background: #fff;
-  color: #4b5563;
-  font-size: 12px;
-  font-weight: 500;
-  padding: 5px 14px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  line-height: 1.5;
-  user-select: none;
-  -webkit-user-select: none;
-}
-
-.category-tab:hover {
-  border-color: #2563eb;
-  color: #2563eb;
-}
-
-.category-tab.active {
-  background: #2563eb;
-  border-color: #2563eb;
-  color: #fff;
-}
-
-/* ── Category Groups ────────────────────────────── */
-
-.category-groups {
-  display: grid;
   gap: 16px;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #e0e0e0;
 }
 
-.category-group {
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
-  overflow: hidden;
+.text-center {
+  text-align: center;
 }
 
-.category-group.collapsed .group-tests {
-  display: none;
-}
-
-.category-group.collapsed .group-header::after {
-  content: '\25BC';
-  font-size: 12px;
-}
-
-.group-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 9px 14px;
-  background: #f9fafb;
-  cursor: default;
-}
-
-.group-icon {
-  font-size: 16px;
-  width: 16px;
-  height: 16px;
-  color: #9ca3af;
-}
-
-.group-name {
-  font-weight: 600;
-  font-size: 13px;
-  color: #374151;
-}
-
-.group-count {
-  font-size: 11px;
-  font-weight: 600;
-  color: #9ca3af;
-  background: #e5e7eb;
-  border-radius: 10px;
-  padding: 0 7px;
-  line-height: 1.7;
-}
-
-.group-tests {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 7px;
-  padding: 10px 14px 12px;
-}
-
-/* ── Test Chips ─────────────────────────────────── */
-
-.test-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 4px 11px;
-  border-radius: 7px;
-  border: 1px solid #e5e7eb;
-  background: #fff;
-  color: #374151;
-  font-size: 12.5px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  user-select: none;
-  -webkit-user-select: none;
-  line-height: 1.6;
-}
-
-.test-chip:hover {
-  border-color: #2563eb;
-  background: #eff6ff;
-  color: #2563eb;
-}
-
-.test-chip.selected {
-  border-color: #2563eb;
-  background: #dbeafe;
-  color: #1e40af;
-}
-
-.test-chip mat-icon {
-  font-size: 15px;
-  width: 15px;
-  height: 15px;
-}
-
-.chip-label {
-  white-space: nowrap;
-}
-
-/* ── Empty States ───────────────────────────────── */
-
-.no-tests-msg {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #9ca3af;
-  font-size: 13px;
-  padding: 18px 0;
-}
-
-.no-tests-msg mat-icon {
-  font-size: 18px;
-  width: 18px;
-  height: 18px;
+.text-muted {
+  color: #6c757d;
 }

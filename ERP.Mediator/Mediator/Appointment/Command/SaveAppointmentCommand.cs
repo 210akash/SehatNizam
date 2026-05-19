@@ -58,7 +58,7 @@ namespace ERP.Mediator.Mediator.Appointment.Command
         // PAYMENT
         // -----------------------------------
 
-        public SaveAppointmentPaymentCommand AppointmentPayment { get; set; }
+        public List<SaveAppointmentPaymentCommand> AppointmentPayment { get; set; }
 
         // -----------------------------------
         // LAB

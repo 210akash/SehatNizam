@@ -125,24 +125,27 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
 
                 if (request.AppointmentPayment != null)
                 {
-                    var payment = new AppointmentPayment
+                    foreach (var item in request.AppointmentPayment)
                     {
-                        AppointmentId = appointment.Id,
-                        VisitFee = request.AppointmentPayment.VisitFee,
-                        Discount = request.AppointmentPayment.Discount,
-                        TotalPayable = request.AppointmentPayment.TotalPayable,
-                        PaymentModeId = request.AppointmentPayment.PaymentModeId,
-                        ServiceId = request.AppointmentPayment.ServiceId,
-                        PaymentDate = DateTime.Now,
-                        PaymentStatusId = request.AppointmentPayment.PaymentStatusId,
-                        CreatedById = sessionProvider.Session.LoggedInUserId,
-                        CreatedDate = DateTime.Now,
-                        IsActive = true,
-                        IsDelete = false
-                    };
+                        var payment = new AppointmentPayment
+                        {
+                            AppointmentId = appointment.Id,
+                            VisitFee = item.VisitFee,
+                            Discount = item.Discount,
+                            TotalPayable = item.TotalPayable,
+                            PaymentModeId = item.PaymentModeId,
+                            ServiceId = item.ServiceId,
+                            PaymentDate = DateTime.Now,
+                            PaymentStatusId = item.PaymentStatusId,
+                            CreatedById = sessionProvider.Session.LoggedInUserId,
+                            CreatedDate = DateTime.Now,
+                            IsActive = true,
+                            IsDelete = false
+                        };
 
-                    await unitOfWork.Repository<AppointmentPayment>()
-                        .AddAsync(payment);
+                        await unitOfWork.Repository<AppointmentPayment>()
+                            .AddAsync(payment);
+                    }
                 }
 
                 // =====================================================
@@ -326,7 +329,7 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
             return nextNumber.ToString("D7");
         }
 
-        private async Task<long> UpdateAppointmentAsync(SaveAppointmentCommand request,CancellationToken cancellationToken)
+        private async Task<long> UpdateAppointmentAsync(SaveAppointmentCommand request, CancellationToken cancellationToken)
         {
             var appointment =
                 await unitOfWork.Repository<Entities.Models.Appointment>()
@@ -342,87 +345,61 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
             // =========================================
 
             appointment.AppointmentDate = request.AppointmentDate;
-
             appointment.DepartmentId = request.DepartmentId;
-
             appointment.AppointmentTypeId = request.AppointmentTypeId;
-
             appointment.PriorityLevelId = request.PriorityLevelId;
-
             appointment.VisitTypeId = request.VisitTypeId;
-
             appointment.DoctorId = request.DoctorId;
-
             appointment.Reason = request.Reason;
-
-            appointment.ConfirmationNotes =
-                request.ConfirmationNotes;
-
-            appointment.ConfirmedDate =
-                request.ConfirmedDate;
-
-            appointment.AppointmentStatusId =
-                request.AppointmentStatusId;
-
-            appointment.ModifiedById =
-                sessionProvider.Session.LoggedInUserId;
-
+            appointment.ConfirmationNotes = request.ConfirmationNotes;
+            appointment.ConfirmedDate = request.ConfirmedDate;
+            appointment.AppointmentStatusId = request.AppointmentStatusId;
+            appointment.ModifiedById = sessionProvider.Session.LoggedInUserId;
             appointment.ModifiedDate = DateTime.Now;
 
-            unitOfWork.Repository<Entities.Models.Appointment>()
-                .Update(appointment);
+            unitOfWork.Repository<Entities.Models.Appointment>().Update(appointment);
 
             // =========================================
-            // PAYMENT
+            // PAYMENTS – REPLACE ALL
             // =========================================
 
-            if (request.AppointmentPayment != null)
+            // Remove existing payments for this appointment
+            var existingPayments =
+                await unitOfWork.Repository<AppointmentPayment>()
+                .FindAllAsync(x => x.AppointmentId == appointment.Id && !x.IsDelete);
+
+            foreach (var oldPayment in existingPayments)
             {
-                var payment =
-                    await unitOfWork.Repository<AppointmentPayment>()
-                    .GetFirstAsync(x => x.AppointmentId == appointment.Id);
+                oldPayment.IsDelete = true;
+                oldPayment.IsActive = false;
+                oldPayment.ModifiedById = sessionProvider.Session.LoggedInUserId;
+                oldPayment.ModifiedDate = DateTime.Now;
+                unitOfWork.Repository<AppointmentPayment>().Update(oldPayment);
+            }
 
-                if (payment == null)
+            // Add new payments from request
+            if (request.AppointmentPayment != null && request.AppointmentPayment.Any())
+            {
+                foreach (var item in request.AppointmentPayment)
                 {
-                    payment = new AppointmentPayment
+                    var payment = new AppointmentPayment
                     {
                         AppointmentId = appointment.Id,
-
-                        CreatedById =
-                            sessionProvider.Session.LoggedInUserId,
-
+                        VisitFee = item.VisitFee,
+                        Discount = item.Discount,
+                        TotalPayable = item.TotalPayable,
+                        PaymentModeId = item.PaymentModeId,
+                        ServiceId = item.ServiceId,          // Make sure frontend sends this
+                        PaymentDate = DateTime.Now,
+                        PaymentStatusId = item.PaymentStatusId,
+                        CreatedById = sessionProvider.Session.LoggedInUserId,
                         CreatedDate = DateTime.Now,
-
                         IsActive = true,
-
                         IsDelete = false
                     };
 
-                    await unitOfWork.Repository<AppointmentPayment>()
-                        .AddAsync(payment);
+                    await unitOfWork.Repository<AppointmentPayment>().AddAsync(payment);
                 }
-
-                payment.VisitFee =
-                    request.AppointmentPayment.VisitFee;
-
-                payment.Discount =
-                    request.AppointmentPayment.Discount;
-
-                payment.TotalPayable =
-                    request.AppointmentPayment.TotalPayable;
-
-                payment.PaymentModeId = request.AppointmentPayment.PaymentModeId;
-                payment.ServiceId = request.AppointmentPayment.ServiceId;
-
-                payment.PaymentStatusId =
-                    request.AppointmentPayment.PaymentStatusId;
-
-                payment.PaymentDate = DateTime.Now;
-
-                payment.ModifiedById =
-                    sessionProvider.Session.LoggedInUserId;
-
-                payment.ModifiedDate = DateTime.Now;
             }
 
             // =========================================
@@ -431,21 +408,15 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
 
             var oldLabOrders =
                 await unitOfWork.Repository<Entities.Models.LabOrder>()
-                .FindAllAsync(x => x.AppointmentId == appointment.Id);
+                .FindAllAsync(x => x.AppointmentId == appointment.Id && !x.IsDelete);
 
             foreach (var old in oldLabOrders)
             {
                 old.IsDelete = true;
-
                 old.IsActive = false;
-
-                old.ModifiedById =
-                    sessionProvider.Session.LoggedInUserId;
-
+                old.ModifiedById = sessionProvider.Session.LoggedInUserId;
                 old.DeleteDate = DateTime.Now;
-
-                unitOfWork.Repository<Entities.Models.LabOrder>()
-                    .Update(old);
+                unitOfWork.Repository<Entities.Models.LabOrder>().Update(old);
             }
 
             // =========================================
@@ -459,25 +430,16 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                     var labOrder = new Entities.Models.LabOrder
                     {
                         AppointmentId = appointment.Id,
-
                         LabOrderTypeId = item.LabOrderTypeId,
-
                         ClinicalNotes = item.ClinicalNotes,
-
                         StatusId = 1,
-
-                        CreatedById =
-                            sessionProvider.Session.LoggedInUserId,
-
+                        CreatedById = sessionProvider.Session.LoggedInUserId,
                         CreatedDate = DateTime.Now,
-
                         IsActive = true,
-
                         IsDelete = false
                     };
 
-                    await unitOfWork.Repository<Entities.Models.LabOrder>()
-                        .AddAsync(labOrder);
+                    await unitOfWork.Repository<Entities.Models.LabOrder>().AddAsync(labOrder);
                 }
             }
 
@@ -487,21 +449,15 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
 
             var oldRadiology =
                 await unitOfWork.Repository<Entities.Models.RadiologyOrder>()
-                .FindAllAsync(x => x.AppointmentId == appointment.Id);
+                .FindAllAsync(x => x.AppointmentId == appointment.Id && !x.IsDelete);
 
             foreach (var old in oldRadiology)
             {
                 old.IsDelete = true;
-
                 old.IsActive = false;
-
-                old.ModifiedById =
-                    sessionProvider.Session.LoggedInUserId;
-
+                old.ModifiedById = sessionProvider.Session.LoggedInUserId;
                 old.DeleteDate = DateTime.Now;
-
-                unitOfWork.Repository<Entities.Models.RadiologyOrder>()
-                    .Update(old);
+                unitOfWork.Repository<Entities.Models.RadiologyOrder>().Update(old);
             }
 
             // =========================================
@@ -512,31 +468,19 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
             {
                 foreach (var item in request.RadiologyOrders)
                 {
-                    var radiologyOrder =
-                        new Entities.Models.RadiologyOrder
-                        {
-                            AppointmentId = appointment.Id,
+                    var radiologyOrder = new Entities.Models.RadiologyOrder
+                    {
+                        AppointmentId = appointment.Id,
+                        RadiologyTypeId = item.RadiologyTypeId,
+                        ClinicalNotes = item.ClinicalNotes,
+                        StatusId = 1,
+                        CreatedById = sessionProvider.Session.LoggedInUserId,
+                        CreatedDate = DateTime.Now,
+                        IsActive = true,
+                        IsDelete = false
+                    };
 
-                            RadiologyTypeId =
-                                item.RadiologyTypeId,
-
-                            ClinicalNotes =
-                                item.ClinicalNotes,
-
-                            StatusId = 1,
-
-                            CreatedById =
-                                sessionProvider.Session.LoggedInUserId,
-
-                            CreatedDate = DateTime.Now,
-
-                            IsActive = true,
-
-                            IsDelete = false
-                        };
-
-                    await unitOfWork.Repository<Entities.Models.RadiologyOrder>()
-                        .AddAsync(radiologyOrder);
+                    await unitOfWork.Repository<Entities.Models.RadiologyOrder>().AddAsync(radiologyOrder);
                 }
             }
 
@@ -544,6 +488,7 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
 
             return 200;
         }
+
 
     }
 }

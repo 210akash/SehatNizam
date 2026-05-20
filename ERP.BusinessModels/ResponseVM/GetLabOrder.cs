@@ -1,9 +1,12 @@
-﻿namespace ERP.BusinessModels.ResponseVM
+﻿using ERP.Entities.Models;
+
+namespace ERP.BusinessModels.ResponseVM
 {
     public class GetLabOrder
     {
         public long Id { get; set; }
         public long AppointmentId { get; set; }
+        public GetAppointment Appointment { get; set; }
         public long LabOrderTypeId { get; set; }
         public string ClinicalNotes { get; set; }
         public GetStatus Status { get; set; }

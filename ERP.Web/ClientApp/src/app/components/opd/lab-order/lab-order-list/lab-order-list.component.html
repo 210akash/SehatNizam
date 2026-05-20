@@ -1,25 +1,173 @@
-<mat-card>
-  <mat-card-header>
-    <mat-card-title>Lab Orders</mat-card-title>
-    <span style="flex:1 1 auto"></span>
-    <button mat-flat-button color="primary" (click)="openAdd()">Add</button>
-  </mat-card-header>
-  <mat-card-content>
+<div class="header-container">
+  <h2>Lab Orders</h2>
+  <button mat-mini-fab aria-label="Add" color="success" (click)="openAdd()" matTooltip="New Lab Order">
+    <mat-icon>add</mat-icon>
+  </button>
+</div>
+
+<div class="body-container">
+    <!-- Filter Section -->
+     <div class="filter-section" [formGroup]="form">
+  <div class="row">
+    <div class="col-lg-2 col-md-3 col-sm-6 col-12">
+      <mat-form-field class="filter-field" appearance="outline">
+        <mat-label>Token Number</mat-label>
+        <input matInput formControlName="tokenNumber" placeholder="Search by token number" />
+        <mat-icon matSuffix>confirmation_number</mat-icon>
+      </mat-form-field>
+    </div>
+    
+    <div class="col-lg-2 col-md-3 col-sm-6 col-12">
+      <mat-form-field class="filter-field" appearance="outline">
+        <mat-label>Patient Name</mat-label>
+        <input matInput formControlName="patientName" placeholder="Search by patient name" />
+        <mat-icon matSuffix>person</mat-icon>
+      </mat-form-field>
+    </div>
+    
+    <!-- <div class="col-lg-2 col-md-3 col-sm-6 col-12">
+      <mat-form-field class="filter-field" appearance="outline">
+        <mat-label>Test Type</mat-label>
+        <mat-select formControlName="labOrderTypeId">
+          <mat-option [value]="null">All Tests</mat-option>
+          <mat-option *ngFor="let test of labOrderTypes" [value]="test.id">{{ test.name }}</mat-option>
+        </mat-select>
+        <mat-icon matSuffix>science</mat-icon>
+      </mat-form-field>
+    </div> -->
+    
+    <!-- <div class="col-lg-2 col-md-3 col-sm-6 col-12">
+      <mat-form-field class="filter-field" appearance="outline">
+        <mat-label>Status</mat-label>
+        <mat-select formControlName="statusId">
+          <mat-option [value]="null">All Status</mat-option>
+          <mat-option *ngFor="let status of statusList" [value]="status.id">{{ status.title }}</mat-option>
+        </mat-select>
+        <mat-icon matSuffix>flag</mat-icon>
+      </mat-form-field>
+    </div> -->
+
+    <div class="col-lg-2 col-md-3 col-sm-6 col-12">
+      <mat-form-field class="filter-field" appearance="outline">
+        <mat-label>From Date</mat-label>
+        <input matInput [matDatepicker]="fromPicker" formControlName="fromDate" placeholder="Start date" />
+        <mat-datepicker-toggle matIconSuffix [for]="fromPicker"></mat-datepicker-toggle>
+        <mat-datepicker #fromPicker></mat-datepicker>
+        <mat-icon matPrefix>event</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <div class="col-lg-2 col-md-3 col-sm-6 col-12">
+      <mat-form-field class="filter-field" appearance="outline">
+        <mat-label>To Date</mat-label>
+        <input matInput [matDatepicker]="toPicker" formControlName="toDate" placeholder="End date" />
+        <mat-datepicker-toggle matIconSuffix [for]="toPicker"></mat-datepicker-toggle>
+        <mat-datepicker #toPicker></mat-datepicker>
+        <mat-icon matPrefix>event</mat-icon>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <!-- <div class="row mt-2">
+    <div class="col-12">
+      <div class="button-group">
+        <button mat-flat-button color="primary" type="button" (click)="filterData()">
+          <mat-icon>search</mat-icon> Filter
+        </button>
+      </div>
+    </div>
+  </div> -->
+</div>
+  <div class="mat-elevation-z8 table-responsive">
+    <!-- Table -->
     <table mat-table [dataSource]="dataSource" class="mat-elevation-z2">
-      <ng-container matColumnDef="appointmentId"><th mat-header-cell *matHeaderCellDef>Appointment</th><td mat-cell *matCellDef="let e">{{e.appointmentId}}</td></ng-container>
-      <ng-container matColumnDef="labOrderTypeId"><th mat-header-cell *matHeaderCellDef>Lab Type</th><td mat-cell *matCellDef="let e">{{e.labOrderTypeId}}</td></ng-container>
-      <ng-container matColumnDef="statusId"><th mat-header-cell *matHeaderCellDef>Status</th><td mat-cell *matCellDef="let e">{{e.statusId}}</td></ng-container>
-      <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef>Actions</th>
+      
+      <!-- Token Number Column -->
+      <ng-container matColumnDef="tokenNumber">
+        <th mat-header-cell *matHeaderCellDef>Token #</th>
         <td mat-cell *matCellDef="let e">
-          <button mat-button (click)="openAdd(e)">Edit</button>
-          <button mat-button (click)="openView(e)">View</button>
-          <button mat-button color="warn" (click)="openDelete(e)">Delete</button>
+          <span class="token-badge">{{ e.appointment?.tokenNumber || '-' }}</span>
         </td>
       </ng-container>
+
+      <!-- Patient Name Column -->
+      <ng-container matColumnDef="patientName">
+        <th mat-header-cell *matHeaderCellDef>Patient Name</th>
+        <td mat-cell *matCellDef="let e">
+          <div class="patient-info">
+            <strong>{{ e.appointment?.patient?.name || '-' }}</strong>
+            <small>MRN: {{ e.appointment?.patient?.mrn || '-' }}</small>
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Test Name Column -->
+      <ng-container matColumnDef="testName">
+        <th mat-header-cell *matHeaderCellDef>Test Name</th>
+        <td mat-cell *matCellDef="let e">{{ e.labOrderType?.name || '-' }}</td>
+      </ng-container>
+
+      <!-- Clinical Notes Column -->
+      <ng-container matColumnDef="clinicalNotes">
+        <th mat-header-cell *matHeaderCellDef>Clinical Notes</th>
+        <td mat-cell *matCellDef="let e">
+          <span class="notes-text">{{ e.clinicalNotes || '-' }}</span>
+        </td>
+      </ng-container>
+
+      <!-- Status Column -->
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Status</th>
+        <td mat-cell *matCellDef="let e">
+          <span class="status-badge" [style.backgroundColor]="getStatusColor(e.status?.title)">
+            {{ e.status?.title || 'Pending' }}
+          </span>
+        </td>
+      </ng-container>
+
+      <!-- Appointment Date Column -->
+      <ng-container matColumnDef="appointmentDate">
+        <th mat-header-cell *matHeaderCellDef>Date</th>
+        <td mat-cell *matCellDef="let e">{{ e.appointment?.appointmentDate | date:'dd/MM/yyyy' }}</td>
+      </ng-container>
+
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef style="width: 15%;">Actions</th>
+        <td mat-cell *matCellDef="let e">
+          <div class="action_btns">
+            <button mat-mini-fab matTooltip="View" color="dark" (click)="openView(e)">
+              <mat-icon>visibility</mat-icon>
+            </button>
+            <button mat-mini-fab matTooltip="Edit" color="primary" (click)="openAdd(e)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-mini-fab matTooltip="Delete" color="warn" (click)="openDelete(e)">
+              <mat-icon>delete</mat-icon>
+            </button>
+            <button mat-mini-fab matTooltip="Print Report" color="accent" (click)="printReport(e)">
+              <mat-icon>print</mat-icon>
+            </button>
+          </div>
+        </td>
+      </ng-container>
+
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
-    <mat-paginator [length]="1000" [pageSize]="pageSize" [pageSizeOptions]="[5,10,25,100]" (page)="pageChanged($event)"></mat-paginator>
-  </mat-card-content>
-</mat-card>
+
+    <!-- No Data Message -->
+    <div *ngIf="dataSource.data?.length === 0" class="text-center py-4">
+      <mat-icon class="no-data-icon">inbox</mat-icon>
+      <p>No lab orders found.</p>
+    </div>
+
+    <!-- Pagination -->
+    <mat-paginator 
+      [length]="totalRecords" 
+      [pageSize]="pageSize" 
+      [pageSizeOptions]="[5,10,25,50,100]" 
+      (page)="pageChanged($event)">
+    </mat-paginator>
+  </div>
+</div>

@@ -1,27 +1,25 @@
-.variable-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-top: 12px;
-}
 
 .variable-card {
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
-  padding: 12px;
-  background: #ffffff;
+  background: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
 }
 
 .card-head {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e0e0e0;
 }
 
 .var-index {
   font-weight: 600;
-  color: #334155;
+  color: #1976d2;
+  font-size: 14px;
 }
 
 .card-actions {
@@ -29,60 +27,129 @@
   gap: 8px;
 }
 
-.field-grid {
+/* Row 1: 4 columns layout */
+.fields-row {
   display: grid;
-  grid-template-columns: repeat(7, minmax(120px, 1fr));
-  gap: 10px;
+  grid-template-columns: 1fr 0.8fr 0.8fr 0.6fr;
+  gap: 12px;
+  margin-bottom: 16px;
+  align-items: start;
 }
 
-.range-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(140px, 1fr));
-  gap: 10px;
+.field-name {
+  grid-column: span 1;
 }
 
-.toggle-row {
-  margin-top: 6px;
-  margin-bottom: 8px;
+.field-unit {
+  grid-column: span 1;
 }
 
+.field-type {
+  grid-column: span 1;
+}
+
+.field-order {
+  grid-column: span 1;
+}
+
+/* Gender Row */
+.gender-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.gender-checkbox {
+  margin: 0;
+  white-space: nowrap;
+}
+
+.gender-fields {
+  display: flex;
+  gap: 12px;
+  flex: 1;
+  flex-wrap: wrap;
+}
+
+.gender-min, .gender-max {
+  flex: 1;
+  min-width: 100px;
+}
+
+/* Options section */
 .options-wrap {
-  border-top: 1px dashed #cbd5e1;
-  padding-top: 10px;
+  margin-top: 12px;
+  padding: 12px;
+  background: white;
+  border-radius: 6px;
 }
 
 .options-head {
-  font-size: 13px;
   font-weight: 600;
-  margin-bottom: 6px;
+  margin-bottom: 12px;
+  color: #2c3e50;
 }
 
-.option-row {
-  display: flex;
-  gap: 8px;
+.options-row {
+  display: grid;
+  grid-template-columns: 1fr 120px auto;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 12px;
 }
 
-.field-option-name {
-  width: 170px;
+.option-name-field {
+  width: 100%;
 }
 
-.field-option-order {
-  width: 80px;
+.option-order-field {
+  width: 100%;
 }
 
 .save-row {
-  margin-top: 14px;
   display: flex;
   justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #e0e0e0;
 }
 
-@media (max-width: 900px) {
-  .field-grid,
-  .range-grid {
-    grid-template-columns: repeat(2, minmax(140px, 1fr));
+/* Responsive */
+@media (max-width: 992px) {
+  .fields-row {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
   }
+  
+  .field-name {
+    grid-column: span 2;
+  }
+  
+  .gender-fields {
+    flex-direction: column;
+  }
+  
+  .gender-min, .gender-max {
+    width: 100%;
+  }
+}
 
-  .field-option-name {
-    width: 170px;
+@media (max-width: 768px) {
+  .fields-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .options-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  
+  .card-head {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
   }
 }

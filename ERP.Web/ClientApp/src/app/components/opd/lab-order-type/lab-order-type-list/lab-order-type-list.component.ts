@@ -77,12 +77,17 @@ export class LabOrderTypeListComponent implements OnInit {
     this.bindData();
   }
 
-  openAdd(): void {
-    this.dialog.open(AddLabOrderTypeComponent, {
-      data: { element: {}, services: this.services },
-      width: '40%',
+openAdd() {
+    const dialogRef = this.dialog.open(AddLabOrderTypeComponent, {
+      panelClass: 'cstm_width_500',
+      height: 'auto',
+     data: { element: {}, services: this.services },
       disableClose: true
-    }).afterClosed().subscribe(() => this.bindData());
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.bindData();
+    });
   }
 
   openEdit(element: any): void {

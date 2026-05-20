@@ -12,6 +12,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { LabOrderTypeService } from '../../lab-order-type/lab-order-type.service';
 import { PrimaryOrderService } from '../../../order/primary-order/order.service';
 import { NotificationsService } from '../../../../Service/notification.service';
+import { SaveLabResultComponent } from '../save-lab-result/save-lab-result.component';
 
 @Component({
   selector: 'app-lab-order-list',
@@ -157,10 +158,26 @@ export class LabOrderListComponent implements OnInit {
       disableClose: true
     });
   }
+  
+ saveResult(element: any): void {
+  this.dialog.open(SaveLabResultComponent, {
+    data: {
+      order: element
+    },
+    panelClass: 'cstm_width_1300',
+    maxHeight: '90vh',
+    disableClose: true
+  }).afterClosed().subscribe(() => {
+    this.bindData();
+  });
+}
 
   openDelete(element: any): void {
     this.dialog.open(DeleteLabOrderComponent, {
-      data: { element },
+      data: {
+    labOrderId: element.id,
+    variables: element.labOrderType.variables
+  },
       width: '400px',
       disableClose: true
     }).afterClosed().subscribe(() => {

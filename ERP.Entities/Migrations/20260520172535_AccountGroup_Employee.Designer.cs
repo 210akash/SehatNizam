@@ -4,14 +4,16 @@ using ERP.Entities.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ERP.Entities.Migrations
 {
     [DbContext(typeof(ERPDbContext))]
-    partial class ERPDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260520172535_AccountGroup_Employee")]
+    partial class AccountGroup_Employee
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -234,7 +236,10 @@ namespace ERP.Entities.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("EmployeeId")
+                    b.Property<long?>("EmployeeId")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid?>("EmployeeId1")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsActive")
@@ -268,7 +273,7 @@ namespace ERP.Entities.Migrations
 
                     b.HasIndex("DealershipId");
 
-                    b.HasIndex("EmployeeId");
+                    b.HasIndex("EmployeeId1");
 
                     b.HasIndex("ModifiedById");
 
@@ -10725,7 +10730,7 @@ namespace ERP.Entities.Migrations
 
                     b.HasOne("ERP.Entities.Models.AspNetUsers", "Employee")
                         .WithMany()
-                        .HasForeignKey("EmployeeId");
+                        .HasForeignKey("EmployeeId1");
 
                     b.HasOne("ERP.Entities.Models.AspNetUsers", "ModifiedBy")
                         .WithMany()

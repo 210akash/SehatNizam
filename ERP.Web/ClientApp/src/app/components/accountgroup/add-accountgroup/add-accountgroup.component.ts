@@ -8,6 +8,7 @@ import { AccountService } from '../../account/account.service';
 import { DealershipService } from '../../order/dealership/dealership.service';
 import { VendorService } from '../../vendor/vendor.service';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { EmployeeService } from '../../hr/employee/employee.service';
 
 @Component({
   selector: 'app-add-accountgroup',
@@ -20,16 +21,18 @@ export class AddAccountGroupComponent {
   accountgroupForm!: FormGroup;
   isLoading = false;
   isEditMode: boolean = false;
-  accountList :any;
-  customersList :any;
-  vendorsList :any;
-  accountFlow :any;
-  i : number = 0;
+  accountList: any;
+  customersList: any;
+  vendorsList: any;
+  employeeList: any;
+  accountFlow: any;
+  i: number = 0;
 
   constructor(private dialog: MatDialog, private notificationsService: NotificationsService, private formBuilder: FormBuilder, private accountgroupService: AccountGroupService,
     private accountService: AccountService,
     private dealershipService: DealershipService,
     private vendorService: VendorService,
+    private employeeService: EmployeeService,
     private constantService: ConstantService, @Inject(MAT_DIALOG_DATA) public data: { element: any }) { }
 
   ngOnInit(): void {
@@ -41,7 +44,9 @@ export class AddAccountGroupComponent {
       accountId: ['', Validators.required],
       dealershipId: [''],
       dealershipName: [''],
-      vendorId : [''],
+      employeeName: [''],
+      vendorId: [''],
+      employeeId: [''],
       vendorName: [''],
       opening: [0],
       creditLimit: [0],
@@ -57,8 +62,9 @@ export class AddAccountGroupComponent {
 
       this.constantService.LoadData(element, this.accountgroupForm);
       this.accountFlow = element.account?.accountFlow?.name;
-      this.accountgroupForm.get('vendorName')?.patchValue(element.vendor?.name + ' | ' +  element.vendor?.address );
-      this.accountgroupForm.get('dealershipName')?.patchValue(element.dealership?.name + ' | ' +  element.dealership?.address );
+      this.accountgroupForm.get('vendorName')?.patchValue(element.vendor?.name + ' | ' + element.vendor?.address);
+      this.accountgroupForm.get('dealershipName')?.patchValue(element.dealership?.name + ' | ' + element.dealership?.address);
+      this.accountgroupForm.get('employeeName')?.patchValue(element.employee?.firstName + ' ' + element.employee?.lastName + ' | ' + element.department?.name + ' | ' + element.employeeDesignation?.name);
       this.setValidators();
       this.getAccountList();
     }
@@ -92,10 +98,10 @@ export class AddAccountGroupComponent {
   }
 
   getAccountList() {
-    let accountgrouptypeFilter  = {};
+    let accountgrouptypeFilter = {};
     this.accountService.getGroupAccount(accountgrouptypeFilter).subscribe((data: any) => {
-     this.accountList = data;
-     this.getaccountFlow();
+      this.accountList = data;
+      this.getaccountFlow();
     });
   }
 
@@ -113,7 +119,7 @@ export class AddAccountGroupComponent {
       (data: any) => {
         this.customersList = data || []; // Ensure it's an array even if no data is returned
       },
-      (error:any) => {
+      (error: any) => {
         console.error('Error fetching account list:', error);
         this.customersList = [];  // Reset in case of an error
       }
@@ -129,37 +135,66 @@ export class AddAccountGroupComponent {
       (data: any) => {
         this.vendorsList = data || []; // Ensure it's an array even if no data is returned
       },
-      (error:any) => {
+      (error: any) => {
         console.error('Error fetching account list:', error);
         this.vendorsList = [];  // Reset in case of an error
       }
     );
   }
 
+    async getEmployeeList(event: any) {
+    // Clone the form value and add paging data
+    const filter = event.currentTarget.value;
+    const accountFlow: string[] = [];
+      var getEmployeeFilter  = {
+      name : filter,
+      departmentId : null
+    }
+    this.employeeList = [];  // Empty the list before updating
+    (await this.employeeService.getEmployeeByName(getEmployeeFilter)).subscribe(
+      (data: any) => {
+        this.employeeList = data || []; // Ensure it's an array even if no data is returned
+      },
+      (error: any) => {
+        console.error('Error fetching account list:', error);
+        this.employeeList = [];  // Reset in case of an error
+      }
+    );
+  }
+
 
   async getVendorsList() {
-    let accountgrouptypeFilter  = {};
+    let accountgrouptypeFilter = {};
     (await this.vendorService.getAllVendors(accountgrouptypeFilter)).subscribe((data: any) => {
-     this.vendorsList = data.item1;
+      this.vendorsList = data.item1;
     });
   }
 
+  async getUsersList() {
+    let accountgrouptypeFilter = {};
+    (await this.employeeService.getEmployeeByName(accountgrouptypeFilter)).subscribe((data: any) => {
+      this.employeeList = data.item1;
+    });
+  }
+
+
   getAccountGroupCode() {
-    this.accountFlow =  this.getaccountFlow();
-    var AccountGroupTypeId =  this.accountgroupForm.get('accountId')?.value;
-    var Id =  this.accountgroupForm.get('id')?.value;
-    this.accountgroupService.getAccountGroupCode(AccountGroupTypeId,Id).subscribe((data: any) => {
+    this.accountFlow = this.getaccountFlow();
+    var AccountGroupTypeId = this.accountgroupForm.get('accountId')?.value;
+    var Id = this.accountgroupForm.get('id')?.value;
+    this.accountgroupService.getAccountGroupCode(AccountGroupTypeId, Id).subscribe((data: any) => {
       this.accountgroupForm.get('code')?.patchValue(data.code);
     });
     this.accountgroupForm.get('dealershipId')?.patchValue('');
     this.accountgroupForm.get('vendorId')?.patchValue('');
+    this.accountgroupForm.get('employeeId')?.patchValue('');
     this.setValidators();
   }
 
-  setValidators(){
+  setValidators() {
     this.customersList = [];
     this.vendorsList = [];
-    if(this.accountFlow == 'Customers'){
+    if (this.accountFlow == 'Customers') {
       // this.getCustomersList();
       // Set Required customer
       this.accountgroupForm.get('dealershipId')?.setValidators([Validators.required]);
@@ -167,8 +202,11 @@ export class AddAccountGroupComponent {
       //Clear Required vendor
       this.accountgroupForm.get('vendorId')?.clearValidators();
       this.accountgroupForm.get('vendorId')?.updateValueAndValidity();
+
+      this.accountgroupForm.get('employeeId')?.clearValidators();
+      this.accountgroupForm.get('employeeId')?.updateValueAndValidity();
     }
-    else if(this.accountFlow == 'Suppliers'){
+    else if (this.accountFlow == 'Suppliers') {
       this.getVendorsList();
       // Set Required vendor
       this.accountgroupForm.get('vendorId')?.setValidators([Validators.required]);
@@ -176,29 +214,54 @@ export class AddAccountGroupComponent {
       //Clear Required vendor
       this.accountgroupForm.get('dealershipId')?.clearValidators();
       this.accountgroupForm.get('dealershipId')?.updateValueAndValidity();
-    }
-    else{
-            //Clear Required vendor
-            this.accountgroupForm.get('vendorId')?.clearValidators();
-            this.accountgroupForm.get('vendorId')?.updateValueAndValidity();
 
-          //Clear Required customer
-          this.accountgroupForm.get('dealershipId')?.clearValidators();
-          this.accountgroupForm.get('dealershipId')?.updateValueAndValidity();
+      this.accountgroupForm.get('employeeId')?.clearValidators();
+      this.accountgroupForm.get('employeeId')?.updateValueAndValidity();
+    }
+    else if (this.accountFlow == 'Employees') {
+      this.getUsersList();
+      // Set Required vendor
+      this.accountgroupForm.get('employeeId')?.setValidators([Validators.required]);
+      this.accountgroupForm.get('employeeId')?.updateValueAndValidity();
+      //Clear Required dealership
+      this.accountgroupForm.get('dealershipId')?.clearValidators();
+      this.accountgroupForm.get('dealershipId')?.updateValueAndValidity();
+      //Clear Required vendor
+      this.accountgroupForm.get('vendorId')?.clearValidators();
+      this.accountgroupForm.get('vendorId')?.updateValueAndValidity();
+    }
+    else {
+      //Clear Required vendor
+      this.accountgroupForm.get('vendorId')?.clearValidators();
+      this.accountgroupForm.get('vendorId')?.updateValueAndValidity();
+
+      //Clear Required customer
+      this.accountgroupForm.get('dealershipId')?.clearValidators();
+      this.accountgroupForm.get('dealershipId')?.updateValueAndValidity();
+
+      this.accountgroupForm.get('employeeId')?.clearValidators();
+      this.accountgroupForm.get('employeeId')?.updateValueAndValidity();
     }
   }
 
   setName(id: string) {
     this.accountgroupForm.get('name')?.patchValue('');
     this.accountgroupForm.get('description')?.patchValue('');
-    if(this.accountFlow == 'Customers'){
+    if (this.accountFlow == 'Customers') {
       const selectedVendor = this.customersList.find((customer: { id: any; }) => customer.id === id);
       if (selectedVendor) {
         this.accountgroupForm.get('name')?.patchValue(selectedVendor.name);
         this.accountgroupForm.get('description')?.patchValue(selectedVendor.address);
       }
     }
-    else{
+    else if (this.accountFlow == 'Employees') {
+      const selectedEmployee = this.employeeList.find((employee: { id: any; }) => employee.id === id);
+      if (selectedEmployee) {
+        this.accountgroupForm.get('name')?.patchValue(selectedEmployee.firstName + ' ' + selectedEmployee.lastName);
+        this.accountgroupForm.get('description')?.patchValue(selectedEmployee.department?.name + ' ' + selectedEmployee.employeeDesignation?.name);
+      }
+    }
+    else {
       const selectedVendor = this.vendorsList.find((vendor: { id: any; }) => vendor.id === id);
       if (selectedVendor) {
         this.accountgroupForm.get('name')?.patchValue(selectedVendor.name);
@@ -218,22 +281,32 @@ export class AddAccountGroupComponent {
   }
 
   onOptionDealershipSelected(event: MatAutocompleteSelectedEvent, index: number): void {
-      const selectedValue = event.option.value;
-      if (!selectedValue) {
-        console.error('Option value is undefined. Ensure mat-option [value] is correctly bound.');
-        return;
-      }
-      this.accountgroupForm.get('dealershipId')?.patchValue(selectedValue.id);
-      this.accountgroupForm.get('dealershipName')?.patchValue(selectedValue.name + ' | ' + selectedValue.address);
+    const selectedValue = event.option.value;
+    if (!selectedValue) {
+      console.error('Option value is undefined. Ensure mat-option [value] is correctly bound.');
+      return;
+    }
+    this.accountgroupForm.get('dealershipId')?.patchValue(selectedValue.id);
+    this.accountgroupForm.get('dealershipName')?.patchValue(selectedValue.name + ' | ' + selectedValue.address);
   }
 
   onOptionSupplierSelected(event: MatAutocompleteSelectedEvent, index: number): void {
-      const selectedValue = event.option.value;
-      if (!selectedValue) {
-        console.error('Option value is undefined. Ensure mat-option [value] is correctly bound.');
-        return;
-      }
-      this.accountgroupForm.get('vendorId')?.patchValue(selectedValue.id);
-      this.accountgroupForm.get('vendorName')?.patchValue(selectedValue.name + ' | ' + selectedValue.address);
+    const selectedValue = event.option.value;
+    if (!selectedValue) {
+      console.error('Option value is undefined. Ensure mat-option [value] is correctly bound.');
+      return;
+    }
+    this.accountgroupForm.get('vendorId')?.patchValue(selectedValue.id);
+    this.accountgroupForm.get('vendorName')?.patchValue(selectedValue.name + ' | ' + selectedValue.address);
+  }
+
+  onOptionEmployeeSelected(event: MatAutocompleteSelectedEvent, index: number): void {
+    const selectedValue = event.option.value;
+    if (!selectedValue) {
+      console.error('Option value is undefined. Ensure mat-option [value] is correctly bound.');
+      return;
+    }
+    this.accountgroupForm.get('employeeId')?.patchValue(selectedValue.id);
+    this.accountgroupForm.get('employeeName')?.patchValue(selectedValue?.firstName + ' ' + selectedValue?.lastName + ' | ' + selectedValue?.department + ' | ' +  selectedValue?.designation);
   }
 }

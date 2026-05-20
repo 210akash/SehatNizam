@@ -50,5 +50,24 @@ namespace ERP.API.Controllers
         [HttpDelete]
         [Route("DeleteLabOrder")]
         public async Task<ActionResult<bool>> Delete(long id) => await mediator.Send(new DeleteLabOrderQuery(id));
+
+        [HttpPost]
+        [Route("SaveLabResult")]
+        public async Task<IActionResult> SaveLabResult(SaveLabResultCommand command)
+        {
+            try
+            {
+                var result = await mediator.Send(command);
+
+                if (result > 0)
+                    return this.Result(ResponseStatus.OK, result, "Lab Result Saved!");
+
+                return this.Result(ResponseStatus.Error, "There is some error!", null);
+            }
+            catch (Exception ex)
+            {
+                return this.Result(ResponseStatus.Error, null, ex.Message);
+            }
+        }
     }
 }

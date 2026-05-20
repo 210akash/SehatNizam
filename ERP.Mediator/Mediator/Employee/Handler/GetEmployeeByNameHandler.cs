@@ -25,16 +25,13 @@ namespace ERP.Mediator.Mediator.Employee.Handler
 
         public async Task<List<GetEmployee>> Handle(GetEmployeeByNameQuery request, CancellationToken cancellationToken)
         {
-            var Employee = await unitOfWork.Repository<Entities.Models.AspNetUsers>().GetAsync(y =>
-               y.IsActive == true && y.DepartmentId == request.DepartmentId && (y.FirstName.ToLower().Contains(request.Name.Trim().ToLower()) || y.LastName.ToLower().Contains(request.Name.Trim().ToLower())), null, null, "EmployeeDesignation");
-           // var _Account = mapper.Map<List<GetEmployee>>(Employee);
-
             var result = await unitOfWork.Repository<AspNetUsers>()
     .GetQueryable()
     .Where(e =>
         e.IsActive &&
-        e.DepartmentId == request.DepartmentId &&
-        (e.FirstName.Contains(request.Name) || e.LastName.Contains(request.Name)))
+        e.IsEmployee &&
+        (request.DepartmentId == null || e.DepartmentId == request.DepartmentId) &&
+        (e.FirstName.Trim().ToLower().Contains(request.Name.Trim().ToLower()) || e.LastName.Trim().ToLower().Contains(request.Name.Trim().ToLower())))
     .Select(e => new GetEmployee
     {
         Id = e.Id,
@@ -44,6 +41,7 @@ namespace ERP.Mediator.Mediator.Employee.Handler
         FirstName = e.FirstName,
         LastName = e.LastName,
         Designation = e.EmployeeDesignation.Name,
+        Department = e.Department.Name,
         Supervisor = string.Join(", ",
             e.Department.Users
                 .Where(u =>

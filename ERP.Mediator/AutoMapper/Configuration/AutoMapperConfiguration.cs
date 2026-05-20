@@ -670,6 +670,7 @@
             CreateMap<LabOrderType, GetLabOrderType>().ReverseMap();
             CreateMap<ServiceType, SaveServiceTypeCommand>().ReverseMap();
             CreateMap<ServiceType, GetServiceType>().ReverseMap();
+            CreateMap<LabResult, GetLabResult>().ReverseMap();
             //this.CreateMap<PayrollDetail, GetPayrollDetail>().ReverseMap();
 
         }

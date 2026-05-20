@@ -57,6 +57,21 @@
             </mat-autocomplete>
           </mat-form-field>
         </div>
+         <div class="col-md-12" *ngIf="this.accountFlow == 'Employees'">
+          <mat-form-field>
+            <mat-label>Employees</mat-label>
+            <input matInput formControlName="employeeName" [matAutocomplete]="auto"
+            (keyup)="getEmployeeList($event);" class="form-control" (input)="onInputCleared($event, i)"
+            type="search"
+            [required]="this.accountFlow == 'Employees'"
+            />
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionEmployeeSelected($event,i)">
+              <mat-option *ngFor="let employee of employeeList" [value]="employee">
+              {{ employee?.firstName  + ' ' +  employee?.lastName}} | {{ employee?.department }} |  {{ employee?.designation }} 
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        </div>
         <!-- <div class="col-md-12" *ngIf="this.accountFlow == 'Customers'"  >
           <mat-form-field  class="form-field">
             <mat-label>Distributors</mat-label>

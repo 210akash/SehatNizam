@@ -1,0 +1,16 @@
+.lab-card {
+  width: 100%;
+}
+
+.patient-info-box {
+  padding: 10px;
+  background: #f9fafb;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.button-container {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}

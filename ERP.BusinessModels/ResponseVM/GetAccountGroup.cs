@@ -1,4 +1,5 @@
 ﻿using ERP.Entities.Models;
+using System;
 
 namespace ERP.BusinessModels.ResponseVM
 {
@@ -18,6 +19,9 @@ namespace ERP.BusinessModels.ResponseVM
 
         public long? DealershipId { get; set; }
         public virtual GetDealership Dealership { get; set; }
+
+        public Guid? EmployeeId { get; set; }
+        public virtual GetCreatedBy Employee { get; set; }
 
         public long CompanyId { get; set; }
         public GetCompany Company { get; set; }

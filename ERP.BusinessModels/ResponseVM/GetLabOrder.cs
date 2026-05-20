@@ -1,4 +1,5 @@
 ﻿using ERP.Entities.Models;
+using System.Collections.Generic;
 
 namespace ERP.BusinessModels.ResponseVM
 {
@@ -12,5 +13,6 @@ namespace ERP.BusinessModels.ResponseVM
         public GetStatus Status { get; set; }
         public long StatusId { get; set; }
         public GetLabOrderType LabOrderType { get; set; }
+        public List<GetLabResult> LabResult { get; set; }
     }
 }

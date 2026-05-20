@@ -37,6 +37,9 @@ namespace ERP.Mediator.Mediator.AccountGroup.Handler
                 x => x.Account,
                 x => x.Vendor,
                 x => x.Dealership,
+                x => x.Employee,
+                x => x.Employee.EmployeeDesignation,
+                x => x.Employee.Department,
                 x => x.Account.AccountFlow
             };
 
@@ -58,8 +61,7 @@ namespace ERP.Mediator.Mediator.AccountGroup.Handler
             Expression<Func<Entities.Models.AccountGroup, object>> OrderByDesc = x => x.Id;
             var entity = unitOfWork.Repository<Entities.Models.AccountGroup>().GetPagingWhereAsNoTrackingAsync(predicate, request.PagingData, OrderBy, OrderByDesc, null, includes);
 
-            var AccountGroup = mapper.Map<IEnumerable<GetAccountGroup>>(entity.Item1.ToList()).ToList();
-
+            var AccountGroup = mapper.Map<IEnumerable<GetAccountGroup>>(entity.Item1).ToList();
             return new Tuple<IEnumerable<GetAccountGroup>, long>(AccountGroup, entity.Item2);
         }
     }

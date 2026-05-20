@@ -886,6 +886,7 @@ import { AddServiceTypeComponent } from './components/opd/service-type/add-servi
 import { DeleteServiceTypeComponent } from './components/opd/service-type/delete-service-type/delete-service-type.component';
 import { ViewServiceTypeComponent } from './components/opd/service-type/view-service-type/view-service-type.component';
 import { ServiceTypeListComponent } from './components/opd/service-type/service-type-list/service-type-list.component';
+import { SaveLabResultComponent } from './components/opd/lab-order/save-lab-result/save-lab-result.component';
 
 const matFormFieldDefaults: MatFormFieldDefaultOptions = {
     appearance: 'outline'
@@ -1517,7 +1518,8 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         DeleteServiceTypeComponent,
         ViewServiceTypeComponent,
         ServiceTypeListComponent,
-        ConfirmAppointmentComponent
+        ConfirmAppointmentComponent,
+        SaveLabResultComponent
     ],
     bootstrap: [AppComponent], imports: [
         InputMaskModule,

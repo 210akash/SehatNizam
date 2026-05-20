@@ -31,4 +31,9 @@ export class LabOrderService extends BaseService<any> {
         return this.delete(id, this.endPointControllerName + this.endPoints.deleteLabOrder)
             .pipe();
     }
+    
+    async saveLabResult(payload: any) {
+        return await this.post(payload, this.endPointControllerName + this.endPoints.saveLabResult)
+            .pipe(map((data: any) => data));
+    }
 }

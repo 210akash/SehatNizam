@@ -9,5 +9,7 @@ namespace ERP.BusinessModels.ResponseVM
         public string LastName { get; set; }
         public  long DepartmentId { get; set; }
         public  GetDepartment Department { get; set; }
+        public long EmployeeDesignationId { get; set; }
+        public GetEmployeeDesignation EmployeeDesignation { get; set; }
     }
 }

@@ -4,14 +4,16 @@ using ERP.Entities.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ERP.Entities.Migrations
 {
     [DbContext(typeof(ERPDbContext))]
-    partial class ERPDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260520173519_AccountGroup_Employee_Remove")]
+    partial class AccountGroup_Employee_Remove
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -234,9 +236,6 @@ namespace ERP.Entities.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("EmployeeId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -267,8 +266,6 @@ namespace ERP.Entities.Migrations
                     b.HasIndex("CreatedById");
 
                     b.HasIndex("DealershipId");
-
-                    b.HasIndex("EmployeeId");
 
                     b.HasIndex("ModifiedById");
 
@@ -10723,10 +10720,6 @@ namespace ERP.Entities.Migrations
                         .WithMany("AccountGroup")
                         .HasForeignKey("DealershipId");
 
-                    b.HasOne("ERP.Entities.Models.AspNetUsers", "Employee")
-                        .WithMany()
-                        .HasForeignKey("EmployeeId");
-
                     b.HasOne("ERP.Entities.Models.AspNetUsers", "ModifiedBy")
                         .WithMany()
                         .HasForeignKey("ModifiedById");
@@ -10742,8 +10735,6 @@ namespace ERP.Entities.Migrations
                     b.Navigation("CreatedBy");
 
                     b.Navigation("Dealership");
-
-                    b.Navigation("Employee");
 
                     b.Navigation("ModifiedBy");
 

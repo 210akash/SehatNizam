@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace ERP.Entities.Models
 {
@@ -19,6 +20,9 @@ namespace ERP.Entities.Models
 
         public long? DealershipId { get; set; }
         public virtual Dealership Dealership { get; set; }
+
+        public virtual AspNetUsers Employee { get; set; }
+        public Guid? EmployeeId { get; set; }
 
         public long CompanyId { get; set; }
         public virtual Company Company { get; set; }

@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using System;
 
 namespace ERP.Mediator.Mediator.AccountGroup.Command
 {
@@ -8,6 +9,7 @@ namespace ERP.Mediator.Mediator.AccountGroup.Command
         public long AccountId { get; set; }
         public long? DealershipId { get; set; }
         public long? VendorId { get; set; }
+        public Guid? EmployeeId { get; set; }
         public string Name { get; set; }
         public string Code { get; set; }
         public string Description { get; set; }

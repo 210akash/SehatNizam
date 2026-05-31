@@ -56,13 +56,27 @@ export class LabOrderListComponent implements OnInit {
 
   buildForm(): void {
     this.form = this.fb.group({
-      tokenNumber: [''],
-      patientName: [''],
+      tokenNo: [''],
+      mRN: [''],
+      name: [''],
       labOrderTypeId: [null],
-      statusId: [null],
-      fromDate: [null],
-      toDate: [null]
+      statusId: [1],
+      fDate: [new Date()],
+      tDate: [new Date()]
     });
+
+
+    //  const currentYear = new Date().getFullYear();
+    // const startDate = new Date(currentYear, 0, 1);
+
+    // // const endDate = new Date(currentYear, 11, 31);
+    // const currentDate = new Date();
+    // const endDate = new Date(currentDate);
+    // endDate.setDate(currentDate.getDate() + 2); // Add 2 days
+
+    // this.TransactionFilterForm.get('fdate')?.patchValue(this.constantService.formatDate(startDate));
+    // this.TransactionFilterForm.get('tdate')?.patchValue(this.constantService.formatDate(endDate));
+
   }
 
   setupFilters(): void {

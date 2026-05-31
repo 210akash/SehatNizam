@@ -164,7 +164,7 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
 
                             ClinicalNotes = item.ClinicalNotes,
 
-                            StatusId = 1,
+                            StatusId = 5,
 
                             CreatedById = sessionProvider.Session.LoggedInUserId,
 

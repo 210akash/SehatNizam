@@ -13314,7 +13314,7 @@ namespace ERP.Entities.Migrations
                         .WithMany()
                         .HasForeignKey("ModifiedById");
 
-                    b.HasOne("ERP.Entities.Models.Status", "Status")
+                    b.HasOne("ERP.Entities.Models.AppointmentStatus", "Status")
                         .WithMany()
                         .HasForeignKey("StatusId")
                         .OnDelete(DeleteBehavior.Cascade)

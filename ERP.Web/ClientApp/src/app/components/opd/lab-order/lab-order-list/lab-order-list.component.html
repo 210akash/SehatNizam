@@ -9,79 +9,79 @@
     <!-- Filter Section -->
      <div class="filter-section" [formGroup]="form">
   <div class="row">
-    <div class="col-lg-2 col-md-3 col-sm-6 col-12">
-      <mat-form-field class="filter-field" appearance="outline">
-        <mat-label>Token Number</mat-label>
-        <input matInput formControlName="tokenNumber" placeholder="Search by token number" />
-        <mat-icon matSuffix>confirmation_number</mat-icon>
-      </mat-form-field>
-    </div>
-    
-    <div class="col-lg-2 col-md-3 col-sm-6 col-12">
-      <mat-form-field class="filter-field" appearance="outline">
-        <mat-label>Patient Name</mat-label>
-        <input matInput formControlName="patientName" placeholder="Search by patient name" />
-        <mat-icon matSuffix>person</mat-icon>
-      </mat-form-field>
-    </div>
-    
-    <!-- <div class="col-lg-2 col-md-3 col-sm-6 col-12">
-      <mat-form-field class="filter-field" appearance="outline">
-        <mat-label>Test Type</mat-label>
-        <mat-select formControlName="labOrderTypeId">
-          <mat-option [value]="null">All Tests</mat-option>
-          <mat-option *ngFor="let test of labOrderTypes" [value]="test.id">{{ test.name }}</mat-option>
-        </mat-select>
-        <mat-icon matSuffix>science</mat-icon>
-      </mat-form-field>
-    </div> -->
-    
-    <!-- <div class="col-lg-2 col-md-3 col-sm-6 col-12">
-      <mat-form-field class="filter-field" appearance="outline">
-        <mat-label>Status</mat-label>
-        <mat-select formControlName="statusId">
-          <mat-option [value]="null">All Status</mat-option>
-          <mat-option *ngFor="let status of statusList" [value]="status.id">{{ status.title }}</mat-option>
-        </mat-select>
-        <mat-icon matSuffix>flag</mat-icon>
-      </mat-form-field>
-    </div> -->
-
-    <div class="col-lg-2 col-md-3 col-sm-6 col-12">
+     <div class="col-lg-3 col-md-4 col-sm-6 col-12">
       <mat-form-field class="filter-field" appearance="outline">
         <mat-label>From Date</mat-label>
-        <input matInput [matDatepicker]="fromPicker" formControlName="fromDate" placeholder="Start date" />
+        <input matInput [matDatepicker]="fromPicker" formControlName="fDate" placeholder="Start date" (dateChange)="filterData()" />
         <mat-datepicker-toggle matIconSuffix [for]="fromPicker"></mat-datepicker-toggle>
         <mat-datepicker #fromPicker></mat-datepicker>
         <mat-icon matPrefix>event</mat-icon>
       </mat-form-field>
     </div>
 
-    <div class="col-lg-2 col-md-3 col-sm-6 col-12">
+    <div class="col-lg-3 col-md-4 col-sm-6 col-12">
       <mat-form-field class="filter-field" appearance="outline">
         <mat-label>To Date</mat-label>
-        <input matInput [matDatepicker]="toPicker" formControlName="toDate" placeholder="End date" />
+        <input matInput [matDatepicker]="toPicker" formControlName="tDate" placeholder="End date" (dateChange)="filterData()" />
         <mat-datepicker-toggle matIconSuffix [for]="toPicker"></mat-datepicker-toggle>
         <mat-datepicker #toPicker></mat-datepicker>
         <mat-icon matPrefix>event</mat-icon>
       </mat-form-field>
     </div>
-  </div>
-
-  <!-- <div class="row mt-2">
-    <div class="col-12">
-      <div class="button-group">
-        <button mat-flat-button color="primary" type="button" (click)="filterData()">
-          <mat-icon>search</mat-icon> Filter
-        </button>
-      </div>
+    <div class="col-lg-2 col-md-3 col-sm-6 col-12">
+      <mat-form-field class="filter-field" appearance="outline">
+        <mat-label>Token #</mat-label>
+        <input matInput formControlName="tokenNo" placeholder="Search by token number" (keyup)="filterData()" />
+        <mat-icon matSuffix>confirmation_number</mat-icon>
+      </mat-form-field>
     </div>
-  </div> -->
+    
+    <div class="col-lg-4 col-md-3 col-sm-7 col-12">
+      <mat-form-field class="filter-field" appearance="outline">
+        <mat-label>Patient Name</mat-label>
+        <input matInput formControlName="name" placeholder="Search by patient name" (keyup)="filterData()" />
+        <mat-icon matSuffix>person</mat-icon>
+      </mat-form-field>
+    </div>
+        <div class="col-lg-2 col-md-3 col-sm-6 col-12">
+      <mat-form-field class="filter-field" appearance="outline">
+        <mat-label>MRN #</mat-label>
+        <input matInput formControlName="mRN" placeholder="Search by MRN" (keyup)="filterData()" />
+        <mat-icon matSuffix>person</mat-icon>
+      </mat-form-field>
+    </div>
+    
+    <div class="col-lg-2 col-md-3 col-sm-6 col-12">
+      <mat-form-field class="filter-field" appearance="outline">
+        <mat-label>Test Type</mat-label>
+        <mat-select formControlName="labOrderTypeId" (selectionChange)="filterData()">
+          <mat-option [value]="null">All Tests</mat-option>
+            <mat-option *ngFor="let test of labOrderTypes" [value]="test.id">
+                  {{ test.name }}
+                </mat-option>
+        </mat-select>
+        <mat-icon matSuffix>science</mat-icon>
+      </mat-form-field>
+    </div>
+    
+    <div class="col-lg-2 col-md-3 col-sm-6 col-12">
+      <mat-form-field class="filter-field" appearance="outline">
+        <mat-label>Status</mat-label>
+        <mat-select formControlName="statusId" (selectionChange)="filterData()">
+          <mat-option [value]="null">All</mat-option>
+          <mat-option [value]="2">Prescribed</mat-option>
+          <mat-option [value]="1">Booked</mat-option>
+          <mat-option [value]="5">Confirm</mat-option>
+          <mat-option [value]="15">Complete</mat-option>
+        </mat-select>
+        <mat-icon matSuffix>flag</mat-icon>
+      </mat-form-field>
+    </div>
+  </div>
 </div>
   <div class="mat-elevation-z8 table-responsive">
     <!-- Table -->
     <table mat-table [dataSource]="dataSource" class="mat-elevation-z2">
-      
       <!-- Token Number Column -->
       <ng-container matColumnDef="tokenNumber">
         <th mat-header-cell *matHeaderCellDef>Token #</th>
@@ -139,17 +139,18 @@
             <button mat-mini-fab matTooltip="View" color="dark" (click)="openView(e)">
               <mat-icon>visibility</mat-icon>
             </button>
-            <button mat-mini-fab matTooltip="Edit" color="primary" (click)="openAdd(e)">
-              <mat-icon>edit</mat-icon>
-            </button>
-            <button mat-mini-fab matTooltip="Delete" color="warn" (click)="openDelete(e)">
+            <button mat-mini-fab matTooltip="Delete" color="warn" *ngIf="e.statusId == 1" (click)="openDelete(e)">
               <mat-icon>delete</mat-icon>
             </button>
              <button mat-mini-fab matTooltip="Save Result" color="accent" (click)="saveResult(e)">
               <mat-icon>visibility</mat-icon>
+            <button mat-mini-fab matTooltip="Print Report" color="accent" *ngIf="e.statusId == 15" (click)="printReport(e)">
+              <mat-icon>print</mat-icon>
             </button>
                <button mat-mini-fab matTooltip="Save Result" color="accent" (click)="openprintResult(e)">
               <mat-icon>visibility</mat-icon>
+             <button mat-mini-fab matTooltip="Save Result" color="accent" *ngIf="e.statusId == 5"  (click)="saveResult(e)">
+              <i class="fa-solid fa-vial"></i>
             </button>
           </div>
         </td>

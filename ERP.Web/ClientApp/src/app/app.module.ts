@@ -1508,7 +1508,6 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         ConfirmAppointmentComponent,
         LabOrderListComponent,
         AddLabOrderComponent,
-        ViewLabOrderComponent,
         DeleteLabOrderComponent,
         ServiceListComponent,
         AddServiceComponent,

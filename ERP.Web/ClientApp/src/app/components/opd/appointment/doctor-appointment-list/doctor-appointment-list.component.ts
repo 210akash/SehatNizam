@@ -360,7 +360,7 @@ finishConsultation(): void {
       appointmentId: this.selectedAppointment.id,
       labOrderTypeId: selectedTypeId,
       clinicalNotes: this.newLab.notes || '',
-      statusId: 1
+      statusId: 2
     };
 
     (await (this.labOrderService.saveLabOrder(payload))).subscribe({

@@ -10,7 +10,7 @@ namespace ERP.BusinessModels.ResponseVM
         public GetAppointment Appointment { get; set; }
         public long LabOrderTypeId { get; set; }
         public string ClinicalNotes { get; set; }
-        public GetStatus Status { get; set; }
+        public GetAppointmentStatus Status { get; set; }
         public long StatusId { get; set; }
         public GetLabOrderType LabOrderType { get; set; }
         public List<GetLabResult> LabResult { get; set; }

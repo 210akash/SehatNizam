@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NotificationsService } from '../../../../Service/notification.service';
 import { AppointmentService } from '../../appointment/appointment.service';
 import { DepartmentService } from '../../../department/department.service';
@@ -8,13 +9,12 @@ import { AppointmentTypeService } from '../../appointment-type/appointment-type.
 import { PriorityLevelService } from '../../prioritylevel/prioritylevel.service';
 import { VisitTypeService } from '../../visit-type/visit-type.service';
 import { PaymentModeService } from '../../../paymentmode/paymentmode.service';
-import { PrimaryOrderService } from '../../../order/primary-order/order.service';
+import { LabOrderService } from '../lab-order.service';
 import { PatientService } from '../../patient/patient.service';
 import { LabOrderTypeService } from '../../lab-order-type/lab-order-type.service';
 import { Observable, of, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged, finalize, map, startWith, switchMap } from 'rxjs/operators';
 import { CityService } from '../../../hr/city/city.service';
-import { Router } from '@angular/router';
 
 export function discountNotExceedRateValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
@@ -69,11 +69,11 @@ export class AddLabOrderComponent implements OnInit, OnDestroy {
     private priorityLevelService: PriorityLevelService,
     private visitTypeService: VisitTypeService,
     private paymentModeService: PaymentModeService,
-    private primaryOrderService: PrimaryOrderService,
     private patientService: PatientService,
     private labOrderTypeService: LabOrderTypeService,
     private cityService: CityService,
     private router: Router,
+    private route: ActivatedRoute,
   ) { }
 
   ngOnInit(): void {
@@ -82,6 +82,8 @@ export class AddLabOrderComponent implements OnInit, OnDestroy {
     this.setupCalculations();
     this.loadLookups();
     this.getCityList();
+    this.patchEditData();
+    this.setupLabOrderTypeWatcher();
   }
 
   ngOnDestroy(): void {
@@ -210,10 +212,7 @@ export class AddLabOrderComponent implements OnInit, OnDestroy {
 
     this.paymentModeService.getAllPaymentModes({})
       .subscribe((d: any) => this.paymentModesList = d?.item1 ?? []);
-
-    this.primaryOrderService.getAllOrderStatus()
-      .then(obs => obs.subscribe((d: any) => this.paymentStatusList = d ?? []));
-
+  
     this.visitTypeService.getAllVisitType({})
       .then(obs => obs.subscribe((d: any) => this.visitTypeList = d?.item1 ?? []));
 
@@ -246,6 +245,7 @@ export class AddLabOrderComponent implements OnInit, OnDestroy {
       discount: [0, [Validators.min(0), discountNotExceedRateValidator()]],
       amount: [{ value: selectedTest.price, disabled: true }],
       serviceId: [selectedTest.serviceId], 
+      statusId: [5], 
     });
 
     const discountControl = group.get('discount');
@@ -336,7 +336,7 @@ export class AddLabOrderComponent implements OnInit, OnDestroy {
         this.isSubmitting = false;
         if (res?.Status === 200) {
           this.notifications.showNotification(res?.Data || 'Direct Lab Order Saved Successfully!', 'snack-bar-success');
-        this.router.navigate(['/appointment']);
+        this.router.navigate(['/laborder']);
         } else {
           this.notifications.showNotification(res?.Message || 'Unable to save lab order.', 'snack-bar-danger');
         }
@@ -428,5 +428,98 @@ export class AddLabOrderComponent implements OnInit, OnDestroy {
     const month = `${d.getMonth() + 1}`.padStart(2, '0');
     const day = `${d.getDate()}`.padStart(2, '0');
     return `${d.getFullYear()}-${month}-${day}`;
+  }
+
+  private patchEditData(): void {
+    const element = history.state?.element;
+    if (!element) return;
+
+    const appointment = element.appointment || {};
+    const patient = appointment.patient || element.patient || {};
+
+    this.form.patchValue({
+      appointmentDate: appointment.appointmentDate ? this.toInputDate(appointment.appointmentDate) : this.minDate,
+      tokenNumber: appointment.tokenNumber || '',
+      projectId: appointment.projectId || this.currentProjectId,
+      departmentId: appointment.departmentId || null,
+      appointmentTypeId: appointment.appointmentTypeId || 1,
+      priorityLevelId: appointment.priorityLevelId || 1,
+      visitTypeId: appointment.visitTypeId || 1,
+      doctorId: appointment.doctorId || null,
+      reason: appointment.reason || '',
+      confirmationNotes: appointment.confirmationNotes || '',
+      confirmedDate: appointment.confirmedDate || null,
+      appointmentStatusId: appointment.appointmentStatusId || 5,
+      patientId: patient.id || null
+    });
+
+    const patientGroup = this.form.get('patient') as FormGroup;
+    patientGroup.patchValue({
+      name: patient.name || '',
+      phoneNo: patient.phoneNo || '',
+      secondaryPhoneNo: patient.secondaryPhoneNo || '',
+      gender: patient.gender || 'male',
+      age: patient.age || null,
+      dateOfBirth: patient.dateOfBirth ? this.toInputDate(patient.dateOfBirth) : null,
+      cnic: patient.cnic || '',
+      address: patient.address || '',
+      cityId: patient.cityId ?? 1,
+      email: patient.email || ''
+    });
+
+    if (patient.id) {
+      this.patientSearchCtrl.setValue(patient, { emitEvent: false });
+    }
+
+    const payments = element.appointmentPayments || appointment.appointmentPayments || [];
+    this.labOrders.clear();
+
+    (element.labOrders || []).forEach((order: any) => {
+      const labOrderType = this.labOrderTypes.find(t => t.id === order.labOrderTypeId);
+      const testName = labOrderType?.name || order.labOrderType?.name || order.testName || '';
+      const rate = labOrderType?.price ?? order.rate ?? order.labOrderType?.service?.basePrice ?? 0;
+      const serviceId = labOrderType?.serviceId ?? order.serviceId ?? order.labOrderType?.serviceId ?? 0;
+
+      const group = this.fb.group({
+        labOrderTypeId: [order.labOrderTypeId, Validators.required],
+        clinicalNotes: [order.clinicalNotes || ''],
+        testName: [{ value: testName, disabled: true }],
+        rate: [{ value: rate, disabled: true }],
+        discount: [order.discount || 0, [Validators.min(0), discountNotExceedRateValidator()]],
+        amount: [{ value: order.amount ?? rate, disabled: true }],
+        serviceId: [serviceId]
+      });
+
+      const discountControl = group.get('discount');
+      const amountControl = group.get('amount');
+      const sub = discountControl?.valueChanges.subscribe(() => {
+        let r = rate;
+        let d = discountControl?.value || 0;
+        if (d > r) {
+          d = r;
+          discountControl?.setValue(d, { emitEvent: false });
+        }
+        amountControl?.setValue(r - d, { emitEvent: false });
+        this.updateTotalVisitFee();
+      });
+      if (sub) this.labOrderSubscriptions.push(sub);
+      this.labOrders.push(group);
+    });
+
+    this.updateTotalVisitFee();
+  }
+
+  private setupLabOrderTypeWatcher(): void {
+    this.labOrderTypeService.getAllLabOrderTypes({}).subscribe({
+      next: (res: any) => {
+        const items = res?.item1 ?? [];
+        this.labOrderTypes = items.map((item: any) => ({
+          id: item.id,
+          name: item.name,
+          price: item.service?.basePrice ?? 0,
+          serviceId: item.serviceId
+        }));
+      }
+    });
   }
 }

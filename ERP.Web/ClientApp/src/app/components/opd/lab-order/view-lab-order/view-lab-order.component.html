@@ -1,10 +1,149 @@
-<mat-card>
-  <mat-card-header><mat-card-title>View Lab Order</mat-card-title></mat-card-header>
-  <mat-card-content>
-    <form [formGroup]="form">
-      <mat-form-field class="form-field"><mat-label>Appointment Id</mat-label><input matInput formControlName="appointmentId" readonly /></mat-form-field>
-      <mat-form-field class="form-field"><mat-label>Lab Order Type Id</mat-label><input matInput formControlName="labOrderTypeId" readonly /></mat-form-field>
-      <mat-form-field class="form-field"><mat-label>Status Id</mat-label><input matInput formControlName="statusId" readonly /></mat-form-field>
-    </form>
-  </mat-card-content>
-</mat-card>
+<!-- view-lab-order.component.html -->
+<div class="print-container">
+  <!-- Buttons - hidden when printing -->
+  <div class="no-print button-bar">
+    <button mat-raised-button color="primary" (click)="printDocument()">
+      <mat-icon>print</mat-icon> Print
+    </button>
+    <button mat-raised-button mat-dialog-close>
+      <mat-icon>close</mat-icon> Close
+    </button>
+  </div>
+
+  <!-- Printable Content -->
+  <div id="printDoc">
+    <div class="lab-order-slip">
+      
+      <!-- Header -->
+      <div class="header">
+        <div class="hospital-icon">
+          <div class="cross"></div>
+        </div>
+        <div class="hospital-details">
+          <h1>LABORATORY ORDER FORM</h1>
+          <p>Diagnostic Laboratory Services</p>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Patient Information -->
+      <div class="info-section">
+        <div class="section-title">Patient Information</div>
+        <div class="info-grid">
+          <div class="info-row">
+            <span class="label">Patient Name:</span>
+            <span class="value">{{ data.element?.appointment?.patient?.name || '-' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">MRN:</span>
+            <span class="value">{{ data.element?.appointment?.patient?.mrn || '-' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Age:</span>
+            <span class="value">{{ data.element?.appointment?.patient?.age || '-' }} years</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Gender:</span>
+            <span class="value">{{ (data.element?.appointment?.patient?.gender || '-') | titlecase }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Phone:</span>
+            <span class="value">{{ data.element?.appointment?.patient?.phoneNo || '-' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">CNIC:</span>
+            <span class="value">{{ data.element?.appointment?.patient?.cnic || '-' }}</span>
+          </div>
+          <div class="info-row full-width">
+            <span class="label">Address:</span>
+            <span class="value">{{ data.element?.appointment?.patient?.address || '-' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lab Order Information -->
+      <div class="info-section">
+        <div class="section-title">Lab Order Details</div>
+        <div class="info-grid">
+          <div class="info-row">
+            <span class="label">Order ID:</span>
+            <span class="value">#{{ data.element?.id || '-' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Status:</span>
+            <span class="value">{{ data.element?.status?.title || '-' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Test Name:</span>
+            <span class="value">{{ data.element?.labOrderType?.name || '-' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Service ID:</span>
+            <span class="value">{{ data.element?.labOrderType?.serviceId || '-' }}</span>
+          </div>
+          <div class="info-row full-width">
+            <span class="label">Description:</span>
+            <span class="value">{{ data.element?.labOrderType?.description || '-' }}</span>
+          </div>
+          <div class="info-row full-width">
+            <span class="label">Clinical Notes:</span>
+            <span class="value notes">{{ data.element?.clinicalNotes || 'No clinical notes' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Appointment Information -->
+      <div class="info-section">
+        <div class="section-title">Appointment Information</div>
+        <div class="info-grid">
+          <div class="info-row">
+            <span class="label">Appointment ID:</span>
+            <span class="value">{{ data.element?.appointment?.id || '-' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Token Number:</span>
+            <span class="value token">{{ data.element?.appointment?.tokenNumber || '-' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Appointment Date:</span>
+            <span class="value">{{ (data.element?.appointment?.appointmentDate | date:'mediumDate') || '-' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Visit Type:</span>
+            <span class="value">{{ data.element?.appointment?.visitTypeId || '-' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Confirmed Date:</span>
+            <span class="value">{{ (data.element?.appointment?.confirmedDate | date:'medium') || '-' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Status:</span>
+            <span class="value">{{ getStatusName(data.element?.appointment?.appointmentStatusId) || '-' }}</span>
+          </div>
+          <div class="info-row full-width">
+            <span class="label">Reason:</span>
+            <span class="value">{{ data.element?.appointment?.reason || 'No reason provided' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Token Section -->
+      <div class="token-section">
+        <div class="token-box">
+          <span class="token-label">TOKEN NUMBER</span>
+          <span class="token-number">{{ data.element?.appointment?.tokenNumber || '-' }}</span>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="footer">
+        <div class="divider"></div>
+        <div class="footer-text">
+          <p>Not valid for medico-legal purposes</p>
+          <p class="print-date">Printed on: {{ currentDate | date:'full' }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

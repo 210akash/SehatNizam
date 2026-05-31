@@ -9,7 +9,7 @@ namespace ERP.Entities.Models
         public string Reference { get; set; }
         public string ClinicalNotes { get; set; }
         public long StatusId { get; set; }
-        public Status Status { get; set; }
+        public AppointmentStatus Status { get; set; }
         public Appointment Appointment { get; set; }
         public LabOrderType LabOrderType { get; set; }
         public List<LabResult> LabResult { get; set; }

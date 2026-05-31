@@ -28,7 +28,13 @@ namespace ERP.Mediator.Mediator.LabOrder.Handler
         {
             Expression<Func<Entities.Models.LabOrder, bool>> predicate =
                 x => x.IsActive == true
-                && (!request.AppointmentId.HasValue || x.AppointmentId == request.AppointmentId.Value);
+                && x.CreatedDate >= request.FDate
+                && x.CreatedDate <= request.TDate.AddDays(1).AddTicks(-1)
+                && (request.TokenNo == "" || x.Appointment.TokenNumber.Contains(request.TokenNo))
+                && (request.MRN == "" || x.Appointment.Patient.MRN.Contains(request.MRN))
+                && (request.Name == "" || x.Appointment.Patient.Name.ToLower().Trim().Contains(request.Name.ToLower().Trim()))
+                && (!request.LabOrderTypeId.HasValue || x.LabOrderTypeId == request.LabOrderTypeId.Value)
+                && (!request.StatusId.HasValue || x.StatusId == request.StatusId.Value);
 
             Expression<Func<Entities.Models.LabOrder, object>>[] includes = { x => x.Status, x => x.LabOrderType , x => x.Appointment, x => x.Appointment.Patient , x => x.LabOrderType.Variables , x => x.LabResult };
             var result = unitOfWork.Repository<Entities.Models.LabOrder>().GetPagingWhereAsNoTrackingAsync(predicate, request.PagingData, null, x => x.Id, null, includes);

@@ -13,6 +13,7 @@ import { LabOrderTypeService } from '../../lab-order-type/lab-order-type.service
 import { PrimaryOrderService } from '../../../order/primary-order/order.service';
 import { NotificationsService } from '../../../../Service/notification.service';
 import { SaveLabResultComponent } from '../save-lab-result/save-lab-result.component';
+import { PrintResultComponent } from '../print-result/print-result.component';
 
 @Component({
   selector: 'app-lab-order-list',
@@ -179,6 +180,17 @@ export class LabOrderListComponent implements OnInit {
     variables: element.labOrderType.variables
   },
       width: '400px',
+      disableClose: true
+    }).afterClosed().subscribe(() => {
+      this.bindData();
+    });
+  }
+
+   openprintResult(element: any): void {
+    this.dialog.open(PrintResultComponent, {
+      data: {element: element},
+    panelClass: 'cstm_width_1300',
+    maxHeight: '90vh',
       disableClose: true
     }).afterClosed().subscribe(() => {
       this.bindData();

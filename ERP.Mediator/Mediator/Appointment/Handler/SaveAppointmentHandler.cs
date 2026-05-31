@@ -52,12 +52,12 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                 }
 
                 await transaction.CommitAsync(cancellationToken);
-
-                return result;
+                return 200;
             }
             catch
             {
                 await transaction.RollbackAsync(cancellationToken);
+                return 500;
                 throw;
             }
         }

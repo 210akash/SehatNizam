@@ -26,6 +26,7 @@ namespace ERP.BusinessModels.ResponseVM
         public GetProject Project { get; set; }
         public GetPatient Patient { get; set; }
         public GetCreatedBy Doctor { get; set; }
+        public GetCreatedBy CreatedBy { get; set; }
         public GetCreatedBy ConfirmedBy { get; set; }
         public GetDepartment Department { get; set; }
         public GetPriorityLevel PriorityLevel { get; set; }

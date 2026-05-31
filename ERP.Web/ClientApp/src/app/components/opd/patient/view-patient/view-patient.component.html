@@ -1,26 +1,175 @@
-<mat-card>
+<mat-card class="patient-card">
+
+  <!-- HEADER -->
   <mat-card-header>
-    <mat-card-title> View Patient  </mat-card-title>
+    <mat-card-title>Patient Details</mat-card-title>
   </mat-card-header>
+
   <mat-divider></mat-divider>
+
   <mat-card-content>
 
+    <!-- ================= BASIC INFO ================= -->
+    <div class="section-title">Basic Information</div>
+
     <div class="row">
-      <div class="col-md-12">
-        <div class="mb-3">
-          <mat-form-field class="form-field">
-            <mat-label>Name</mat-label>
-            <input matInput  [value]="this.data.element.name" readonly />
-          </mat-form-field>
+
+      <div class="col-md-4">
+        <div class="info-box">
+          <label>Name</label>
+          <div>{{ data.element?.name }}</div>
         </div>
       </div>
+
+      <div class="col-md-4">
+        <div class="info-box">
+          <label>MRN</label>
+          <div>{{ data.element?.mrn }}</div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="info-box">
+          <label>Phone</label>
+          <div>{{ data.element?.phoneNo }}</div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="info-box">
+          <label>CNIC</label>
+          <div>{{ data.element?.cnic }}</div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="info-box">
+          <label>Gender</label>
+          <div>{{ data.element?.gender }}</div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="info-box">
+          <label>Date of Birth</label>
+          <div>{{ data.element?.dateOfBirth | date:'mediumDate' }}</div>
+        </div>
+      </div>
+
     </div>
 
-    <div class="button-container">
-      <button mat-flat-button color="default" [mat-dialog-close]="true">
-        <span class="mat-button-wrapper">Close</span>
+    <!-- ================= LOCATION ================= -->
+    <div class="section-title">Location</div>
+
+    <div class="row">
+
+      <div class="col-md-6">
+        <div class="info-box">
+          <label>City</label>
+          <div>{{ data.element?.city?.name }}</div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="info-box">
+          <label>Address</label>
+          <div>{{ data.element?.address || '-' }}</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ================= PROJECT ================= -->
+    <div class="section-title">Hospital / Building</div>
+
+    <div class="info-box">
+      <label>Project</label>
+      <div>{{ data.element?.project?.name }}</div>
+    </div>
+
+    <!-- ================= APPOINTMENTS ================= -->
+    <div class="section-title mt-3">Appointment History</div>
+
+    <mat-accordion *ngIf="data.element?.patientAppointments?.length > 0; else noAppt">
+
+      <mat-expansion-panel 
+        *ngFor="let appt of data.element?.patientAppointments"
+        class="appointment-panel">
+
+        <!-- HEADER -->
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Token: {{ appt?.tokenNumber }}
+          </mat-panel-title>
+
+          <mat-panel-description>
+            {{ appt?.appointmentDate | date:'mediumDate' }} • 
+            {{ appt?.department?.name || 'No Department' }}
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <!-- BODY -->
+        <div class="row">
+
+          <div class="col-md-4">
+            <div class="info-box">
+              <label>Date</label>
+              <div>{{ appt?.appointmentDate | date:'fullDate' }}</div>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="info-box">
+              <label>Token</label>
+              <div>{{ appt?.tokenNumber }}</div>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="info-box">
+              <label>Department</label>
+              <div>{{ appt?.department?.name || '-' }}</div>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="info-box">
+              <label>Doctor</label>
+              <div>{{ appt?.doctor?.name || 'Not Assigned' }}</div>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="info-box">
+              <label>Status</label>
+              <div>{{ appt?.appointmentStatus?.name || '-' }}</div>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="info-box">
+              <label>Reason</label>
+              <div>{{ appt?.reason || '-' }}</div>
+            </div>
+          </div>
+
+        </div>
+
+      </mat-expansion-panel>
+
+    </mat-accordion>
+
+    <ng-template #noAppt>
+      <p class="text-muted">No appointments found</p>
+    </ng-template>
+
+    <!-- CLOSE BUTTON -->
+    <div class="button-container mt-3">
+      <button mat-flat-button color="primary" [mat-dialog-close]="true">
+        Close
       </button>
     </div>
 
   </mat-card-content>
+
 </mat-card>

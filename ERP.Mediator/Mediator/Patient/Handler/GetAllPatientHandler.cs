@@ -34,12 +34,20 @@ namespace ERP.Mediator.Mediator.Patient.Handler
 
             Expression<Func<Entities.Models.Patient, object>>[] includes = {
                 x => x.CreatedBy,
-                x => x.Project
+                x => x.City,
+                x => x.Project,
+                x => x.PatientAppointments
+            };
+
+            List<string> thenIncludes = new()
+            {
+                "PatientAppointments.Department",
+                "PatientAppointments.Doctor"
             };
 
             Expression<Func<Entities.Models.Patient, object>> OrderBy = null;
             Expression<Func<Entities.Models.Patient, object>> OrderByDesc = x => x.Id;
-            var entity = unitOfWork.Repository<Entities.Models.Patient>().GetPagingWhereAsNoTrackingAsync(predicate, request.PagingData, OrderBy, OrderByDesc, null, includes);
+            var entity = unitOfWork.Repository<Entities.Models.Patient>().GetPagingWhereAsNoTrackingAsync(predicate, request.PagingData, OrderBy, OrderByDesc, thenIncludes, includes);
 
             var Patient = mapper.Map<IEnumerable<GetPatient>>(entity.Item1).ToList();
             return new Tuple<IEnumerable<GetPatient>, long>(Patient, entity.Item2);

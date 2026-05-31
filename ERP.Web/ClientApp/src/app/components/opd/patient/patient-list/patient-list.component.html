@@ -19,15 +19,21 @@
             </ng-container>
 
             <!--Description  Column-->
-            <ng-container matColumnDef="description">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-dark"> Description</th>
-                <td  mat-cell *matCellDef="let element"> {{element.description}} </td>
+            <ng-container matColumnDef="mrn">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-dark"> MRN. No</th>
+                <td  mat-cell *matCellDef="let element"> {{element.mrn}} </td>
             </ng-container>
 
-            <!--Created Date  Column-->
-            <ng-container matColumnDef="createdDate">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-dark"> Created Date</th>
-                <td  mat-cell *matCellDef="let element"> {{element.createdDate | date: 'd MMM y h:mm a'}} </td>
+              <!--Description  Column-->
+            <ng-container matColumnDef="phoneNo">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-dark"> Phone No.</th>
+                <td  mat-cell *matCellDef="let element"> {{element.phoneNo}} </td>
+            </ng-container>
+
+                <!--Description  Column-->
+            <ng-container matColumnDef="project">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-dark"> Building </th>
+                <td  mat-cell *matCellDef="let element"> {{element.project?.name}} </td>
             </ng-container>
 
             <!-- Actions column definition -->

@@ -4,12 +4,12 @@ import { AuthenticationService } from '../../../../Auth/authentication.service';
 import { ConstantService } from '../../../../Service/constant.service';
 
 @Component({
-  selector: 'app-print-appoinment',
-  templateUrl: './print-appoinment.component.html',
-  styleUrls: ['./print-appoinment.component.css'],
+  selector: 'app-print-result',
+  templateUrl: './print-result.component.html',
+  styleUrls: ['./print-result.component.css'],
   standalone: false
 })
-export class PrintAppoinmentComponent {
+export class PrintResultComponent {
   currentUser: any;
   currentDate: any;
   currentTime: any;
@@ -357,7 +357,7 @@ export class PrintAppoinmentComponent {
   constructor(
     private constantService: ConstantService,
     private authenticationService: AuthenticationService,
-    private dialogRef: MatDialogRef<PrintAppoinmentComponent>,
+    private dialogRef: MatDialogRef<PrintResultComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { element: any }
   ) {}
 

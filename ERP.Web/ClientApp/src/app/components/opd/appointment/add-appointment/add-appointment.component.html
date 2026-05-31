@@ -185,7 +185,8 @@
       </section>
 
       <!-- Payment -->
-      <section class="section" formGroupName="appointmentPayment">
+      <section class="section" formArrayName="appointmentPayment">
+        <div [formGroupName]="0" class="grid-3">
         <div class="section-head">
           <mat-icon fontIcon="credit_card" class="icon"></mat-icon>
           <div>
@@ -217,6 +218,7 @@
             </mat-select>
           </mat-form-field>
         </div>
+      </div>
       </section>
  <div class="button-container">
         <button mat-flat-button color="success" type="button" (click)="onSubmit()">

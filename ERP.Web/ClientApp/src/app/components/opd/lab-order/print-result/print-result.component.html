@@ -27,6 +27,7 @@
 
       <div class="top-rule"></div>
 
+      <!-- Patient Summary -->
       <div class="summary-card">
         <div class="patient-summary-grid">
           <div class="summary-pair">
@@ -43,7 +44,7 @@
           </div>
           <div class="summary-pair">
             <span class="summary-head">Date</span>
-            <strong>{{ formatAppointmentDateLong() }} {{formatAppointmentTime()}}</strong>
+            <strong>{{ formatAppointmentDateLong() }} {{ formatAppointmentTime() }}</strong>
           </div>
           <div class="summary-pair">
             <span class="summary-head">Consultant</span>
@@ -60,70 +61,62 @@
             <span class="token-label">Token</span>
             <span class="token-value">{{ data.element?.tokenNumber || '-' }}</span>
           </div>
-          <div class="qr-box" aria-hidden="true">
-            <div class="qr-grid">
-              <span *ngFor="let cell of qrCells" [class.filled]="cell"></span>
-            </div>
-          </div>
         </div>
       </div>
 
-      <div class="section-title">Clinical Findings &amp; Rx</div>
+      <!-- Lab Results Section -->
+      <div class="section-title">Lab Orders & Results</div>
       <div class="section-rule"></div>
 
-      <div class="clinical-board">
-        <div class="vitals-column">
-          <div class="vitals-title">Vitals</div>
-
-          <div class="vital-box">
-            <span class="vital-name">BP (mmHg)</span>
-            <span class="vital-value">{{ getVitalValue('bp') }}</span>
+      <!-- <div class="lab-results-board" *ngIf="data.element?.labOrders?.length > 0 || data.labResult?.length > 0">
+        <div *ngFor="let order of data.element?.labOrders">
+          <div class="lab-order-type">
+            <strong>Lab Order: </strong> {{ order.labOrderType?.name || data.labOrderType?.name }}
           </div>
-
-          <div class="vital-box">
-            <span class="vital-name">Pulse (bpm)</span>
-            <span class="vital-value">{{ getVitalValue('pulse') }}</span>
-          </div>
-
-          <div class="vital-box">
-            <span class="vital-name">Temp (°C)</span>
-            <span class="vital-value">{{ getVitalValue('temperature') }}</span>
-          </div>
-
-          <div class="vital-box">
-            <span class="vital-name">SpO2 (%)</span>
-            <span class="vital-value">{{ getVitalValue('spo2') }}</span>
-          </div>
-
-          <div class="vital-box">
-            <span class="vital-name">Weight (kg)</span>
-            <span class="vital-value">{{ getVitalValue('weight') }}</span>
-          </div>
-
-          <div class="vital-box">
-            <span class="vital-name">Height (cm)</span>
-            <span class="vital-value">{{ getVitalValue('heightCm') }}</span>
-          </div>
-
-          <div class="vital-box">
-            <span class="vital-name">RBS</span>
-            <span class="vital-value">{{ getVitalValue('rbs') }}</span>
-          </div>
+          <table class="lab-result-table">
+            <thead>
+              <tr>
+                <th>Test</th>
+                <th>Result</th>
+                <th>Unit</th>
+                <th>Reference Range</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let result of order.labResult">
+                <td>{{ result.variableName }}</td>
+                <td>{{ result.resultValue }}</td>
+                <td>{{ result.unit }}</td>
+                <td>{{ result.referenceRange }}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
-        <div class="notes-column">
-          <div class="notes-title">Chief Complaint, Examination Notes, Diagnosis &amp; Plan</div>
-          <div class="notes-space">
-            <p *ngIf="getClinicalNarrative()">{{ getClinicalNarrative() }}</p>
+        <div *ngIf="data.labResult?.length > 0 && !data.element?.labOrders?.length">
+          <div class="lab-order-type">
+            <strong>Lab Order: </strong> {{ data.labOrderType?.name }}
           </div>
-
-          <div class="signature-area">
-            <div class="signature-line"></div>
-            <strong>{{ getDoctorName() }}</strong>
-            <span>Signature</span>
-          </div>
+          <table class="lab-result-table">
+            <thead>
+              <tr>
+                <th>Test</th>
+                <th>Result</th>
+                <th>Unit</th>
+                <th>Reference Range</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let result of data.labResult">
+                <td>{{ result.variableName }}</td>
+                <td>{{ result.resultValue }}</td>
+                <td>{{ result.unit }}</td>
+                <td>{{ result.referenceRange }}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-      </div>
+      </div> -->
 
       <div class="footer-rule"></div>
       <div class="slip-footer">

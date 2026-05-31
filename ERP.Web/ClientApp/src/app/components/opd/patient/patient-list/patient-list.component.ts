@@ -17,7 +17,7 @@ export class PatientListComponent implements OnInit {
   dataSource: any;
   patientListFilerForm!: FormGroup;
   isEditMode: boolean = false;
-  displayedColumns: string[] = ['name', 'createdDate', 'actions'];
+  displayedColumns: string[] = ['mrn','name', 'phoneNo', 'project', 'actions'];
   isLoading = false;
   element: any;
   blob: any;

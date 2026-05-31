@@ -21,5 +21,6 @@ namespace ERP.BusinessModels.ResponseVM
         public GetCity City { get; set; }
         public long ProjectId { get; set; }
         public GetProject Project { get; set; }
+        public List<Appointment> PatientAppointments { get; set; }
     }
 }

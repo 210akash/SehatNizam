@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { PrintAppoinmentComponent } from '../print-appoinment/print-appoinment.component';
 import { ConfirmAppointmentComponent } from '../confirm-appointment/confirm-appointment.component';
 import { MatDialog } from '@angular/material/dialog';
+import { PrintReceiptAppoinmentComponent } from '../print-receipt-appoinment/print-receipt-appoinment.component';
 
 @Component({
   selector: 'app-appointment-list',
@@ -137,6 +138,17 @@ export class AppointmentListComponent {
    printAppoinmnetDialog(element: any) {
     const dialogRef = this.dialog.open(PrintAppoinmentComponent, {
       panelClass: 'cstm_width_1100',
+      maxHeight: '90vh',
+      data: {
+        element: element,
+      },
+      disableClose: true
+    });
+  }
+  
+   printrecreiptAppoinmnetDialog(element: any) {
+    const dialogRef = this.dialog.open(PrintReceiptAppoinmentComponent, {
+      panelClass: 'cstm_width_400',
       maxHeight: '90vh',
       data: {
         element: element,

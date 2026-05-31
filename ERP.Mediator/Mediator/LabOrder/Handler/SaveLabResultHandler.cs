@@ -60,6 +60,16 @@ namespace ERP.Mediator.Mediator.LabOrder.Handler
                 unitOfWork.Repository<LabResult>().Add(result);
             }
 
+            var entity = await unitOfWork.Repository<Entities.Models.LabOrder>()
+                   .GetFirstAsync(x => x.Id == request.LabOrderId);
+
+            if (entity == null)
+                return 0;
+
+            entity.StatusId = 3;
+            entity.ModifiedById = sessionProvider.Session.LoggedInUserId;
+            entity.ModifiedDate = DateTime.Now;
+            unitOfWork.Repository<Entities.Models.LabOrder>().Update(entity);
             await unitOfWork.SaveChangesAsync();
             return 200;
         }

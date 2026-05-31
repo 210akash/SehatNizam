@@ -887,6 +887,8 @@ import { DeleteServiceTypeComponent } from './components/opd/service-type/delete
 import { ViewServiceTypeComponent } from './components/opd/service-type/view-service-type/view-service-type.component';
 import { ServiceTypeListComponent } from './components/opd/service-type/service-type-list/service-type-list.component';
 import { SaveLabResultComponent } from './components/opd/lab-order/save-lab-result/save-lab-result.component';
+import { PrintReceiptAppoinmentComponent } from './components/opd/appointment/print-receipt-appoinment/print-receipt-appoinment.component';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 const matFormFieldDefaults: MatFormFieldDefaultOptions = {
     appearance: 'outline'
@@ -1519,7 +1521,8 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         ViewServiceTypeComponent,
         ServiceTypeListComponent,
         ConfirmAppointmentComponent,
-        SaveLabResultComponent
+        SaveLabResultComponent,
+        PrintReceiptAppoinmentComponent
     ],
     bootstrap: [AppComponent], imports: [
         InputMaskModule,
@@ -1571,6 +1574,8 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         NumberToWordsPipe,
         MatChipsModule,
         HasRoleDirective,
+        MatExpansionModule
+
     ],
     providers: [
         provideNativeDateAdapter(),

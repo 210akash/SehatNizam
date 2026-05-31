@@ -37,6 +37,7 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                 x => x.Patient,
                 x => x.Doctor,
                 x => x.Department,
+                x => x.Department.Company,
                 x => x.PriorityLevel,
                 x => x.AppointmentType,
                 x => x.VisitType,
@@ -50,7 +51,7 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                 "AppointmentPayments.PaymentStatus",
             };
 
-            predicate = x => x.IsActive == true && ( request.StatusId == null ||  x.AppointmentStatusId == request.StatusId);
+            predicate = x => x.IsActive == true && x.DoctorId != null && ( request.StatusId == null ||  x.AppointmentStatusId == request.StatusId);
             //// Check if the current user's RoleId array contains the AccountOwnerRoleId
             //if (roles.Contains("Accounts Manager") || roles.Contains("Accounts Assistant"))
             //{
@@ -67,11 +68,9 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
             Expression<Func<Entities.Models.Appointment, object>> OrderBy = null;
             Expression<Func<Entities.Models.Appointment, object>> OrderByDesc = x => x.Id;
             var entity = unitOfWork.Repository<Entities.Models.Appointment>()
-                .GetPagingWhereAsNoTrackingAsync(predicate, request.PagingData, OrderBy, OrderByDesc, null, includes);
+                .GetPagingWhereAsNoTrackingAsync(predicate, request.PagingData, OrderBy, OrderByDesc, thenIncludes, includes);
 
-            var data = (IEnumerable<Entities.Models.Appointment>)entity.Item1;
-
-            var Appointment = mapper.Map<IEnumerable<GetAppointment>>(data).ToList();
+            var Appointment = mapper.Map<IEnumerable<GetAppointment>>(entity.Item1).ToList();
             return new Tuple<IEnumerable<GetAppointment>, long>(Appointment, entity.Item2);
         }
     }

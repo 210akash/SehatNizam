@@ -2,14 +2,15 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AuthenticationService } from '../../../../Auth/authentication.service';
 import { ConstantService } from '../../../../Service/constant.service';
+import { PrintAppoinmentComponent } from '../print-appoinment/print-appoinment.component';
 
 @Component({
-  selector: 'app-print-appoinment',
-  templateUrl: './print-appoinment.component.html',
-  styleUrls: ['./print-appoinment.component.css'],
+  selector: 'app-print-receipt-appoinment',
+  templateUrl: './print-receipt-appoinment.component.html',
+  styleUrls: ['./print-receipt-appoinment.component.css'],
   standalone: false
 })
-export class PrintAppoinmentComponent {
+export class PrintReceiptAppoinmentComponent {
   currentUser: any;
   currentDate: any;
   currentTime: any;
@@ -357,7 +358,7 @@ export class PrintAppoinmentComponent {
   constructor(
     private constantService: ConstantService,
     private authenticationService: AuthenticationService,
-    private dialogRef: MatDialogRef<PrintAppoinmentComponent>,
+    private dialogRef: MatDialogRef<PrintReceiptAppoinmentComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { element: any }
   ) {}
 
@@ -405,6 +406,7 @@ export class PrintAppoinmentComponent {
     this.dialogRef.close(true);
   }
 
+  
   getHospitalName(): string {
     return this.data?.element?.department?.company?.name;
   }

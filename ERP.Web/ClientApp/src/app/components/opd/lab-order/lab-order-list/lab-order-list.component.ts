@@ -14,6 +14,7 @@ import { PrimaryOrderService } from '../../../order/primary-order/order.service'
 import { NotificationsService } from '../../../../Service/notification.service';
 import { SaveLabResultComponent } from '../save-lab-result/save-lab-result.component';
 import { PrintResultComponent } from '../print-result/print-result.component';
+import { ConfirmLabOrderComponent } from '../confirm-lab-order/confirm-lab-order.component';
 
 @Component({
   selector: 'app-lab-order-list',
@@ -210,6 +211,20 @@ export class LabOrderListComponent implements OnInit {
       this.bindData();
     });
   }
+
+  confirmLabOrder(element: any): void {
+    this.dialog.open(ConfirmLabOrderComponent, {
+      data: {element: element},
+    panelClass: 'cstm_width_800',
+    maxHeight: '90vh',
+      disableClose: true
+    }).afterClosed().subscribe(() => {
+      this.bindData();
+    });
+  }
+
+
+  
 
   printReport(element: any): void {
     // Implement print functionality

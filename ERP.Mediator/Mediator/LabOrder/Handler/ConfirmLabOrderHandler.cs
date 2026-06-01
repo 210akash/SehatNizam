@@ -7,9 +7,9 @@ using ERP.Mediator.Mediator.LabOrder.Query;
 using ERP.Repositories.UnitOfWork;
 using MediatR;
 
-namespace ERP.Mediator.Mediator.IGP.Handler
+namespace ERP.Mediator.Mediator.LabOrder.Handler
 {
-    public class ConfirmLabOrderHandler : IRequestHandler<ConfirmLabOrderQuery, bool>
+    public class ConfirmLabOrderHandler : IRequestHandler<ConfirmLabOrderCommand, bool>
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly SessionProvider sessionProvider;
@@ -20,7 +20,7 @@ namespace ERP.Mediator.Mediator.IGP.Handler
             this.sessionProvider = sessionProvider;
         }
 
-        public async Task<bool> Handle(ConfirmLabOrderQuery request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(ConfirmLabOrderCommand request, CancellationToken cancellationToken)
         {
             var LabOrder = await unitOfWork.Repository<Entities.Models.LabOrder>().GetFirstAsNoTrackingAsync(y => y.Id == request.Id,null,null, "LabOrderType,LabOrderType.Service");
             LabOrder.StatusId = 5;

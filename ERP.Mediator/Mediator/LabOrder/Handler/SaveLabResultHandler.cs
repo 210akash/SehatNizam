@@ -66,7 +66,7 @@ namespace ERP.Mediator.Mediator.LabOrder.Handler
             if (entity == null)
                 return 0;
 
-            entity.StatusId = 3;
+            entity.StatusId = 15;
             entity.ModifiedById = sessionProvider.Session.LoggedInUserId;
             entity.ModifiedDate = DateTime.Now;
             unitOfWork.Repository<Entities.Models.LabOrder>().Update(entity);

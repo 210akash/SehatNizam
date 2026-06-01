@@ -36,4 +36,10 @@ export class LabOrderService extends BaseService<any> {
         return await this.post(payload, this.endPointControllerName + this.endPoints.saveLabResult)
             .pipe(map((data: any) => data));
     }
+       
+    async confirmLabOrder(payload: any) {
+        return await this.post(payload, this.endPointControllerName + this.endPoints.confirmLabOrder)
+            .pipe(map((data: any) => data));
+    }
+    
 }

@@ -155,6 +155,9 @@
              <button mat-mini-fab matTooltip="Save Result" color="accent" *ngIf="e.statusId == 5"  (click)="saveResult(e)">
               <i class="fa-solid fa-vial"></i>
             </button>
+              <button mat-mini-fab matTooltip="Confirm" color="accent" *ngIf="e.statusId == 1 || e.statusId == 2"  (click)="confirmLabOrder(e)">
+             <i class="fa-regular fa-circle-check"></i>
+            </button>
           </div>
         </td>
       </ng-container>

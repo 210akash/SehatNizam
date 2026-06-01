@@ -65,17 +65,10 @@
       </div>
 
       <!-- Lab Results Section -->
-      <div class="section-title">Lab Orders & Results</div>
+      <div class="section-title">Lab Orders & Results ( {{ labOrderTitle }})</div>
       <div class="section-rule"></div>
-
       <div class="lab-results-board">
-        <div class="lab-order-meta">
-          <div><strong>Lab Order:</strong> {{ labOrderTitle }}</div>
-          <div><strong>Status:</strong> {{ orderStatus }}</div>
-          <div><strong>Notes:</strong> {{ clinicalNotesText }}</div>
-        </div>
-
-        <div *ngIf="labResults && labResults.length > 0; else noResults">
+        <div >
           <table class="table table-bordered lab-results-table">
             <thead>
               <tr>
@@ -85,14 +78,16 @@
                 <th>Reference Range</th>
               </tr>
             </thead>
-            <tbody>
-              <tr *ngFor="let result of labResults">
-                <td>{{ result.variableName }}</td>
-                <td>{{ result.resultValue }}</td>
-                <td>{{ result.unit }}</td>
-                <td>{{ result.referenceRange }}</td>
-              </tr>
-            </tbody>
+           <tbody >
+ @for (result of labResults; track result.id) {
+  <tr>
+    <td>{{ result.variableName }}</td>
+    <td>{{ result.resultValue }}</td>
+    <td>{{ result.unit }}</td>
+    <td>{{ result.referenceRange }}</td>
+  </tr>
+}
+</tbody>
           </table>
         </div>
 

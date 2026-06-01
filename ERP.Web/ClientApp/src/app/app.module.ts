@@ -889,6 +889,7 @@ import { ServiceTypeListComponent } from './components/opd/service-type/service-
 import { SaveLabResultComponent } from './components/opd/lab-order/save-lab-result/save-lab-result.component';
 import { PrintReceiptAppoinmentComponent } from './components/opd/appointment/print-receipt-appoinment/print-receipt-appoinment.component';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { ConfirmLabOrderComponent } from './components/opd/lab-order/confirm-lab-order/confirm-lab-order.component';
 
 const matFormFieldDefaults: MatFormFieldDefaultOptions = {
     appearance: 'outline'
@@ -1521,7 +1522,8 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         ServiceTypeListComponent,
         ConfirmAppointmentComponent,
         SaveLabResultComponent,
-        PrintReceiptAppoinmentComponent
+        PrintReceiptAppoinmentComponent,
+        ConfirmLabOrderComponent
     ],
     bootstrap: [AppComponent], imports: [
         InputMaskModule,

@@ -27,7 +27,7 @@
 .summary-field {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 1px;
 }
 
 .summary-field:last-child {
@@ -54,3 +54,4 @@
   gap: 8px;
   padding: 12px 0 0;
 }
+

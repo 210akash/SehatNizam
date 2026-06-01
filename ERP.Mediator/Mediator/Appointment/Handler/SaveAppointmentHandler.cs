@@ -29,7 +29,7 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
             return unitOfWork.SaveChanges();
         }
 
-        public async Task<long> Handle(SaveAppointmentCommand request,CancellationToken cancellationToken)
+        public async Task<long> Handle(SaveAppointmentCommand request, CancellationToken cancellationToken)
         {
             using var transaction =
                 await unitOfWork.BeginTransactionAsync();
@@ -62,7 +62,7 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
             }
         }
 
-        private async Task<long> CreateAppointmentAsync(SaveAppointmentCommand request,CancellationToken cancellationToken)
+        private async Task<long> CreateAppointmentAsync(SaveAppointmentCommand request, CancellationToken cancellationToken)
         {
 
             try
@@ -107,7 +107,7 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                 // 3️⃣ PAYMENT
                 // =====================================================
 
-                if (request.AppointmentPayment != null)
+                if (request.AppointmentPayment != null && request.AppointmentStatusId != 1)
                 {
                     foreach (var item in request.AppointmentPayment)
                     {
@@ -213,41 +213,27 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
 
             var project = await unitOfWork.Repository<Entities.Models.Project>()
                 .GetOneAsync(x => x.Id == sessionProvider.Session.SelectedWarehouseId);
-
-            string mrn = await GenerateMrnAsync();
+            string mrn = "";
+            if (request.AppointmentStatusId != 1)
+                mrn = await GenerateMrnAsync();
 
             var patient = new Entities.Models.Patient
             {
                 Name = request.Patient.Name,
-
                 Email = request.Patient.Email,
-
                 PhoneNo = request.Patient.PhoneNo,
-
                 SecondaryPhoneNo = request.Patient.SecondaryPhoneNo,
-
                 Address = request.Patient.Address,
-
                 CNIC = request.Patient.CNIC,
-
                 Gender = request.Patient.Gender,
-
                 Age = request.Patient.Age,
-
                 DateOfBirth = request.Patient.DateOfBirth,
-
                 CityId = request.Patient.CityId,
-
                 ProjectId = sessionProvider.Session.SelectedWarehouseId,
-
                 MRN = mrn,
-
                 CreatedById = sessionProvider.Session.LoggedInUserId,
-
                 CreatedDate = DateTime.Now,
-
                 IsActive = true,
-
                 IsDelete = false
             };
 
@@ -302,6 +288,28 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
 
         private async Task<long> UpdateAppointmentAsync(SaveAppointmentCommand request, CancellationToken cancellationToken)
         {
+            if (request.AppointmentStatusId == 1)
+            {
+                var patient =
+                   await unitOfWork.Repository<Entities.Models.Patient>()
+                   .GetFirstAsync(x => x.Id == request.PatientId);
+
+                if (patient == null)
+                {
+                    return 404;
+                }
+
+                // =========================================
+                // UPDATE APPOINTMENT
+                // =========================================
+
+                patient.MRN = await GenerateMrnAsync();
+                patient.ModifiedById = sessionProvider.Session.LoggedInUserId;
+                patient.ModifiedDate = DateTime.Now;
+
+                unitOfWork.Repository<Entities.Models.Patient>().Update(patient);
+
+            }
             var appointment =
                 await unitOfWork.Repository<Entities.Models.Appointment>()
                 .GetFirstAsync(x => x.Id == request.Id);
@@ -459,7 +467,5 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
 
             return 200;
         }
-
-
     }
 }

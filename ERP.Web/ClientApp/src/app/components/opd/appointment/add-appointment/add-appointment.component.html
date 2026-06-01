@@ -23,13 +23,8 @@
         <div class="grid-2">
           <mat-form-field appearance="outline" class="span-2">
             <mat-label>Search Patient</mat-label>
-            <input
-              matInput
-              [formControl]="patientSearchCtrl"
-              [matAutocomplete]="patientAuto"
-               (input)="onInputCleared($event)"
-                type="search"
-              placeholder="Type name or phone number" />
+            <input matInput [formControl]="patientSearchCtrl" [matAutocomplete]="patientAuto"
+              (input)="onInputCleared($event)" type="search" placeholder="Type name or phone number" />
             <mat-autocomplete #patientAuto="matAutocomplete" [displayWith]="displayPatient"
               (optionSelected)="onPatientSelected($event.option.value)">
               <mat-option *ngFor="let patient of filteredPatients$ | async" [value]="patient">
@@ -42,9 +37,10 @@
         <div class="grid-2">
           <mat-form-field appearance="outline">
             <mat-label>Appointment For</mat-label>
-             <mat-select formControlName="appointmentTypeId">
-                <mat-option *ngFor="let appointmentType of appointmentTypeList" [value]="appointmentType.id">{{ appointmentType.name }}</mat-option>
-             </mat-select>
+            <mat-select formControlName="appointmentTypeId">
+              <mat-option *ngFor="let appointmentType of appointmentTypeList" [value]="appointmentType.id">{{
+                appointmentType.name }}</mat-option>
+            </mat-select>
           </mat-form-field>
         </div>
         <div formGroupName="patient">
@@ -157,7 +153,7 @@
               this.appointmentForm.get('doctor')?.value.firstName + ' ' + this.appointmentForm.get('doctor')?.value.lastName : 'No Doctor Selected'" />
             <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionSelected($event)">
               <mat-option *ngFor="let doctor of doctorList" [value]="doctor">
-              {{ doctor?.hrCode }} :  {{ doctor?.firstName }} {{ doctor?.lastName }} ({{doctor?.designation}})
+                {{ doctor?.hrCode }} : {{ doctor?.firstName }} {{ doctor?.lastName }} ({{doctor?.designation}})
               </mat-option>
             </mat-autocomplete>
           </mat-form-field>
@@ -165,7 +161,8 @@
           <mat-form-field appearance="outline">
             <mat-label>Visit Type</mat-label>
             <mat-select formControlName="visitTypeId">
-              <mat-option *ngFor="let visitType of visitTypesList" [value]="visitType.id">{{ visitType.name }}</mat-option>
+              <mat-option *ngFor="let visitType of visitTypesList" [value]="visitType.id">{{ visitType.name
+                }}</mat-option>
             </mat-select>
           </mat-form-field>
 
@@ -174,53 +171,59 @@
             <input matInput formControlName="reason" placeholder="e.g. Fever, Headache, Checkup" />
           </mat-form-field>
 
-      <div class="span-2">
-        <label class="text-sm label-inline">Appointment Status</label>
-        <mat-radio-group formControlName="appointmentStatusId" class="priority-radio">
-          <mat-radio-button [value]="1">Booked</mat-radio-button>
-          <mat-radio-button [value]="5">Confirm</mat-radio-button>
-        </mat-radio-group>
-      </div>
+          <div class="span-2">
+            <label class="text-sm label-inline">Appointment Status</label>
+            <mat-radio-group formControlName="appointmentStatusId" class="priority-radio">
+              <mat-radio-button [value]="1" [disabled]="true">
+                Booked
+              </mat-radio-button>
+
+              <mat-radio-button [value]="5"  [disabled]="true">
+                Confirm
+              </mat-radio-button>
+            </mat-radio-group>
+          </div>
         </div>
       </section>
 
       <!-- Payment -->
-      <section class="section" formArrayName="appointmentPayment">
+      <section class="section" formArrayName="appointmentPayment" *ngIf="appointmentForm.get('appointmentStatusId')?.value === 5">
         <div [formGroupName]="0" class="grid-3">
-        <div class="section-head">
-          <mat-icon fontIcon="credit_card" class="icon"></mat-icon>
-          <div>
-            <div class="section-title">Payment & Billing</div>
-            <div class="section-sub">Fees, discounts, and status</div>
+          <div class="section-head">
+            <mat-icon fontIcon="credit_card" class="icon"></mat-icon>
+            <div>
+              <div class="section-title">Payment & Billing</div>
+              <div class="section-sub">Fees, discounts, and status</div>
+            </div>
+          </div>
+
+          <div class="grid-3">
+            <mat-form-field appearance="outline">
+              <mat-label>Visit Fee</mat-label>
+              <input matInput type="number" formControlName="visitFee" min="0" step="0.01" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Discount / Insurance</mat-label>
+              <input matInput type="number" formControlName="discount" min="0" step="0.01" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Total Payable</mat-label>
+              <input matInput formControlName="totalPayable" readonly />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Payment Method</mat-label>
+              <mat-select formControlName="paymentModeId">
+                <mat-option *ngFor="let paymentMode of paymentModesList" [value]="paymentMode.id">{{ paymentMode.name
+                  }}</mat-option>
+              </mat-select>
+            </mat-form-field>
           </div>
         </div>
-
-        <div class="grid-3">
-          <mat-form-field appearance="outline">
-            <mat-label>Visit Fee</mat-label>
-            <input matInput type="number" formControlName="visitFee" min="0" step="0.01" />
-          </mat-form-field>
-
-          <mat-form-field appearance="outline">
-            <mat-label>Discount / Insurance</mat-label>
-            <input matInput type="number" formControlName="discount" min="0" step="0.01" />
-          </mat-form-field>
-
-          <mat-form-field appearance="outline">
-            <mat-label>Total Payable</mat-label>
-            <input matInput formControlName="totalPayable" readonly />
-          </mat-form-field>
-
-          <mat-form-field appearance="outline">
-            <mat-label>Payment Method</mat-label>
-            <mat-select formControlName="paymentModeId">
-              <mat-option *ngFor="let paymentMode of paymentModesList" [value]="paymentMode.id">{{ paymentMode.name }}</mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-      </div>
       </section>
- <div class="button-container">
+      <div class="button-container">
         <button mat-flat-button color="success" type="button" (click)="onSubmit()">
           <span class="mat-button-wrapper">Save</span>
         </button>

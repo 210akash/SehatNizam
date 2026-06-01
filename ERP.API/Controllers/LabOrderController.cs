@@ -69,5 +69,24 @@ namespace ERP.API.Controllers
                 return this.Result(ResponseStatus.Error, null, ex.Message);
             }
         }
+
+        [HttpPost]
+        [Route("ConfirmLabOrder")]
+        public async Task<IActionResult> ConfirmLabOrder(ConfirmLabOrderCommand command)
+        {
+            try
+            {
+                var result = await mediator.Send(command);
+
+                if (result)
+                    return this.Result(ResponseStatus.OK, result, "Lab Result Saved!");
+
+                return this.Result(ResponseStatus.Error, "There is some error!", null);
+            }
+            catch (Exception ex)
+            {
+                return this.Result(ResponseStatus.Error, null, ex.Message);
+            }
+        }
     }
 }

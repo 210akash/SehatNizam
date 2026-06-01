@@ -1,7 +1,7 @@
 <div class="card print-dialog">
   <div class="card-header no-print">
     <div class="header-container">
-      <div class="card-title">Patient Encounter Form</div>
+      <div class="card-title">Laboratory Report</div>
       <div class="header-actions">
         <button mat-flat-button color="primary" type="button" class="print-button mr-2" (click)="printDocument()">
           <span class="mat-button-wrapper">Print</span>
@@ -32,11 +32,11 @@
         <div class="patient-summary-grid">
           <div class="summary-pair">
             <span class="summary-head">Patient Name</span>
-            <strong>{{ data.element?.patient?.name || '-' }}</strong>
+            <strong>{{ getPatientName() }}</strong>
           </div>
           <div class="summary-pair">
             <span class="summary-head">MRN</span>
-            <strong>{{ data.element?.patient?.mrn || '-' }}</strong>
+            <strong>{{ getPatientMrn() }}</strong>
           </div>
           <div class="summary-pair">
             <span class="summary-head">Age / Gender</span>
@@ -52,14 +52,14 @@
           </div>
           <div class="summary-pair">
             <span class="summary-head">Department</span>
-            <strong>{{ data.element?.department?.name || '-' }}</strong>
+            <strong>{{ getDepartmentName() }}</strong>
           </div>
         </div>
 
         <div class="summary-side">
           <div class="token-circle">
             <span class="token-label">Token</span>
-            <span class="token-value">{{ data.element?.tokenNumber || '-' }}</span>
+            <span class="token-value">{{ getTokenNumber() }}</span>
           </div>
         </div>
       </div>
@@ -68,12 +68,15 @@
       <div class="section-title">Lab Orders & Results</div>
       <div class="section-rule"></div>
 
-      <!-- <div class="lab-results-board" *ngIf="data.element?.labOrders?.length > 0 || data.labResult?.length > 0">
-        <div *ngFor="let order of data.element?.labOrders">
-          <div class="lab-order-type">
-            <strong>Lab Order: </strong> {{ order.labOrderType?.name || data.labOrderType?.name }}
-          </div>
-          <table class="lab-result-table">
+      <div class="lab-results-board">
+        <div class="lab-order-meta">
+          <div><strong>Lab Order:</strong> {{ labOrderTitle }}</div>
+          <div><strong>Status:</strong> {{ orderStatus }}</div>
+          <div><strong>Notes:</strong> {{ clinicalNotesText }}</div>
+        </div>
+
+        <div *ngIf="labResults && labResults.length > 0; else noResults">
+          <table class="table table-bordered lab-results-table">
             <thead>
               <tr>
                 <th>Test</th>
@@ -83,7 +86,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let result of order.labResult">
+              <tr *ngFor="let result of labResults">
                 <td>{{ result.variableName }}</td>
                 <td>{{ result.resultValue }}</td>
                 <td>{{ result.unit }}</td>
@@ -93,30 +96,10 @@
           </table>
         </div>
 
-        <div *ngIf="data.labResult?.length > 0 && !data.element?.labOrders?.length">
-          <div class="lab-order-type">
-            <strong>Lab Order: </strong> {{ data.labOrderType?.name }}
-          </div>
-          <table class="lab-result-table">
-            <thead>
-              <tr>
-                <th>Test</th>
-                <th>Result</th>
-                <th>Unit</th>
-                <th>Reference Range</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let result of data.labResult">
-                <td>{{ result.variableName }}</td>
-                <td>{{ result.resultValue }}</td>
-                <td>{{ result.unit }}</td>
-                <td>{{ result.referenceRange }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div> -->
+        <ng-template #noResults>
+          <div class="empty-state">No lab results available for this order.</div>
+        </ng-template>
+      </div>
 
       <div class="footer-rule"></div>
       <div class="slip-footer">

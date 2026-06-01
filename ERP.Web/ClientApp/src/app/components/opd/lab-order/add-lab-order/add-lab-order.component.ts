@@ -106,6 +106,7 @@ export class AddLabOrderComponent implements OnInit, OnDestroy {
       appointmentTypeId: [1, Validators.required],
       priorityLevelId: [1, Validators.required],
       visitTypeId: [1],
+      reference: [''],
       doctorId: [null],
       reason: [''],
       confirmationNotes: [''],
@@ -244,8 +245,8 @@ export class AddLabOrderComponent implements OnInit, OnDestroy {
       rate: [{ value: selectedTest.price, disabled: true }],
       discount: [0, [Validators.min(0), discountNotExceedRateValidator()]],
       amount: [{ value: selectedTest.price, disabled: true }],
-      serviceId: [selectedTest.serviceId], 
-      statusId: [5], 
+      serviceId: [selectedTest.serviceId],
+      statusId: [5],
     });
 
     const discountControl = group.get('discount');
@@ -352,6 +353,7 @@ export class AddLabOrderComponent implements OnInit, OnDestroy {
   buildCommand(): any {
     const raw = this.form.getRawValue();
     const globalPayment = raw.appointmentPayment;
+    const reference = raw.reference || '';
 
     // Create one payment per lab test
     const payments = raw.labOrders.map((order: any) => ({
@@ -392,7 +394,8 @@ export class AddLabOrderComponent implements OnInit, OnDestroy {
       appointmentPayment: payments,
       labOrders: raw.labOrders.map((x: any) => ({
         labOrderTypeId: x.labOrderTypeId,
-        clinicalNotes: x.clinicalNotes || ''
+        clinicalNotes: x.clinicalNotes || '',
+        Reference: reference,
       })),
       radiologyOrders: []
     };
@@ -445,6 +448,7 @@ export class AddLabOrderComponent implements OnInit, OnDestroy {
       appointmentTypeId: appointment.appointmentTypeId || 1,
       priorityLevelId: appointment.priorityLevelId || 1,
       visitTypeId: appointment.visitTypeId || 1,
+      reference: appointment.reference || '',
       doctorId: appointment.doctorId || null,
       reason: appointment.reason || '',
       confirmationNotes: appointment.confirmationNotes || '',
@@ -521,5 +525,20 @@ export class AddLabOrderComponent implements OnInit, OnDestroy {
         }));
       }
     });
+  }
+    onCancel(): void {
+    if (this.dialog) {
+      this.dialog.closeAll();
+      this.router.navigate(['/laborder']);
+      return;
+    }
+
+    // When opened as a page, navigate back to the Laborder list.
+    const canGoBack = window.history.length > 1;
+    if (canGoBack) {
+      window.history.back();
+    } else {
+      this.router.navigate(['/laborder']);
+    }
   }
 }

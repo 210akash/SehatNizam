@@ -24,7 +24,7 @@ import { PrintResultComponent } from '../print-result/print-result.component';
 export class LabOrderListComponent implements OnInit {
   dataSource = new MatTableDataSource<any>([]);
   form!: FormGroup;
-  displayedColumns: string[] = ['tokenNumber', 'patientName', 'testName', 'clinicalNotes', 'status', 'appointmentDate', 'actions'];
+  displayedColumns: string[] = ['appointmentDate','tokenNumber', 'patientName', 'testName', 'clinicalNotes','reference', 'status',  'actions'];
   isLoading = false;
   currentPage = 0;
   pageSize = 10;
@@ -169,7 +169,7 @@ export class LabOrderListComponent implements OnInit {
   openView(element: any): void {
     this.dialog.open(ViewLabOrderComponent, {
       data: { element },
-      width: '600px',
+      panelClass: 'cstm_width_900',
       disableClose: true
     });
   }

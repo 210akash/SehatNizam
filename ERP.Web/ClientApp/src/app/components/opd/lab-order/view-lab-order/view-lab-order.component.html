@@ -2,10 +2,13 @@
 <div class="print-container">
   <!-- Buttons - hidden when printing -->
   <div class="no-print button-bar">
-    <button mat-raised-button color="primary" (click)="printDocument()">
-      <mat-icon>print</mat-icon> Print
+     <button mat-raised-button color="primary" *ngIf="this.data.element?.statusId == 1 || this.data.element?.statusId == 2" (click)="confirmLabOrder()">
+      <mat-icon>check_circle</mat-icon> Confirm / Payment Paid
     </button>
-    <button mat-raised-button mat-dialog-close>
+      <button mat-raised-button color="accent" (click)="printDocument()">
+   <mat-icon>print</mat-icon> Print
+ </button>
+    <button mat-raised-button [mat-dialog-close]="true">
       <mat-icon>close</mat-icon> Close
     </button>
   </div>
@@ -90,11 +93,15 @@
             <span class="label">Clinical Notes:</span>
             <span class="value notes">{{ data.element?.clinicalNotes || 'No clinical notes' }}</span>
           </div>
+          <div class="info-row full-width">
+            <span class="label">Reference:</span>
+            <span class="value notes">{{ data.element?.reference || 'No reference provided' }}</span>
+          </div>
         </div>
       </div>
 
       <!-- Appointment Information -->
-      <div class="info-section">
+      <!-- <div class="info-section">
         <div class="section-title">Appointment Information</div>
         <div class="info-grid">
           <div class="info-row">
@@ -126,7 +133,7 @@
             <span class="value">{{ data.element?.appointment?.reason || 'No reason provided' }}</span>
           </div>
         </div>
-      </div>
+      </div> -->
 
       <!-- Token Section -->
       <div class="token-section">

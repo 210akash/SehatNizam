@@ -4,4 +4,6 @@ export class LabOrderEndPoints {
     public readonly saveLabOrder = '/SaveLabOrder';
     public readonly deleteLabOrder = '/DeleteLabOrder';
     public readonly saveLabResult = '/SaveLabResult';
+    public readonly confirmLabOrder = '/ConfirmLabOrder';
+
 }

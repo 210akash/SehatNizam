@@ -95,6 +95,10 @@
               </mat-select>
             </mat-form-field>
             <mat-form-field appearance="outline">
+              <mat-label>Reference</mat-label>
+              <input matInput formControlName="reference" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
               <mat-label>Visit Type</mat-label>
               <mat-select formControlName="visitTypeId">
                 <mat-option *ngFor="let v of visitTypeList" [value]="v.id">{{ v.name }}</mat-option>
@@ -129,7 +133,7 @@
               <thead>
                 <tr>
                   <th width="25%">Test</th>
-                  <th width="20%">Clinical Notes</th>
+                  <th width="25%">Clinical Notes</th>
                   <th width="10%">Rate</th>
                   <th width="20%">Discount</th>
                   <th width="10%">Amount</th>
@@ -167,7 +171,9 @@
         <button mat-flat-button color="primary" type="button" [disabled]="isSubmitting" (click)="onSubmit()">
           {{ isSubmitting ? 'Saving...' : 'Save Lab Order' }}
         </button>
-        <button mat-stroked-button type="button" [mat-dialog-close]="true">Cancel</button>
+      <button mat-flat-button color="default" [mat-dialog-close]="true" (click)="onCancel()">
+          <span class="mat-button-wrapper">Close</span>
+        </button>
       </div>
     </mat-card-content>
   </mat-card>

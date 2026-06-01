@@ -11,6 +11,9 @@ import { ConstantService } from '../../../../Service/constant.service';
   standalone: false
 })
 export class ViewLabOrderComponent implements OnInit {
+confirmLabOrder() {
+throw new Error('Method not implemented.');
+}
   form!: FormGroup;
   currentDate: Date = new Date();
 
@@ -40,8 +43,7 @@ export class ViewLabOrderComponent implements OnInit {
     };
     return statusMap[statusId] || '-';
   }
-
-  printDocument(): void {
+    printDocument(): void {
     const printContent = document.getElementById('printDoc');
     if (printContent) {
       const originalContents = document.body.innerHTML;
@@ -50,7 +52,6 @@ export class ViewLabOrderComponent implements OnInit {
       document.body.innerHTML = printHTML;
       window.print();
       document.body.innerHTML = originalContents;
-      window.location.reload();
     }
   }
 }

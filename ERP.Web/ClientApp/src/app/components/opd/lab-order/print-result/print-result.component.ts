@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AuthenticationService } from '../../../../Auth/authentication.service';
 import { ConstantService } from '../../../../Service/constant.service';
@@ -9,28 +9,21 @@ import { ConstantService } from '../../../../Service/constant.service';
   styleUrls: ['./print-result.component.css'],
   standalone: false
 })
-export class PrintResultComponent {
+export class PrintResultComponent implements OnInit {
   currentUser: any;
   currentDate: any;
   currentTime: any;
-  qrCells: boolean[] = [
-    true, true, true, false, true, false, true, true, true,
-    true, false, true, true, false, true, true, false, true,
-    true, true, true, false, true, false, true, true, true,
-    false, true, false, true, false, true, false, true, false,
-    true, false, true, true, false, true, true, false, true,
-    false, true, false, true, true, false, true, false, true,
-    true, true, true, false, true, false, true, true, true,
-    true, false, true, true, false, true, true, false, true,
-    true, true, true, false, true, false, true, true, true
-  ];
+  labResults: any[] = [];
+  labOrderTitle: string = 'Lab Order';
+  orderStatus: string = 'Pending';
+  clinicalNotesText: string = '-';
 
   private readonly printStyles = `
     <style>
       body {
         margin: 0;
         font-family: Arial, Helvetica, sans-serif;
-        color: #3a3a3a;
+        color: #232323;
         background: #ffffff;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
@@ -42,25 +35,36 @@ export class PrintResultComponent {
         box-sizing: border-box;
       }
 
-      .slip-sheet {
+      .report-sheet {
         width: 100%;
-        padding: 0;
-        color: #404040;
+        max-width: 210mm;
+        margin: 0 auto;
+        padding: 18mm;
+        background: #ffffff;
+        color: #232323;
       }
 
-      .slip-top {
+      .report-header {
         display: flex;
-        justify-content: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 18px;
+        align-items: flex-start;
+      }
+
+      .report-title-group {
+        display: flex;
         align-items: center;
-        gap: 16px;
+        gap: 14px;
       }
 
       .hospital-mark {
         position: relative;
-        width: 36px;
-        height: 36px;
-        border: 2px solid #3e3e3e;
-        border-radius: 8px;
+        width: 46px;
+        height: 46px;
+        border: 2px solid #1f2937;
+        border-radius: 12px;
+        flex-shrink: 0;
       }
 
       .hospital-mark::before,
@@ -69,287 +73,193 @@ export class PrintResultComponent {
       .mark-cross::after {
         content: "";
         position: absolute;
-        background: #3e3e3e;
+        background: #1f2937;
       }
 
       .hospital-mark::before {
-        width: 18px;
+        width: 22px;
         height: 3px;
-        top: 16px;
-        left: 7px;
+        top: 21px;
+        left: 11px;
       }
 
       .hospital-mark::after {
         width: 3px;
-        height: 18px;
-        top: 7px;
-        left: 16px;
+        height: 22px;
+        top: 11px;
+        left: 21px;
       }
 
       .mark-cross::before {
-        width: 6px;
+        width: 7px;
         height: 2px;
-        top: -5px;
-        right: -3px;
+        top: -6px;
+        right: -4px;
       }
 
       .mark-cross::after {
         width: 2px;
-        height: 6px;
-        top: -7px;
-        right: -1px;
+        height: 7px;
+        top: -8px;
+        right: -2px;
       }
 
-      .hospital-copy {
-        text-align: center;
+      .report-pill {
+        display: inline-block;
+        padding: 6px 12px;
+        margin-bottom: 8px;
+        border-radius: 999px;
+        background: #e5e7eb;
+        color: #111827;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
       }
 
-      .hospital-copy h1 {
+      .report-title-group h1 {
         margin: 0;
-        font-size: 18px;
+        font-size: 1.25rem;
         font-weight: 800;
-        letter-spacing: 0.02em;
+        letter-spacing: 0.01em;
       }
 
-      .hospital-copy p {
-        margin: 4px 0 0;
-        font-size: 10px;
-        color: #7a7a7a;
+      .report-title-group p {
+        margin: 8px 0 0;
+        font-size: 0.86rem;
+        color: #4b5563;
+        line-height: 1.5;
       }
 
-      .top-rule,
-      .section-rule,
-      .footer-rule {
-        border-top: 2px solid #202020;
-      }
-
-      .top-rule {
-        margin: 12px 0 18px;
-      }
-
-      .summary-card {
-        display: flex;
-        justify-content: space-between;
-        gap: 18px;
-        padding: 10px 12px;
-        border: 1px solid #d4d4d4;
-        border-radius: 8px;
-      }
-
-      .patient-summary-grid {
-        flex: 1;
+      .report-meta {
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 12px 26px;
-      }
-
-      .summary-pair {
-        display: flex;
-        flex-direction: column;
-        gap: 3px;
-      }
-
-      .summary-head {
-        font-size: 9px;
-        font-weight: 700;
-        text-transform: uppercase;
-        color: #7b7b7b;
-      }
-
-      .summary-pair strong {
-        font-size: 13px;
-        line-height: 1.2;
-        color: #2f2f2f;
-      }
-
-      .summary-side {
-        display: flex;
-        align-items: center;
+        grid-template-columns: repeat(3, minmax(120px, 1fr));
         gap: 10px;
-      }
-
-      .token-circle {
-        width: 58px;
-        height: 58px;
-        border: 2px solid #202020;
-        border-radius: 50%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-      }
-
-      .token-label {
-        font-size: 6px;
-        font-weight: 700;
-        text-transform: uppercase;
-        line-height: 1;
-      }
-
-      .token-value {
-        font-size: 24px;
-        font-weight: 800;
-        line-height: 1;
-        margin-top: 2px;
-      }
-
-      .qr-box {
-        width: 78px;
-        height: 78px;
-        border: 1px solid #d4d4d4;
-        padding: 4px;
-        background: #fff;
-      }
-
-      .qr-grid {
-        display: grid;
-        grid-template-columns: repeat(9, 1fr);
-        gap: 2px;
         width: 100%;
-        height: 100%;
       }
 
-      .qr-grid span {
-        background: transparent;
+      .meta-item {
+        padding: 10px 12px;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        background: #fafafa;
       }
 
-      .qr-grid span.filled {
-        background: #111;
+      .meta-label {
+        display: block;
+        font-size: 0.68rem;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .meta-value {
+        display: block;
+        margin-top: 6px;
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #111827;
       }
 
       .section-title {
-        margin: 18px 0 8px;
-        font-size: 15px;
+        margin: 24px 0 8px;
+        font-size: 1rem;
         font-weight: 700;
+        border-bottom: 1px solid #d1d5db;
+        padding-bottom: 8px;
       }
 
-      .section-rule {
-        margin-bottom: 16px;
-        border-top-width: 1px;
-        border-top-color: #d9d9d9;
-      }
-
-      .clinical-board {
+      .details-grid {
         display: grid;
-        grid-template-columns: 124px 1fr;
-        min-height: 580px;
-        border: 1px solid #d8d8d8;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
       }
 
-      .vitals-column {
-        padding: 10px;
-        border-right: 1px solid #d8d8d8;
+      .detail-card {
+        padding: 14px 16px;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        background: #fafafa;
       }
 
-      .vitals-title {
-        margin-bottom: 12px;
-        text-align: center;
-        font-size: 12px;
-        font-weight: 800;
+      .detail-label {
+        display: block;
+        font-size: 0.7rem;
+        color: #6b7280;
         text-transform: uppercase;
-      }
-
-      .vital-box {
-        min-height: 58px;
-        margin-bottom: 10px;
-        border: 1px solid #dddddd;
-        border-radius: 4px;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-      }
-
-      .vital-name {
-        padding: 9px 6px;
-        text-align: center;
-        font-size: 11px;
-        font-weight: 800;
-        border-bottom: 1px solid #e4e4e4;
-      }
-
-      .vital-value {
-        flex: 1;
-        padding: 8px 6px;
-        text-align: center;
-        font-size: 12px;
-        color: #4b4b4b;
-      }
-
-      .notes-column {
-        position: relative;
-        padding: 10px 12px 18px;
-      }
-
-      .notes-title {
-        font-size: 11px;
-        font-weight: 700;
-        text-transform: uppercase;
-        color: #b7b7b7;
-      }
-
-      .notes-space {
-        min-height: 485px;
-        padding-top: 10px;
-        font-size: 11px;
-        line-height: 1.5;
-        white-space: pre-wrap;
-      }
-
-      .notes-space p {
-        margin: 0;
-      }
-
-      .signature-area {
-        position: absolute;
-        right: 16px;
-        bottom: 16px;
-        width: 172px;
-        text-align: center;
-      }
-
-      .signature-line {
-        border-top: 1px solid #202020;
+        letter-spacing: 0.08em;
         margin-bottom: 6px;
       }
 
-      .signature-area strong {
+      .detail-value {
         display: block;
-        font-size: 13px;
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #111827;
       }
 
-      .signature-area span {
-        font-size: 9px;
+      .result-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 12px;
+        font-size: 0.92rem;
+      }
+
+      .result-table th,
+      .result-table td {
+        padding: 12px 14px;
+        border: 1px solid #e5e7eb;
+        text-align: left;
+        vertical-align: middle;
+      }
+
+      .result-table th {
+        background: #f3f4f6;
+        color: #374151;
+        font-size: 0.78rem;
         font-weight: 700;
         text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+
+      .result-table tbody tr:nth-child(even) {
+        background: #f9fafb;
+      }
+
+      .empty-state {
+        padding: 18px 0;
+        color: #6b7280;
+        font-size: 0.96rem;
       }
 
       .footer-rule {
-        margin-top: 16px;
-        border-top-width: 1px;
-        border-top-color: #e1e1e1;
+        margin: 20px 0 0;
+        border-top: 1px solid #d1d5db;
       }
 
-      .slip-footer {
-        padding-top: 6px;
-        text-align: center;
-      }
-
-      .footer-warning {
-        font-size: 8px;
-        font-weight: 700;
-        color: #333;
-      }
-
-      .footer-meta {
-        margin-top: 6px;
-        font-size: 7px;
-        color: #666;
+      .report-footer {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+        margin-top: 12px;
+        font-size: 0.82rem;
+        color: #6b7280;
       }
 
       @page {
         size: A4;
-        margin: 10mm;
+        margin: 12mm;
+      }
+
+      @media print {
+        body {
+          background: #ffffff;
+        }
+
+        .no-print {
+          display: none !important;
+        }
       }
     </style>
   `;
@@ -358,13 +268,23 @@ export class PrintResultComponent {
     private constantService: ConstantService,
     private authenticationService: AuthenticationService,
     private dialogRef: MatDialogRef<PrintResultComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { element: any }
+    @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
 
   ngOnInit(): void {
     this.currentUser = this.authenticationService.currentUserValue;
     this.currentDate = this.constantService.convertDate(new Date());
     this.currentTime = this.constantService.convertTime(new Date().getTime());
+    this.initializeReport();
+    console.log('Received data for printing:', this.data);
+    console.log('Resolved lab results:', this.labResults);
+  }
+
+  private initializeReport(): void {
+    this.labResults = this.getLabResults();
+    this.labOrderTitle = this.getLabOrderTitle();
+    this.orderStatus = this.getOrderStatus();
+    this.clinicalNotesText = this.getClinicalNotes();
   }
 
   printDocument(): void {
@@ -384,7 +304,7 @@ export class PrintResultComponent {
       <!doctype html>
       <html>
         <head>
-          <title>Patient Encounter Form</title>
+          <title>Laboratory Report</title>
           ${this.printStyles}
         </head>
         <body>
@@ -405,12 +325,32 @@ export class PrintResultComponent {
     this.dialogRef.close(true);
   }
 
+  private getSource(): any {
+    // Support both direct lab order or wrapped in element property
+    return this.data?.element || this.data || {};
+  }
+
+  private getAppointment(): any {
+    const source = this.getSource();
+    return source?.appointment || source?.patient?.patientAppointments?.[0] || {};
+  }
+
+  private getPatient(): any {
+    const source = this.getSource();
+    return source?.patient || this.getAppointment()?.patient || source || {};
+  }
+
   getHospitalName(): string {
-    return this.data?.element?.department?.company?.name;
+    const source = this.getSource();
+    return source?.department?.company?.name
+      || this.getAppointment()?.department?.company?.name
+      || 'Sehat Nizam Diagnostic Center';
   }
 
   getHospitalSubtitle(): string {
-    const company = this.data?.element?.department?.company;
+    const company = this.getSource()?.department?.company
+      || this.getAppointment()?.department?.company
+      || {};
     const parts = [
       company?.address,
       company?.phoneNo || company?.phone || company?.mobileNo,
@@ -423,7 +363,7 @@ export class PrintResultComponent {
   }
 
   formatAppointmentDate(): string {
-    return this.formatDate(this.data?.element?.appointmentDate, {
+    return this.formatDate(this.getAppointment()?.appointmentDate, {
       day: '2-digit',
       month: 'short',
       year: 'numeric'
@@ -431,7 +371,7 @@ export class PrintResultComponent {
   }
 
   formatAppointmentTime(): string {
-    return this.formatDate(this.data?.element?.appointmentDate, {
+    return this.formatDate(this.getAppointment()?.appointmentDate, {
       hour: '2-digit',
       minute: '2-digit',
       hour12: true
@@ -439,7 +379,7 @@ export class PrintResultComponent {
   }
 
   formatAppointmentDateTime(): string {
-    return this.formatDate(this.data?.element?.appointmentDate, {
+    return this.formatDate(this.getAppointment()?.appointmentDate, {
       day: '2-digit',
       month: 'short',
       year: 'numeric',
@@ -450,23 +390,16 @@ export class PrintResultComponent {
   }
 
   formatAppointmentDateLong(): string {
-    return this.formatDate(this.data?.element?.appointmentDate, {
+    return this.formatDate(this.getAppointment()?.appointmentDate, {
       day: '2-digit',
       month: 'short',
       year: 'numeric'
     });
   }
 
-  formatCurrency(value: number): string {
-    return Number(value || 0).toLocaleString(undefined, {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    });
-  }
-
   getPatientAgeGender(): string {
-    const patient = this.data?.element?.patient;
-    if (!patient) {
+    const patient = this.getPatient();
+    if (!patient || Object.keys(patient).length === 0) {
       return '-';
     }
 
@@ -475,8 +408,25 @@ export class PrintResultComponent {
     return `${age} / ${gender}`;
   }
 
+  getPatientDob(): string {
+    return this.formatDate(this.getPatient()?.dateOfBirth, {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    });
+  }
+
+  getPatientPhone(): string {
+    const patient = this.getPatient();
+    return patient?.phoneNo || patient?.secondaryPhoneNo || '-';
+  }
+
+  getPatientAddress(): string {
+    return this.getPatient()?.address || '-';
+  }
+
   getDoctorName(): string {
-    const doctor = this.data?.element?.doctor;
+    const doctor = this.getSource()?.doctor || this.getAppointment()?.doctor;
     if (!doctor) {
       return '-';
     }
@@ -485,10 +435,67 @@ export class PrintResultComponent {
     return fullName || doctor.name || doctor.doctorName || '-';
   }
 
-  getAppointmentStatus(): string {
-    return this.data?.element?.appointmentStatus?.name
-      || this.data?.element?.status?.name
-      || this.data?.element?.status
+  getOrderStatus(): string {
+    const source = this.getSource();
+    return source?.status?.title
+      || source?.status?.name
+      || source?.appointmentStatus?.name
+      || this.getAppointment()?.appointmentStatus?.name
+      || source?.status
+      || 'Pending';
+  }
+
+  getOrderDate(): string {
+    return this.formatDate(this.getAppointment()?.appointmentDate, {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    });
+  }
+
+  getOrderTime(): string {
+    return this.formatDate(this.getAppointment()?.appointmentDate, {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
+  }
+
+  getTokenNumber(): string {
+    const source = this.getSource();
+    return source?.tokenNumber
+      || this.getAppointment()?.tokenNumber
+      || '-';
+  }
+
+  getLabOrderTitle(): string {
+    const source = this.getSource();
+    return source?.labOrderType?.name || 'Lab Order';
+  }
+
+  getLabResults(): any[] {
+    const source = this.getSource();
+    // CRITICAL FIX: Use 'labResult' (singular) not 'labResults' (plural)
+    return source?.labResult || [];
+  }
+
+  getClinicalNotes(): string {
+    const source = this.getSource();
+    return source?.clinicalNotes || '-';
+  }
+
+  getPatientName(): string {
+    return this.getPatient()?.name || '-';
+  }
+
+  getPatientMrn(): string {
+    return this.getPatient()?.mrn || '-';
+  }
+
+  getDepartmentName(): string {
+    const source = this.getSource();
+    return source?.department?.name
+      || this.getAppointment()?.department?.name
       || '-';
   }
 
@@ -519,7 +526,7 @@ export class PrintResultComponent {
   }
 
   getClinicalNarrative(): string {
-    const element = this.data?.element;
+    const element = this.getSource();
     const parts = [
       element?.chiefComplaint,
       element?.assessment,
@@ -533,9 +540,10 @@ export class PrintResultComponent {
   }
 
   getVitalValue(key: string): string {
-    const triage = this.data?.element?.triage
-      || this.data?.element?.latestTriage
-      || this.data?.element?.triageDetail
+    const source = this.getSource();
+    const triage = source?.triage
+      || source?.latestTriage
+      || source?.triageDetail
       || {};
 
     switch (key) {
@@ -562,7 +570,7 @@ export class PrintResultComponent {
   }
 
   private getPayment(): any {
-    const element = this.data?.element;
+    const element = this.getSource();
     return element?.appointmentPayments?.find((item: any) => item.appointmentId === element?.id)
       || element?.appointmentPayments?.[0]
       || element?.appointmentPayment

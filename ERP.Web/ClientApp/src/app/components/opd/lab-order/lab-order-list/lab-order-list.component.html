@@ -114,6 +114,13 @@
           <span class="notes-text">{{ e.clinicalNotes || '-' }}</span>
         </td>
       </ng-container>
+        <!-- Reference Column --> 
+      <ng-container matColumnDef="reference">
+        <th mat-header-cell *matHeaderCellDef>Reference</th>
+        <td mat-cell *matCellDef="let e">
+          <span class="notes-text">{{ e.reference || '-' }}</span>
+        </td>
+      </ng-container>
 
       <!-- Status Column -->
       <ng-container matColumnDef="status">
@@ -142,13 +149,9 @@
             <button mat-mini-fab matTooltip="Delete" color="warn" *ngIf="e.statusId == 1" (click)="openDelete(e)">
               <mat-icon>delete</mat-icon>
             </button>
-             <button mat-mini-fab matTooltip="Save Result" color="accent" (click)="saveResult(e)">
-              <mat-icon>visibility</mat-icon>
-            <button mat-mini-fab matTooltip="Print Report" color="accent" *ngIf="e.statusId == 15" (click)="printReport(e)">
+            <button mat-mini-fab matTooltip="Print Report" color="accent" *ngIf="e.statusId == 15" (click)="openprintResult(e)">
               <mat-icon>print</mat-icon>
             </button>
-               <button mat-mini-fab matTooltip="Save Result" color="accent" (click)="openprintResult(e)">
-              <mat-icon>visibility</mat-icon>
              <button mat-mini-fab matTooltip="Save Result" color="accent" *ngIf="e.statusId == 5"  (click)="saveResult(e)">
               <i class="fa-solid fa-vial"></i>
             </button>

@@ -80,37 +80,21 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                 var appointment = new Entities.Models.Appointment
                 {
                     AppointmentDate = request.AppointmentDate,
-
                     TokenNumber = await GenerateAppointmentCodeAsync(),
-
                     ProjectId = sessionProvider.Session.SelectedWarehouseId,
-
                     DepartmentId = request.DepartmentId,
-
                     AppointmentTypeId = request.AppointmentTypeId,
-
                     PriorityLevelId = request.PriorityLevelId,
-
                     VisitTypeId = request.VisitTypeId,
-
                     PatientId = patientId,
-
                     DoctorId = request.DoctorId,
-
                     Reason = request.Reason,
-
                     ConfirmationNotes = request.ConfirmationNotes,
-
                     ConfirmedDate = request.ConfirmedDate,
-
                     AppointmentStatusId = request.AppointmentStatusId,
-
                     CreatedById = sessionProvider.Session.LoggedInUserId,
-
                     CreatedDate = DateTime.Now,
-
                     IsActive = true,
-
                     IsDelete = false
                 };
 
@@ -159,19 +143,13 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                         var labOrder = new Entities.Models.LabOrder
                         {
                             AppointmentId = appointment.Id,
-
                             LabOrderTypeId = item.LabOrderTypeId,
-
                             ClinicalNotes = item.ClinicalNotes,
-
                             StatusId = 5,
-
+                            Reference = item.Reference,
                             CreatedById = sessionProvider.Session.LoggedInUserId,
-
                             CreatedDate = DateTime.Now,
-
                             IsActive = true,
-
                             IsDelete = false
                         };
 
@@ -191,19 +169,12 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                         var radiologyOrder = new Entities.Models.RadiologyOrder
                         {
                             AppointmentId = appointment.Id,
-
                             RadiologyTypeId = item.RadiologyTypeId,
-
                             ClinicalNotes = item.ClinicalNotes,
-
                             StatusId = 1,
-
                             CreatedById = sessionProvider.Session.LoggedInUserId,
-
                             CreatedDate = DateTime.Now,
-
                             IsActive = true,
-
                             IsDelete = false
                         };
 

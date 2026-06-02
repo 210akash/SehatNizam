@@ -130,8 +130,10 @@ export class AppointmentListComponent {
   }
 
   openAppointmentDialog(element: any) {
-    // Open the appointment form as a full page instead of a dialog.
-    const navigationExtras = element ? { state: { element } } : undefined;
+    const navigationExtras = {
+      queryParams: { appointmentStatusId: 5 },
+      state: element ? { element } : {}
+    };
     this.router.navigate(['/newappointment'], navigationExtras);
   }
 

@@ -49,28 +49,28 @@ export class AppointmentService extends BaseService<any> {
             .pipe(map((data: any) => data));
     }
 
-     getAppointmentByToken(token: string,statusId : any) {
-        return this.get('?token=' +  token +'&statusId=' +  statusId, this.endPointControllerName + this.AppointmentEndPoints.getAppointmentByToken)
+    getAppointmentByToken(token: string, statusId: any) {
+        return this.get('?token=' + token + '&statusId=' + statusId, this.endPointControllerName + this.AppointmentEndPoints.getAppointmentByToken)
             .pipe(map((data: any) => data));
     }
 
 
-        getAllAppointmentStatus() {
+    getAllAppointmentStatus() {
         return this.get(this.endPointControllerName + this.AppointmentEndPoints.getAllAppointmentStatus)
             .pipe(map((data: any) => data));
     }
 
-       saveConsultation(saveConsultationCommand: any) {
+    saveConsultation(saveConsultationCommand: any) {
         return this.post(saveConsultationCommand, this.endPointControllerName + this.AppointmentEndPoints.saveConsultation)
             .pipe(map((data: any) => data));
     }
 
-    confirmAppointment(id: number) {
-        return this.get('?id=' + id, this.endPointControllerName + this.AppointmentEndPoints.confirmAppointment)
+    confirmAppointment(saveConsultationCommand: any) {
+        return this.post(saveConsultationCommand, this.endPointControllerName + this.AppointmentEndPoints.confirmAppointment)
             .pipe(map((data: any) => data));
     }
 
-      cancelAppoinment(id: number) {
+    cancelAppoinment(id: number) {
         return this.get('?id=' + id, this.endPointControllerName + this.AppointmentEndPoints.cancelAppoinment)
             .pipe(map((data: any) => data));
     }

@@ -3,6 +3,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AuthenticationService } from '../../../../Auth/authentication.service';
 import { ConstantService } from '../../../../Service/constant.service';
 import { PrintAppoinmentComponent } from '../print-appoinment/print-appoinment.component';
+import QRCode from 'qrcode';
 
 @Component({
   selector: 'app-print-receipt-appoinment',
@@ -14,6 +15,7 @@ export class PrintReceiptAppoinmentComponent {
   currentUser: any;
   currentDate: any;
   currentTime: any;
+  qrCodeUrl = '';
   qrCells: boolean[] = [
     true, true, true, false, true, false, true, true, true,
     true, false, true, true, false, true, true, false, true,
@@ -170,8 +172,8 @@ export class PrintReceiptAppoinmentComponent {
       }
 
       .token-circle {
-        width: 58px;
-        height: 58px;
+        width: 64px;
+        height: 64px;
         border: 2px solid #202020;
         border-radius: 50%;
         display: flex;
@@ -179,20 +181,27 @@ export class PrintReceiptAppoinmentComponent {
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
+        overflow: hidden;
+        padding: 3px;
+        text-align: center;
       }
 
       .token-label {
-        font-size: 6px;
+        font-size: 5px;
         font-weight: 700;
         text-transform: uppercase;
         line-height: 1;
       }
 
       .token-value {
-        font-size: 24px;
+        font-size: 14px;
         font-weight: 800;
         line-height: 1;
-        margin-top: 2px;
+        margin-top: 0;
+        max-width: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: clip;
       }
 
       .qr-box {
@@ -201,6 +210,17 @@ export class PrintReceiptAppoinmentComponent {
         border: 1px solid #d4d4d4;
         padding: 4px;
         background: #fff;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .qr-image {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
       }
 
       .qr-grid {
@@ -366,6 +386,16 @@ export class PrintReceiptAppoinmentComponent {
     this.currentUser = this.authenticationService.currentUserValue;
     this.currentDate = this.constantService.convertDate(new Date());
     this.currentTime = this.constantService.convertTime(new Date().getTime());
+    const appointmentId = this.data?.element?.id ?? '';
+    void this.generateQrCode(`appointmentId:${appointmentId}`);
+  }
+
+  private async generateQrCode(value: string): Promise<void> {
+    this.qrCodeUrl = await QRCode.toDataURL(value, {
+      width: 160,
+      margin: 1,
+      errorCorrectionLevel: 'M'
+    });
   }
 
   printDocument(): void {

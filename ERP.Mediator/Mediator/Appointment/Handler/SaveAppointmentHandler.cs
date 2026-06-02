@@ -107,7 +107,7 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                 // 3️⃣ PAYMENT
                 // =====================================================
 
-                if (request.AppointmentPayment != null && request.AppointmentStatusId != 1)
+                if (request.AppointmentPayment != null)
                 {
                     foreach (var item in request.AppointmentPayment)
                     {

@@ -249,6 +249,7 @@ const routes: Routes = [
       { path: 'retailorderreturn', component: RetailOrderReturnTabComponent, canActivate: [AuthGuard], data: { roles: ["retailer,admin"] } },
       { path: 'appointment', component: AppointmentListComponent, canActivate: [AuthGuard] },
       { path: 'newappointment', component: AddAppointmentComponent, canActivate: [AuthGuard] },
+      { path: 'bookappointment', component: AddAppointmentComponent, canActivate: [AuthGuard] },
       { path: 'appointmenttype', component: AppointmentTypeListComponent, canActivate: [AuthGuard] },
       { path: 'patient', component: PatientListComponent, canActivate: [AuthGuard] },
       { path: 'doctor', component: DoctorListComponent, canActivate: [AuthGuard] },

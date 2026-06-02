@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ERP.Core.Provider;
+using ERP.Entities.Migrations;
+using ERP.Entities.Models;
 using ERP.Mediator.Mediator.Appointment.Query;
 using ERP.Repositories.UnitOfWork;
 using MediatR;
@@ -39,14 +42,32 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                 unitOfWork.Repository<Entities.Models.Appointment>().Update(updateAppointment);
 
                 // Update related AppointmentPayments
+                var patient = unitOfWork.Repository<Entities.Models.Patient>()
+                    .Find(x => x.Id == appointment.PatientId);
+                if (patient != null && string.IsNullOrEmpty(patient.MRN))
+                {
+                    var mrn = await GenerateMrnAsync();
+                    patient.MRN = mrn; // Set status to 3
+                    patient.ModifiedById = sessionProvider.Session.LoggedInUserId;
+                    patient.ModifiedDate = DateTime.Now;
+                    unitOfWork.Repository<Entities.Models.Patient>().Update(patient);
+                }
+
+                // Update related AppointmentPayments
                 var payment = unitOfWork.Repository<Entities.Models.AppointmentPayment>()
                     .Find(x => x.AppointmentId == appointment.Id);
-
-                payment.PaymentStatusId = 3; // Set status to 3
-                payment.ModifiedById = sessionProvider.Session.LoggedInUserId;
-                payment.ModifiedDate = DateTime.Now;
-                unitOfWork.Repository<Entities.Models.AppointmentPayment>().Update(payment);
+                if(payment != null)
+                {
+                    payment.Discount = request.Discount; // Set status to 3
+                    payment.TotalPayable = payment.VisitFee - request.Discount; // Set status to 3
+                    payment.PaymentStatusId = 3; // Set status to 3
+                    payment.ModifiedById = sessionProvider.Session.LoggedInUserId;
+                    payment.ModifiedDate = DateTime.Now;
+                    unitOfWork.Repository<Entities.Models.AppointmentPayment>().Update(payment);
+                }
+               
                 check = await unitOfWork.SaveChangesAsync();
+
             }
 
             if (check > 0)
@@ -57,6 +78,24 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
             {
                 return new Tuple<long, string>(500, "Error Confirming, Please contact system admin!");
             }
+        }
+
+        private async Task<string> GenerateMrnAsync()
+        {
+            var lastPatient = await unitOfWork.Repository<Entities.Models.Patient>()
+                .GetOneAsync(
+                    x => !string.IsNullOrEmpty(x.MRN),
+                    q => q.OrderByDescending(x => x.Id));
+
+            int next = 1;
+
+            if (lastPatient != null &&
+                int.TryParse(lastPatient.MRN, out int lastNo))
+            {
+                next = lastNo + 1;
+            }
+
+            return next.ToString("D6");
         }
     }
 }

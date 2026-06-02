@@ -40,6 +40,36 @@
       </div>
     </div>
   </div>
+    <form [formGroup]="form" class="modern-form mt-3">
+    <div class="row">
+       <div class="col-md-4">
+    <mat-form-field appearance="outline">
+      <mat-label>Payment Mode</mat-label>
+      <mat-select formControlName="paymentModeId">
+        <mat-option *ngFor="let p of paymentModesList" [value]="p.id">{{ p.name }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    </div>
+    <div class="col-md-3">
+      <mat-form-field appearance="outline">
+      <mat-label>Rate</mat-label>
+          <input type="number" matInput class="form-control" formControlName="basePrice" readonly />
+    </mat-form-field>
+    </div>
+    <div class="col-md-2">
+     <mat-form-field appearance="outline">
+      <mat-label>Discount</mat-label>
+          <input type="number" matInput class="form-control" formControlName="discount" min="0" [max]="this.form.get('basePrice')?.value" (keyup)="calculateTotalPayable()" />
+    </mat-form-field>
+    </div>
+     <div class="col-md-3">
+     <mat-form-field appearance="outline">
+      <mat-label>Payable Amount</mat-label>
+          <input type="number" matInput class="form-control" formControlName="payable" />
+    </mat-form-field>
+    </div>
+    </div>
+  </form>
 </mat-dialog-content>
 
 <mat-dialog-actions class="dialog-actions">

@@ -12,6 +12,7 @@ import { PaymentModeService } from '../../../paymentmode/paymentmode.service';
 import { PriorityLevelService } from '../../prioritylevel/prioritylevel.service';
 import { PrimaryOrderService } from '../../../order/primary-order/order.service';
 import { Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { PatientService } from '../../patient/patient.service';
 import { Observable, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, finalize, map, startWith, switchMap } from 'rxjs/operators';
@@ -30,6 +31,7 @@ type Option<T = any> = { id: T; label: string };
 })
 export class AddAppointmentComponent implements OnInit {
   appointmentForm!: FormGroup;
+  private initialNavigationState: { element?: any; appointmentStatusId?: number } = {};
   isSubmitting = false;
   successMessage = '';
   errorMessage = '';
@@ -73,11 +75,26 @@ export class AddAppointmentComponent implements OnInit {
     private patientService: PatientService,
     private doctorService: DoctorService,
     private router: Router,
+    private activatedRoute: ActivatedRoute,
     private serviceService: ServiceService,
-    @Optional() @Inject(MAT_DIALOG_DATA) public data: { element: any } | null
+    @Optional() @Inject(MAT_DIALOG_DATA) public data: { element: any, appointmentStatusId : number} | null
   ) { }
 
+  private getRouteState(): { element?: any; appointmentStatusId?: number } {
+    const queryStatusId = Number(this.activatedRoute.snapshot.queryParamMap.get('appointmentStatusId'));
+    return {
+      ...(history.state ?? {}),
+      ...(this.router.getCurrentNavigation()?.extras?.state ?? {}),
+      ...(this.data ?? {}),
+      element: this.data?.element ?? this.router.getCurrentNavigation()?.extras?.state?.['element'] ?? history.state?.element,
+      appointmentStatusId: Number.isFinite(queryStatusId) && queryStatusId > 0
+        ? queryStatusId
+        : (history.state?.appointmentStatusId ?? this.data?.appointmentStatusId)
+    };
+  }
+
   ngOnInit(): void {
+    this.initialNavigationState = this.getRouteState();
     this.loadDepartments();
     this.getCityList();
     this.getAppointmentTypeList();
@@ -91,6 +108,7 @@ export class AddAppointmentComponent implements OnInit {
     this.setupCalculations();
     this.setupPatientAutocomplete();
     this.setupAppointmentStatusWatcher();
+    console.log(this.initialNavigationState.appointmentStatusId);
   }
 
   private buildForm(): void {
@@ -110,7 +128,7 @@ export class AddAppointmentComponent implements OnInit {
       reason: ['', Validators.required],
       confirmationNotes: [''],
       confirmedDate: [null],
-      appointmentStatusId: [1, Validators.required],
+      appointmentStatusId: [this.initialNavigationState.appointmentStatusId ?? 1, Validators.required],
       patient: this.fb.group({
         name: ['', Validators.required],
         phoneNo: ['', Validators.required],
@@ -144,7 +162,7 @@ private createPaymentForm(): FormGroup {
     paymentModeId: [1, Validators.required],
     serviceId: [null, Validators.required],
     paymentDate: [this.minDate, Validators.required],
-    paymentStatusId: [0, Validators.required]
+    paymentStatusId: [this.initialNavigationState.appointmentStatusId == 1 ? 1 : this.initialNavigationState.appointmentStatusId == 5 ? 3 : 1 , Validators.required]
   });
 }
 
@@ -179,8 +197,15 @@ private createPaymentForm(): FormGroup {
   }
 
   private patchEditData(): void {
-    const element = this.data?.element ?? history.state?.element;
+    const state = this.initialNavigationState.element || this.initialNavigationState.appointmentStatusId
+      ? this.initialNavigationState
+      : this.getRouteState();
+    const element = state.element;
+    const appointmentStatusId = state.appointmentStatusId;
     if (!element) {
+      if (appointmentStatusId != null) {
+        this.appointmentForm.patchValue({ appointmentStatusId });
+      }
       return;
     }
 
@@ -196,6 +221,7 @@ private createPaymentForm(): FormGroup {
 
     this.appointmentForm.patchValue({
       ...element,
+      appointmentStatusId: appointmentStatusId ?? element.appointmentStatusId ?? 1,
       appointmentDate: this.toInputDate(element.appointmentDate),
       appointmentTime: this.toInputTime(element.appointmentDate),
       doctor: doctorObj,
@@ -558,12 +584,12 @@ const discount = Number(this.paymentGroup.get('discount')?.value) || 0;
   async getDoctorList(event: any) {
     var filter = event.currentTarget.value;
     var departmentId = this.appointmentForm.get('departmentId')?.value;
-    if (departmentId == 0 || departmentId == null) {
-      this.appointmentForm.get('doctorId')?.patchValue(0);
-      this.appointmentForm.get('doctorName')?.patchValue('');
-      this.appointmentForm.get('doctor')?.patchValue('');
-      this.notifications.showNotification('Please Select Department', 'snack-bar-danger');
-    }
+    // if (departmentId == 0 || departmentId == null) {
+    //   this.appointmentForm.get('doctorId')?.patchValue(0);
+    //   this.appointmentForm.get('doctorName')?.patchValue('');
+    //   this.appointmentForm.get('doctor')?.patchValue('');
+    //   this.notifications.showNotification('Please Select Department', 'snack-bar-danger');
+    // }
     var getDoctorFilter = {
       name: filter,
       departmentId: departmentId
@@ -588,6 +614,7 @@ const discount = Number(this.paymentGroup.get('discount')?.value) || 0;
     }
 
     // Patch the values into the form group
+    this.appointmentForm.get('departmentId')?.patchValue(selectedValue.departmentId);
     this.appointmentForm.get('doctorId')?.patchValue(selectedValue.id);
     this.appointmentForm.get('doctorName')?.patchValue(this.formatDoctorDisplay(selectedValue));
     this.appointmentForm.get('doctor')?.patchValue(selectedValue);
@@ -607,6 +634,7 @@ this.paymentGroup.get('visitFee')?.disable({ emitEvent: false });
   onDoctorInputCleared(event: Event): void {
     const inputValue = (event.target as HTMLInputElement)?.value;
     if (!inputValue.trim()) {
+    this.appointmentForm.get('departmentId')?.patchValue(0);
       this.appointmentForm.get('doctorId')?.patchValue(0);
       this.appointmentForm.get('doctorName')?.patchValue('');
       this.appointmentForm.get('doctor')?.patchValue('');

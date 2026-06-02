@@ -149,13 +149,13 @@ namespace ERP.API.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("ConfirmAppointment")]
-        public async Task<ActionResult<Tuple<long, string>>> ConfirmAppointment(long id)
+        public async Task<ActionResult<Tuple<long, string>>> ConfirmAppointment(ConfirmAppoinmentQuery confirmAppoinmentQuery)
         {
             try
             {
-                return await this.mediator.Send(new ConfirmAppoinmentQuery(id));
+                return await this.mediator.Send(confirmAppoinmentQuery);
             }
             catch (Exception ex)
             {

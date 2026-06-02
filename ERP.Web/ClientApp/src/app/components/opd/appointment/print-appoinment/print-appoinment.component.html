@@ -61,9 +61,12 @@
             <span class="token-value">{{ data.element?.tokenNumber || '-' }}</span>
           </div>
           <div class="qr-box" aria-hidden="true">
-            <div class="qr-grid">
-              <span *ngFor="let cell of qrCells" [class.filled]="cell"></span>
-            </div>
+            <img *ngIf="qrCodeUrl; else qrFallback" [src]="qrCodeUrl" alt="" class="qr-image" />
+            <ng-template #qrFallback>
+              <div class="qr-grid">
+                <span *ngFor="let cell of qrCells" [class.filled]="cell"></span>
+              </div>
+            </ng-template>
           </div>
         </div>
       </div>

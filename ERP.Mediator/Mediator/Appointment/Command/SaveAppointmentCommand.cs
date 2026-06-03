@@ -43,6 +43,7 @@ namespace ERP.Mediator.Mediator.Appointment.Command
         public DateTime? ConfirmedDate { get; set; }
 
         public long AppointmentStatusId { get; set; }
+        public long? ReferrerId { get; set; }
 
         // -----------------------------------
         // PATIENT
@@ -167,16 +168,4 @@ namespace ERP.Mediator.Mediator.Appointment.Command
 
         public DateTime? TakenAt { get; set; }
     }
-
-    public class SaveAppointmentAttachmentCommand
-    {
-        public long Id { get; set; }
-
-        public long AppointmentId { get; set; }
-        public long PatientId { get; set; }
-
-        public string Attachment { get; set; }
-    }
-
-
 }

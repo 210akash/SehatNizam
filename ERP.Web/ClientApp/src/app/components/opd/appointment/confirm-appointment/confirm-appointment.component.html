@@ -1,10 +1,20 @@
+<mat-card>
+    <mat-card-header>
 <div mat-dialog-title class="dialog-title">
   <mat-icon fontIcon="event_note" class="title-icon"></mat-icon>
   Confirm Appointment
 </div>
+</mat-card-header>
 
 <mat-dialog-content>
   <div class="info-card">
+      <!-- Token Section -->
+      <div class="token-section">
+        <div class="token-box">
+          <span class="token-label">TOKEN NUMBER</span>
+          <span class="token-number">{{ this.data?.element?.tokenNumber || '-' }}</span>
+        </div>
+      </div>
     <div class="appointment-summary">
       <div class="summary-field">
         <span class="summary-label">Patient Name</span>
@@ -38,7 +48,7 @@
         <span class="summary-label">Reason</span>
         <span class="summary-value">{{ getReason() }}</span>
       </div>
-    </div>
+    </div>Confirm Appointment
   </div>
     <form [formGroup]="form" class="modern-form mt-3">
     <div class="row">
@@ -72,7 +82,7 @@
   </form>
 </mat-dialog-content>
 
-<mat-dialog-actions class="dialog-actions">
+<div class="button-container mb-2">
   <button mat-flat-button color="default" mat-dialog-close>
     <span>Close</span>
   </button>
@@ -92,4 +102,5 @@
     <span *ngIf="!isSubmitting">Cancel</span>
     <span *ngIf="isSubmitting">Canceling...</span>
   </button>
-</mat-dialog-actions>
+</div>
+</mat-card>

@@ -21,19 +21,25 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
         public async Task<Tuple<long, string>> Handle(CancelAppoinmentQuery request, CancellationToken cancellationToken)
         {
             int check = 0;
-            var Dispatch = await unitOfWork
+            var Appointment = await unitOfWork
                 .Repository<Entities.Models.Appointment>()
                 .GetFirstAsync(
                   y => y.Id == request.Id && y.AppointmentStatusId == 1,
                     null, null, null);
                 
-            if (Dispatch != null)
+            if (Appointment != null)
             {
-                var updateDispatch = unitOfWork.Repository<Entities.Models.Appointment>().GetFirst(y => y.Id == Dispatch.Id);
+                var updateDispatch = unitOfWork.Repository<Entities.Models.Appointment>().GetFirst(y => y.Id == Appointment.Id);
                 updateDispatch.AppointmentStatusId = 20;
                 updateDispatch.ModifiedById = sessionProvider.Session.LoggedInUserId;
                 updateDispatch.ModifiedDate = DateTime.Now;
                 unitOfWork.Repository<Entities.Models.Appointment>().Update(updateDispatch);
+
+                var payment = unitOfWork.Repository<Entities.Models.AppointmentPayment>().GetFirst(y => y.AppointmentId == Appointment.Id);
+                payment.PaymentStatusId = 5;
+                payment.ModifiedById = sessionProvider.Session.LoggedInUserId;
+                payment.ModifiedDate = DateTime.Now;
+                unitOfWork.Repository<Entities.Models.AppointmentPayment>().Update(payment);
                 check = await unitOfWork.SaveChangesAsync();
             }
 

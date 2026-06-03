@@ -54,3 +54,34 @@
   gap: 8px;
   padding: 12px 0 0;
 }
+
+
+/* Token Section */
+.token-section {
+  display: flex;
+  justify-content: center;
+  margin: 30px 0;
+}
+
+.token-box {
+  text-align: center;
+  border: 2px solid #2c3e50;
+  padding: 15px 30px;
+  background: #f8f9fa;
+}
+
+.token-label {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: #7f8c8d;
+  text-transform: uppercase;
+}
+
+.token-number {
+  display: block;
+  font-size: 32px;
+  font-weight: bold;
+  font-family: 'Courier New', monospace;
+  color: #2c3e50;
+}

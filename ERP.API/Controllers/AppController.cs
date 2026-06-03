@@ -1,38 +1,40 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
-using System;
-using MediatR;
-using ERP.BusinessModels.ResponseVM;
-using ERP.BusinessModels.Enums;
+﻿using AutoMapper;
 using ERP.API.Extensions;
-using System.Collections.Generic;
-using ERP.Mediator.Mediator.App.Query;
-using ERP.Mediator.Mediator.App.Command;
-using ERP.Entities.Models;
-using ERP.Repositories.UnitOfWork;
-using AutoMapper;
-using System.Linq.Expressions;
-using System.Linq;
-using ERP.BusinessModels.ResponseVM.AppVM;
-using System.Text.Json;
+using ERP.BusinessModels.Enums;
 using ERP.BusinessModels.ParameterVM;
-using Microsoft.EntityFrameworkCore;
-using System.Globalization;
-using Microsoft.Extensions.Configuration;
-using System.Data.SqlClient;
+using ERP.BusinessModels.ResponseVM;
+using ERP.BusinessModels.ResponseVM.AppVM;
+using ERP.Entities.Models;
+using ERP.Mediator.Mediator.App.Command;
+using ERP.Mediator.Mediator.App.Query;
+using ERP.Mediator.Mediator.Appointment.Command;
+using ERP.Mediator.Mediator.Appointment.Query;
+using ERP.Mediator.Mediator.Shop.Query;
+using ERP.Mediator.Mediator.ShopDispatch.Command;
+using ERP.Mediator.Mediator.ShopDispatch.Query;
+using ERP.Mediator.Mediator.ShopOrder.Command;
+using ERP.Mediator.Mediator.ShopOrder.Query;
+using ERP.Repositories.UnitOfWork;
 using ERP.Services.Interfaces;
-using System.IO;
-using System.Drawing.Imaging;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Drawing.Processing;
+using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
-using SixLabors.ImageSharp.Formats.Jpeg;
-using SixLabors.ImageSharp.Drawing.Processing;
-using ERP.Mediator.Mediator.ShopOrder.Query;
-using ERP.Mediator.Mediator.ShopOrder.Command;
-using ERP.Mediator.Mediator.Shop.Query;
-using ERP.Mediator.Mediator.ShopDispatch.Query;
-using ERP.Mediator.Mediator.ShopDispatch.Command;
+using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Drawing.Imaging;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace ERP.API.Controllers
 {
@@ -6502,5 +6504,56 @@ namespace ERP.API.Controllers
         }
 
         #endregion
+
+        #region Appoinment
+
+        [HttpGet]
+        [Route("GetAppoinmentById")]
+        public async Task<ActionResult<GetAppointment>> GetAppoinmentById(long id)
+        {
+            try
+            {
+                return await this.mediator.Send(new GetAppoinmentByIdQuery(id));
+            }
+            catch (Exception ex)
+            {
+                return this.Result(ResponseStatus.Error, null, ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [Route("SaveAppointmentAttachment")]
+        public async Task<ActionResult<bool>> SaveAppointmentAttachment(SaveAppointmentAttachmentCommand command)
+        {
+            try
+            {
+                // Validate model state
+                if (!ModelState.IsValid)
+                {
+                    var validationErrors = this.GetModelValidationErrors(this.ModelState);
+                    return this.Result(ResponseStatus.Error, null, validationErrors);
+                }
+
+                // Validate token
+                if (!IsValidToken(Request.Headers.Authorization))
+                {
+                    return this.Result(ResponseStatus.InvalidToken, null, "Authentication Failed");
+                }
+
+                // Handle the command
+                var result = await this.mediator.Send(command);
+                // Return the result
+                return result == 200 ? this.Result(ResponseStatus.OK, true, "Appointment Attachment Saved Successfully") :
+                                this.Result(ResponseStatus.Error, null, "Failed to Save Appointment Attachment");
+            }
+            catch (Exception ex)
+            {
+                // Log the exception for debugging purposes
+                return this.Result(ResponseStatus.Error, null, "An error occurred while processing your request");
+            }
+        }
+
+        #endregion
+
     }
 }

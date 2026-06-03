@@ -20,6 +20,7 @@ namespace ERP.Entities.Models
         public string ConfirmationNotes { get; set; }
         public DateTime? ConfirmedDate { get; set; }
         public long AppointmentStatusId { get; set; }
+        public long? ReferrerId { get; set; }
 
         // navigation
         public Project Project { get; set; }
@@ -31,6 +32,7 @@ namespace ERP.Entities.Models
         public AppointmentType AppointmentType { get; set; }
         public VisitType VisitType { get; set; }
         public AppointmentStatus AppointmentStatus { get; set; }
+        public Referrer Referrer { get; set; }
         public ICollection<Triage> Triages { get; set; } = new List<Triage>();
         public ICollection<Consultation> Consultations { get; set; } = new List<Consultation>();
         public ICollection<PatientProblem> Problems { get; set; } = new List<PatientProblem>();

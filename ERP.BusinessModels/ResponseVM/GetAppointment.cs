@@ -21,6 +21,7 @@ namespace ERP.BusinessModels.ResponseVM
         public string ConfirmationNotes { get; set; }
         public DateTime? ConfirmedDate { get; set; }
         public long AppointmentStatusId { get; set; }
+        public long? ReferrerId { get; set; }
 
         // navigation
         public GetProject Project { get; set; }
@@ -33,6 +34,7 @@ namespace ERP.BusinessModels.ResponseVM
         public GetAppointmentType AppointmentType { get; set; }
         public GetVisitType VisitType { get; set; }
         public GetAppointmentStatus AppointmentStatus { get; set; }
+        public GetReferrer Referrer { get; set; }
         public List<GetTriage> Triages { get; set; }
         public List<GetConsultation> Consultations { get; set; }
         public List<GetPatientProblem> Problems { get; set; }

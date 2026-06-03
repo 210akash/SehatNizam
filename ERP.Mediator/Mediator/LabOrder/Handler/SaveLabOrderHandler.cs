@@ -32,7 +32,6 @@ namespace ERP.Mediator.Mediator.LabOrder.Handler
                     AppointmentId = request.AppointmentId,
                     LabOrderTypeId = request.LabOrderTypeId,
                     StatusId = request.StatusId,
-                    Reference = appoinment.Doctor != null ? appoinment.Doctor.FirstName + " " + appoinment.Doctor.LastName : request.Reference,
                     ClinicalNotes = request.ClinicalNotes,
                     CreatedById = sessionProvider.Session.LoggedInUserId,
                     CreatedDate = DateTime.Now
@@ -53,7 +52,6 @@ namespace ERP.Mediator.Mediator.LabOrder.Handler
                 entity.AppointmentId = request.AppointmentId;
                 entity.LabOrderTypeId = request.LabOrderTypeId;
                 entity.StatusId = request.StatusId;
-                entity.Reference = appoinment.Doctor != null ? appoinment.Doctor.FirstName + " " + appoinment.Doctor.LastName : request.Reference;
                 entity.ClinicalNotes = request.ClinicalNotes;
                 entity.ModifiedById = sessionProvider.Session.LoggedInUserId;
                 entity.ModifiedDate = DateTime.Now;

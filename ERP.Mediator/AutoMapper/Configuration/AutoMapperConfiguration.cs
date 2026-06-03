@@ -69,6 +69,7 @@
     using ERP.Mediator.Mediator.Rack.Command;
     using ERP.Mediator.Mediator.RadiologyOrder.Command;
     using ERP.Mediator.Mediator.RadiologyType.Command;
+    using ERP.Mediator.Mediator.Referrer.Command;
     using ERP.Mediator.Mediator.Region.Command;
     using ERP.Mediator.Mediator.RejectReason.Command;
     using ERP.Mediator.Mediator.RetailOrder.Command;
@@ -671,6 +672,10 @@
             CreateMap<ServiceType, SaveServiceTypeCommand>().ReverseMap();
             CreateMap<ServiceType, GetServiceType>().ReverseMap();
             CreateMap<LabResult, GetLabResult>().ReverseMap();
+            CreateMap<Triage, GetTriage>().ReverseMap();
+            CreateMap<AppointmentAttachment, GetAppointmentAttachment>().ReverseMap();
+            CreateMap<Referrer, SaveReferrerCommand>().ReverseMap();
+            CreateMap<Referrer, GetReferrer>().ReverseMap();
             //this.CreateMap<PayrollDetail, GetPayrollDetail>().ReverseMap();
 
         }

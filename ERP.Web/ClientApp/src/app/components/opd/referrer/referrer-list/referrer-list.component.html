@@ -1,0 +1,153 @@
+<div class="header-container">
+  <h2>Referrer</h2>
+  <button mat-mini-fab aria-label="Add" color="success" (click)="openReferrerDialog(null)" matTooltip="Add Referre">
+    <mat-icon>add</mat-icon>
+  </button>
+</div>
+<div class="body-container">
+        <div class="filter-section" [formGroup]="form">
+  <div class="row">
+    <div class="col-4">
+      <mat-form-field class="filter-field">
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name" placeholder="Search by Name" (keyup)="filterData()" />
+      </mat-form-field>
+      </div>
+    <div class="col-4">
+        <mat-form-field class="filter-field">
+        <mat-label>Hospital</mat-label>
+        <input matInput formControlName="hospital" placeholder="Search by Hospital" (keyup)="filterData()" />
+      </mat-form-field>
+            </div>
+               <div class="col-4">
+        <mat-form-field class="filter-field">
+        <mat-label>Phone #</mat-label>
+        <input matInput formControlName="phoneNo" placeholder="Search by Phone #" (keyup)="filterData()" />
+      </mat-form-field>
+      </div>
+    </div>
+    </div>
+
+  <div class="mat-elevation-z8 table-responsive mt-2">
+
+    <table mat-table [dataSource]="dataSource" matSort>
+
+      <!-- Columns -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
+        <td mat-cell *matCellDef="let element"> {{ element.name }} </td>
+      </ng-container>
+
+         <ng-container matColumnDef="hospital">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Hospital </th>
+        <td mat-cell *matCellDef="let element"> {{ element.hospital }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="createdBy">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Created By </th>
+        <td mat-cell *matCellDef="let element"> {{ element.createdBy?.firstName + ' ' + element.createdBy?.lastName }} </td>
+      </ng-container>
+
+      <!-- Actions column definition -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef style="width: 11%;"> Actions </th>
+        <td mat-cell *matCellDef="let element">
+          <div class="action_btns">
+          <button mat-mini-fab matTooltip="Edit" color="primary" (click)="openReferrerDialog(element)">
+            <mat-icon aria-label="Edit" >edit</mat-icon>
+          </button>
+
+          <button mat-mini-fab matTooltip="View" color="dark" (click)="viewReferrerDialog(element)">
+            <mat-icon aria-label="View" >visibility</mat-icon>
+          </button>
+
+          <button mat-mini-fab matTooltip="Delete" color="warn" (click)="deleteReferrerDialog(element)">
+            <mat-icon aria-label="Delete" >delete</mat-icon>
+          </button>
+        </div>
+        </td>
+      </ng-container>
+
+      <!-- Table rows -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <mat-divider></mat-divider>
+    <!-- Paginator -->
+    <mat-paginator #paginator [length]="totalRows" [pageIndex]="currentPage" [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions" (page)="pageChanged($event)" aria-label="Select page">
+    </mat-paginator>
+
+  </div>
+</div>
+<!-- 
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Referrer</mat-card-title>
+    <span style="flex:1 1 auto"></span>
+    <button mat-flat-button color="primary" (click)="openReferrerDialog(null)">Add</button>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="filter-section">
+      <mat-form-field class="filter-field">
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name" placeholder="Search by Name" (keyup)="filterData()" />
+      </mat-form-field>
+        <mat-form-field class="filter-field">
+        <mat-label>Hospital</mat-label>
+        <input matInput formControlName="hospital" placeholder="Search by Hospital" (keyup)="filterData()" />
+      </mat-form-field>
+        <mat-form-field class="filter-field">
+        <mat-label>Phone #</mat-label>
+        <input matInput formControlName="phoneNo" placeholder="Search by Phone #" (keyup)="filterData()" />
+      </mat-form-field>
+    </div>
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z2">
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Name</th>
+        <td mat-cell *matCellDef="let e">{{ e.name }}</td>
+      </ng-container>
+
+       <ng-container matColumnDef="hospital">
+        <th mat-header-cell *matHeaderCellDef>Hospital/th>
+        <td mat-cell *matCellDef="let e">{{ e.hospital }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="isActive">
+        <th mat-header-cell *matHeaderCellDef>Active</th>
+        <td mat-cell *matCellDef="let e">
+          <span [class]="e.isActive ? 'badge badge-success' : 'badge badge-danger'">
+            {{ e.isActive ? 'Active' : 'Inactive' }}
+          </span>
+        </td>
+      </ng-container>
+
+     <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef style="width: 11%;"> Actions </th>
+        <td mat-cell *matCellDef="let element">
+          <div class="action_btns">
+          <button mat-mini-fab matTooltip="Edit" color="primary" (click)="openReferrerDialog(element)">
+            <mat-icon aria-label="Edit" >edit</mat-icon>
+          </button>
+
+          <button mat-mini-fab matTooltip="View" color="dark" (click)="viewReferrerDialog(element)">
+            <mat-icon aria-label="View" >visibility</mat-icon>
+          </button>
+
+          <button mat-mini-fab matTooltip="Delete" color="warn" (click)="deleteReferrerDialog(element)">
+            <mat-icon aria-label="Delete" >delete</mat-icon>
+          </button>
+        </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+     </table>
+
+     <div *ngIf="dataSource.length === 0" class="text-center py-4">
+       <p>No Referrers found.</p>
+     </div>
+  </mat-card-content>
+</mat-card> -->

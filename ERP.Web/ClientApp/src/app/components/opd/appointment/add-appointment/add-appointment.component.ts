@@ -20,6 +20,7 @@ import { EmployeeService } from '../../../hr/employee/employee.service';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { DoctorService } from '../../doctor/doctor.service';
 import { ServiceService } from '../../service/service.service';
+import { ReferrerService } from '../../referrer/referrer.service';
 
 type Option<T = any> = { id: T; label: string };
 
@@ -52,6 +53,7 @@ export class AddAppointmentComponent implements OnInit {
   filteredPatients$!: Observable<any[]>;
   patientLoading = false;
   doctorList: any;
+  referrerList : any[] = [];
   doctors: Array<{ id: string; name: string; departmentId?: number }> = [
     { id: '408C1D72-07FD-4E9A-A54C-D1AD4112F875', name: 'Dr. Sarah Khan', departmentId: 1 },
     { id: '408C1D72-07FD-4E9A-A54C-D1AD4112F875', name: 'Dr. Ahmed Raza', departmentId: 2 },
@@ -77,7 +79,8 @@ export class AddAppointmentComponent implements OnInit {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private serviceService: ServiceService,
-    @Optional() @Inject(MAT_DIALOG_DATA) public data: { element: any, appointmentStatusId : number} | null
+    private referrerService: ReferrerService,
+    @Optional() @Inject(MAT_DIALOG_DATA) public data: { element: any, appointmentStatusId: number } | null
   ) { }
 
   private getRouteState(): { element?: any; appointmentStatusId?: number } {
@@ -120,6 +123,9 @@ export class AddAppointmentComponent implements OnInit {
       appointmentTypeId: [1],
       priorityLevelId: [1, Validators.required],
       departmentId: [null, Validators.required],
+      referrerId: [null],
+      referrerName: [''],
+      referrer: [''],
       patientId: [null],
       doctorName: [''],
       doctor: [''],
@@ -143,28 +149,28 @@ export class AddAppointmentComponent implements OnInit {
         projectId: [0, Validators.required]
       }),
       appointmentPayment: this.fb.array([
-  this.createPaymentForm()
-])
+        this.createPaymentForm()
+      ])
     });
   }
 
-private get paymentGroup(): FormGroup {
-  return (this.appointmentForm.get('appointmentPayment') as FormArray).at(0) as FormGroup;
-}
+  private get paymentGroup(): FormGroup {
+    return (this.appointmentForm.get('appointmentPayment') as FormArray).at(0) as FormGroup;
+  }
 
-private createPaymentForm(): FormGroup {
-  return this.fb.group({
-    id: [0],
-    appointmentId: [0],
-    visitFee: [0, Validators.min(0)],
-    discount: [0, Validators.min(0)],
-    totalPayable: [{ value: 0, disabled: true }],
-    paymentModeId: [1, Validators.required],
-    serviceId: [null, Validators.required],
-    paymentDate: [this.minDate, Validators.required],
-    paymentStatusId: [this.initialNavigationState.appointmentStatusId == 1 ? 1 : this.initialNavigationState.appointmentStatusId == 5 ? 3 : 1 , Validators.required]
-  });
-}
+  private createPaymentForm(): FormGroup {
+    return this.fb.group({
+      id: [0],
+      appointmentId: [0],
+      visitFee: [0, Validators.min(0)],
+      discount: [0, Validators.min(0)],
+      totalPayable: [{ value: 0, disabled: true }],
+      paymentModeId: [5, Validators.required],
+      serviceId: [null, Validators.required],
+      paymentDate: [this.minDate, Validators.required],
+      paymentStatusId: [this.initialNavigationState.appointmentStatusId == 1 ? 1 : this.initialNavigationState.appointmentStatusId == 5 ? 3 : 1, Validators.required]
+    });
+  }
 
   private setupCalculations(): void {
     const patientGroup = this.appointmentForm.get('patient') as FormGroup;
@@ -255,18 +261,18 @@ private createPaymentForm(): FormGroup {
     this.updateTotalPayable();
   }
 
-private setupAppointmentStatusWatcher(): void {
-  this.appointmentForm.get('appointmentStatusId')?.valueChanges.subscribe((statusId: number) => {
-    const paymentGroup = this.appointmentForm.get('appointmentPayment') as FormGroup;
+  private setupAppointmentStatusWatcher(): void {
+    this.appointmentForm.get('appointmentStatusId')?.valueChanges.subscribe((statusId: number) => {
+      const paymentGroup = this.appointmentForm.get('appointmentPayment') as FormGroup;
 
-    if (Number(statusId) === 5) {
-      // Set paymentStatusId = 3 without affecting other fields
-      paymentGroup.patchValue({
-        paymentStatusId: 3
-      });
-    } 
-  });
-}
+      if (Number(statusId) === 5) {
+        // Set paymentStatusId = 3 without affecting other fields
+        paymentGroup.patchValue({
+          paymentStatusId: 3
+        });
+      }
+    });
+  }
 
   private loadDepartments(): void {
     this.departmentService.getClinicalDepartment().subscribe({
@@ -281,37 +287,37 @@ private setupAppointmentStatusWatcher(): void {
   }
 
   public getOPDServiceByDepartment(): void {
-  const departmentId = this.appointmentForm.get('departmentId')?.value;
-  if (departmentId > 0) {
-    const _filterForm = { departmentId: departmentId };
-    this.serviceService.getAllServices(_filterForm).subscribe({
-      next: (res: any) => {
-        // Assign services from response
-        this.services = res?.item1 ?? res ?? [];
+    const departmentId = this.appointmentForm.get('departmentId')?.value;
+    if (departmentId > 0) {
+      const _filterForm = { departmentId: departmentId };
+      this.serviceService.getAllServices(_filterForm).subscribe({
+        next: (res: any) => {
+          // Assign services from response
+          this.services = res?.item1 ?? res ?? [];
 
-        // Check if an OPD service exists
-        const opdService = this.services.find(
-          (s: any) => s.serviceType?.name === 'OPD' && s.name === 'OPD'
-        );
+          // Check if an OPD service exists
+          const opdService = this.services.find(
+            (s: any) => s.serviceType?.name === 'OPD' && s.name === 'OPD'
+          );
 
-        if (opdService) {
-       (this.appointmentForm.get('appointmentPayment') as FormArray)
-  .at(0)
-  .patchValue({
-    serviceId: opdService.id
-  });
+          if (opdService) {
+            (this.appointmentForm.get('appointmentPayment') as FormArray)
+              .at(0)
+              .patchValue({
+                serviceId: opdService.id
+              });
+          }
+          else {
+            this.notifications.showNotification('No OPD Service Found Against Department', 'snack-bar-danger');
+          }
+        },
+        error: () => {
+          // Fallback: keep an empty list; UI will show required validation
+          this.services = [];
         }
-        else{
-           this.notifications.showNotification('No OPD Service Found Against Department', 'snack-bar-danger');
-        }
-      },
-      error: () => {
-        // Fallback: keep an empty list; UI will show required validation
-        this.services = [];
-      }
-    });
+      });
+    }
   }
-}
 
   getCityList(): void {
     let _filterForm = {};
@@ -319,7 +325,7 @@ private setupAppointmentStatusWatcher(): void {
       this.cityList = data.item1;
     });
   }
-
+ 
   async getAppointmentTypeList(): Promise<void> {
     let _filterForm = {};
     (await this.appointmentTypeService.getAllAppointmentType(_filterForm)).subscribe(data => {
@@ -453,15 +459,15 @@ private setupAppointmentStatusWatcher(): void {
 
     const statusId = Number(this.appointmentForm.get('appointmentStatusId')?.value);
     const paymentArray = this.appointmentForm.get('appointmentPayment') as any;
-const firstPayment = paymentArray?.value?.[0];
-const visitFee = Number(firstPayment?.visitFee) || 0;
-const totalPayable = this.calculateTotalPayable();
+    const firstPayment = paymentArray?.value?.[0];
+    const visitFee = Number(firstPayment?.visitFee) || 0;
+    const totalPayable = this.calculateTotalPayable();
 
-// if (statusId === 5 && (visitFee <= 0 || totalPayable <= 0)) {
-//   this.errorMessage = 'For confirmed appointments, Visit Fee and Total Payable must be greater than 0.';
-//   this.notifications.showNotification(this.errorMessage, 'snack-bar-danger');
-//   return;
-// }
+    // if (statusId === 5 && (visitFee <= 0 || totalPayable <= 0)) {
+    //   this.errorMessage = 'For confirmed appointments, Visit Fee and Total Payable must be greater than 0.';
+    //   this.notifications.showNotification(this.errorMessage, 'snack-bar-danger');
+    //   return;
+    // }
     // const paymentGroup = this.appointmentForm.get('appointmentPayment') as FormGroup;
     // const visitFee = Number(paymentGroup.get('visitFee')?.value) || 0;
     // const totalPayable = this.calculateTotalPayable();
@@ -481,10 +487,10 @@ const totalPayable = this.calculateTotalPayable();
         ...formValue.patient,
         age: this.calculateAge(formValue.patient.dateOfBirth)
       },
-      
+
       appointmentPayment: [{
         ...formValue.appointmentPayment[0],
-    totalPayable: this.calculateTotalPayable()
+        totalPayable: this.calculateTotalPayable()
       }]
     };
 
@@ -549,7 +555,7 @@ const totalPayable = this.calculateTotalPayable();
     // const fee = Number(paymentGroup.get('visitFee')?.value) || 0;
     // const discount = Number(paymentGroup.get('discount')?.value) || 0;
     const fee = Number(this.paymentGroup.get('visitFee')?.value) || 0;
-const discount = Number(this.paymentGroup.get('discount')?.value) || 0;
+    const discount = Number(this.paymentGroup.get('discount')?.value) || 0;
     const total = fee - discount;
     return total < 0 ? 0 : Number(total.toFixed(2));
   }
@@ -621,8 +627,8 @@ const discount = Number(this.paymentGroup.get('discount')?.value) || 0;
 
     const consultationFee = Number(selectedValue?.doctorProfile?.consultationFee ?? 0);
     this.paymentGroup.get('visitFee')?.setValue(consultationFee, { emitEvent: true });
-this.paymentGroup.get('visitFee')?.disable({ emitEvent: false });
-
+    this.paymentGroup.get('visitFee')?.disable({ emitEvent: false });
+    this.getOPDServiceByDepartment();
     // paymentGroup.get('visitFee')?.setValue(consultationFee, { emitEvent: true });
     // paymentGroup.get('visitFee')?.disable({ emitEvent: false });
   }
@@ -634,7 +640,7 @@ this.paymentGroup.get('visitFee')?.disable({ emitEvent: false });
   onDoctorInputCleared(event: Event): void {
     const inputValue = (event.target as HTMLInputElement)?.value;
     if (!inputValue.trim()) {
-    this.appointmentForm.get('departmentId')?.patchValue(0);
+      this.appointmentForm.get('departmentId')?.patchValue(0);
       this.appointmentForm.get('doctorId')?.patchValue(0);
       this.appointmentForm.get('doctorName')?.patchValue('');
       this.appointmentForm.get('doctor')?.patchValue('');
@@ -652,4 +658,58 @@ this.paymentGroup.get('visitFee')?.disable({ emitEvent: false });
     const designation = doctor?.designation || '';
     return `${code} : ${firstName} ${lastName}${designation ? ` (${designation})` : ''}`.trim();
   }
+
+
+// referrer
+
+
+
+  async getReferrerList(event: any) {
+    var filter = event.currentTarget.value;
+      (await this.referrerService.getReferrerByName(filter))
+        .subscribe((data: any) => {
+          this.referrerList = data;
+        });
+  }
+
+  onOptionReferrerSelected(event: MatAutocompleteSelectedEvent): void {
+    const selectedValue = event.option.value;
+    if (!selectedValue) {
+      console.error('Option value is undefined. Ensure mat-option [value] is correctly bound.');
+      return;
+    }
+    // Get the selected item details from your getaccount method
+    const selectedItem = this.getreferrer(selectedValue.id);
+    if (!selectedItem) {
+      console.error('Selected item not found.');
+      return;
+    }
+
+    // Patch the values into the form group
+    this.appointmentForm.get('referrerId')?.patchValue(selectedValue.id);
+    this.appointmentForm.get('referrerName')?.patchValue(this.formatReferrerDisplay(selectedValue));
+    this.appointmentForm.get('referrer')?.patchValue(selectedValue);
+  }
+
+  private formatReferrerDisplay(referrer: any): string {
+    if (!referrer) return '';
+    const name = referrer?.name || '';
+    const hospital = referrer?.hospital || '';
+    return `${name} : ${hospital}`.trim();
+  }
+
+  getreferrer(itemId: string) {
+    return this.referrerList.find((option: { id: string; }) => option.id === itemId);
+  }
+
+  onReferrerInputCleared(event: Event): void {
+    const inputValue = (event.target as HTMLInputElement)?.value;
+    if (!inputValue.trim()) {
+      this.appointmentForm.get('referrerId')?.patchValue(null);
+      this.appointmentForm.get('referrerName')?.patchValue('');
+      this.appointmentForm.get('referrer')?.patchValue('');
+    }
+  }
+
+
 }

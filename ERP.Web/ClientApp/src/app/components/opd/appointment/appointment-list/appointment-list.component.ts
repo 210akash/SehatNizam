@@ -10,6 +10,7 @@ import { PrintAppoinmentComponent } from '../print-appoinment/print-appoinment.c
 import { ConfirmAppointmentComponent } from '../confirm-appointment/confirm-appointment.component';
 import { MatDialog } from '@angular/material/dialog';
 import { PrintReceiptAppoinmentComponent } from '../print-receipt-appoinment/print-receipt-appoinment.component';
+import { DepartmentService } from '../../../department/department.service';
 
 @Component({
   selector: 'app-appointment-list',
@@ -35,6 +36,7 @@ export class AppointmentListComponent {
     'appointmentType',
     'visitType',
     'reason',
+    'referrer',
     'status',
     'actions'
   ];
@@ -48,6 +50,7 @@ export class AppointmentListComponent {
   History: any;
   roleList: string | undefined;
   dialogRef: any;
+  departments : any;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort; // ViewChild for MatSort
 
@@ -55,6 +58,7 @@ export class AppointmentListComponent {
     private appointmentService: AppointmentService,
     private formBuilder: FormBuilder,
     private constantService: ConstantService,
+        private departmentService: DepartmentService,
     private router: Router,
     private dialog: MatDialog,
   ) { }
@@ -62,16 +66,31 @@ export class AppointmentListComponent {
   async ngOnInit(): Promise<void> {
     this.pageSize = this.constantService.defaultItemPerPage;
     this.AppointmentFilterForm = this.formBuilder.group({
-      code: [''],
-      fdate: [],
-      tdate: []
+      tokenNo: [''],
+      mRN: [''],
+      patientName: [''],
+      fDate: [new Date()],
+      tDate: [new Date()],
+      departmentId : [null],
+      statusId : [null]
     });
     this.currentUser = JSON.parse(localStorage.getItem('currentUser') ?? '{}');
     this.roleList = this.currentUser.role.toLowerCase().split(',').map((role: string) => role.trim().toLowerCase());
+    this.loadDepartments();
     this.bindData();
   }
 
-  
+ private loadDepartments(): void {
+    this.departmentService.getClinicalDepartment().subscribe({
+      next: (res: any) => {
+        this.departments = res?.item1 ?? res ?? [];
+      },
+      error: () => {
+        // Fallback: keep an empty list; UI will show required validation
+        this.departments = [];
+      }
+    });
+  }
 
   async bindData(): Promise<void> {
     return new Promise<void>(async (resolve, reject) => {
@@ -86,11 +105,11 @@ export class AppointmentListComponent {
       // Set loading indicator
       this.isLoading = true;
       appointmentFilterForm["PagingData"] = pagingData;
-      let fdate = new Date(appointmentFilterForm.fdate);
-      let tdate = new Date(appointmentFilterForm.tdate);
+      // let fdate = new Date(appointmentFilterForm.fdate);
+      // let tdate = new Date(appointmentFilterForm.tdate);
 
-      appointmentFilterForm['fdate'] = fdate.toLocaleDateString();
-      appointmentFilterForm['tdate'] = tdate.toLocaleDateString();
+      // appointmentFilterForm['fdate'] = fdate.toLocaleDateString();
+      // appointmentFilterForm['tdate'] = tdate.toLocaleDateString();
 
       // Call the service method and subscribe with the observer
 

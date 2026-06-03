@@ -134,6 +134,7 @@ import { RadiologyTypeListComponent } from './components/opd/radiologytype/radio
 import { ServiceListComponent } from './components/opd/service/service-list/service-list.component';
 import { LabOrderTypeListComponent } from './components/opd/lab-order-type/lab-order-type-list/lab-order-type-list.component';
 import { ServiceTypeListComponent } from './components/opd/service-type/service-type-list/service-type-list.component';
+import { ReferrerListComponent } from './components/opd/referrer/referrer-list/referrer-list.component';
 
 const routes: Routes = [
   {
@@ -271,8 +272,7 @@ const routes: Routes = [
       { path: 'salarytaxslab', component: SalaryTaxSlabListComponent, canActivate: [AuthGuard], data: {roles: ["hr manager,hr executive,admin"] } },
       { path: 'services', component: ServiceListComponent, canActivate: [AuthGuard] },
       { path: 'servicetype', component: ServiceTypeListComponent, canActivate: [AuthGuard] },
-
-      
+      { path: 'referrer', component: ReferrerListComponent, canActivate: [AuthGuard], data: {roles: ["receptionist"] } },
     ]
   },
   {

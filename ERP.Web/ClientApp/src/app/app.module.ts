@@ -890,6 +890,13 @@ import { SaveLabResultComponent } from './components/opd/lab-order/save-lab-resu
 import { PrintReceiptAppoinmentComponent } from './components/opd/appointment/print-receipt-appoinment/print-receipt-appoinment.component';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { ConfirmLabOrderComponent } from './components/opd/lab-order/confirm-lab-order/confirm-lab-order.component';
+import { QRCodeComponent } from 'angularx-qrcode';
+import { AddReferrerComponent } from './components/opd/referrer/add-referrer/add-referrer.component';
+import { ViewReferrerComponent } from './components/opd/referrer/view-referrer/view-referrer.component';
+import { DeleteReferrerComponent } from './components/opd/referrer/delete-referrer/delete-referrer.component';
+import { ReferrerListComponent } from './components/opd/referrer/referrer-list/referrer-list.component';
+import { ReferrerService } from './components/opd/referrer/referrer.service';
+import { ReferrerEndPoints } from './components/opd/referrer/referrer.endpoints';
 
 const matFormFieldDefaults: MatFormFieldDefaultOptions = {
     appearance: 'outline'
@@ -1523,7 +1530,11 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         ConfirmAppointmentComponent,
         SaveLabResultComponent,
         PrintReceiptAppoinmentComponent,
-        ConfirmLabOrderComponent
+        ConfirmLabOrderComponent,
+        AddReferrerComponent,
+        ViewReferrerComponent,
+        DeleteReferrerComponent,
+        ReferrerListComponent
     ],
     bootstrap: [AppComponent], imports: [
         InputMaskModule,
@@ -1575,7 +1586,8 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         NumberToWordsPipe,
         MatChipsModule,
         HasRoleDirective,
-        MatExpansionModule
+        MatExpansionModule,
+         QRCodeComponent
 
     ],
     providers: [
@@ -1823,6 +1835,8 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         RadiologyOrderEndPoints,
         ServiceTypeService,
         ServiceTypeEndPoints,
+        ReferrerService,
+        ReferrerEndPoints,
         { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
         { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },
         AuthenticationService, {

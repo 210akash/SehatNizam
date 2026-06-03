@@ -176,5 +176,21 @@ namespace ERP.API.Controllers
                 return this.Result(ResponseStatus.Error, null, ex.Message);
             }
         }
+
+        [HttpGet]
+        [Route("GetAppoinmentById")]
+        public async Task<ActionResult<GetAppointment>> GetAppoinmentById(long id)
+        {
+            try
+            {
+                return await this.mediator.Send(new GetAppoinmentByIdQuery(id));
+            }
+            catch (Exception ex)
+            {
+                return this.Result(ResponseStatus.Error, null, ex.Message);
+            }
+        }
+
+        
     }
 }

@@ -510,6 +510,9 @@ namespace ERP.Entities.Migrations
                     b.Property<string>("Reason")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<long?>("ReferrerId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("TokenNumber")
                         .HasColumnType("nvarchar(max)");
 
@@ -537,6 +540,8 @@ namespace ERP.Entities.Migrations
                     b.HasIndex("PriorityLevelId");
 
                     b.HasIndex("ProjectId");
+
+                    b.HasIndex("ReferrerId");
 
                     b.HasIndex("VisitTypeId");
 
@@ -5356,9 +5361,6 @@ namespace ERP.Entities.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Reference")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<long>("StatusId")
                         .HasColumnType("bigint");
 
@@ -7237,6 +7239,57 @@ namespace ERP.Entities.Migrations
                     b.HasIndex("ServiceId");
 
                     b.ToTable("RadiologyType");
+                });
+
+            modelBuilder.Entity("ERP.Entities.Models.Referrer", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<long?>("CompanyId")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeleteDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Hospital")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("ModifiedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("ModifiedById");
+
+                    b.ToTable("Referrer");
                 });
 
             modelBuilder.Entity("ERP.Entities.Models.Region", b =>
@@ -10893,6 +10946,10 @@ namespace ERP.Entities.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("ERP.Entities.Models.Referrer", "Referrer")
+                        .WithMany()
+                        .HasForeignKey("ReferrerId");
+
                     b.HasOne("ERP.Entities.Models.VisitType", "VisitType")
                         .WithMany()
                         .HasForeignKey("VisitTypeId");
@@ -10916,6 +10973,8 @@ namespace ERP.Entities.Migrations
                     b.Navigation("PriorityLevel");
 
                     b.Navigation("Project");
+
+                    b.Navigation("Referrer");
 
                     b.Navigation("VisitType");
                 });
@@ -14328,6 +14387,27 @@ namespace ERP.Entities.Migrations
                     b.Navigation("ModifiedBy");
 
                     b.Navigation("Service");
+                });
+
+            modelBuilder.Entity("ERP.Entities.Models.Referrer", b =>
+                {
+                    b.HasOne("ERP.Entities.Models.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId");
+
+                    b.HasOne("ERP.Entities.Models.AspNetUsers", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById");
+
+                    b.HasOne("ERP.Entities.Models.AspNetUsers", "ModifiedBy")
+                        .WithMany()
+                        .HasForeignKey("ModifiedById");
+
+                    b.Navigation("Company");
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("ModifiedBy");
                 });
 
             modelBuilder.Entity("ERP.Entities.Models.Region", b =>

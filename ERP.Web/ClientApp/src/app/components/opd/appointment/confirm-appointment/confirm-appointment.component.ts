@@ -76,15 +76,15 @@ export class ConfirmAppointmentComponent {
     (await this.appointmentService.confirmAppointment(command)).subscribe({
       next: (data: any) => {
         this.isSubmitting = false;
-        if (data.Status === 200) {
+        if (data.item1 === 200) {
           this.notifications.showNotification(
-            data.Message || 'appoinment confirmed successfully!',
+            data.item2 || 'appoinment confirmed successfully!',
             'snack-bar-success'
           );
           this.dialogRef.close(true);
         } else {
           this.notifications.showNotification(
-            data.Message || data.Data || 'Failed to confirm appoinment.',
+            data.item2 || data.Data || 'Failed to confirm appoinment.',
             'snack-bar-danger'
           );
         }

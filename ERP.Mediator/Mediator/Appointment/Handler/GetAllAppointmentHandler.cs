@@ -29,7 +29,6 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
         public async Task<Tuple<IEnumerable<GetAppointment>, long>> Handle(GetAllAppointmentQuery request, CancellationToken cancellationToken)
         {
             string[] roles = this.sessionProvider.Session.Roles;
-            Expression<Func<Entities.Models.Appointment, bool>> predicate;
 
             Expression<Func<Entities.Models.Appointment, object>>[] includes = {
                 x => x.CreatedBy,
@@ -42,6 +41,7 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                 x => x.AppointmentType,
                 x => x.VisitType,
                 x => x.AppointmentStatus,
+                x => x.Referrer,
                 x => x.AppointmentPayments
             };
 
@@ -51,19 +51,16 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                 "AppointmentPayments.PaymentStatus",
             };
 
-            predicate = x => x.IsActive == true && x.DoctorId != null && ( request.StatusId == null ||  x.AppointmentStatusId == request.StatusId);
-            //// Check if the current user's RoleId array contains the AccountOwnerRoleId
-            //if (roles.Contains("Accounts Manager") || roles.Contains("Accounts Assistant"))
-            //{
-            //    predicate = x => x.IsActive == true
-            //    &&(request.Name == "" || request.Name == null || x.Name == request.Name)
-            //    && x.CompanyId == this.sessionProvider.Session.CompanyId;
-            //}
-            //else
-            //{
-            //    predicate = x => x.IsActive == true
-            //      && (request.Name == "" || request.Name == null || x.Name == request.Name);
-            //}
+            Expression<Func<Entities.Models.Appointment, bool>> predicate =
+             x => x.IsActive == true
+             && x.DoctorId != null
+             && x.CreatedDate >= request.FDate.Date
+             && x.CreatedDate <= request.TDate.Date.AddDays(1).AddTicks(-1)
+             && (request.TokenNo == "" || x.TokenNumber.Contains(request.TokenNo))
+             && (request.MRN == "" || x.Patient.MRN.Contains(request.MRN))
+             && (request.PatientName == "" || x.Patient.Name.ToLower().Trim().Contains(request.PatientName.ToLower().Trim()))
+             && (request.StatusId == null || x.AppointmentStatusId == request.StatusId.Value)
+             && (request.DepartmentId == null || x.DepartmentId == request.DepartmentId.Value);
 
             Expression<Func<Entities.Models.Appointment, object>> OrderBy = null;
             Expression<Func<Entities.Models.Appointment, object>> OrderByDesc = x => x.Id;

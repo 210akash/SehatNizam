@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ERP.BusinessModels.ResponseVM;
 using ERP.Core.Provider;
+using ERP.Entities.Migrations;
 using ERP.Entities.Models;
 using ERP.Mediator.Mediator.Appointment.Command;
 using ERP.Repositories.UnitOfWork;
@@ -92,6 +93,7 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                     ConfirmationNotes = request.ConfirmationNotes,
                     ConfirmedDate = request.ConfirmedDate,
                     AppointmentStatusId = request.AppointmentStatusId,
+                    ReferrerId = request.ReferrerId,
                     CreatedById = sessionProvider.Session.LoggedInUserId,
                     CreatedDate = DateTime.Now,
                     IsActive = true,
@@ -146,7 +148,6 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                             LabOrderTypeId = item.LabOrderTypeId,
                             ClinicalNotes = item.ClinicalNotes,
                             StatusId = 5,
-                            Reference = item.Reference,
                             CreatedById = sessionProvider.Session.LoggedInUserId,
                             CreatedDate = DateTime.Now,
                             IsActive = true,
@@ -333,6 +334,7 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
             appointment.ConfirmationNotes = request.ConfirmationNotes;
             appointment.ConfirmedDate = request.ConfirmedDate;
             appointment.AppointmentStatusId = request.AppointmentStatusId;
+            appointment.ReferrerId = request.ReferrerId;
             appointment.ModifiedById = sessionProvider.Session.LoggedInUserId;
             appointment.ModifiedDate = DateTime.Now;
 

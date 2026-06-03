@@ -15,6 +15,8 @@ import { LabOrderTypeService } from '../../lab-order-type/lab-order-type.service
 import { Observable, of, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged, finalize, map, startWith, switchMap } from 'rxjs/operators';
 import { CityService } from '../../../hr/city/city.service';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { ReferrerService } from '../../referrer/referrer.service';
 
 export function discountNotExceedRateValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
@@ -58,7 +60,7 @@ export class AddLabOrderComponent implements OnInit, OnDestroy {
 
   currentProjectId = 1; // TODO: inject ProjectService
   private labOrderSubscriptions: Subscription[] = [];
-
+  referrerList : any[] = [];
   constructor(
     private fb: FormBuilder,
     private dialog: MatDialog,
@@ -74,6 +76,7 @@ export class AddLabOrderComponent implements OnInit, OnDestroy {
     private cityService: CityService,
     private router: Router,
     private route: ActivatedRoute,
+    private referrerService: ReferrerService,
   ) { }
 
   ngOnInit(): void {
@@ -82,7 +85,7 @@ export class AddLabOrderComponent implements OnInit, OnDestroy {
     this.setupCalculations();
     this.loadLookups();
     this.getCityList();
-    this.patchEditData();
+    // this.patchEditData();
     this.setupLabOrderTypeWatcher();
   }
 
@@ -103,10 +106,12 @@ export class AddLabOrderComponent implements OnInit, OnDestroy {
       tokenNumber: [''],
       projectId: [this.currentProjectId, Validators.required],
       departmentId: [null, Validators.required],
+      referrerId: [null],
+      referrerName: [''],
+      referrer: [''],
       appointmentTypeId: [1, Validators.required],
       priorityLevelId: [1, Validators.required],
       visitTypeId: [1],
-      reference: [''],
       doctorId: [null],
       reason: [''],
       confirmationNotes: [''],
@@ -353,7 +358,6 @@ export class AddLabOrderComponent implements OnInit, OnDestroy {
   buildCommand(): any {
     const raw = this.form.getRawValue();
     const globalPayment = raw.appointmentPayment;
-    const reference = raw.reference || '';
 
     // Create one payment per lab test
     const payments = raw.labOrders.map((order: any) => ({
@@ -375,6 +379,7 @@ export class AddLabOrderComponent implements OnInit, OnDestroy {
       priorityLevelId: raw.priorityLevelId,
       visitTypeId: raw.visitTypeId,
       doctorId: raw.doctorId || null,
+      referrerId: raw.referrerId || null,
       reason: raw.reason,
       confirmationNotes: raw.confirmationNotes,
       confirmedDate: raw.confirmedDate || new Date().toISOString(),
@@ -395,7 +400,6 @@ export class AddLabOrderComponent implements OnInit, OnDestroy {
       labOrders: raw.labOrders.map((x: any) => ({
         labOrderTypeId: x.labOrderTypeId,
         clinicalNotes: x.clinicalNotes || '',
-        Reference: reference,
       })),
       radiologyOrders: []
     };
@@ -445,10 +449,12 @@ export class AddLabOrderComponent implements OnInit, OnDestroy {
       tokenNumber: appointment.tokenNumber || '',
       projectId: appointment.projectId || this.currentProjectId,
       departmentId: appointment.departmentId || null,
+      referrerId: appointment.referrerId || null,
+      referrerName: appointment.referrer?.name + ' ' +appointment.referrer?.hospital   || '',
+      referrer: appointment.referrer || null,
       appointmentTypeId: appointment.appointmentTypeId || 1,
       priorityLevelId: appointment.priorityLevelId || 1,
       visitTypeId: appointment.visitTypeId || 1,
-      reference: appointment.reference || '',
       doctorId: appointment.doctorId || null,
       reason: appointment.reason || '',
       confirmationNotes: appointment.confirmationNotes || '',
@@ -526,6 +532,60 @@ export class AddLabOrderComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+
+  
+  // referrer
+  
+  
+  
+    async getReferrerList(event: any) {
+      var filter = event.currentTarget.value;
+        (await this.referrerService.getReferrerByName(filter))
+          .subscribe((data: any) => {
+            this.referrerList = data;
+          });
+    }
+  
+    onOptionReferrerSelected(event: MatAutocompleteSelectedEvent): void {
+      const selectedValue = event.option.value;
+      if (!selectedValue) {
+        console.error('Option value is undefined. Ensure mat-option [value] is correctly bound.');
+        return;
+      }
+      // Get the selected item details from your getaccount method
+      const selectedItem = this.getreferrer(selectedValue.id);
+      if (!selectedItem) {
+        console.error('Selected item not found.');
+        return;
+      }
+  
+      // Patch the values into the form group
+      this.form.get('referrerId')?.patchValue(selectedValue.id);
+      this.form.get('referrerName')?.patchValue(this.formatReferrerDisplay(selectedValue));
+      this.form.get('referrer')?.patchValue(selectedValue);
+    }
+  
+    private formatReferrerDisplay(referrer: any): string {
+      if (!referrer) return '';
+      const name = referrer?.name || '';
+      const hospital = referrer?.hospital || '';
+      return `${name} : ${hospital}`.trim();
+    }
+  
+    getreferrer(itemId: string) {
+      return this.referrerList.find((option: { id: string; }) => option.id === itemId);
+    }
+  
+    onReferrerInputCleared(event: Event): void {
+      const inputValue = (event.target as HTMLInputElement)?.value;
+      if (!inputValue.trim()) {
+        this.form.get('referrerId')?.patchValue(null);
+        this.form.get('referrerName')?.patchValue('');
+        this.form.get('referrer')?.patchValue('');
+      }
+    }
+
     onCancel(): void {
     if (this.dialog) {
       this.dialog.closeAll();

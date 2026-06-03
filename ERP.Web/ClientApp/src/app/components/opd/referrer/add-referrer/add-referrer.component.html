@@ -1,0 +1,32 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>{{ isEditMode ? 'Edit Referrer' : 'Add Referrer' }}</mat-card-title>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+    <form [formGroup]="form">
+      <mat-form-field class="form-field">
+        <mat-label>Name *</mat-label>
+        <input matInput formControlName="name" placeholder="Enter name" />
+        <mat-error *ngIf="form.get('name')?.hasError('required')">Name is required</mat-error>
+      </mat-form-field>
+
+        <mat-form-field class="form-field">
+        <mat-label>Hospital</mat-label>
+        <input matInput formControlName="hospital" placeholder="Enter Hospital" />
+      </mat-form-field>
+
+       <mat-form-field class="form-field">
+        <mat-label>Phone #</mat-label>
+        <input matInput formControlName="phoneNo" placeholder="Enter Phone #" />
+      </mat-form-field>
+
+      <div class="button-container">
+        <button mat-flat-button color="primary" type="button" (click)="save()" [disabled]="isLoading || form.invalid">
+          {{ isEditMode ? 'Update' : 'Save' }}
+        </button>
+        <button mat-flat-button [mat-dialog-close]="true">Cancel</button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

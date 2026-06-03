@@ -61,7 +61,7 @@ export class LabOrderListComponent implements OnInit {
       mRN: [''],
       name: [''],
       labOrderTypeId: [null],
-      statusId: [1],
+      statusId: [null],
       fDate: [new Date()],
       tDate: [new Date()]
     });

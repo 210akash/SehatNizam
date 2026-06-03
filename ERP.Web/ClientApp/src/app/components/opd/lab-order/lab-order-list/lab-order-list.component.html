@@ -118,7 +118,7 @@
       <ng-container matColumnDef="reference">
         <th mat-header-cell *matHeaderCellDef>Reference</th>
         <td mat-cell *matCellDef="let e">
-          <span class="notes-text">{{ e.reference || '-' }}</span>
+          <span class="notes-text">{{ e.appointment?.Referrer?.name || 'N/A' }}</span>
         </td>
       </ng-container>
 

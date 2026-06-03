@@ -36,7 +36,7 @@ namespace ERP.Mediator.Mediator.LabOrder.Handler
                 && (!request.LabOrderTypeId.HasValue || x.LabOrderTypeId == request.LabOrderTypeId.Value)
                 && (!request.StatusId.HasValue || x.StatusId == request.StatusId.Value);
 
-            Expression<Func<Entities.Models.LabOrder, object>>[] includes = { x => x.Status, x => x.LabOrderType , x => x.Appointment, x => x.Appointment.Patient , x => x.LabOrderType.Service, x => x.LabOrderType.Variables , x => x.LabResult };
+            Expression<Func<Entities.Models.LabOrder, object>>[] includes = { x => x.Status, x => x.LabOrderType , x => x.Appointment, x => x.Appointment.Patient , x => x.Appointment.Referrer, x => x.LabOrderType.Service, x => x.LabOrderType.Variables , x => x.LabResult };
             var result = unitOfWork.Repository<Entities.Models.LabOrder>().GetPagingWhereAsNoTrackingAsync(predicate, request.PagingData, null, x => x.Id, null, includes);
             return new Tuple<IEnumerable<GetLabOrder>, long>(mapper.Map<IEnumerable<GetLabOrder>>(result.Item1), result.Item2);
         }

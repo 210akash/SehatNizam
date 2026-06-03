@@ -94,16 +94,25 @@
                 <mat-option *ngFor="let p of priorityLevelList" [value]="p.id">{{ p.name }}</mat-option>
               </mat-select>
             </mat-form-field>
-            <mat-form-field appearance="outline">
-              <mat-label>Reference</mat-label>
-              <input matInput formControlName="reference" />
-            </mat-form-field>
+         
             <mat-form-field appearance="outline">
               <mat-label>Visit Type</mat-label>
               <mat-select formControlName="visitTypeId">
                 <mat-option *ngFor="let v of visitTypeList" [value]="v.id">{{ v.name }}</mat-option>
               </mat-select>
             </mat-form-field>
+                <mat-form-field appearance="outline">
+            <mat-label>Referrer</mat-label>
+            <input matInput formControlName="referrerName" [matAutocomplete]="auto" (keyup)="getReferrerList($event);"
+              class="form-control" (input)="onReferrerInputCleared($event)" type="search"
+              [matTooltip]="this.form.get('referrer')?.value ? this.form.get('referrer')?.value.hrCode  + ' ' +
+              this.form.get('referrer')?.value.name + ' ' + this.form.get('referrer')?.value.hospital : 'No Referrer Selected'" />
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionReferrerSelected($event)">
+              <mat-option *ngFor="let referrer of referrerList" [value]="referrer">
+                {{ referrer?.name }} : {{ referrer?.hospital }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
               <div  formGroupName="appointmentPayment">
             <mat-form-field appearance="outline">
               <mat-label>Payment Mode</mat-label>

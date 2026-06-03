@@ -648,11 +648,10 @@
         <div class="submenu" *ngIf="isSubMenuVisible('appointment')">
           <!-- HR Setup -->
           <div class="nav-group" *ngIf="hasRequiredRole(['admin','doctor','receptionist'])">
-            <button (click)="toggleSubMenu('hr')" class="nav-button">
+            <!-- <button (click)="toggleSubMenu('hr')" class="nav-button">
               <i class="fas fa-user-cog"></i>
               <span>OPD Setup</span>
-              <!-- <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('hr')"></i> -->
-            </button>
+            </button> -->
             <!-- <div class="submenu" *ngIf="isSubMenuVisible('hr')">
               <a routerLink="/project" *ngIf="hasRequiredRole(['admin','receptionist'])"
                 class="nested-link" [class.active-link]="isActive('/project')">Site/Building</a>
@@ -668,7 +667,7 @@
           >Bookings</a>
           <a routerLink="/appointment" *ngIf="hasRequiredRole(['admin','receptionist'])" class="submenu-link" [class.active-link]="isActive('/appointment')">Appointments</a>
           <a routerLink="/patient"     *ngIf="hasRequiredRole(['admin','receptionist'])" class="submenu-link"  [class.active-link]="isActive('/patient')">Patients</a>
-          <a routerLink="/referrer"     *ngIf="hasRequiredRole(['admin','receptionist'])" class="submenu-link"  [class.active-link]="isActive('/patient')">Referrer</a>
+          <a routerLink="/referrer"     *ngIf="hasRequiredRole(['admin','receptionist'])" class="submenu-link"  [class.active-link]="isActive('/referrer')">Referrer</a>
           <a routerLink="/triage"      *ngIf="hasRequiredRole(['admin','receptionist'])" class="submenu-link"  [class.active-link]="isActive('/triage')">Triage</a>
         </div>
       </div>

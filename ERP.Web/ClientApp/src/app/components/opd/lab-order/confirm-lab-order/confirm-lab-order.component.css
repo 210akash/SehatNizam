@@ -1,8 +1,13 @@
+.dialog-card {
+  width: 100%;
+  max-width: 980px;
+}
+
 .dialog-title {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 18px;
+  gap: 12px;
+  font-size: 22px;
   font-weight: 600;
   color: #1a1a2e;
 }
@@ -13,21 +18,21 @@
 .info-card {
   background: #ffffff;
   border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 20px;
-  min-width: 480px;
+  border-radius: 16px;
+  padding: 28px;
+  min-width: 0;
 }
 
 .appointment-summary {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 22px;
 }
 
 .summary-field {
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 6px;
 }
 
 .summary-field:last-child {
@@ -35,7 +40,7 @@
 }
 
 .summary-label {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   color: #64748b;
   text-transform: uppercase;
@@ -43,7 +48,7 @@
 }
 
 .summary-value {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 500;
   color: #0f172a;
 }
@@ -53,5 +58,33 @@
   justify-content: flex-end;
   gap: 8px;
   padding: 12px 0 0;
+}
+
+@media (max-width: 768px) {
+  .dialog-card {
+    max-width: 100%;
+  }
+
+  .dialog-title {
+    font-size: 19px;
+  }
+
+  .info-card {
+    padding: 20px;
+  }
+
+  .appointment-summary {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .summary-label {
+    font-size: 12px;
+  }
+
+  .summary-value {
+    font-size: 15px;
+    word-break: break-word;
+  }
 }
 

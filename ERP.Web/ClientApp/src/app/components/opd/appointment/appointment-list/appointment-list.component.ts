@@ -112,6 +112,8 @@ export class AppointmentListComponent {
       // appointmentFilterForm['tdate'] = tdate.toLocaleDateString();
 
       // Call the service method and subscribe with the observer
+      appointmentFilterForm['fDate'] = this.constantService.formatDate(appointmentFilterForm['fDate']);
+      appointmentFilterForm['tDate'] = this.constantService.formatDate(appointmentFilterForm['tDate']);
 
       (await this.appointmentService.getAllAppointments(appointmentFilterForm)).subscribe({
         next: (data: any) => {

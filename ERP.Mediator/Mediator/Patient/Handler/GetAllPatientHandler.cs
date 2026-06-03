@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using ERP.BusinessModels.ResponseVM;
+using ERP.Core.Provider;
 using ERP.Mediator.Mediator.Patient.Query;
 using ERP.Repositories.UnitOfWork;
 using MediatR;
@@ -17,11 +18,13 @@ namespace ERP.Mediator.Mediator.Patient.Handler
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;
+        private readonly SessionProvider sessionProvider;
 
-        public GetAllPatientHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        public GetAllPatientHandler(IUnitOfWork unitOfWork, IMapper mapper, SessionProvider sessionProvider)
         {
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
+            this.sessionProvider = sessionProvider;
         }
 
         public async Task<Tuple<IEnumerable<GetPatient>, long>> Handle(GetAllPatientQuery request, CancellationToken cancellationToken)
@@ -29,7 +32,10 @@ namespace ERP.Mediator.Mediator.Patient.Handler
             Expression<Func<Entities.Models.Patient, bool>> predicate = x =>
              x.IsActive &&
              (string.IsNullOrEmpty(request.Name) || EF.Functions.Like(x.Name, $"%{request.Name}%")) &&
-             (request.ProjectId == null || x.ProjectId == request.ProjectId) &&
+             (string.IsNullOrEmpty(request.PhoneNo) || EF.Functions.Like(x.PhoneNo, $"%{request.PhoneNo}%")) &&
+             (string.IsNullOrEmpty(request.MRN) || EF.Functions.Like(x.MRN, $"%{request.MRN}%")) &&
+             (string.IsNullOrEmpty(request.CNIC) || EF.Functions.Like(x.CNIC, $"%{request.CNIC}%")) &&
+             (x.ProjectId == sessionProvider.Session.SelectedWarehouseId) &&
              (request.CityId == null || x.CityId == request.CityId);
 
             Expression<Func<Entities.Models.Patient, object>>[] includes = {
@@ -42,7 +48,9 @@ namespace ERP.Mediator.Mediator.Patient.Handler
             List<string> thenIncludes = new()
             {
                 "PatientAppointments.Department",
-                "PatientAppointments.Doctor"
+                "PatientAppointments.Doctor",
+                "PatientAppointments.Attachments",
+                "PatientAppointments.LabOrders",
             };
 
             Expression<Func<Entities.Models.Patient, object>> OrderBy = null;

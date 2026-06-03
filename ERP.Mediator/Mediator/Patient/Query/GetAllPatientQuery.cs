@@ -8,8 +8,10 @@ namespace ERP.Mediator.Mediator.Patient.Query
 {
     public class GetAllPatientQuery : IRequest<Tuple<IEnumerable<GetPatient>, long>>
     {
+        public string MRN { get; set; }
         public string Name { get; set; }
-        public long? ProjectId { get; set; }
+        public string PhoneNo { get; set; }
+        public string CNIC { get; set; }
         public long? CityId { get; set; }
         public PagingData PagingData { get; set; }
     }

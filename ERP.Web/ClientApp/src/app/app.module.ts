@@ -508,6 +508,7 @@ import { CostSheetEndPoints } from './components/costsheet/costsheet.endpoints';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { CancelDispatchService } from './components/canceldispatch/canceldispatch.service';
 import { CancelDispatchEndPoints } from './components/canceldispatch/canceldispatch.endpoints';
+import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 import { CancelDispatchTabComponent } from './components/canceldispatch/cancel-dispatch-tab/cancel-dispatch-tab.component';
 import { CancelDispatchListComponent } from './components/canceldispatch/cancel-dispatch-list/cancel-dispatch-list.component';
 import { AddCancelDispatchComponent } from './components/canceldispatch/add-cancel-dispatch/add-cancel-dispatch.component';
@@ -890,20 +891,19 @@ import { SaveLabResultComponent } from './components/opd/lab-order/save-lab-resu
 import { PrintReceiptAppoinmentComponent } from './components/opd/appointment/print-receipt-appoinment/print-receipt-appoinment.component';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { ConfirmLabOrderComponent } from './components/opd/lab-order/confirm-lab-order/confirm-lab-order.component';
-import { QRCodeComponent } from 'angularx-qrcode';
 import { AddReferrerComponent } from './components/opd/referrer/add-referrer/add-referrer.component';
 import { ViewReferrerComponent } from './components/opd/referrer/view-referrer/view-referrer.component';
 import { DeleteReferrerComponent } from './components/opd/referrer/delete-referrer/delete-referrer.component';
 import { ReferrerListComponent } from './components/opd/referrer/referrer-list/referrer-list.component';
 import { ReferrerService } from './components/opd/referrer/referrer.service';
 import { ReferrerEndPoints } from './components/opd/referrer/referrer.endpoints';
-
 const matFormFieldDefaults: MatFormFieldDefaultOptions = {
     appearance: 'outline'
     , subscriptSizing: 'dynamic'
 };
 
 @NgModule({
+    schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
     declarations: [
         ChartitemsComponent,
         LoginLayoutComponent,
@@ -1570,24 +1570,19 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         MatMenuModule,
         MatGridListModule,
         MatDatepickerModule,
-        MatSort,
         MatListModule,
-        MatFormField,
         MatCheckboxModule,
         MatSlideToggleModule,
         MatAutocompleteModule,
-        MatTabGroup,
-        MatTab,
         MatTabsModule,
         MatRadioModule,
         SafeHtml,
+        NumberToWordsPipe,
         MatTimepickerModule,
         MatDatepickerModule,
-        NumberToWordsPipe,
         MatChipsModule,
         HasRoleDirective,
-        MatExpansionModule,
-         QRCodeComponent
+        MatExpansionModule
 
     ],
     providers: [

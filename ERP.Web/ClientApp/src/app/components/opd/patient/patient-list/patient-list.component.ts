@@ -35,6 +35,9 @@ export class PatientListComponent implements OnInit {
 
     this.patientListFilerForm = this.formBuilder.group({
       name: [''],
+      mRN: [''],
+      cnic : [''],
+      phoneNo: ['']
     });
 
     this.bindData();
@@ -51,6 +54,9 @@ export class PatientListComponent implements OnInit {
       enterAnimationDuration,
       exitAnimationDuration,
     };
+  }
+  filterData() {
+    this.bindData();
   }
 
   async bindData() {

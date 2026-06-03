@@ -54,11 +54,12 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
             Expression<Func<Entities.Models.Appointment, bool>> predicate =
              x => x.IsActive == true
              && x.DoctorId != null
-             && x.CreatedDate >= request.FDate.Date
-             && x.CreatedDate <= request.TDate.Date.AddDays(1).AddTicks(-1)
-             && (request.TokenNo == "" || x.TokenNumber.Contains(request.TokenNo))
-             && (request.MRN == "" || x.Patient.MRN.Contains(request.MRN))
-             && (request.PatientName == "" || x.Patient.Name.ToLower().Trim().Contains(request.PatientName.ToLower().Trim()))
+             && x.ProjectId == sessionProvider.Session.SelectedWarehouseId
+             && x.AppointmentDate >= request.FDate.Date
+             && x.AppointmentDate <= request.TDate.Date.AddDays(1).AddTicks(-1)
+             && (request.TokenNo == null || request.TokenNo == "" || x.TokenNumber.Contains(request.TokenNo))
+             && (request.MRN == null || request.MRN == "" || x.Patient.MRN.Contains(request.MRN))
+             && (request.PatientName == null || request.PatientName == "" || x.Patient.Name.ToLower().Trim().Contains(request.PatientName.ToLower().Trim()))
              && (request.StatusId == null || x.AppointmentStatusId == request.StatusId.Value)
              && (request.DepartmentId == null || x.DepartmentId == request.DepartmentId.Value);
 

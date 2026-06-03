@@ -23,7 +23,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "E:/Publish/SehatNizam/Web",
+            "outputPath": "dist/ERP",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": ["zone.js"],

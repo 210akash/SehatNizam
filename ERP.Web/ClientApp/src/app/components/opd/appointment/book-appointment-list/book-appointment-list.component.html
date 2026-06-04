@@ -1,11 +1,11 @@
 <div class="header-container">
-  <h2>Walk In</h2>
+  <h2>Book Appointment</h2>
   <button
     mat-mini-fab
     aria-label="Add"
     color="success"
     (click)="openAppointmentDialog(null)"
-    matTooltip="Add Appointment">
+    matTooltip="Book Appointment">
     <mat-icon>add</mat-icon>
   </button>
 </div>
@@ -33,15 +33,15 @@
         <mat-icon matPrefix>event</mat-icon>
       </mat-form-field>
     </div>
-    <div class="col-lg-2 col-md-3 col-sm-6 col-12">
+    <div class="col-lg-2 col-md-2 col-sm-6 col-12">
       <mat-form-field class="filter-field" appearance="outline">
-        <mat-label>Token #</mat-label>
-        <input matInput formControlName="tokenNo" placeholder="Search by token number" (keyup)="filterData()" />
+        <mat-label>Booking #</mat-label>
+        <input matInput formControlName="id" placeholder="Search by token number" (keyup)="filterData()" />
         <mat-icon matSuffix>confirmation_number</mat-icon>
       </mat-form-field>
     </div>
     
-    <div class="col-lg-2 col-md-2 col-sm-7 col-12">
+    <div class="col-lg-3 col-md-3 col-sm-7 col-12">
       <mat-form-field class="filter-field" appearance="outline">
         <mat-label>Patient Name</mat-label>
         <input matInput formControlName="name" placeholder="Search by patient name" (keyup)="filterData()" />
@@ -68,21 +68,6 @@
         <mat-icon matSuffix>science</mat-icon>
       </mat-form-field>
     </div>
-    
-    <div class="col-lg-2 col-md-3 col-sm-6 col-12">
-      <mat-form-field class="filter-field" appearance="outline">
-        <mat-label>Status</mat-label>
-        <mat-select formControlName="statusId" (selectionChange)="filterData()">
-          <mat-option [value]="null">All</mat-option>
-          <mat-option [value]="1">Booked</mat-option>
-          <mat-option [value]="5">Confirm</mat-option>
-          <mat-option [value]="10">Queue</mat-option>
-          <mat-option [value]="15">Complete</mat-option>
-          <mat-option [value]="20">Cancelled</mat-option>
-        </mat-select>
-        <mat-icon matSuffix>flag</mat-icon>
-      </mat-form-field>
-    </div>
   </div>
 </div>
 
@@ -95,13 +80,6 @@
       <td mat-cell *matCellDef="let element"> {{ element.appointmentDate | date:'short' }} </td>
     </ng-container>
 
-
-        <!-- Token -->
-    <ng-container matColumnDef="bookingNumber">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Booking #</th>
-      <td mat-cell *matCellDef="let element"> {{ element.id }} </td>
-    </ng-container>
-
     <!-- Patient -->
     <ng-container matColumnDef="patient">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Patient</th>
@@ -112,9 +90,9 @@
     </ng-container>
 
     <!-- Token -->
-    <ng-container matColumnDef="tokenNumber">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Token</th>
-      <td mat-cell *matCellDef="let element"> {{ element.tokenNumber }} </td>
+    <ng-container matColumnDef="bookingNumber">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Booking #</th>
+      <td mat-cell *matCellDef="let element"> {{ element.id }} </td>
     </ng-container>
 
     <!-- Doctor -->

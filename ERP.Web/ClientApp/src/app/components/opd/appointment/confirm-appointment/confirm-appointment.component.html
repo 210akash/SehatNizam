@@ -11,8 +11,8 @@
       <!-- Token Section -->
       <div class="token-section">
         <div class="token-box">
-          <span class="token-label">TOKEN NUMBER</span>
-          <span class="token-number">{{ data.element.tokenNumber || '-' }}</span>
+          <span class="token-label">Booking Number</span>
+          <span class="token-number">{{ data.element.id || '-' }}</span>
         </div>
       </div>
     <div class="appointment-summary">
@@ -48,7 +48,7 @@
         <span class="summary-label">Reason</span>
         <span class="summary-value">{{ getReason() }}</span>
       </div>
-    </div>Confirm Appointment
+    </div>
   </div>
     <form [formGroup]="form" class="modern-form mt-3">
     <div class="row">

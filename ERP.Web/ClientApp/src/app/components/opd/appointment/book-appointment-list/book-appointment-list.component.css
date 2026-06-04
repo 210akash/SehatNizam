@@ -1,0 +1,18 @@
+/* Table component-specific tweaks piggybacking on global table styles */
+.table-scroll {
+  overflow-x: auto;
+}
+
+.modern-table .cell-main {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.modern-table .muted {
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.action_btns button {
+  box-shadow: none;
+}

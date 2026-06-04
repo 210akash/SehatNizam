@@ -897,6 +897,7 @@ import { DeleteReferrerComponent } from './components/opd/referrer/delete-referr
 import { ReferrerListComponent } from './components/opd/referrer/referrer-list/referrer-list.component';
 import { ReferrerService } from './components/opd/referrer/referrer.service';
 import { ReferrerEndPoints } from './components/opd/referrer/referrer.endpoints';
+import { BookAppointmentListComponent } from './components/opd/appointment/book-appointment-list/book-appointment-list.component';
 const matFormFieldDefaults: MatFormFieldDefaultOptions = {
     appearance: 'outline'
     , subscriptSizing: 'dynamic'
@@ -1534,7 +1535,8 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         AddReferrerComponent,
         ViewReferrerComponent,
         DeleteReferrerComponent,
-        ReferrerListComponent
+        ReferrerListComponent,
+        BookAppointmentListComponent
     ],
     bootstrap: [AppComponent], imports: [
         InputMaskModule,

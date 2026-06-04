@@ -2,7 +2,7 @@
   <mat-card class="modern-card">
     <mat-card-header>
       <div>
-        <mat-card-title class="title">New Patient Registration</mat-card-title>
+        <mat-card-title class="title">New Patient Appointment</mat-card-title>
         <mat-card-subtitle class="subtitle">Create or update an appointment with patient details, schedule, and
           billing.</mat-card-subtitle>
       </div>
@@ -67,7 +67,7 @@
 
             <mat-form-field appearance="outline">
               <mat-label>Age (Years)</mat-label>
-              <input matInput formControlName="age" readonly />
+              <input type="number" matInput formControlName="age" min="0.1" />
             </mat-form-field>
 
             <mat-form-field appearance="outline">

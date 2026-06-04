@@ -33,6 +33,9 @@ namespace ERP.Mediator.Mediator.UserTerritory.Handler
                 x.AttendanceDate <= request.TDate.AddDays(1).AddSeconds(-1) &&
                 x.UserId == request.UserId;
 
+            var employee = await unitOfWork.Repository<AspNetUsers>()
+           .GetFirstAsync(x=>x.Id == request.UserId);
+
             var orderByDesc = new Func<IQueryable<Entities.Models.UserAttendance>, IOrderedQueryable<Entities.Models.UserAttendance>>(
                 q => q.OrderByDescending(x => x.AttendanceDate)
             );
@@ -74,7 +77,7 @@ namespace ERP.Mediator.Mediator.UserTerritory.Handler
                         Status = "Public Holiday"  
                     });
                 }
-                else
+                else if (employee.IsRosterShift == false)
                 {
                     // No attendance, check if it's a working day
                     string dayName = date.DayOfWeek.ToString(); // e.g., "Monday"
@@ -97,6 +100,31 @@ namespace ERP.Mediator.Mediator.UserTerritory.Handler
                         AttendanceDate = date,
                         Status = isWorkingDay ? "Absent" : "OFF"
                     });
+                }
+                else if (employee.IsRosterShift == true)
+                {
+                    // No implemeneted yet according to roster
+                    // No attendance, check if it's a working day
+                    //string dayName = date.DayOfWeek.ToString(); // e.g., "Monday"
+
+                    //// Use reflection or a switch to map day name to property
+                    //bool isWorkingDay = dayName switch
+                    //{
+                    //    "Monday" => workingDays.Monday,
+                    //    "Tuesday" => workingDays.Tuesday,
+                    //    "Wednesday" => workingDays.Wednesday,
+                    //    "Thursday" => workingDays.Thursday,
+                    //    "Friday" => workingDays.Friday,
+                    //    "Saturday" => workingDays.Saturday,
+                    //    "Sunday" => workingDays.Sunday,
+                    //    _ => false
+                    //};
+
+                    //result.Add(new GetUserAttendance
+                    //{
+                    //    AttendanceDate = date,
+                    //    Status = isWorkingDay ? "Absent" : "OFF"
+                    //});
                 }
             }
 

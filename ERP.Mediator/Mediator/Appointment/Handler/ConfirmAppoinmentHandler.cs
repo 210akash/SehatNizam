@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ERP.Core.Provider;
-using ERP.Entities.Migrations;
 using ERP.Entities.Models;
 using ERP.Mediator.Mediator.Appointment.Query;
 using ERP.Repositories.UnitOfWork;
@@ -54,18 +53,18 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                 }
 
                 // Update related AppointmentPayments
-                var payment = unitOfWork.Repository<Entities.Models.AppointmentPayment>()
+                var payment = unitOfWork.Repository<AppointmentPayment>()
                     .Find(x => x.AppointmentId == appointment.Id);
-                if(payment != null)
+                if (payment != null)
                 {
                     payment.Discount = request.Discount; // Set status to 3
                     payment.TotalPayable = payment.VisitFee - request.Discount; // Set status to 3
                     payment.PaymentStatusId = 3; // Set status to 3
                     payment.ModifiedById = sessionProvider.Session.LoggedInUserId;
                     payment.ModifiedDate = DateTime.Now;
-                    unitOfWork.Repository<Entities.Models.AppointmentPayment>().Update(payment);
+                    unitOfWork.Repository<AppointmentPayment>().Update(payment);
                 }
-               
+
                 check = await unitOfWork.SaveChangesAsync();
 
             }

@@ -186,21 +186,17 @@ export class PrintAppoinmentComponent {
       }
 
       .token-label {
-        font-size: 5px;
-        font-weight: 700;
-        text-transform: uppercase;
-        line-height: 1;
+      font-size: 0.44rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 1;
       }
 
       .token-value {
-        font-size: 14px;
-        font-weight: 800;
-        line-height: 1;
-        margin-top: 0;
-        max-width: 100%;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: clip;
+        font-size:  0.7rem;
+  font-weight: 500;
+  line-height: 1;
+  margin-top: 2px;
       }
 
       .qr-box {

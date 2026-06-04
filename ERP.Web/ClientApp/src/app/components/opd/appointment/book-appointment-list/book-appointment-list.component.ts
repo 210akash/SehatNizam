@@ -13,13 +13,13 @@ import { PrintReceiptAppoinmentComponent } from '../print-receipt-appoinment/pri
 import { DepartmentService } from '../../../department/department.service';
 
 @Component({
-  selector: 'app-appointment-list',
-  templateUrl: './appointment-list.component.html',
-  styleUrls: ['./appointment-list.component.css'],
+  selector: 'app-book-appointment-list',
+  templateUrl: './book-appointment-list.component.html',
+  styleUrls: ['./book-appointment-list.component.css'],
   standalone: false
 })
 
-export class AppointmentListComponent {
+export class BookAppointmentListComponent {
   [x: string]: any;
   @Output() getAppointmentCount: EventEmitter<void> = new EventEmitter<void>();
   AppointmentFilterForm!: FormGroup;
@@ -28,9 +28,8 @@ export class AppointmentListComponent {
   pageSizeOptions: number[] = [5, 10, 25, 100];
   displayedColumns: string[] = [
     'appointmentDate',
-    'bookingNumber',
     'patient',
-    'tokenNumber',
+    'bookingNumber',
     'doctor',
     'department',
     'priority',
@@ -67,15 +66,14 @@ export class AppointmentListComponent {
   async ngOnInit(): Promise<void> {
     this.pageSize = this.constantService.defaultItemPerPage;
     this.AppointmentFilterForm = this.formBuilder.group({
-      id:[null],
-      bookingFormType : [5],
-      tokenNo: [''],
+      id: [null],
+      bookingFormType : [1],
       mRN: [''],
       patientName: [''],
       fDate: [new Date()],
       tDate: [new Date()],
       departmentId : [null],
-      statusId : [null]
+      statusId : [1]
     });
     this.currentUser = JSON.parse(localStorage.getItem('currentUser') ?? '{}');
     this.roleList = this.currentUser.role.toLowerCase().split(',').map((role: string) => role.trim().toLowerCase());
@@ -155,10 +153,10 @@ export class AppointmentListComponent {
 
   openAppointmentDialog(element: any) {
     const navigationExtras = {
-      queryParams: { appointmentStatusId: 5 },
+      queryParams: { appointmentStatusId: 1 },
       state: element ? { element } : {}
     };
-    this.router.navigate(['/newappointment'], navigationExtras);
+    this.router.navigate(['/booknewappointment'], navigationExtras);
   }
 
    printAppoinmnetDialog(element: any) {

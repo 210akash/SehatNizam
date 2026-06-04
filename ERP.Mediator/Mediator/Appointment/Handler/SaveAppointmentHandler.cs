@@ -77,11 +77,14 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                 // =====================================================
                 // 2️⃣ CREATE APPOINTMENT
                 // =====================================================
+                var TokenNumber = "";
+                if (request.DoctorId == null)
+                    TokenNumber = await GenerateAppointmentCodeAsync();
 
                 var appointment = new Entities.Models.Appointment
                 {
                     AppointmentDate = request.AppointmentDate,
-                    TokenNumber = await GenerateAppointmentCodeAsync(),
+                    TokenNumber = TokenNumber,
                     ProjectId = sessionProvider.Session.SelectedWarehouseId,
                     DepartmentId = request.DepartmentId,
                     AppointmentTypeId = request.AppointmentTypeId,

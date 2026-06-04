@@ -53,14 +53,7 @@ export class AddAppointmentComponent implements OnInit {
   filteredPatients$!: Observable<any[]>;
   patientLoading = false;
   doctorList: any;
-  referrerList : any[] = [];
-  doctors: Array<{ id: string; name: string; departmentId?: number }> = [
-    { id: '408C1D72-07FD-4E9A-A54C-D1AD4112F875', name: 'Dr. Sarah Khan', departmentId: 1 },
-    { id: '408C1D72-07FD-4E9A-A54C-D1AD4112F875', name: 'Dr. Ahmed Raza', departmentId: 2 },
-    { id: '408C1D72-07FD-4E9A-A54C-D1AD4112F875', name: 'Dr. Maria Aslam', departmentId: 3 },
-    { id: '408C1D72-07FD-4E9A-A54C-D1AD4112F875', name: 'Dr. Jason Lee', departmentId: 4 },
-    { id: '408C1D72-07FD-4E9A-A54C-D1AD4112F875', name: 'Any Available', departmentId: undefined }
-  ];
+  referrerList: any[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -143,8 +136,8 @@ export class AddAppointmentComponent implements OnInit {
         cnic: [''],
         gender: ['male', Validators.required],
         email: ['', Validators.email],
-        dateOfBirth: [null, Validators.required],
-        age: [{ value: null, disabled: true }],
+        dateOfBirth: [null],
+        age: [0, Validators.required],
         cityId: [1, Validators.required],
         projectId: [0, Validators.required]
       }),
@@ -325,7 +318,7 @@ export class AddAppointmentComponent implements OnInit {
       this.cityList = data.item1;
     });
   }
- 
+
   async getAppointmentTypeList(): Promise<void> {
     let _filterForm = {};
     (await this.appointmentTypeService.getAllAppointmentType(_filterForm)).subscribe(data => {
@@ -430,19 +423,21 @@ export class AddAppointmentComponent implements OnInit {
   }
 
   onCancel(): void {
-    if (this.dialog) {
-      this.dialog.closeAll();
+    if (this.initialNavigationState.appointmentStatusId == 1) {
+      this.router.navigate(['/bookappointment']);
+      return;
+    }
+    else {
       this.router.navigate(['/appointment']);
       return;
     }
-
-    // When opened as a page, navigate back to the appointment list.
-    const canGoBack = window.history.length > 1;
-    if (canGoBack) {
-      window.history.back();
-    } else {
-      this.router.navigate(['/appointment']);
-    }
+    // // When opened as a page, navigate back to the appointment list.
+    // const canGoBack = window.history.length > 1;
+    // if (canGoBack) {
+    //   window.history.back();
+    // } else {
+    //   this.router.navigate(['/appointment']);
+    // }
   }
 
   onSubmit(): void {
@@ -484,8 +479,7 @@ export class AddAppointmentComponent implements OnInit {
       ...formValue,
       appointmentDate: appointmentDateTime,
       patient: {
-        ...formValue.patient,
-        age: this.calculateAge(formValue.patient.dateOfBirth)
+        ...formValue.patient
       },
 
       appointmentPayment: [{
@@ -506,10 +500,14 @@ export class AddAppointmentComponent implements OnInit {
           this.notifications.showNotification(this.successMessage, 'snack-bar-success');
 
           // Navigate back to the list whether opened in dialog or page.
-          if (this.dialog) {
-            this.dialog.closeAll();
+          if (this.initialNavigationState.appointmentStatusId == 1) {
+            this.router.navigate(['/bookappointment']);
+            return;
           }
-          this.router.navigate(['/appointment']);
+          else {
+            this.router.navigate(['/appointment']);
+            return;
+          }
         } else if (data.Status === 409) {
           this.errorMessage = data.Data || 'Name Already Exists!';
           this.notifications.showNotification(this.errorMessage, 'snack-bar-danger');
@@ -558,12 +556,6 @@ export class AddAppointmentComponent implements OnInit {
     const discount = Number(this.paymentGroup.get('discount')?.value) || 0;
     const total = fee - discount;
     return total < 0 ? 0 : Number(total.toFixed(2));
-  }
-
-  filterDoctors(): Array<{ id: string; name: string; departmentId?: number }> {
-    const departmentId = this.appointmentForm.get('departmentId')?.value;
-    if (!departmentId) return this.doctors;
-    return this.doctors.filter((d) => !d.departmentId || d.departmentId === departmentId);
   }
 
   private combineDateAndTime(date: string | Date, time: string): Date {
@@ -660,16 +652,16 @@ export class AddAppointmentComponent implements OnInit {
   }
 
 
-// referrer
+  // referrer
 
 
 
   async getReferrerList(event: any) {
     var filter = event.currentTarget.value;
-      (await this.referrerService.getReferrerByName(filter))
-        .subscribe((data: any) => {
-          this.referrerList = data;
-        });
+    (await this.referrerService.getReferrerByName(filter))
+      .subscribe((data: any) => {
+        this.referrerList = data;
+      });
   }
 
   onOptionReferrerSelected(event: MatAutocompleteSelectedEvent): void {

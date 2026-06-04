@@ -660,12 +660,11 @@
           <a routerLink="/doctorappointment" *ngIf="hasRequiredRole(['doctor'])" class="submenu-link" [class.active-link]="isActive('/doctorappointment')">My Appointments</a>
           <a
             [routerLink]="['/bookappointment']"
-            [queryParams]="{ appointmentStatusId: 1 }"
             *ngIf="hasRequiredRole(['admin','receptionist'])"
             class="submenu-link"
             [class.active-link]="isActive('/bookappointment')"
-          >Bookings</a>
-          <a routerLink="/appointment" *ngIf="hasRequiredRole(['admin','receptionist'])" class="submenu-link" [class.active-link]="isActive('/appointment')">Appointments</a>
+          >Book Appointments</a>
+          <a routerLink="/appointment" *ngIf="hasRequiredRole(['admin','receptionist'])" class="submenu-link" [class.active-link]="isActive('/appointment')">Walk In</a>
           <a routerLink="/patient"     *ngIf="hasRequiredRole(['admin','receptionist'])" class="submenu-link"  [class.active-link]="isActive('/patient')">Patients</a>
           <a routerLink="/referrer"     *ngIf="hasRequiredRole(['admin','receptionist'])" class="submenu-link"  [class.active-link]="isActive('/referrer')">Referrer</a>
           <a routerLink="/triage"      *ngIf="hasRequiredRole(['admin','receptionist'])" class="submenu-link"  [class.active-link]="isActive('/triage')">Triage</a>

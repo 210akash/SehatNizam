@@ -49,7 +49,6 @@
               <p class="patient-mrn">{{ getPatientMrn() }}</p>
               <div class="patient-meta">
                 <span>{{ getPatientAgeGender() }}</span>
-                <span>Token {{ selectedAppointment?.tokenNumber || '-' }}</span>
                 <span>{{ getPatientPhone() }}</span>
               </div>
             </div>
@@ -186,11 +185,11 @@
                   <mat-form-field appearance="outline">
                     <input matInput type="number" placeholder="RBS" formControlName="bloodSugar" />
                   </mat-form-field>
-                  <mat-form-field appearance="outline">
+                  <!-- <mat-form-field appearance="outline">
                     <mat-select formControlName="sugarTypeId" placeholder="Type">
                       <mat-option *ngFor="let item of sugarTypes" [value]="item.id">{{ item.name }}</mat-option>
                     </mat-select>
-                  </mat-form-field>
+                  </mat-form-field> -->
                 </div>
               </div>
             </div>

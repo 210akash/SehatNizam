@@ -51,13 +51,13 @@ export class CreateTriageComponent implements OnInit {
     @Optional() @Inject(MAT_DIALOG_DATA) public data: { element: any } | null
   ) { }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.initialElement = this.data?.element ?? history.state?.element ?? null;
+    await  this.loadDropdowns();
     this.buildForm();
     this.registerBmiCalculation();
     this.setupDirtyTracking();
     this.setupAppointmentAutocomplete();
-    this.loadDropdowns();
     this.loadAppointmentQueue();
   }
 
@@ -81,7 +81,7 @@ export class CreateTriageComponent implements OnInit {
       heightCm: [null],
       bmi: [{ value: null, disabled: true }],
       bloodSugar: [null],
-      sugarTypeId: [null, Validators.required],
+      sugarTypeId: [1 || null, Validators.required],
       triagePriorityId: [null, Validators.required],
       chiefComplaint: [''],
       allergies: [''],
@@ -91,6 +91,13 @@ export class CreateTriageComponent implements OnInit {
     });
   }
 
+  async loadDropdowns() {
+    await this.loadTriageCategories();
+    await this.loadTriagePriorities();
+    await this.loadSugarTypes();
+  }
+
+  
   private setupDirtyTracking() {
     this.createTriageForm.valueChanges.subscribe(() => {
       if (!this.suppressDirtyTracking) {
@@ -134,11 +141,7 @@ export class CreateTriageComponent implements OnInit {
     });
   }
 
-  async loadDropdowns() {
-    await this.loadTriageCategories();
-    await this.loadTriagePriorities();
-    await this.loadSugarTypes();
-  }
+
 
   private async loadTriageCategories() {
     const filter: any = { pagingData: { currentPage: 0, take: 1000 } };
@@ -168,6 +171,7 @@ export class CreateTriageComponent implements OnInit {
     const filter = {
       code: '',
       statusId : 5,
+      bookingFormType : 5,
       fdate: today,
       tdate: today,
       PagingData: { currentPage: 0, take: 100 }
@@ -347,7 +351,7 @@ export class CreateTriageComponent implements OnInit {
       return appointment;
     }
 
-    const token = appointment.tokenNumber ? `Token ${appointment.tokenNumber}` : `Appointment #${appointment.id}`;
+    const token = `Booking # ${appointment.id}`;
     const patientName = appointment.patient?.name ? ` - ${appointment.patient.name}` : '';
     return `${token}${patientName}`;
   };

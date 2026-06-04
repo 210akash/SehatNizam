@@ -5,6 +5,7 @@ namespace ERP.BusinessModels.ResponseVM
     public class GetTriage
     {
         public long Id { get; set; }
+        public GetAppointment Appointment { get; set; }
         public long AppointmentId { get; set; }
         public Guid PatientId { get; set; }
         public Guid? NurseId { get; set; }

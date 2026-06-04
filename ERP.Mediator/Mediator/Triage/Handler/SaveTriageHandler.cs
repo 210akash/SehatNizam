@@ -96,6 +96,7 @@ namespace ERP.Mediator.Mediator.Triage.Handler
                 TriageScore = command.TriageScore,
                 CreatedById =  sessionProvider.Session.LoggedInUserId,
                 CreatedDate = DateTime.Now,
+                TakenAt = DateTime.Now,
                 ModifiedById = isNew ? null : sessionProvider.Session.LoggedInUserId,
                 ModifiedDate = isNew ? null : DateTime.Now
             };

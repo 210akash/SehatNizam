@@ -614,9 +614,14 @@
        .ForMember(dest => dest.ModifiedById, opt => opt.Ignore())
        .ForMember(dest => dest.ModifiedDate, opt => opt.Ignore())
        .ReverseMap();
-            this.CreateMap<Triage, GetTriage>().ReverseMap();
+            CreateMap<Triage, GetTriage>()
+    .ForMember(d => d.Patient,
+        opt => opt.MapFrom(s => s.Appointment.Patient))
+    .ReverseMap();
             this.CreateMap<TriageCategory, SaveTriageCategoryCommand>().ReverseMap();
             this.CreateMap<TriageCategory, GetTriageCategory>().ReverseMap();
+            this.CreateMap<TriagePriority, GetTriagePriority>().ReverseMap();
+            CreateMap<PriorityLevel, GetTriagePriority>().ReverseMap();
             this.CreateMap<Appointment, GetAppointment>().ReverseMap();
             this.CreateMap<SugarType, SaveSugarTypeCommand>().ReverseMap();
             this.CreateMap<SugarType, GetSugarType>().ReverseMap();

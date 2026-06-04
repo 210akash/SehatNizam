@@ -1,6 +1,6 @@
 <div class="header-container">
     <h2>Triage</h2>
-    <button  mat-mini-fab aria-label="Add" color="success" (click)="openTriageDialog(null)" matTooltip="Add Triage">
+    <button mat-mini-fab aria-label="Add" color="success" (click)="openTriageDialog(null)" matTooltip="Add Triage">
         <mat-icon>add</mat-icon>
     </button>
 </div>
@@ -8,14 +8,20 @@
 <div class="body-container">
     <form [formGroup]="triageFilterForm" class="form-horizontal form-label-left">
         <div class="row">
-            <div class="col-md-4">
-                <mat-form-field class="form-field">
-                    <mat-label>Appointment Id</mat-label>
-                    <input matInput placeholder="Appointment Id" formControlName="appointmentId">
+            <div class="col-lg-3 col-md-3 col-sm-7 col-12">
+                <mat-form-field class="filter-field" appearance="outline">
+                    <mat-label>Patient Name</mat-label>
+                    <input matInput formControlName="name" placeholder="Search by patient name"
+                        (keyup)="filterData()" />
+                    <mat-icon matSuffix>person</mat-icon>
                 </mat-form-field>
             </div>
-            <div class="col-md-2 btn-col">
-                <button mat-flat-button color="primary" type="button" (click)="bindData()">Search</button>
+            <div class="col-lg-2 col-md-3 col-sm-6 col-12">
+                <mat-form-field class="filter-field" appearance="outline">
+                    <mat-label>Booking #</mat-label>
+                    <input matInput formControlName="bookingNo" placeholder="Search by MRN" (keyup)="filterData()" />
+                    <mat-icon matSuffix>person</mat-icon>
+                </mat-form-field>
             </div>
         </div>
     </form>
@@ -23,51 +29,61 @@
     <div class="mat-elevation-z8 table-responsive mt-2">
         <table mat-table [dataSource]="dataSource" matSort>
 
-            <ng-container matColumnDef="appointmentId">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-dark"> Appointment Id</th>
-                <td mat-cell *matCellDef="let element"> {{element.appointmentId}} </td>
-            </ng-container>
+               <!-- Appointment Date -->
+    <ng-container matColumnDef="appointmentDate">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Appointment Date</th>
+      <td mat-cell *matCellDef="let element"> {{ element.appointment?.appointmentDate | date:'short' }} </td>
+    </ng-container>
 
-            <ng-container matColumnDef="triageCategoryId">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-dark"> Triage Category</th>
-                <td mat-cell *matCellDef="let element"> {{element.triageCategoryName || element.triageCategoryId}} </td>
-            </ng-container>
+  <!-- Patient -->
+    <ng-container matColumnDef="patient">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Patient</th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.appointment?.patient?.name }}
+        <div class="muted">{{ element.appointment?.patient?.phoneNo }}</div>
+      </td>
+    </ng-container>
 
-            <ng-container matColumnDef="triagePriorityId">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-dark"> Priority</th>
-                <td mat-cell *matCellDef="let element"> {{element.triagePriorityName || element.triagePriorityId}} </td>
-            </ng-container>
+    <!-- Booking # -->
+    <ng-container matColumnDef="bookingNumber">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Booking #</th>
+      <td mat-cell *matCellDef="let element"> {{ element.appointment?.id }} </td>
+    </ng-container>
 
-            <ng-container matColumnDef="sugarTypeId">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-dark"> Sugar Type</th>
-                <td mat-cell *matCellDef="let element"> {{element.sugarTypeName || element.sugarTypeId}} </td>
-            </ng-container>
+        <!-- Token -->
+    <ng-container matColumnDef="tokenNumber">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Token #</th>
+      <td mat-cell *matCellDef="let element"> {{ element.appointment?.tokenNumber }} </td>
+    </ng-container>
 
-            <ng-container matColumnDef="triageScore">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-dark"> Score</th>
-                <td mat-cell *matCellDef="let element"> {{element.triageScore}} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="createdDate">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-dark"> Created Date</th>
-                <td mat-cell *matCellDef="let element"> {{element.createdDate | date: 'd MMM y h:mm a'}} </td>
-            </ng-container>
+     <!-- Doctor -->
+    <ng-container matColumnDef="doctor">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Doctor</th>
+      <td mat-cell *matCellDef="let element"> {{ element.appointment?.doctor?.firstName }} {{ element.appointment?.doctor?.lastName }} </td>
+    </ng-container>
 
             <ng-container matColumnDef="actions">
                 <th mat-header-cell *matHeaderCellDef style="width: 12%;"> Actions </th>
                 <td mat-cell mat-cell *matCellDef="let element">
                     <div class="action_btns">
-                        <button *appHasRole="['admin', 'sales', 'audit']" mat-mini-fab matTooltip="Edit" color="primary" (click)="openTriageDialog(element)">
+                        <button *appHasRole="['admin', 'sales', 'audit']" mat-mini-fab matTooltip="Edit" color="primary"
+                            (click)="openTriageDialog(element)">
                             <mat-icon aria-label="Edit">edit</mat-icon>
                         </button>
 
-                        <button mat-mini-fab matTooltip="View" color="dark" (click)="openViewTriageDialog('3000ms', '1500ms', element)">
+                        <button mat-mini-fab matTooltip="View" color="dark"
+                            (click)="openViewTriageDialog('3000ms', '1500ms', element)">
                             <mat-icon aria-label="View">visibility</mat-icon>
                         </button>
 
-                        <button *appHasRole="['admin', 'sales', 'audit']" mat-mini-fab matTooltip="Delete" color="warn" (click)="openDeleteDialog(element)">
+                        <button *appHasRole="['admin', 'sales', 'audit']" mat-mini-fab matTooltip="Delete" color="warn"
+                            (click)="openDeleteDialog(element)">
                             <mat-icon aria-label="Delete">delete</mat-icon>
                         </button>
+                          <button mat-mini-fab matTooltip="Print" color="pink"
+            (click)="printAppoinmnetDialog(element.appointment)">
+            <mat-icon aria-label="Print">print</mat-icon>
+          </button>
                     </div>
                 </td>
             </ng-container>

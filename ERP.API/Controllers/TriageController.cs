@@ -6,6 +6,9 @@ using System;
 using MediatR;
 using ERP.Mediator.Mediator.Triage.Command;
 using Microsoft.AspNetCore.Authorization;
+using ERP.BusinessModels.ResponseVM;
+using ERP.Mediator.Mediator.Triage.Query;
+using System.Collections.Generic;
 
 namespace ERP.API.Controllers
 {
@@ -19,6 +22,20 @@ namespace ERP.API.Controllers
         public TriageController(IMediator mediator)
         {
             this.mediator = mediator;
+        }
+
+        [HttpPost]
+        [Route("GetAllTriage")]
+        public async Task<ActionResult<Tuple<IEnumerable<GetTriage>, long>>> GetAll(GetAllTriageQuery getAllTriageQuery)
+        {
+            try
+            {
+                return await this.mediator.Send(getAllTriageQuery);
+            }
+            catch (Exception ex)
+            {
+                return this.Result(ResponseStatus.Error, null, ex.Message);
+            }
         }
 
         [HttpPost]

@@ -8,6 +8,7 @@ import { DeleteTriageComponent } from '../delete-triage/delete-triage.component'
 import { ViewTriageComponent } from '../view-triage/view-triage.component';
 import { ConstantService } from '../../../../Service/constant.service';
 import { Router } from '@angular/router';
+import { PrintAppoinmentComponent } from '../../appointment/print-appoinment/print-appoinment.component';
 
 @Component({
   selector: 'app-triage-list',
@@ -18,7 +19,14 @@ export class TriageListComponent implements OnInit {
   dataSource: any;
   triageFilterForm!: FormGroup;
   isEditMode = false;
-  displayedColumns: string[] = ['appointmentId', 'triageCategoryId', 'triagePriorityId', 'sugarTypeId', 'triageScore', 'createdDate', 'actions'];
+  displayedColumns: string[] = 
+  [ 'appointmentDate',
+    'patient',
+    'bookingNumber',
+    'tokenNumber',
+    'doctor',
+    'actions'
+  ];
   isLoading = false;
 
   currentPage = 0;
@@ -39,7 +47,8 @@ export class TriageListComponent implements OnInit {
     this.pageSize = this.constantService.defaultItemPerPage;
 
     this.triageFilterForm = this.formBuilder.group({
-      appointmentId: ['']
+      bookingNo: [''],
+      name: ['']
     });
 
     this.bindData();
@@ -47,7 +56,7 @@ export class TriageListComponent implements OnInit {
 
   openTriageDialog(element: any): void {
     const navigationExtras = element ? { state: { element } } : undefined;
-    this.router.navigate(['/newtriage'], navigationExtras);
+    this.router.navigate(['/triage'], navigationExtras);
   }
 
   openViewTriageDialog(enterAnimationDuration: string, exitAnimationDuration: string, element: any): void {
@@ -62,6 +71,10 @@ export class TriageListComponent implements OnInit {
       exitAnimationDuration,
     };
   }
+
+  async filterData(){
+  await this.bindData()
+ }
 
   async bindData() {
     this.isLoading = true;
@@ -110,4 +123,15 @@ export class TriageListComponent implements OnInit {
       this.bindData();
     });
   }
+
+    printAppoinmnetDialog(element: any) {
+      const dialogRef = this.dialog.open(PrintAppoinmentComponent, {
+        panelClass: 'cstm_width_1100',
+        maxHeight: '90vh',
+        data: {
+          element: element,
+        },
+        disableClose: true
+      });
+    }
 }

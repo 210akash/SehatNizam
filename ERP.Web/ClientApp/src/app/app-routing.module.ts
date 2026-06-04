@@ -258,6 +258,7 @@ const routes: Routes = [
       { path: 'doctor', component: DoctorListComponent, canActivate: [AuthGuard] },
       { path: 'doctorappointment', component: DoctorAppointmentListComponent, canActivate: [AuthGuard] },
       { path: 'triagecategory', component: TriageCategoryListComponent, canActivate: [AuthGuard], data: {roles: ["receptionist"] } },
+      { path: 'triagelist', component: TriageListComponent, canActivate: [AuthGuard], data: {roles: ["receptionist"] } },
        { path: 'triage', component: CreateTriageComponent, canActivate: [AuthGuard] },
        { path: 'laborder', component: LabOrderListComponent, canActivate: [AuthGuard] },
        { path: 'newlaborder', component: AddLabOrderComponent, canActivate: [AuthGuard] },

@@ -560,8 +560,7 @@ export class PrintAppoinmentComponent {
 
   getVitalValue(key: string): string {
     const triage = this.data?.element?.triage
-      || this.data?.element?.latestTriage
-      || this.data?.element?.triageDetail
+      || this.data?.element?.appoinment?.triage
       || {};
 
     switch (key) {

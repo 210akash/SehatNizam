@@ -1,5 +1,5 @@
 export class TriageEndPoints {
-    public readonly getAllTriage = "/GetAllTriages";
+    public readonly getAllTriage = "/GetAllTriage";
     public readonly saveTriage = "/SaveTriage";
     public readonly deleteTriage = "/DeleteTriage";
 }

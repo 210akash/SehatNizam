@@ -48,7 +48,10 @@ export class TriageListComponent implements OnInit {
     this.pageSize = this.constantService.defaultItemPerPage;
 
     this.triageFilterForm = this.formBuilder.group({
+      fDate: [new Date()],
+      tDate: [new Date()],
       bookingNo: [''],
+      tokenNo: [''],
       name: ['']
     });
 

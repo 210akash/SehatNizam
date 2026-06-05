@@ -114,14 +114,14 @@ export class CreateTriageComponent implements OnInit {
       switchMap((value: string | any) => {
         const term = typeof value === 'string'
           ? value.trim()
-          : String(value?.tokenNumber ?? value?.id ?? '').trim();
+          : String(value?.id ?? '').trim();
 
         if (!term) {
           return of([]);
         }
 
         this.appointmentLoading = true;
-        return this.appointmentService.getAppointmentByToken(term,5).pipe(
+        return this.appointmentService.getAppointmentsByBookingNo(term).pipe(
           map((data: any) => data?.item1 ?? data ?? []),
           finalize(() => (this.appointmentLoading = false))
         );
@@ -276,7 +276,7 @@ export class CreateTriageComponent implements OnInit {
     });
   }
 
-  private resetFormForAppointment(appointmentId: number) {
+  private resetFormForAppointment(appointmentId: any) {
     this.createTriageForm.reset({
       id: 0,
       appointmentId,
@@ -305,7 +305,9 @@ export class CreateTriageComponent implements OnInit {
   async saveTriage(moveNext = false) {
     this.isLoading = true;
     this.createTriageForm.get('appointmentId')?.setValue(this.selectedAppointment?.id ?? null);
-
+   if(this.selectedAppointment?.id ==  null){
+          this.notificationsService.showNotification('Please Select Booking', 'snack-bar-danger');
+   }
     if (this.createTriageForm.invalid) {
       this.constantService.markFormGroupTouched(this.createTriageForm);
       this.isLoading = false;
@@ -380,6 +382,7 @@ export class CreateTriageComponent implements OnInit {
     }
 
     this.appointmentSearchCtrl.setValue('', { emitEvent: false });
+    this.resetFormForAppointment(null);
   }
 
   lookupAppointment(): void {
@@ -483,4 +486,9 @@ export class CreateTriageComponent implements OnInit {
     const ageDate = new Date(diff);
     return Math.abs(ageDate.getUTCFullYear() - 1970);
   }
+
+    onCancel(): void {
+      this.router.navigate(['/triagelist']);
+      return;
+    }
 }

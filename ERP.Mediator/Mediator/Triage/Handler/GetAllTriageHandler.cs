@@ -25,26 +25,27 @@ namespace ERP.Mediator.Mediator.Triage.Handler
 
 
 
-        public async Task<Tuple<IEnumerable<GetTriage>, long>> Handle(
-      GetAllTriageQuery request,
-      CancellationToken cancellationToken)
+        public async Task<Tuple<IEnumerable<GetTriage>, long>> Handle(GetAllTriageQuery request, CancellationToken cancellationToken)
         {
             Expression<Func<Entities.Models.Triage, bool>> predicate = x =>
                 x.IsActive == true
-                && (request.BookingNo == "" || x.Appointment.Patient.Id.ToString().Contains(request.BookingNo))
-                && (request.Name == "" || x.Appointment.Patient.Name.ToLower().Contains(request.Name.ToLower()));
+                  && x.Appointment.AppointmentDate >= request.FDate.Date
+                  && x.Appointment.AppointmentDate <= request.TDate.Date.AddDays(1).AddTicks(-1)
+                  && (request.BookingNo == "" || x.Appointment.Id.ToString().Contains(request.BookingNo))
+                  && (request.TokenNo == "" || x.Appointment.TokenNumber.Contains(request.TokenNo))
+                  && (request.Name == "" || x.Appointment.Patient.Name.ToLower().Contains(request.Name.ToLower()));
 
             Expression<Func<Entities.Models.Triage, object>>[] includes =
             {
-        x => x.Appointment,
-        x => x.Appointment.Doctor,
-        x => x.Appointment.Department,
-        x => x.Appointment.Department.Company,
-    x => x.Appointment.Patient,
-    x => x.Nurse,
-    x => x.SugarType,
-    x => x.TriagePriority,
-    };
+                x => x.Appointment,
+                x => x.Appointment.Doctor,
+                x => x.Appointment.Department,
+                x => x.Appointment.Department.Company,
+                x => x.Appointment.Patient,
+                x => x.Nurse,
+                x => x.SugarType,
+                x => x.TriagePriority,
+            };
 
             Expression<Func<Entities.Models.Triage, object>> OrderBy = null;
             Expression<Func<Entities.Models.Triage, object>> OrderByDesc = x => x.ModifiedDate ?? x.CreatedDate;

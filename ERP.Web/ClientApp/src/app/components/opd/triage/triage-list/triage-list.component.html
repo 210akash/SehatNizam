@@ -8,6 +8,34 @@
 <div class="body-container">
     <form [formGroup]="triageFilterForm" class="form-horizontal form-label-left">
         <div class="row">
+            <div class="col-lg-2 col-md-4 col-sm-6 col-12">
+                <mat-form-field class="filter-field" appearance="outline">
+                    <mat-label>From Date</mat-label>
+                    <input matInput [matDatepicker]="fromPicker" formControlName="fDate" placeholder="Start date"
+                        (dateChange)="filterData()" />
+                    <mat-datepicker-toggle matIconSuffix [for]="fromPicker"></mat-datepicker-toggle>
+                    <mat-datepicker #fromPicker></mat-datepicker>
+                    <mat-icon matPrefix>event</mat-icon>
+                </mat-form-field>
+            </div>
+
+            <div class="col-lg-2 col-md-4 col-sm-6 col-12">
+                <mat-form-field class="filter-field" appearance="outline">
+                    <mat-label>To Date</mat-label>
+                    <input matInput [matDatepicker]="toPicker" formControlName="tDate" placeholder="End date"
+                        (dateChange)="filterData()" />
+                    <mat-datepicker-toggle matIconSuffix [for]="toPicker"></mat-datepicker-toggle>
+                    <mat-datepicker #toPicker></mat-datepicker>
+                    <mat-icon matPrefix>event</mat-icon>
+                </mat-form-field>
+            </div>
+              <div class="col-lg-2 col-md-3 col-sm-6 col-12">
+                <mat-form-field class="filter-field" appearance="outline">
+                    <mat-label>Booking #</mat-label>
+                    <input matInput formControlName="bookingNo" placeholder="Search by Booking #" (keyup)="filterData()" />
+                    <mat-icon matSuffix>person</mat-icon>
+                </mat-form-field>
+            </div>
             <div class="col-lg-3 col-md-3 col-sm-7 col-12">
                 <mat-form-field class="filter-field" appearance="outline">
                     <mat-label>Patient Name</mat-label>
@@ -18,8 +46,8 @@
             </div>
             <div class="col-lg-2 col-md-3 col-sm-6 col-12">
                 <mat-form-field class="filter-field" appearance="outline">
-                    <mat-label>Booking #</mat-label>
-                    <input matInput formControlName="bookingNo" placeholder="Search by MRN" (keyup)="filterData()" />
+                    <mat-label>Token #</mat-label>
+                    <input matInput formControlName="tokenNo" placeholder="Search by Token #" (keyup)="filterData()" />
                     <mat-icon matSuffix>person</mat-icon>
                 </mat-form-field>
             </div>
@@ -29,38 +57,39 @@
     <div class="mat-elevation-z8 table-responsive mt-2">
         <table mat-table [dataSource]="dataSource" matSort>
 
-               <!-- Appointment Date -->
-    <ng-container matColumnDef="appointmentDate">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Appointment Date</th>
-      <td mat-cell *matCellDef="let element"> {{ element.appointment?.appointmentDate | date:'short' }} </td>
-    </ng-container>
+            <!-- Appointment Date -->
+            <ng-container matColumnDef="appointmentDate">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Appointment Date</th>
+                <td mat-cell *matCellDef="let element"> {{ element.appointment?.appointmentDate | date:'short' }} </td>
+            </ng-container>
 
-  <!-- Patient -->
-    <ng-container matColumnDef="patient">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Patient</th>
-      <td mat-cell *matCellDef="let element">
-        {{ element.appointment?.patient?.name }}
-        <div class="muted">{{ element.appointment?.patient?.phoneNo }}</div>
-      </td>
-    </ng-container>
+            <!-- Patient -->
+            <ng-container matColumnDef="patient">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Patient</th>
+                <td mat-cell *matCellDef="let element">
+                    {{ element.appointment?.patient?.name }}
+                    <div class="muted">{{ element.appointment?.patient?.phoneNo }}</div>
+                </td>
+            </ng-container>
 
-    <!-- Booking # -->
-    <ng-container matColumnDef="bookingNumber">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Booking #</th>
-      <td mat-cell *matCellDef="let element"> {{ element.appointment?.id }} </td>
-    </ng-container>
+            <!-- Booking # -->
+            <ng-container matColumnDef="bookingNumber">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Booking #</th>
+                <td mat-cell *matCellDef="let element"> {{ element.appointment?.id }} </td>
+            </ng-container>
 
-        <!-- Token -->
-    <ng-container matColumnDef="tokenNumber">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Token #</th>
-      <td mat-cell *matCellDef="let element"> {{ element.appointment?.tokenNumber }} </td>
-    </ng-container>
+            <!-- Token -->
+            <ng-container matColumnDef="tokenNumber">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Token #</th>
+                <td mat-cell *matCellDef="let element"> {{ element.appointment?.tokenNumber }} </td>
+            </ng-container>
 
-     <!-- Doctor -->
-    <ng-container matColumnDef="doctor">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Doctor</th>
-      <td mat-cell *matCellDef="let element"> {{ element.appointment?.doctor?.firstName }} {{ element.appointment?.doctor?.lastName }} </td>
-    </ng-container>
+            <!-- Doctor -->
+            <ng-container matColumnDef="doctor">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Doctor</th>
+                <td mat-cell *matCellDef="let element"> {{ element.appointment?.doctor?.firstName }} {{
+                    element.appointment?.doctor?.lastName }} </td>
+            </ng-container>
 
             <ng-container matColumnDef="actions">
                 <th mat-header-cell *matHeaderCellDef style="width: 12%;"> Actions </th>
@@ -80,10 +109,9 @@
                             (click)="openDeleteDialog(element)">
                             <mat-icon aria-label="Delete">delete</mat-icon>
                         </button>
-                          <button mat-mini-fab matTooltip="Print" color="pink"
-            (click)="printAppoinmnetDialog(element)">
-            <mat-icon aria-label="Print">print</mat-icon>
-          </button>
+                        <button mat-mini-fab matTooltip="Print" color="pink" (click)="printAppoinmnetDialog(element)">
+                            <mat-icon aria-label="Print">print</mat-icon>
+                        </button>
                     </div>
                 </td>
             </ng-container>
@@ -91,10 +119,8 @@
             <tr mat-header-row *matHeaderRowDef="displayedColumns;  sticky: true"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
-
         <mat-paginator #paginator [length]="totalRows" [pageIndex]="currentPage" [pageSize]="pageSize"
             [pageSizeOptions]="pageSizeOptions" (page)="pageChanged($event)" aria-label="Select page">
         </mat-paginator>
-
     </div>
 </div>

@@ -10,4 +10,5 @@ export class AppointmentEndPoints {
     public readonly saveConsultation = '/SaveConsultation';
     public readonly confirmAppointment = '/ConfirmAppointment';
     public readonly cancelAppoinment = '/CancelAppoinment';
+    public readonly getAppointmentsByBookingNo = '/GetAppointmentsByBookingNo';
 }

@@ -35,7 +35,9 @@ export class PrintResultComponent implements OnInit {
         box-sizing: border-box;
       }
 
-      .report-sheet {
+      .report-sheet,
+      .card,
+      .print-dialog {
         width: 100%;
         max-width: 210mm;
         margin: 0 auto;
@@ -44,7 +46,8 @@ export class PrintResultComponent implements OnInit {
         color: #232323;
       }
 
-      .report-header {
+      .report-header,
+      .card-body {
         display: flex;
         justify-content: space-between;
         flex-wrap: wrap;
@@ -52,10 +55,135 @@ export class PrintResultComponent implements OnInit {
         align-items: flex-start;
       }
 
-      .report-title-group {
+      .report-title-group,
+      .slip-top {
         display: flex;
         align-items: center;
         gap: 14px;
+      }
+
+      .hospital-copy {
+        text-align: center;
+      }
+
+      .slip-sheet {
+        width: 100%;
+        min-height: auto;
+        margin: 0;
+        padding: 12mm;
+        background: #fff;
+        color: #404040;
+      }
+
+      .summary-card {
+        display: flex;
+        justify-content: space-between;
+        gap: 18px;
+        padding: 10px 12px;
+        border: 1px solid #d4d4d4;
+        border-radius: 8px;
+      }
+
+      .patient-summary-grid {
+        flex: 1;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px 26px;
+      }
+
+      .summary-pair {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+      }
+
+      .summary-head {
+        font-size: 0.62rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: #7b7b7b;
+      }
+
+      .summary-side {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .token-circle {
+        width: 58px;
+        height: 58px;
+        border: 2px solid #202020;
+        border-radius: 50%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .token-label {
+        font-size: 0.44rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        line-height: 1;
+      }
+
+      .token-value {
+        font-size: 0.5rem;
+        font-weight: 500;
+        line-height: 1;
+        margin-top: 2px;
+      }
+
+      .section-title {
+        margin: 18px 0 8px;
+        font-size: 0.96rem;
+        font-weight: 700;
+      }
+
+      .top-rule,
+      .section-rule,
+      .footer-rule {
+        border-top: 2px solid #202020;
+      }
+
+      .top-rule {
+        margin: 12px 0 18px;
+      }
+
+      .section-rule {
+        margin-bottom: 16px;
+        border-top-width: 1px;
+        border-top-color: #d9d9d9;
+      }
+
+      .slip-footer {
+        padding-top: 6px;
+        text-align: center;
+      }
+
+      .footer-warning {
+        font-size: 0.58rem;
+        font-weight: 700;
+        color: #333;
+      }
+
+      .footer-meta {
+        margin-top: 6px;
+        font-size: 0.54rem;
+        color: #666;
+      }
+
+      .report-footer,
+      .slip-footer {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+        margin-top: 12px;
+        font-size: 0.82rem;
+        color: #6b7280;
       }
 
       .hospital-mark {
@@ -117,6 +245,7 @@ export class PrintResultComponent implements OnInit {
         text-transform: uppercase;
       }
 
+      .hospital-copy h1,
       .report-title-group h1 {
         margin: 0;
         font-size: 1.25rem;
@@ -124,6 +253,7 @@ export class PrintResultComponent implements OnInit {
         letter-spacing: 0.01em;
       }
 
+      .hospital-copy p,
       .report-title-group p {
         margin: 8px 0 0;
         font-size: 0.86rem;
@@ -198,7 +328,8 @@ export class PrintResultComponent implements OnInit {
         color: #111827;
       }
 
-      .result-table {
+      .result-table,
+      .lab-results-table {
         width: 100%;
         border-collapse: collapse;
         margin-top: 12px;
@@ -206,14 +337,17 @@ export class PrintResultComponent implements OnInit {
       }
 
       .result-table th,
-      .result-table td {
+      .result-table td,
+      .lab-results-table th,
+      .lab-results-table td {
         padding: 12px 14px;
         border: 1px solid #e5e7eb;
         text-align: left;
         vertical-align: middle;
       }
 
-      .result-table th {
+      .result-table th,
+      .lab-results-table th {
         background: #f3f4f6;
         color: #374151;
         font-size: 0.78rem;
@@ -222,8 +356,24 @@ export class PrintResultComponent implements OnInit {
         letter-spacing: 0.06em;
       }
 
-      .result-table tbody tr:nth-child(even) {
+      .result-table tbody tr:nth-child(even),
+      .lab-results-table tbody tr:nth-child(even) {
         background: #f9fafb;
+      }
+
+      .table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .table-bordered {
+        border: 1px solid #e5e7eb;
+      }
+
+      .table-bordered th,
+      .table-bordered td {
+        border: 1px solid #e5e7eb;
+        padding: 8px 12px;
       }
 
       .empty-state {
@@ -342,7 +492,7 @@ export class PrintResultComponent implements OnInit {
 
   getHospitalName(): string {
     const source = this.getSource();
-    return source?.department?.company?.name
+    return source?.appointment?.department?.company?.name
       || this.getAppointment()?.department?.company?.name
       || 'Sehat Nizam Diagnostic Center';
   }

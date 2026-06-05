@@ -11,7 +11,7 @@
           <section class="panel identification-panel">
             <div class="panel-head">
               <h3>Patient Identification</h3>
-              <p>Scan bracelet or search MRN</p>
+              <p>Scan bracelet or search Booking #</p>
             </div>
 
             <div class="lookup-row">
@@ -19,7 +19,7 @@
                 <input
                   matInput
                   type="search"
-                  placeholder="Scan MRN / Barcode..."
+                  placeholder="Search Booking /Scan Barcode..."
                   [formControl]="appointmentSearchCtrl"
                   [matAutocomplete]="appointmentAuto"
                   (input)="onAppointmentInputCleared($event)" />
@@ -28,7 +28,7 @@
                   [displayWith]="displayAppointment"
                   (optionSelected)="onAppointmentSelected($event.option.value)">
                   <mat-option *ngFor="let appointment of filteredAppointments$ | async" [value]="appointment">
-                    Token {{ appointment.tokenNumber || '-' }}
+                       Booking # {{ appointment.id || '-' }}
                     <span *ngIf="appointment.patient?.name"> - {{ appointment.patient?.name }}</span>
                   </mat-option>
                 </mat-autocomplete>
@@ -210,10 +210,24 @@
               </mat-form-field>
             </div>
 
-            <button mat-flat-button color="primary" type="button" class="save-button" (click)="saveTriage()" [disabled]="isLoading">
+  <div class="nav-actions">
+       <button mat-stroked-button type="button" class="save-button" (click)="saveTriage()" [disabled]="isLoading">
               <mat-icon>save</mat-icon>
               {{ isEditMode ? 'Update & Queue' : 'Save & Queue' }}
             </button>
+              <button
+                mat-stroked-button
+                type="button"
+                color="primary"
+                (click)="onCancel()">
+                Back To List
+              </button>
+            </div>
+
+            <!-- <button mat-flat-button color="primary" type="button" class="save-button" (click)="saveTriage()" [disabled]="isLoading">
+              <mat-icon>save</mat-icon>
+              {{ isEditMode ? 'Update & Queue' : 'Save & Queue' }}
+            </button> -->
           </section>
         </div>
 

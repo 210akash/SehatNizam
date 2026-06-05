@@ -74,4 +74,10 @@ export class AppointmentService extends BaseService<any> {
         return this.get('?id=' + id, this.endPointControllerName + this.AppointmentEndPoints.cancelAppoinment)
             .pipe(map((data: any) => data));
     }
+
+     getAppointmentsByBookingNo(token: string) {
+        return this.get('?bookingNo=' + token, this.endPointControllerName + this.AppointmentEndPoints.getAppointmentsByBookingNo)
+            .pipe(map((data: any) => data));
+    }
+
 }

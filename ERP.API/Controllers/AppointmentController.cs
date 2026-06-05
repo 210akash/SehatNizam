@@ -191,6 +191,18 @@ namespace ERP.API.Controllers
             }
         }
 
-        
+        [HttpGet]
+        [Route("GetAppointmentsByBookingNo")]
+        public async Task<ActionResult<List<GetAppointment>>> GetAppointmentsByBookingNo(string BookingNo)
+        {
+            try
+            {
+                return await this.mediator.Send(new GetAppointmentsByBookingNoQuery(BookingNo));
+            }
+            catch (Exception ex)
+            {
+                return this.Result(ResponseStatus.Error, null, ex.Message);
+            }
+        }
     }
 }

@@ -1,0 +1,150 @@
+<div class="card print-dialog">
+  <div class="card-header no-print">
+    <div class="header-container">
+      <div class="card-title">Patient Encounter Form</div>
+      <div class="header-actions">
+        <button mat-flat-button color="primary" type="button" class="print-button mr-2" (click)="printDocument()">
+          <span class="mat-button-wrapper">Print</span>
+        </button>
+        <button mat-flat-button color="default" type="button" (click)="closeDialog()">
+          <span class="mat-button-wrapper">Close</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-body" id="printDoc">
+    <div class="slip-sheet">
+      <div class="slip-top">
+        <div class="hospital-mark" aria-hidden="true">
+          <div class="mark-cross"></div>
+        </div>
+        <div class="hospital-copy">
+          <h1>{{ getHospitalName() }}</h1>
+          <p>{{ getHospitalSubtitle() }}</p>
+        </div>
+      </div>
+
+      <div class="top-rule"></div>
+
+      <div class="summary-card">
+        <div class="patient-summary-grid">
+          <div class="summary-pair">
+            <span class="summary-head">Patient Name</span>
+            <strong>{{ getPatient()?.name || '-' }}</strong>
+          </div>
+          <div class="summary-pair">
+            <span class="summary-head">MRN</span>
+            <strong>{{ getPatient()?.mrn || '-' }}</strong>
+          </div>
+          <div class="summary-pair">
+            <span class="summary-head">Age / Gender</span>
+            <strong>{{ getPatientAgeGender() }}</strong>
+          </div>
+          <div class="summary-pair">
+            <span class="summary-head">Date</span>
+            <strong>{{ formatAppointmentDateLong() }} {{formatAppointmentTime()}}</strong>
+          </div>
+          <div class="summary-pair">
+            <span class="summary-head">Consultant</span>
+            <strong>{{ getDoctorName() }}</strong>
+          </div>
+          <div class="summary-pair">
+            <span class="summary-head">Department</span>
+            <strong>{{ getDepartment()?.name || '-' }}</strong>
+          </div>
+        </div>
+
+        <div class="summary-side">
+          <div class="token-circle">
+            <span class="token-label">Token</span>
+            <span class="token-value">{{ getAppointment()?.tokenNumber || '-' }}</span>
+          </div>
+          <div class="qr-box" aria-hidden="true">
+            <img *ngIf="qrCodeUrl; else qrFallback" [src]="qrCodeUrl" alt="" class="qr-image" />
+            <ng-template #qrFallback>
+              <div class="qr-grid">
+                <span *ngFor="let cell of qrCells" [class.filled]="cell"></span>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-title">Clinical Findings &amp; Rx</div>
+      <div class="section-rule"></div>
+
+      <div class="clinical-board">
+        <div class="vitals-column">
+          <div class="vitals-title">Vitals</div>
+
+          <div class="vital-box">
+            <span class="vital-name">BP (mmHg)</span>
+            <span class="vital-value">{{ getVitalValue('bp') }}</span>
+          </div>
+
+          <div class="vital-box">
+            <span class="vital-name">Pulse (bpm)</span>
+            <span class="vital-value">{{ getVitalValue('pulse') }}</span>
+          </div>
+
+          <div class="vital-box">
+            <span class="vital-name">Temp (°C)</span>
+            <span class="vital-value">{{ getVitalValue('temperature') }}</span>
+          </div>
+
+          <div class="vital-box">
+            <span class="vital-name">SpO2 (%)</span>
+            <span class="vital-value">{{ getVitalValue('spo2') }}</span>
+          </div>
+
+          <div class="vital-box">
+            <span class="vital-name">Weight (kg)</span>
+            <span class="vital-value">{{ getVitalValue('weight') }}</span>
+          </div>
+
+          <div class="vital-box">
+            <span class="vital-name">Height (cm)</span>
+            <span class="vital-value">{{ getVitalValue('heightCm') }}</span>
+          </div>
+
+          <div class="vital-box">
+            <span class="vital-name">RBS</span>
+            <span class="vital-value">{{ getVitalValue('rbs') }}</span>
+          </div>
+
+          <div class="vital-box">
+            <span class="vital-name">Sugar Type</span>
+            <span class="vital-value">{{ getSugarType() }}</span>
+          </div>
+
+          <div class="vital-box">
+            <span class="vital-name">Priority</span>
+            <span class="vital-value">{{ getTriagePriority() }}</span>
+          </div>
+        </div>
+
+        <div class="notes-column">
+          <div class="notes-title">Chief Complaint, Examination Notes, Diagnosis &amp; Plan</div>
+          <div class="notes-space">
+            <p *ngIf="getClinicalNarrative()">{{ getClinicalNarrative() }}</p>
+          </div>
+
+          <div class="signature-area">
+            <div class="signature-line"></div>
+            <strong>{{ getDoctorName() }}</strong>
+            <span>Signature</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-rule"></div>
+      <div class="slip-footer">
+        <div class="footer-warning">Not valid for medico-legal purposes</div>
+        <div class="footer-meta">
+          Printed on {{ currentDate }}, {{ currentTime }} · {{ getHospitalName() }} · Medical Record
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -9,6 +9,7 @@ import { ViewTriageComponent } from '../view-triage/view-triage.component';
 import { ConstantService } from '../../../../Service/constant.service';
 import { Router } from '@angular/router';
 import { PrintAppoinmentComponent } from '../../appointment/print-appoinment/print-appoinment.component';
+import { PrintTriageComponent } from '../print-triage/print-triage.component';
 
 @Component({
   selector: 'app-triage-list',
@@ -125,7 +126,7 @@ export class TriageListComponent implements OnInit {
   }
 
     printAppoinmnetDialog(element: any) {
-      const dialogRef = this.dialog.open(PrintAppoinmentComponent, {
+      const dialogRef = this.dialog.open(PrintTriageComponent, {
         panelClass: 'cstm_width_1100',
         maxHeight: '90vh',
         data: {

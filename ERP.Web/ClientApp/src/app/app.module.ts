@@ -898,6 +898,7 @@ import { ReferrerListComponent } from './components/opd/referrer/referrer-list/r
 import { ReferrerService } from './components/opd/referrer/referrer.service';
 import { ReferrerEndPoints } from './components/opd/referrer/referrer.endpoints';
 import { BookAppointmentListComponent } from './components/opd/appointment/book-appointment-list/book-appointment-list.component';
+import { PrintTriageComponent } from './components/opd/triage/print-triage/print-triage.component';
 const matFormFieldDefaults: MatFormFieldDefaultOptions = {
     appearance: 'outline'
     , subscriptSizing: 'dynamic'
@@ -1536,7 +1537,8 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         ViewReferrerComponent,
         DeleteReferrerComponent,
         ReferrerListComponent,
-        BookAppointmentListComponent
+        BookAppointmentListComponent,
+        PrintTriageComponent
     ],
     bootstrap: [AppComponent], imports: [
         InputMaskModule,

@@ -29,8 +29,7 @@ export class AddRoomComponent {
       code: ['', Validators.required],
       name: ['', Validators.required],
       description: [''],
-      wardId: ['', Validators.required],
-      companyId: [0],
+      wardId: ['', Validators.required]
     });
     
     this.LoadData(this.data.element);

@@ -4,7 +4,7 @@ namespace ERP.Entities.Models
 {
     public class Room : BaseEntity
     {
-        [MaxLength(2)]
+        [MaxLength(4)]
         public string Code { get; set; }
         public string Name { get; set; }
         public long WardId { get; set; }

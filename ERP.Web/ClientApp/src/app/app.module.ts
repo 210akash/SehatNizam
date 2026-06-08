@@ -924,6 +924,9 @@ import { BedEndPoints } from './components/IPD/bed/bed.endpoints';
 import { ViewBedComponent } from './components/IPD/bed/view-bed/view-bed.component';
 import { DeleteBedComponent } from './components/IPD/bed/delete-bed/delete-bed.component';
 import { BedListComponent } from './components/IPD/bed/bed-list/bed-list.component';
+import { AdmissionService } from './components/IPD/admission/admission.service';
+import { AdmissionEndPoints } from './components/IPD/admission/admission.endpoints';
+import { AddAdmissionComponent } from './components/IPD/admission/add-admission/add-admission.component';
 const matFormFieldDefaults: MatFormFieldDefaultOptions = {
     appearance: 'outline'
     , subscriptSizing: 'dynamic'
@@ -1582,7 +1585,8 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         AddBedComponent,
         ViewBedComponent,
         DeleteBedComponent,
-        BedListComponent
+        BedListComponent,
+        AddAdmissionComponent,
 
     ],
     bootstrap: [AppComponent], imports: [
@@ -1887,6 +1891,8 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         RoomEndPoints,
         BedService,
         BedEndPoints,
+        AdmissionService,
+        AdmissionEndPoints,
         { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
         { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },
         AuthenticationService, {

@@ -51,6 +51,7 @@
     using ERP.Mediator.Mediator.Inspection.Command;
     using ERP.Mediator.Mediator.Interview.Command;
     using ERP.Mediator.Mediator.IPD.Bed.Command;
+    using ERP.Mediator.Mediator.IPD.Room.Command;
     using ERP.Mediator.Mediator.IPD.Ward.Command;
     using ERP.Mediator.Mediator.Issuance.Command;
     using ERP.Mediator.Mediator.Item.Command;
@@ -683,6 +684,15 @@
             CreateMap<AppointmentAttachment, GetAppointmentAttachment>().ReverseMap();
             CreateMap<Referrer, SaveReferrerCommand>().ReverseMap();
             CreateMap<Referrer, GetReferrer>().ReverseMap();
+            CreateMap<Ward, SaveWardCommand>().ReverseMap();
+            CreateMap<Ward, GetWard>().ReverseMap();
+
+            CreateMap<Room, SaveRoomCommand>().ReverseMap();
+            CreateMap<Room, GetRoom>().ReverseMap();
+
+            CreateMap<Bed, SaveBedCommand>().ReverseMap();
+            CreateMap<Bed, GetBed>().ReverseMap();
+
             //this.CreateMap<PayrollDetail, GetPayrollDetail>().ReverseMap();
 
         }

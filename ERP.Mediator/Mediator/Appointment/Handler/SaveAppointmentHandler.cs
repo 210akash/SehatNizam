@@ -261,7 +261,7 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
         {
             var lastPatient = await unitOfWork.Repository<Entities.Models.Patient>()
                 .GetOneAsync(
-                    x => !string.IsNullOrEmpty(x.MRN),
+                    x => !string.IsNullOrEmpty(x.MRN) && x.ProjectId == sessionProvider.Session.SelectedWarehouseId,
                     q => q.OrderByDescending(x => x.Id));
 
             int next = 1;

@@ -32,7 +32,7 @@ namespace ERP.Mediator.Mediator.IPD.Room.Handler
 
         async Task<long> IRequestHandler<SaveRoomCommand, long>.Handle(SaveRoomCommand request, CancellationToken cancellationToken)
         {
-            var Category = await unitOfWork.Repository<Entities.Models.AccountCategory>().GetFirstAsNoTrackingAsync(x => x.IsActive == true && x.Id == request.WardId);
+            var Ward = await unitOfWork.Repository<Entities.Models.Ward>().GetFirstAsNoTrackingAsync(x => x.IsActive == true && x.Id == request.WardId);
             var Room = await unitOfWork.Repository<Entities.Models.Room>().GetFirstAsNoTrackingAsync(x => x.IsActive == true &&  x.Id == request.Id);
             var checkDuplicate = await unitOfWork.Repository<Entities.Models.Room>().GetAsync(x => x.Name.ToLower() == request.Name.ToLower() && x.IsActive == true && x.IsDelete == false && x.Id != request.Id && x.Ward.ProjectId == sessionProvider.Session.SelectedWarehouseId);
 
@@ -50,7 +50,7 @@ namespace ERP.Mediator.Mediator.IPD.Room.Handler
                     }
                     else
                         _RoomCode = "01";
-                    request.Code = Category.Code + _RoomCode;
+                    request.Code = Ward.Code + _RoomCode;
 
                     var _Room = mapper.Map<Entities.Models.Room>(request);
                     _Room.CreatedById = sessionProvider.Session.LoggedInUserId;

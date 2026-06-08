@@ -9,11 +9,9 @@ namespace ERP.Entities.Models
         public DateTime AdmissionDate { get; set; }
         public string AdmissionDiagnosis { get; set; }
 
-        public long? WardId { get; set; }
-        public Ward Ward { get; set; }
-
         public long? BedId { get; set; }
         public Bed Bed { get; set; }
+        public decimal TotalPackageAmount { get; set; }
 
         public DateTime? DischargeDate { get; set; }
         public string DischargeSummary { get; set; }

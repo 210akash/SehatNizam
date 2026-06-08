@@ -22,7 +22,7 @@ export class RoomListComponent {
   isLoading = false;
   currentPage = 0;
   pageSizeOptions: number[] = [5, 10, 25, 100];
-  displayedColumns: string[] = ['ward','code','name', 'createdBy','company', 'actions'];
+  displayedColumns: string[] = ['ward','code','name', 'createdBy', 'actions'];
   dataSource: any;
   take = 5;
   totalRows = 0;
@@ -41,7 +41,7 @@ export class RoomListComponent {
   async ngOnInit(): Promise<void> {
     this.RoomFilterForm = this.formBuilder.group({
       name: [''],
-      accountCategoryId: ['']
+      wardId: ['']
     });
     await this.bindData(); // Await bindData if it's async
     this.getwardList();

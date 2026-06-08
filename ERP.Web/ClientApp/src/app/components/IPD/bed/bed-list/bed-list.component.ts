@@ -22,7 +22,7 @@ export class BedListComponent {
   isLoading = false;
   currentPage = 0;
   pageSizeOptions: number[] = [5, 10, 25, 100];
-  displayedColumns: string[] = ['ward','room','code','name', 'createdBy','actions'];
+  displayedColumns: string[] = ['ward','room','code','bedNo', 'createdBy','actions'];
   dataSource: any;
   take = 5;
   totalRows = 0;

@@ -1,0 +1,256 @@
+<form *ngIf="admissionForm" [formGroup]="admissionForm" class="modern-form">
+  <mat-card class="modern-card">
+    <mat-card-header>
+      <div>
+        <mat-card-title class="title">New Patient Admission</mat-card-title>
+        <mat-card-subtitle class="subtitle">Create an admission with patient details, admission info</mat-card-subtitle>
+      </div>
+    </mat-card-header>
+    <mat-divider></mat-divider>
+
+    <mat-card-content>
+      <!-- Patient -->
+      <section class="section">
+        <div class="section-head">
+          <mat-icon fontIcon="person" class="icon"></mat-icon>
+          <div>
+            <div class="section-title">Patient Information</div>
+            <div class="section-sub">Identity and contact</div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <mat-form-field appearance="outline" class="span-2">
+            <mat-label>Search Patient</mat-label>
+            <input matInput [formControl]="patientSearchCtrl" [matAutocomplete]="patientAuto"
+              (input)="onInputCleared($event)" type="search" placeholder="Type name or phone number" />
+            <mat-autocomplete #patientAuto="matAutocomplete" [displayWith]="displayPatient"
+              (optionSelected)="onPatientSelected($event.option.value)">
+              <mat-option *ngFor="let patient of filteredPatients$ | async" [value]="patient">
+                {{ patient.name }} - {{ patient.phoneNo }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        </div>
+
+        <div class="grid-2">
+          <mat-form-field appearance="outline">
+            <mat-label>Appointment For</mat-label>
+            <mat-select formControlName="appointmentTypeId">
+              <mat-option *ngFor="let appointmentType of appointmentTypeList" [value]="appointmentType.id">{{
+                appointmentType.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div formGroupName="patient">
+          <div class="grid-4">
+            <mat-form-field appearance="outline">
+              <mat-label>Full Name</mat-label>
+              <input matInput formControlName="name" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Gender</mat-label>
+              <mat-select formControlName="gender">
+                <mat-option value="male">Male</mat-option>
+                <mat-option value="female">Female</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Date of Birth</mat-label>
+              <input matInput [matDatepicker]="dobPicker" formControlName="dateOfBirth" />
+              <mat-datepicker-toggle matIconSuffix [for]="dobPicker"></mat-datepicker-toggle>
+              <mat-datepicker #dobPicker></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Age (Years)</mat-label>
+              <input type="number" matInput formControlName="age" min="0.1" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>CNIC</mat-label>
+              <input matInput [inputMask]="cnicInputMask" placeholder="00000-0000000-0" formControlName="cnic" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Phone Number</mat-label>
+              <input matInput [inputMask]="phoneNoInputMask" formControlName="phoneNo" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Alternate Contact</mat-label>
+              <input matInput [inputMask]="phoneNoInputMask" formControlName="secondaryPhoneNo" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Email</mat-label>
+              <input matInput formControlName="email" [inputMask]="emailInputMask" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>City</mat-label>
+              <mat-select formControlName="cityId">
+                <mat-option *ngFor="let city of cityList" [value]="city.id">{{ city.name }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+          </div>
+          <div class="grid-12">
+            <mat-form-field appearance="outline" class="span-2">
+              <mat-label>Address</mat-label>
+              <textarea matInput rows="2" formControlName="address"></textarea>
+            </mat-form-field>
+          </div>
+        </div>
+      </section>
+
+      <!-- Admission -->
+    <!-- Admission -->
+<section class="section">
+  <div class="section-head">
+    <mat-icon fontIcon="event" class="icon"></mat-icon>
+    <div>
+      <div class="section-title">Admission Details</div>
+      <div class="section-sub">Schedule and provider</div>
+    </div>
+  </div>
+
+  <!-- First Row -->
+  <div class="grid-4">
+    <mat-form-field appearance="outline">
+      <mat-label>Date</mat-label>
+      <input matInput [matDatepicker]="appDate" formControlName="appointmentDate" [min]="minDate" />
+      <mat-datepicker-toggle matIconSuffix [for]="appDate"></mat-datepicker-toggle>
+      <mat-datepicker #appDate></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Time</mat-label>
+      <input matInput type="time" formControlName="appointmentTime" />
+    </mat-form-field>
+
+    <div class="span-2">
+      <label class="text-sm label-inline">Priority Level</label>
+      <mat-radio-group formControlName="priorityLevelId" class="priority-radio">
+        <mat-radio-button *ngFor="let p of priorityLevelList" [value]="p.id">{{ p.name }}</mat-radio-button>
+      </mat-radio-group>
+    </div>
+  </div>
+
+  <!-- Second Row -->
+  <div class="grid-4">
+   
+    <mat-form-field appearance="outline">
+      <mat-label>Department / Specialty</mat-label>
+      <mat-select formControlName="departmentId" (selectionChange)="getOPDServiceByDepartment()">
+        <mat-option [value]="null">Select Department</mat-option>
+        <mat-option *ngFor="let dept of departments" [value]="dept.id">{{ dept.name }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Doctor</mat-label>
+      <input matInput formControlName="doctorName" [matAutocomplete]="doctorAuto" (keyup)="getDoctorList($event);"
+        class="form-control" (input)="onDoctorInputCleared($event)" type="search"
+        [matTooltip]="this.admissionForm.get('doctor')?.value ? this.admissionForm.get('doctor')?.value.hrCode  + ' ' +
+        this.admissionForm.get('doctor')?.value.firstName + ' ' + this.admissionForm.get('doctor')?.value.lastName : 'No Doctor Selected'" />
+      <mat-autocomplete #doctorAuto="matAutocomplete" (optionSelected)="onOptionSelected($event)">
+        <mat-option *ngFor="let doctor of doctorList" [value]="doctor">
+          {{ doctor?.hrCode }} : {{ doctor?.firstName }} {{ doctor?.lastName }} ({{doctor?.designation}})
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+     <mat-form-field appearance="outline">
+      <mat-label>Referrer</mat-label>
+      <input matInput formControlName="referrerName" [matAutocomplete]="auto" (keyup)="getReferrerList($event);"
+        class="form-control" (input)="onReferrerInputCleared($event)" type="search"
+        [matTooltip]="this.admissionForm.get('referrer')?.value ? this.admissionForm.get('referrer')?.value.hrCode  + ' ' +
+        this.admissionForm.get('referrer')?.value.name + ' ' + this.admissionForm.get('referrer')?.value.hospital : 'No Referrer Selected'" />
+      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionReferrerSelected($event)">
+        <mat-option *ngFor="let referrer of referrerList" [value]="referrer">
+          {{ referrer?.name }} : {{ referrer?.hospital }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+
+  </div>
+
+  <!-- Third Row - Full width fields -->
+  <div class="grid-12">
+    <mat-form-field appearance="outline">
+      <mat-label>Reason for Visit / Complaint</mat-label>
+      <input matInput formControlName="reason" placeholder="e.g. Fever, Headache, Checkup" />
+    </mat-form-field>
+  </div>
+
+  <!-- Fourth Row -->
+  <div class="grid-12">
+    <mat-form-field appearance="outline">
+      <mat-label>Admission Diagnosis</mat-label>
+      <input matInput formControlName="admissionDiagnosis" placeholder="e.g. Pneumonia, Hypertension" />
+    </mat-form-field>
+  </div>
+
+  <!-- Fifth Row -->
+  <div class="grid-4">
+    <div class="span-4">
+      <label class="text-sm label-inline">Admission Status</label>
+      <mat-radio-group formControlName="appointmentStatusId" class="priority-radio">
+        <mat-radio-button [value]="20" [disabled]="true">
+          Admitted
+        </mat-radio-button>
+      </mat-radio-group>
+    </div>
+  </div>
+</section>
+
+      <!-- Payment -->
+      <!-- <section class="section" formArrayName="appointmentPayment">
+        <div [formGroupName]="0">
+          <div class="section-head">
+            <mat-icon fontIcon="credit_card" class="icon"></mat-icon>
+            <div>
+              <div class="section-title">Payment & Billing</div>
+              <div class="section-sub">Fees, discounts, and status</div>
+            </div>
+          </div>
+
+          <div class="grid-4">
+            <mat-form-field appearance="outline">
+              <mat-label>Visit Fee</mat-label>
+              <input matInput type="number" formControlName="visitFee" min="0" step="0.01" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Discount / Insurance</mat-label>
+              <input matInput type="number" formControlName="discount" min="0" step="0.01" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Total Payable</mat-label>
+              <input matInput formControlName="totalPayable" readonly />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Payment Method</mat-label>
+              <mat-select formControlName="paymentModeId" >
+                <mat-option *ngFor="let paymentMode of paymentModesList" [value]="paymentMode.id">{{ paymentMode.name
+                  }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+      </section> -->
+      <div class="button-container">
+        <button mat-flat-button color="success" type="button" (click)="onSubmit()">
+          <span class="mat-button-wrapper">Save</span>
+        </button>
+        <button mat-flat-button color="default" [mat-dialog-close]="true" (click)="onCancel()">
+          <span class="mat-button-wrapper">Close</span>
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</form>

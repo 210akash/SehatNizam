@@ -22,7 +22,7 @@ namespace ERP.Mediator.Mediator.IPD.Room.Handler
 
         public async Task<string> Handle(GetRoomCodeQuery request, CancellationToken cancellationToken)
         {
-            var Category = await unitOfWork.Repository<Entities.Models.AccountCategory>().GetFirstAsNoTrackingAsync(x => x.Id == request.WardId && x.IsActive == true);
+            var Ward = await unitOfWork.Repository<Entities.Models.Ward>().GetFirstAsNoTrackingAsync(x => x.Id == request.WardId && x.IsActive == true);
             string _RoomCode = "";
             if (await unitOfWork.Repository<Entities.Models.Room>().GetExistsAsync(y =>  y.Ward.ProjectId == sessionProvider.Session.SelectedWarehouseId && y.WardId == request.WardId && y.Id != request.Id && y.IsActive == true))
             {
@@ -34,7 +34,7 @@ namespace ERP.Mediator.Mediator.IPD.Room.Handler
             else
                 _RoomCode = "01";
           
-            return Category.Code + _RoomCode;
+            return Ward.Code + _RoomCode;
         }
     }
 }

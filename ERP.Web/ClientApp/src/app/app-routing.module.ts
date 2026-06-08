@@ -140,6 +140,7 @@ import { AddRadiologyOrderComponent } from './components/opd/radiologyorder/add-
 import { WardListComponent } from './components/IPD/ward/ward-list/ward-list.component';
 import { RoomListComponent } from './components/IPD/room/room-list/room-list.component';
 import { BedListComponent } from './components/IPD/bed/bed-list/bed-list.component';
+import { AddAdmissionComponent } from './components/IPD/admission/add-admission/add-admission.component';
 
 const routes: Routes = [
   {
@@ -285,6 +286,7 @@ const routes: Routes = [
       { path: 'ward', component: WardListComponent, canActivate: [AuthGuard] },
       { path: 'room', component: RoomListComponent, canActivate: [AuthGuard] },
       { path: 'bed', component: BedListComponent, canActivate: [AuthGuard] },
+      { path: 'addadmission', component: AddAdmissionComponent, canActivate: [AuthGuard] },
     ]
   },
   {

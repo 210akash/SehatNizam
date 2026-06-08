@@ -28,11 +28,9 @@ export class AddBedComponent {
     this.bedForm = this.formBuilder.group({
       id: [0],
       code: ['', Validators.required],
-      name: ['', Validators.required],
-      description: [''],
-      accountWardId: ['', Validators.required],
-      accountSubWardId: ['', Validators.required],
-      companyId: [0],
+      bedNo: ['', Validators.required],
+      wardId: ['', Validators.required],
+      roomId: ['', Validators.required]
     });
     
     this.LoadData(this.data.element);
@@ -44,7 +42,7 @@ export class AddBedComponent {
     if (element != null) {
       this.isEditMode = true;
       this.constantService.LoadData(element, this.bedForm);
-      this.bedForm.get('accountWardId')?.patchValue(element.accountSubWard.accountWard.id);
+      this.bedForm.get('wardId')?.patchValue(element.room.ward.id);
       this.getroomList();
     }
     // else   

@@ -22,7 +22,7 @@ export class WardListComponent {
   isLoading = false;
   currentPage = 0;
   pageSizeOptions: number[] = [5, 10, 25, 100];
-  displayedColumns: string[] = ['ward','code','name', 'createdBy','project', 'actions'];
+  displayedColumns: string[] = ['code','name', 'createdBy','project', 'actions'];
   dataSource: any;
   take = 5;
   totalRows = 0;

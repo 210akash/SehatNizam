@@ -1,0 +1,108 @@
+<div class="card print-dialog">
+  <div class="card-header no-print">
+    <div class="header-container">
+      <div class="card-title">Radiologyoratory Report</div>
+      <div class="header-actions">
+        <button mat-flat-button color="primary" type="button" class="print-button mr-2" (click)="printDocument()">
+          <span class="mat-button-wrapper">Print</span>
+        </button>
+        <button mat-flat-button color="default" type="button" (click)="closeDialog()">
+          <span class="mat-button-wrapper">Close</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-body" id="printDoc">
+    <div class="slip-sheet">
+      <div class="slip-top">
+        <div class="hospital-mark" aria-hidden="true">
+          <div class="mark-cross"></div>
+        </div>
+        <div class="hospital-copy">
+          <h1>{{ getHospitalName() }}</h1>
+          <p>{{ getHospitalSubtitle() }}</p>
+        </div>
+      </div>
+
+      <div class="top-rule"></div>
+
+      <!-- Patient Summary -->
+      <div class="summary-card">
+        <div class="patient-summary-grid">
+          <div class="summary-pair">
+            <span class="summary-head">Patient Name</span>
+            <strong>{{ getPatientName() }}</strong>
+          </div>
+          <div class="summary-pair">
+            <span class="summary-head">MRN</span>
+            <strong>{{ getPatientMrn() }}</strong>
+          </div>
+          <div class="summary-pair">
+            <span class="summary-head">Age / Gender</span>
+            <strong>{{ getPatientAgeGender() }}</strong>
+          </div>
+          <div class="summary-pair">
+            <span class="summary-head">Date</span>
+            <strong>{{ formatAppointmentDateLong() }} {{ formatAppointmentTime() }}</strong>
+          </div>
+          <div class="summary-pair">
+            <span class="summary-head">Consultant</span>
+            <strong>{{ getDoctorName() }}</strong>
+          </div>
+          <div class="summary-pair">
+            <span class="summary-head">Department</span>
+            <strong>{{ getDepartmentName() }}</strong>
+          </div>
+        </div>
+
+        <div class="summary-side">
+          <div class="token-circle">
+            <span class="token-radiologyel">Token</span>
+            <span class="token-value">{{ getTokenNumber() }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Radiology Results Section -->
+      <div class="section-title">Radiology Orders & Results ( {{ radiologyOrderTitle }})</div>
+      <div class="section-rule"></div>
+      <div class="radiology-results-board">
+        <div >
+          <table class="table table-bordered radiology-results-table">
+            <thead>
+              <tr>
+                <th>Test</th>
+                <th>Result</th>
+                <th>Unit</th>
+                <th>Reference Range</th>
+              </tr>
+            </thead>
+           <tbody >
+ @for (result of radiologyResults; track result.id) {
+  <tr>
+    <td>{{ result.variableName }}</td>
+    <td>{{ result.resultValue }}</td>
+    <td>{{ result.unit }}</td>
+    <td>{{ result.referenceRange }}</td>
+  </tr>
+}
+</tbody>
+          </table>
+        </div>
+
+        <ng-template #noResults>
+          <div class="empty-state">No radiology results avairadiologyle for this order.</div>
+        </ng-template>
+      </div>
+
+      <div class="footer-rule"></div>
+      <div class="slip-footer">
+        <div class="footer-warning">Not valid for medico-legal purposes</div>
+        <div class="footer-meta">
+          Printed on {{ currentDate }}, {{ currentTime }} · {{ getHospitalName() }} · Medical Record
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

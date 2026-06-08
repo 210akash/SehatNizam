@@ -899,6 +899,13 @@ import { ReferrerService } from './components/opd/referrer/referrer.service';
 import { ReferrerEndPoints } from './components/opd/referrer/referrer.endpoints';
 import { BookAppointmentListComponent } from './components/opd/appointment/book-appointment-list/book-appointment-list.component';
 import { PrintTriageComponent } from './components/opd/triage/print-triage/print-triage.component';
+import { AddRadiologyOrderComponent } from './components/opd/radiologyorder/add-radiology-order/add-radiology-order.component';
+import { DeleteRadiologyOrderComponent } from './components/opd/radiologyorder/delete-radiology-order/delete-radiology-order.component';
+import { ViewRadiologyOrderComponent } from './components/opd/radiologyorder/view-radiology-order/view-radiology-order.component';
+import { RadiologyOrderListComponent } from './components/opd/radiologyorder/radiology-order-list/radiology-order-list.component';
+import { SaveRadiologyResultComponent } from './components/opd/radiologyorder/save-radiology-result/save-radiology-result.component';
+import { PrintRadiologyOrderResultComponent } from './components/opd/radiologyorder/print-radiology-order-result/print-radiology-order-result.component';
+import { ConfirmRadiologyOrderComponent } from './components/opd/radiologyorder/confirm-radiology-order/confirm-radiology-order.component';
 const matFormFieldDefaults: MatFormFieldDefaultOptions = {
     appearance: 'outline'
     , subscriptSizing: 'dynamic'
@@ -1538,7 +1545,14 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         DeleteReferrerComponent,
         ReferrerListComponent,
         BookAppointmentListComponent,
-        PrintTriageComponent
+        PrintTriageComponent,
+        AddRadiologyOrderComponent,
+        PrintRadiologyOrderResultComponent,
+        SaveRadiologyResultComponent,
+        RadiologyOrderListComponent,
+        ViewRadiologyOrderComponent,
+        DeleteRadiologyOrderComponent,
+        ConfirmRadiologyOrderComponent
     ],
     bootstrap: [AppComponent], imports: [
         InputMaskModule,

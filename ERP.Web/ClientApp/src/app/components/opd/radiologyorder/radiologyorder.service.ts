@@ -29,4 +29,23 @@ export class RadiologyOrderService extends BaseService<any> {
         return this.delete(id, this.endPointControllerName + this.RadiologyOrderEndPoints.deleteRadiologyOrder)
             .pipe();
     }
+
+    
+    getAllRadiologyOrders(filter: any) {
+        return this.post(filter, this.endPointControllerName + this.RadiologyOrderEndPoints.getAllRadiologyOrders).pipe(map((data: any) => data));
+    }
+
+    getRadiologyOrderById(id: number) {
+        return this.get('?id=' + id, this.endPointControllerName + this.RadiologyOrderEndPoints.getRadiologyOrderById).pipe(map((data: any) => data));
+    }
+    
+    async saveRadiologyResult(payload: any) {
+        return await this.post(payload, this.endPointControllerName + this.RadiologyOrderEndPoints.saveRadiologyResult)
+            .pipe(map((data: any) => data));
+    }
+       
+    async confirmRadiologyOrder(payload: any) {
+        return await this.post(payload, this.endPointControllerName + this.RadiologyOrderEndPoints.confirmRadiologyOrder)
+            .pipe(map((data: any) => data));
+    }
 }

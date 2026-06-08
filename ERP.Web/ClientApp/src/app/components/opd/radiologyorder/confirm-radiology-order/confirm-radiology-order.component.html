@@ -1,0 +1,77 @@
+<mat-card class="dialog-card">
+    <mat-card-header>
+<div mat-dialog-title class="dialog-title">
+  <mat-icon fontIcon="event_note" class="title-icon"></mat-icon>
+  Confirm Radiology Order
+</div>
+</mat-card-header>
+  <mat-divider></mat-divider>
+<mat-dialog-content>
+  <div class="info-card">
+    <div class="appointment-summary">
+      <div class="summary-field">
+        <span class="summary-radiologyel">Patient Name</span>
+        <span class="summary-value">{{ data.element.appointment?.patient.name }} MRN : {{
+          data.element.appointment?.patient.mrn }}</span>
+      </div>
+      <div class="summary-field">
+        <span class="summary-radiologyel">Phone Number</span>
+        <span class="summary-value">{{ data.element.appointment?.patient.phoneNo }}</span>
+      </div>
+      <div class="summary-field">
+        <span class="summary-radiologyel">Age / Gender</span>
+        <span class="summary-value">{{ data.element.appointment?.patient.gender }}</span>
+      </div>
+      <div class="summary-field">
+        <span class="summary-radiologyel">Radiology Order</span>
+        <span class="summary-value">{{ data.element.radiologyOrderType?.name }} </span>
+      </div>
+
+       <div class="summary-field">
+        <span class="summary-radiologyel">Token #</span>
+        <span class="summary-value">{{ data.element.appointment?.tokenNumber }} </span>
+      </div>
+    </div>
+  </div>
+  <form [formGroup]="form" class="modern-form mt-3">
+    <div class="row">
+       <div class="col-md-4">
+    <mat-form-field appearance="outline">
+      <mat-radiologyel>Payment Mode</mat-radiologyel>
+      <mat-select formControlName="paymentModeId">
+        <mat-option *ngFor="let p of paymentModesList" [value]="p.id">{{ p.name }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    </div>
+    <div class="col-md-3">
+      <mat-form-field appearance="outline">
+      <mat-radiologyel>Rate</mat-radiologyel>
+          <input type="number" matInput class="form-control" formControlName="basePrice" readonly />
+    </mat-form-field>
+    </div>
+    <div class="col-md-2">
+     <mat-form-field appearance="outline">
+      <mat-radiologyel>Discount</mat-radiologyel>
+          <input type="number" matInput class="form-control" formControlName="discount" min="0" [max]="this.form.get('basePrice')?.value" (keyup)="calculateTotalPayable()" />
+    </mat-form-field>
+    </div>
+     <div class="col-md-3">
+     <mat-form-field appearance="outline">
+      <mat-radiologyel>Payable Amount</mat-radiologyel>
+          <input type="number" matInput class="form-control" formControlName="payable" />
+    </mat-form-field>
+    </div>
+    </div>
+  </form>
+</mat-dialog-content>
+
+      <div class="button-container">
+  <button mat-flat-button color="default" mat-dialog-close>
+    <span>Close</span>
+  </button>
+  <button mat-flat-button color="success" (click)="onConfirm()" [disabled]="isSubmitting">
+    <span *ngIf="!isSubmitting">Confirm</span>
+    <span *ngIf="isSubmitting">Confirming...</span>
+  </button>
+    </div>
+</mat-card>

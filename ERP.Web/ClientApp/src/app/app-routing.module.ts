@@ -136,6 +136,7 @@ import { LabOrderTypeListComponent } from './components/opd/lab-order-type/lab-o
 import { ServiceTypeListComponent } from './components/opd/service-type/service-type-list/service-type-list.component';
 import { ReferrerListComponent } from './components/opd/referrer/referrer-list/referrer-list.component';
 import { BookAppointmentListComponent } from './components/opd/appointment/book-appointment-list/book-appointment-list.component';
+import { AddRadiologyOrderComponent } from './components/opd/radiologyorder/add-radiology-order/add-radiology-order.component';
 
 const routes: Routes = [
   {
@@ -261,7 +262,9 @@ const routes: Routes = [
       { path: 'triagelist', component: TriageListComponent, canActivate: [AuthGuard], data: {roles: ["receptionist"] } },
        { path: 'triage', component: CreateTriageComponent, canActivate: [AuthGuard] },
        { path: 'laborder', component: LabOrderListComponent, canActivate: [AuthGuard] },
+       { path: 'radiologyorder', component: RadiologyTypeListComponent, canActivate: [AuthGuard] },
        { path: 'newlaborder', component: AddLabOrderComponent, canActivate: [AuthGuard] },
+       { path: 'newradiologyorder', component: AddRadiologyOrderComponent, canActivate: [AuthGuard] },
        { path: 'radiologytype', component: RadiologyTypeListComponent, canActivate: [AuthGuard] },
        { path: 'labordertype', component: LabOrderTypeListComponent, canActivate: [AuthGuard] },
        { path: 'newtriage', component: CreateTriageComponent, canActivate: [AuthGuard] },

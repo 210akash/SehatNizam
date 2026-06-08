@@ -683,6 +683,18 @@
           <a routerLink="/laborder" class="submenu-link" [class.active-link]="isActive('/laborder')">Lab Order</a>
         </div>
       </div>
+         <!-- Manage Radiology -->
+      <div class="nav-group" *ngIf="hasRequiredRole(['lab technician'])">
+        <button (click)="toggleSubMenu('radiology')" class="nav-button">
+          <i class="fas fa-flask"></i>
+          <span>Manage Radiology</span>
+          <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('radiology')"></i>
+        </button>
+        <div class="submenu" *ngIf="isSubMenuVisible('radiology')">
+          <a routerLink="/radiologytype" class="submenu-link" [class.active-link]="isActive('/radiologytype')">Radiology Type</a>
+          <a routerLink="/radiologyorder" class="submenu-link" [class.active-link]="isActive('/radiologyorder')">Radiology Order</a>
+        </div>
+      </div>
     </nav>
 
     <!-- Sidebar Footer -->

@@ -1,0 +1,183 @@
+<div class="header-container">
+  <h2>Radiology Orders</h2>
+  <button mat-mini-fab aria-radiologyel="Add" color="success" (click)="openAdd()" matTooltip="New Radiology Order">
+    <mat-icon>add</mat-icon>
+  </button>
+</div>
+
+<div class="body-container">
+    <!-- Filter Section -->
+     <div class="filter-section" [formGroup]="form">
+  <div class="row">
+     <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+      <mat-form-field class="filter-field" appearance="outline">
+        <mat-radiologyel>From Date</mat-radiologyel>
+        <input matInput [matDatepicker]="fromPicker" formControlName="fDate" placeholder="Start date" (dateChange)="filterData()" />
+        <mat-datepicker-toggle matIconSuffix [for]="fromPicker"></mat-datepicker-toggle>
+        <mat-datepicker #fromPicker></mat-datepicker>
+        <mat-icon matPrefix>event</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+      <mat-form-field class="filter-field" appearance="outline">
+        <mat-radiologyel>To Date</mat-radiologyel>
+        <input matInput [matDatepicker]="toPicker" formControlName="tDate" placeholder="End date" (dateChange)="filterData()" />
+        <mat-datepicker-toggle matIconSuffix [for]="toPicker"></mat-datepicker-toggle>
+        <mat-datepicker #toPicker></mat-datepicker>
+        <mat-icon matPrefix>event</mat-icon>
+      </mat-form-field>
+    </div>
+    <div class="col-lg-2 col-md-3 col-sm-6 col-12">
+      <mat-form-field class="filter-field" appearance="outline">
+        <mat-radiologyel>Token #</mat-radiologyel>
+        <input matInput formControlName="tokenNo" placeholder="Search by token number" (keyup)="filterData()" />
+        <mat-icon matSuffix>confirmation_number</mat-icon>
+      </mat-form-field>
+    </div>
+    
+    <div class="col-lg-4 col-md-3 col-sm-7 col-12">
+      <mat-form-field class="filter-field" appearance="outline">
+        <mat-radiologyel>Patient Name</mat-radiologyel>
+        <input matInput formControlName="name" placeholder="Search by patient name" (keyup)="filterData()" />
+        <mat-icon matSuffix>person</mat-icon>
+      </mat-form-field>
+    </div>
+        <div class="col-lg-2 col-md-3 col-sm-6 col-12">
+      <mat-form-field class="filter-field" appearance="outline">
+        <mat-radiologyel>MRN #</mat-radiologyel>
+        <input matInput formControlName="mRN" placeholder="Search by MRN" (keyup)="filterData()" />
+        <mat-icon matSuffix>person</mat-icon>
+      </mat-form-field>
+    </div>
+    
+    <div class="col-lg-2 col-md-3 col-sm-6 col-12">
+      <mat-form-field class="filter-field" appearance="outline">
+        <mat-radiologyel>Test Type</mat-radiologyel>
+        <mat-select formControlName="radiologyOrderTypeId" (selectionChange)="filterData()">
+          <mat-option [value]="null">All Tests</mat-option>
+            <mat-option *ngFor="let test of radiologyOrderTypes" [value]="test.id">
+                  {{ test.name }}
+                </mat-option>
+        </mat-select>
+        <mat-icon matSuffix>science</mat-icon>
+      </mat-form-field>
+    </div>
+    
+    <div class="col-lg-2 col-md-3 col-sm-6 col-12">
+      <mat-form-field class="filter-field" appearance="outline">
+        <mat-radiologyel>Status</mat-radiologyel>
+        <mat-select formControlName="statusId" (selectionChange)="filterData()">
+          <mat-option [value]="null">All</mat-option>
+          <mat-option [value]="2">Prescribed</mat-option>
+          <mat-option [value]="1">Booked</mat-option>
+          <mat-option [value]="5">Confirm</mat-option>
+          <mat-option [value]="15">Complete</mat-option>
+        </mat-select>
+        <mat-icon matSuffix>flag</mat-icon>
+      </mat-form-field>
+    </div>
+  </div>
+</div>
+  <div class="mat-elevation-z8 table-responsive">
+    <!-- Table -->
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z2">
+      <!-- Token Number Column -->
+      <ng-container matColumnDef="tokenNumber">
+        <th mat-header-cell *matHeaderCellDef>Token #</th>
+        <td mat-cell *matCellDef="let e">
+          <span class="token-badge">{{ e.appointment?.tokenNumber || '-' }}</span>
+        </td>
+      </ng-container>
+
+      <!-- Patient Name Column -->
+      <ng-container matColumnDef="patientName">
+        <th mat-header-cell *matHeaderCellDef>Patient Name</th>
+        <td mat-cell *matCellDef="let e">
+          <div class="patient-info">
+            <strong>{{ e.appointment?.patient?.name || '-' }}</strong>
+            <small>MRN: {{ e.appointment?.patient?.mrn || '-' }}</small>
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Test Name Column -->
+      <ng-container matColumnDef="testName">
+        <th mat-header-cell *matHeaderCellDef>Test Name</th>
+        <td mat-cell *matCellDef="let e">{{ e.radiologyOrderType?.name || '-' }}</td>
+      </ng-container>
+
+      <!-- Clinical Notes Column -->
+      <ng-container matColumnDef="clinicalNotes">
+        <th mat-header-cell *matHeaderCellDef>Clinical Notes</th>
+        <td mat-cell *matCellDef="let e">
+          <span class="notes-text">{{ e.clinicalNotes || '-' }}</span>
+        </td>
+      </ng-container>
+        <!-- Reference Column --> 
+      <ng-container matColumnDef="reference">
+        <th mat-header-cell *matHeaderCellDef>Reference</th>
+        <td mat-cell *matCellDef="let e">
+          <span class="notes-text">{{ e.appointment?.Referrer?.name || 'N/A' }}</span>
+        </td>
+      </ng-container>
+
+      <!-- Status Column -->
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Status</th>
+        <td mat-cell *matCellDef="let e">
+          <span class="status-badge" [style.backgroundColor]="getStatusColor(e.status?.title)">
+            {{ e.status?.title || 'Pending' }}
+          </span>
+        </td>
+      </ng-container>
+
+      <!-- Appointment Date Column -->
+      <ng-container matColumnDef="appointmentDate">
+        <th mat-header-cell *matHeaderCellDef>Date</th>
+        <td mat-cell *matCellDef="let e">{{ e.appointment?.appointmentDate | date:'dd/MM/yyyy' }}</td>
+      </ng-container>
+
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef style="width: 15%;">Actions</th>
+        <td mat-cell *matCellDef="let e">
+          <div class="action_btns">
+            <button mat-mini-fab matTooltip="View" color="dark" (click)="openView(e)">
+              <mat-icon>visibility</mat-icon>
+            </button>
+            <button mat-mini-fab matTooltip="Delete" color="warn" *ngIf="e.statusId == 1" (click)="openDelete(e)">
+              <mat-icon>delete</mat-icon>
+            </button>
+            <button mat-mini-fab matTooltip="Print Report" color="accent" *ngIf="e.statusId == 15" (click)="openprintResult(e)">
+              <mat-icon>print</mat-icon>
+            </button>
+             <button mat-mini-fab matTooltip="Save Result" color="accent" *ngIf="e.statusId == 5"  (click)="saveResult(e)">
+              <i class="fa-solid fa-vial"></i>
+            </button>
+              <button mat-mini-fab matTooltip="Confirm" color="accent" *ngIf="e.statusId == 1 || e.statusId == 2"  (click)="confirmRadiologyOrder(e)">
+             <i class="fa-regular fa-circle-check"></i>
+            </button>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <!-- No Data Message -->
+    <div *ngIf="dataSource.data?.length === 0" class="text-center py-4">
+      <mat-icon class="no-data-icon">inbox</mat-icon>
+      <p>No radiology orders found.</p>
+    </div>
+
+    <!-- Pagination -->
+    <mat-paginator 
+      [length]="totalRecords" 
+      [pageSize]="pageSize" 
+      [pageSizeOptions]="[5,10,25,50,100]" 
+      (page)="pageChanged($event)">
+    </mat-paginator>
+  </div>
+</div>

@@ -212,6 +212,8 @@
         public virtual DbSet<LabTestVariableOption> LabTestVariableOption { get; set; }
         public virtual DbSet<LabResult> LabResult { get; set; }
         public virtual DbSet<RadiologyOrder> RadiologyOrder { get; set; }
+        public virtual DbSet<RadiologyStudyResult> RadiologyStudyResult { get; set; }
+        public virtual DbSet<RadiologyStudyImage> RadiologyStudyImage { get; set; }
         public virtual DbSet<AppointmentPayment> AppointmentPayment { get; set; }
         public virtual DbSet<RadiologyType> RadiologyType { get; set; }
         public virtual DbSet<Service> Service { get; set; }
@@ -1068,6 +1070,12 @@
              .WithMany()
              .HasForeignKey(c => c.ModifiedById)
              .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<RadiologyOrder>()
+    .HasOne(x => x.RadiologyStudyResult)
+    .WithOne(x => x.RadiologyOrder)
+    .HasForeignKey<RadiologyStudyResult>(x => x.RadiologyOrderId)
+    .OnDelete(DeleteBehavior.Cascade);
 
             #endregion
 

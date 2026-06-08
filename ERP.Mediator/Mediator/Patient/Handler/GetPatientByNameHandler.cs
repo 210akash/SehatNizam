@@ -29,8 +29,8 @@ namespace ERP.Mediator.Mediator.Patient.Handler
             var patients = await unitOfWork.Repository<Entities.Models.Patient>()
                 .GetAsync(x =>
                     string.IsNullOrEmpty(request.Search) ||
-                    EF.Functions.Like(x.Name, $"%{request.Search}%") ||
-                    EF.Functions.Like(x.PhoneNo, $"%{request.Search}%") ||
+                    EF.Functions.Like(x.PatientMaster.Name, $"%{request.Search}%") ||
+                    EF.Functions.Like(x.PatientMaster.PhoneNo, $"%{request.Search}%") ||
                     EF.Functions.Like(x.MRN, $"%{request.Search}%")
                 );
 

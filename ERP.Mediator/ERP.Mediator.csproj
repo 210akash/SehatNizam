@@ -28,6 +28,7 @@
     <Compile Remove="Mediator\Appointment\Handler\ProcessGRNHandler.cs" />
     <Compile Remove="Mediator\Appointment\Handler\ProcessPurchaseInvoiceHandler.cs" />
     <Compile Remove="Mediator\Appointment\Handler\RejectPurchaseInvoiceHandler.cs" />
+    <Compile Remove="Mediator\Appointment\Handler\SaveAppointmentHandler_1.cs" />
     <Compile Remove="Mediator\Appointment\Handler\SavePurchaseInvoiceWHTHandler.cs" />
     <Compile Remove="Mediator\Appointment\Query\ApproveGRNQuery.cs" />
     <Compile Remove="Mediator\Appointment\Query\ApprovePurchaseInvoiceQuery.cs" />

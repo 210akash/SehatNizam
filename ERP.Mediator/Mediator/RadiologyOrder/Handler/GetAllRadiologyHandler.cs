@@ -32,7 +32,7 @@ namespace ERP.Mediator.Mediator.RadiologyOrder.Handler
                 && x.CreatedDate <= request.TDate.AddDays(1).AddTicks(-1)
                 && (request.TokenNo == "" || x.Appointment.TokenNumber.Contains(request.TokenNo))
                 && (request.MRN == "" || x.Appointment.Patient.MRN.Contains(request.MRN))
-                && (request.Name == "" || x.Appointment.Patient.Name.ToLower().Trim().Contains(request.Name.ToLower().Trim()))
+                && (request.Name == "" || x.Appointment.Patient.PatientMaster.Name.ToLower().Trim().Contains(request.Name.ToLower().Trim()))
                 && (!request.RadiologyTypeId.HasValue || x.RadiologyTypeId == request.RadiologyTypeId.Value)
                 && (!request.StatusId.HasValue || x.StatusId == request.StatusId.Value);
 

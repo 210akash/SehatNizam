@@ -1,16 +1,17 @@
-﻿using System;
+﻿using AutoMapper;
+using ERP.BusinessModels.ResponseVM;
+using ERP.Core.Provider;
+using ERP.Entities.Models;
+using ERP.Mediator.Mediator.Patient.Query;
+using ERP.Repositories.UnitOfWork;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
-using ERP.BusinessModels.ResponseVM;
-using ERP.Core.Provider;
-using ERP.Mediator.Mediator.Patient.Query;
-using ERP.Repositories.UnitOfWork;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace ERP.Mediator.Mediator.Patient.Handler
 {
@@ -31,16 +32,17 @@ namespace ERP.Mediator.Mediator.Patient.Handler
         {
             Expression<Func<Entities.Models.Patient, bool>> predicate = x =>
              x.IsActive &&
-             (string.IsNullOrEmpty(request.Name) || EF.Functions.Like(x.Name, $"%{request.Name}%")) &&
-             (string.IsNullOrEmpty(request.PhoneNo) || EF.Functions.Like(x.PhoneNo, $"%{request.PhoneNo}%")) &&
+             (string.IsNullOrEmpty(request.Name) || EF.Functions.Like(x.PatientMaster.Name, $"%{request.Name}%")) &&
+             (string.IsNullOrEmpty(request.PhoneNo) || EF.Functions.Like(x.PatientMaster.PhoneNo, $"%{request.PhoneNo}%")) &&
              (string.IsNullOrEmpty(request.MRN) || EF.Functions.Like(x.MRN, $"%{request.MRN}%")) &&
-             (string.IsNullOrEmpty(request.CNIC) || EF.Functions.Like(x.CNIC, $"%{request.CNIC}%")) &&
+             (string.IsNullOrEmpty(request.CNIC) || EF.Functions.Like(x.PatientMaster.CNIC, $"%{request.CNIC}%")) &&
              (x.ProjectId == sessionProvider.Session.SelectedWarehouseId) &&
-             (request.CityId == null || x.CityId == request.CityId);
+             (request.CityId == null || x.PatientMaster.CityId == request.CityId);
 
             Expression<Func<Entities.Models.Patient, object>>[] includes = {
                 x => x.CreatedBy,
-                x => x.City,
+                x => x.PatientMaster,
+                x => x.PatientMaster.City,
                 x => x.Project,
                 x => x.PatientAppointments
             };

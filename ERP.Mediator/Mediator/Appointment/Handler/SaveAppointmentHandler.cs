@@ -221,7 +221,7 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
             if (request.AppointmentStatusId != 1)
                 mrn = await GenerateMrnAsync();
 
-            var patient = new Entities.Models.Patient
+            var patientMaster = new PatientMaster
             {
                 Name = request.Patient.Name,
                 Email = request.Patient.Email,
@@ -233,6 +233,17 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                 Age = request.Patient.Age,
                 DateOfBirth = request.Patient.DateOfBirth,
                 CityId = request.Patient.CityId,
+                CreatedById = sessionProvider.Session.LoggedInUserId,
+                CreatedDate = DateTime.Now,
+                IsActive = true,
+                IsDelete = false
+            };
+
+            await unitOfWork.Repository<PatientMaster>().AddAsync(patientMaster);
+            await unitOfWork.SaveChangesAsync();
+            var patient = new Entities.Models.Patient
+            {
+                PatientMasterId = patientMaster.Id,
                 ProjectId = sessionProvider.Session.SelectedWarehouseId,
                 MRN = mrn,
                 CreatedById = sessionProvider.Session.LoggedInUserId,
@@ -241,11 +252,8 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                 IsDelete = false
             };
 
-            await unitOfWork.Repository<Entities.Models.Patient>()
-                .AddAsync(patient);
-
+            await unitOfWork.Repository<Entities.Models.Patient>().AddAsync(patient);
             await unitOfWork.SaveChangesAsync();
-
             return patient.Id;
         }
 

@@ -60,7 +60,7 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
              && x.AppointmentDate <= request.TDate.Date.AddDays(1).AddTicks(-1)
              && (request.TokenNo == null || request.TokenNo == "" || x.TokenNumber.Contains(request.TokenNo))
              && (request.MRN == null || request.MRN == "" || x.Patient.MRN.Contains(request.MRN))
-             && (request.PatientName == null || request.PatientName == "" || x.Patient.Name.ToLower().Trim().Contains(request.PatientName.ToLower().Trim()))
+             && (request.PatientName == null || request.PatientName == "" || x.Patient.PatientMaster.Name.ToLower().Trim().Contains(request.PatientName.ToLower().Trim()))
              && (request.StatusId == null || x.AppointmentStatusId == request.StatusId.Value)
              && (request.DepartmentId == null || x.DepartmentId == request.DepartmentId.Value)
              && (request.BookingFormType == 1 || request.BookingFormType == 5 && x.AppointmentStatusId != 1);

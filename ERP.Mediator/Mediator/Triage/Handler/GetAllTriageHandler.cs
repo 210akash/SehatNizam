@@ -23,8 +23,6 @@ namespace ERP.Mediator.Mediator.Triage.Handler
             this.mapper = mapper;
         }
 
-
-
         public async Task<Tuple<IEnumerable<GetTriage>, long>> Handle(GetAllTriageQuery request, CancellationToken cancellationToken)
         {
             Expression<Func<Entities.Models.Triage, bool>> predicate = x =>
@@ -33,7 +31,7 @@ namespace ERP.Mediator.Mediator.Triage.Handler
                   && x.Appointment.AppointmentDate <= request.TDate.Date.AddDays(1).AddTicks(-1)
                   && (request.BookingNo == "" || x.Appointment.Id.ToString().Contains(request.BookingNo))
                   && (request.TokenNo == "" || x.Appointment.TokenNumber.Contains(request.TokenNo))
-                  && (request.Name == "" || x.Appointment.Patient.Name.ToLower().Contains(request.Name.ToLower()));
+                  && (request.Name == "" || x.Appointment.Patient.PatientMaster.Name.ToLower().Contains(request.Name.ToLower()));
 
             Expression<Func<Entities.Models.Triage, object>>[] includes =
             {

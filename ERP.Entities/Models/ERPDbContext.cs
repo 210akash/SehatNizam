@@ -219,6 +219,18 @@
         public virtual DbSet<Service> Service { get; set; }
         public virtual DbSet<AppointmentService> AppointmentService { get; set; }
 
+        #region IPD
+        public virtual DbSet<Ward> Ward { get; set; }
+        public virtual DbSet<Room> Room { get; set; }
+        public virtual DbSet<Bed> Bed { get; set; }
+        public virtual DbSet<Admission> Admission { get; set; }
+        public virtual DbSet<AdmissionRound> AdmissionRound { get; set; }
+        public virtual DbSet<AdmissionRoundMedication> AdmissionRoundMedication { get; set; }
+        public virtual DbSet<MedicationAdministration> MedicationAdministration { get; set; }
+        public virtual DbSet<AdvancePayment> AdvancePayment { get; set; }
+        #endregion
+
+
         #endregion
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

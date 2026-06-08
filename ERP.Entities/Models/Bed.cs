@@ -3,7 +3,7 @@ namespace ERP.Entities.Models
 {
     public class Bed : BaseEntity
     {
-        [MaxLength(2)]
+        [MaxLength(3)]
         public string Code { get; set; }
         public long RoomId { get; set; }
         public string BedNo { get; set; }

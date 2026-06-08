@@ -41,5 +41,6 @@ namespace ERP.Entities.Models
         public ICollection<LabOrder> LabOrders { get; set; } = new List<LabOrder>();
         public ICollection<RadiologyOrder> RadiologyOrders { get; set; } = new List<RadiologyOrder>();
         public ICollection<AppointmentPayment> AppointmentPayments { get; set; } = new List<AppointmentPayment>();
+        public ICollection<AdvancePayment> AdvancePayments { get; set; } = new List<AdvancePayment>();
     }
 }

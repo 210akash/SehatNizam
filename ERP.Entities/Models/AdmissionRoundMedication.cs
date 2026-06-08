@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ERP.Entities.Models
 {
@@ -15,5 +16,6 @@ namespace ERP.Entities.Models
         public AdmissionRound AdmissionRound { get; set; }
         public AspNetUsers ConsultantsAssistant { get; set; }
         public ItemGroup ItemGroup { get; set; }
+        public ICollection<MedicationAdministration> MedicationAdministrations { get; set; }
     }
 }

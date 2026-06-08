@@ -50,6 +50,8 @@
     using ERP.Mediator.Mediator.IndentType.Command;
     using ERP.Mediator.Mediator.Inspection.Command;
     using ERP.Mediator.Mediator.Interview.Command;
+    using ERP.Mediator.Mediator.IPD.Bed.Command;
+    using ERP.Mediator.Mediator.IPD.Ward.Command;
     using ERP.Mediator.Mediator.Issuance.Command;
     using ERP.Mediator.Mediator.Item.Command;
     using ERP.Mediator.Mediator.ItemType.Command;

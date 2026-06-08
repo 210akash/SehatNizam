@@ -137,6 +137,9 @@ import { ServiceTypeListComponent } from './components/opd/service-type/service-
 import { ReferrerListComponent } from './components/opd/referrer/referrer-list/referrer-list.component';
 import { BookAppointmentListComponent } from './components/opd/appointment/book-appointment-list/book-appointment-list.component';
 import { AddRadiologyOrderComponent } from './components/opd/radiologyorder/add-radiology-order/add-radiology-order.component';
+import { WardListComponent } from './components/IPD/ward/ward-list/ward-list.component';
+import { RoomListComponent } from './components/IPD/room/room-list/room-list.component';
+import { BedListComponent } from './components/IPD/bed/bed-list/bed-list.component';
 
 const routes: Routes = [
   {
@@ -279,6 +282,9 @@ const routes: Routes = [
       { path: 'services', component: ServiceListComponent, canActivate: [AuthGuard] },
       { path: 'servicetype', component: ServiceTypeListComponent, canActivate: [AuthGuard] },
       { path: 'referrer', component: ReferrerListComponent, canActivate: [AuthGuard], data: {roles: ["receptionist"] } },
+      { path: 'ward', component: WardListComponent, canActivate: [AuthGuard] },
+      { path: 'room', component: RoomListComponent, canActivate: [AuthGuard] },
+      { path: 'bed', component: BedListComponent, canActivate: [AuthGuard] },
     ]
   },
   {

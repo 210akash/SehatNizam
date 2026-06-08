@@ -671,6 +671,39 @@
         </div>
       </div>
 
+
+   <!-- Manage IPD -->
+      <div class="nav-group" *ngIf="hasRequiredRole(['admin','doctor','receptionist'])">
+        <button (click)="toggleSubMenu('ipd')" class="nav-button">
+          <i class="fas fa-user-tie"></i>
+          <span>Manage IPD</span>
+          <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('ipd')"></i>
+        </button>
+        <div class="submenu" *ngIf="isSubMenuVisible('ipd')">
+          <!-- HR Setup -->
+          <div class="nav-group" *ngIf="hasRequiredRole(['admin','doctor','receptionist'])">
+            <button (click)="toggleSubMenu('hr')" class="nav-button">
+              <i class="fas fa-user-cog"></i>
+              <span>IPD Setup</span>
+            </button>
+            <div class="submenu" >
+              <a routerLink="/ward" *ngIf="hasRequiredRole(['admin','receptionist'])"
+                class="nested-link" [class.active-link]="isActive('/ward')">Ward</a>
+            </div>
+             <div class="submenu" >
+              <a routerLink="/room" *ngIf="hasRequiredRole(['admin','receptionist'])"
+                class="nested-link" [class.active-link]="isActive('/room')">Room</a>
+            </div>
+              <div class="submenu" >
+              <a routerLink="/bed" *ngIf="hasRequiredRole(['admin','receptionist'])"
+                class="nested-link" [class.active-link]="isActive('/bed')">Bed</a>
+            </div>
+          </div>
+          <a routerLink="/admission" *ngIf="hasRequiredRole(['admin','receptionist'])" class="submenu-link" [class.active-link]="isActive('/admission')">Admission</a>
+        </div>
+      </div>
+
+
       <!-- Manage Laboratory -->
       <div class="nav-group" *ngIf="hasRequiredRole(['lab technician'])">
         <button (click)="toggleSubMenu('laboratory')" class="nav-button">

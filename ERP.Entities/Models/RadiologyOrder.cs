@@ -6,6 +6,8 @@
         public long RadiologyTypeId { get; set; }
         public string ClinicalNotes { get; set; }
         public long StatusId { get; set; }
+        public long? AdmissionRoundId { get; set; }
+        public AdmissionRound AdmissionRound { get; set; }
         public AppointmentStatus Status { get; set; }
         public Appointment Appointment { get; set; }
         public RadiologyType RadiologyType { get; set; }

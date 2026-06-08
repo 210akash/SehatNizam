@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 namespace ERP.Entities.Models
 {
     public class Ward : BaseEntity
@@ -9,5 +10,8 @@ namespace ERP.Entities.Models
         public string Description { get; set; }
         public long DepartmentId { get; set; }
         public virtual Department Department { get; set; }
+        public long ProjectId { get; set; }
+        public virtual Project Project { get; set; }
+        public ICollection<Room> Rooms { get; set; }
     }
 }

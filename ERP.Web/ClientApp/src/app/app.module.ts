@@ -906,6 +906,24 @@ import { RadiologyOrderListComponent } from './components/opd/radiologyorder/rad
 import { SaveRadiologyResultComponent } from './components/opd/radiologyorder/save-radiology-result/save-radiology-result.component';
 import { PrintRadiologyOrderResultComponent } from './components/opd/radiologyorder/print-radiology-order-result/print-radiology-order-result.component';
 import { ConfirmRadiologyOrderComponent } from './components/opd/radiologyorder/confirm-radiology-order/confirm-radiology-order.component';
+import { WardService } from './components/IPD/ward/ward.service';
+import { WardEndPoints } from './components/IPD/ward/ward.endpoints';
+import { AddWardComponent } from './components/IPD/ward/add-ward/add-ward.component';
+import { DeleteWardComponent } from './components/IPD/ward/delete-ward/delete-ward.component';
+import { ViewWardComponent } from './components/IPD/ward/view-ward/view-ward.component';
+import { WardListComponent } from './components/IPD/ward/ward-list/ward-list.component';
+import { RoomService } from './components/IPD/room/room.service';
+import { RoomEndPoints } from './components/IPD/room/room.endpoints';
+import { AddRoomComponent } from './components/IPD/room/add-room/add-room.component';
+import { DeleteRoomComponent } from './components/IPD/room/delete-room/delete-room.component';
+import { ViewRoomComponent } from './components/IPD/room/view-room/view-room.component';
+import { RoomListComponent } from './components/IPD/room/room-list/room-list.component';
+import { AddBedComponent } from './components/IPD/bed/add-bed/add-bed.component';
+import { BedService } from './components/IPD/bed/bed.service';
+import { BedEndPoints } from './components/IPD/bed/bed.endpoints';
+import { ViewBedComponent } from './components/IPD/bed/view-bed/view-bed.component';
+import { DeleteBedComponent } from './components/IPD/bed/delete-bed/delete-bed.component';
+import { BedListComponent } from './components/IPD/bed/bed-list/bed-list.component';
 const matFormFieldDefaults: MatFormFieldDefaultOptions = {
     appearance: 'outline'
     , subscriptSizing: 'dynamic'
@@ -1552,7 +1570,20 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         RadiologyOrderListComponent,
         ViewRadiologyOrderComponent,
         DeleteRadiologyOrderComponent,
-        ConfirmRadiologyOrderComponent
+        ConfirmRadiologyOrderComponent,
+        AddWardComponent,
+        DeleteWardComponent,
+        ViewWardComponent,
+        WardListComponent,
+        AddRoomComponent,
+        DeleteRoomComponent,
+        ViewRoomComponent,
+        RoomListComponent,
+        AddBedComponent,
+        ViewBedComponent,
+        DeleteBedComponent,
+        BedListComponent
+
     ],
     bootstrap: [AppComponent], imports: [
         InputMaskModule,
@@ -1850,6 +1881,12 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         ServiceTypeEndPoints,
         ReferrerService,
         ReferrerEndPoints,
+        WardService,
+        WardEndPoints,
+        RoomService,
+        RoomEndPoints,
+        BedService,
+        BedEndPoints,
         { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
         { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },
         AuthenticationService, {

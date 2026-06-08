@@ -443,6 +443,263 @@ namespace ERP.Entities.Migrations
                     b.ToTable("AccountType");
                 });
 
+            modelBuilder.Entity("ERP.Entities.Models.Admission", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("AdmissionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("AdmissionDiagnosis")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("AppointmentId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("BedId")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeleteDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DischargeDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DischargeSummary")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("ModifiedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("StatusId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("WardId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppointmentId");
+
+                    b.HasIndex("BedId");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("ModifiedById");
+
+                    b.HasIndex("StatusId");
+
+                    b.HasIndex("WardId");
+
+                    b.ToTable("Admission");
+                });
+
+            modelBuilder.Entity("ERP.Entities.Models.AdmissionRound", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<long>("AdmissionId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("ChiefComplaint")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeleteDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Diagnosis")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("DoctorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Instructions")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("ModifiedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("RoundDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("TreatmentPlan")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AdmissionId");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("ModifiedById");
+
+                    b.ToTable("AdmissionRound");
+                });
+
+            modelBuilder.Entity("ERP.Entities.Models.AdmissionRoundMedication", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<long>("AdmissionRoundId")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid?>("ConsultantsAssistantId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeleteDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Dose")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Duration")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Frequency")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Instructions")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("bit");
+
+                    b.Property<long>("ItemGroupId")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid?>("ModifiedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Route")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AdmissionRoundId");
+
+                    b.HasIndex("ConsultantsAssistantId");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("ItemGroupId");
+
+                    b.HasIndex("ModifiedById");
+
+                    b.ToTable("AdmissionRoundMedication");
+                });
+
+            modelBuilder.Entity("ERP.Entities.Models.AdvancePayment", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<long>("AppointmentId")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeleteDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("ModifiedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("PaymentModeId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("PaymentStatusId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppointmentId");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("ModifiedById");
+
+                    b.HasIndex("PaymentModeId");
+
+                    b.HasIndex("PaymentStatusId");
+
+                    b.ToTable("AdvancePayment");
+                });
+
             modelBuilder.Entity("ERP.Entities.Models.Appointment", b =>
                 {
                     b.Property<long>("Id")
@@ -1472,6 +1729,61 @@ namespace ERP.Entities.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Attachments");
+                });
+
+            modelBuilder.Entity("ERP.Entities.Models.Bed", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("BedNo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Code")
+                        .HasMaxLength(3)
+                        .HasColumnType("nvarchar(3)");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("DailyCharges")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("DeleteDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsOccupied")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("ModifiedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("RoomId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("ModifiedById");
+
+                    b.HasIndex("RoomId");
+
+                    b.ToTable("Bed");
                 });
 
             modelBuilder.Entity("ERP.Entities.Models.CancelDispatch", b =>
@@ -5336,6 +5648,9 @@ namespace ERP.Entities.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<long?>("AdmissionRoundId")
+                        .HasColumnType("bigint");
+
                     b.Property<long?>("AppointmentId")
                         .HasColumnType("bigint");
 
@@ -5370,6 +5685,8 @@ namespace ERP.Entities.Migrations
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AdmissionRoundId");
 
                     b.HasIndex("AppointmentId");
 
@@ -5713,6 +6030,64 @@ namespace ERP.Entities.Migrations
                     b.HasIndex("ShopId");
 
                     b.ToTable("MarkShopVisits");
+                });
+
+            modelBuilder.Entity("ERP.Entities.Models.MedicationAdministration", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<Guid>("AdministeredById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("AdministrationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("AdmissionRoundMedicationId")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeleteDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("ModifiedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Remarks")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("StatusId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AdministeredById");
+
+                    b.HasIndex("AdmissionRoundMedicationId");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("ModifiedById");
+
+                    b.HasIndex("StatusId");
+
+                    b.ToTable("MedicationAdministration");
                 });
 
             modelBuilder.Entity("ERP.Entities.Models.Notification", b =>
@@ -7190,6 +7565,9 @@ namespace ERP.Entities.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<long?>("AdmissionRoundId")
+                        .HasColumnType("bigint");
+
                     b.Property<long?>("AppointmentId")
                         .HasColumnType("bigint");
 
@@ -7224,6 +7602,8 @@ namespace ERP.Entities.Migrations
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AdmissionRoundId");
 
                     b.HasIndex("AppointmentId");
 
@@ -7838,6 +8218,58 @@ namespace ERP.Entities.Migrations
                     b.HasIndex("RetailOrderReturnId");
 
                     b.ToTable("RetailOrderReturnDetail");
+                });
+
+            modelBuilder.Entity("ERP.Entities.Models.Room", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Code")
+                        .HasMaxLength(2)
+                        .HasColumnType("nvarchar(2)");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeleteDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("ModifiedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("WardId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("ModifiedById");
+
+                    b.HasIndex("WardId");
+
+                    b.ToTable("Room");
                 });
 
             modelBuilder.Entity("ERP.Entities.Models.Roster", b =>
@@ -10638,6 +11070,63 @@ namespace ERP.Entities.Migrations
                     b.ToTable("VoucherType");
                 });
 
+            modelBuilder.Entity("ERP.Entities.Models.Ward", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Code")
+                        .HasMaxLength(2)
+                        .HasColumnType("nvarchar(2)");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeleteDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("DepartmentId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("ModifiedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("ProjectId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.HasIndex("ModifiedById");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("Ward");
+                });
+
             modelBuilder.Entity("ERP.Entities.Models.WarehouseTransfer", b =>
                 {
                     b.Property<long>("Id")
@@ -11052,6 +11541,148 @@ namespace ERP.Entities.Migrations
                     b.Navigation("CreatedBy");
 
                     b.Navigation("ModifiedBy");
+                });
+
+            modelBuilder.Entity("ERP.Entities.Models.Admission", b =>
+                {
+                    b.HasOne("ERP.Entities.Models.Appointment", "Appointment")
+                        .WithMany()
+                        .HasForeignKey("AppointmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ERP.Entities.Models.Bed", "Bed")
+                        .WithMany()
+                        .HasForeignKey("BedId");
+
+                    b.HasOne("ERP.Entities.Models.AspNetUsers", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById");
+
+                    b.HasOne("ERP.Entities.Models.AspNetUsers", "ModifiedBy")
+                        .WithMany()
+                        .HasForeignKey("ModifiedById");
+
+                    b.HasOne("ERP.Entities.Models.AppointmentStatus", "Status")
+                        .WithMany()
+                        .HasForeignKey("StatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ERP.Entities.Models.Ward", "Ward")
+                        .WithMany()
+                        .HasForeignKey("WardId");
+
+                    b.Navigation("Appointment");
+
+                    b.Navigation("Bed");
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("ModifiedBy");
+
+                    b.Navigation("Status");
+
+                    b.Navigation("Ward");
+                });
+
+            modelBuilder.Entity("ERP.Entities.Models.AdmissionRound", b =>
+                {
+                    b.HasOne("ERP.Entities.Models.Admission", "Admission")
+                        .WithMany("AdmissionRounds")
+                        .HasForeignKey("AdmissionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ERP.Entities.Models.AspNetUsers", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById");
+
+                    b.HasOne("ERP.Entities.Models.AspNetUsers", "ModifiedBy")
+                        .WithMany()
+                        .HasForeignKey("ModifiedById");
+
+                    b.Navigation("Admission");
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("ModifiedBy");
+                });
+
+            modelBuilder.Entity("ERP.Entities.Models.AdmissionRoundMedication", b =>
+                {
+                    b.HasOne("ERP.Entities.Models.AdmissionRound", "AdmissionRound")
+                        .WithMany("Medications")
+                        .HasForeignKey("AdmissionRoundId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ERP.Entities.Models.AspNetUsers", "ConsultantsAssistant")
+                        .WithMany()
+                        .HasForeignKey("ConsultantsAssistantId");
+
+                    b.HasOne("ERP.Entities.Models.AspNetUsers", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById");
+
+                    b.HasOne("ERP.Entities.Models.ItemGroup", "ItemGroup")
+                        .WithMany()
+                        .HasForeignKey("ItemGroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ERP.Entities.Models.AspNetUsers", "ModifiedBy")
+                        .WithMany()
+                        .HasForeignKey("ModifiedById");
+
+                    b.Navigation("AdmissionRound");
+
+                    b.Navigation("ConsultantsAssistant");
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("ItemGroup");
+
+                    b.Navigation("ModifiedBy");
+                });
+
+            modelBuilder.Entity("ERP.Entities.Models.AdvancePayment", b =>
+                {
+                    b.HasOne("ERP.Entities.Models.Appointment", "Appointment")
+                        .WithMany("AdvancePayments")
+                        .HasForeignKey("AppointmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ERP.Entities.Models.AspNetUsers", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById");
+
+                    b.HasOne("ERP.Entities.Models.AspNetUsers", "ModifiedBy")
+                        .WithMany()
+                        .HasForeignKey("ModifiedById");
+
+                    b.HasOne("ERP.Entities.Models.PaymentMode", "PaymentMode")
+                        .WithMany()
+                        .HasForeignKey("PaymentModeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ERP.Entities.Models.Status", "PaymentStatus")
+                        .WithMany()
+                        .HasForeignKey("PaymentStatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Appointment");
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("ModifiedBy");
+
+                    b.Navigation("PaymentMode");
+
+                    b.Navigation("PaymentStatus");
                 });
 
             modelBuilder.Entity("ERP.Entities.Models.Appointment", b =>
@@ -11547,6 +12178,29 @@ namespace ERP.Entities.Migrations
                     b.Navigation("Shop");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ERP.Entities.Models.Bed", b =>
+                {
+                    b.HasOne("ERP.Entities.Models.AspNetUsers", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById");
+
+                    b.HasOne("ERP.Entities.Models.AspNetUsers", "ModifiedBy")
+                        .WithMany()
+                        .HasForeignKey("ModifiedById");
+
+                    b.HasOne("ERP.Entities.Models.Room", "Room")
+                        .WithMany("Beds")
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("ModifiedBy");
+
+                    b.Navigation("Room");
                 });
 
             modelBuilder.Entity("ERP.Entities.Models.CancelDispatch", b =>
@@ -13525,6 +14179,10 @@ namespace ERP.Entities.Migrations
 
             modelBuilder.Entity("ERP.Entities.Models.LabOrder", b =>
                 {
+                    b.HasOne("ERP.Entities.Models.AdmissionRound", "AdmissionRound")
+                        .WithMany("LabOrders")
+                        .HasForeignKey("AdmissionRoundId");
+
                     b.HasOne("ERP.Entities.Models.Appointment", "Appointment")
                         .WithMany("LabOrders")
                         .HasForeignKey("AppointmentId");
@@ -13548,6 +14206,8 @@ namespace ERP.Entities.Migrations
                         .HasForeignKey("StatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("AdmissionRound");
 
                     b.Navigation("Appointment");
 
@@ -13710,6 +14370,45 @@ namespace ERP.Entities.Migrations
                     b.Navigation("ModifiedBy");
 
                     b.Navigation("Shop");
+                });
+
+            modelBuilder.Entity("ERP.Entities.Models.MedicationAdministration", b =>
+                {
+                    b.HasOne("ERP.Entities.Models.AspNetUsers", "AdministeredBy")
+                        .WithMany()
+                        .HasForeignKey("AdministeredById")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ERP.Entities.Models.AdmissionRoundMedication", "AdmissionRoundMedication")
+                        .WithMany("MedicationAdministrations")
+                        .HasForeignKey("AdmissionRoundMedicationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ERP.Entities.Models.AspNetUsers", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById");
+
+                    b.HasOne("ERP.Entities.Models.AspNetUsers", "ModifiedBy")
+                        .WithMany()
+                        .HasForeignKey("ModifiedById");
+
+                    b.HasOne("ERP.Entities.Models.AppointmentStatus", "Status")
+                        .WithMany()
+                        .HasForeignKey("StatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AdministeredBy");
+
+                    b.Navigation("AdmissionRoundMedication");
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("ModifiedBy");
+
+                    b.Navigation("Status");
                 });
 
             modelBuilder.Entity("ERP.Entities.Models.Notification", b =>
@@ -14516,6 +15215,10 @@ namespace ERP.Entities.Migrations
 
             modelBuilder.Entity("ERP.Entities.Models.RadiologyOrder", b =>
                 {
+                    b.HasOne("ERP.Entities.Models.AdmissionRound", "AdmissionRound")
+                        .WithMany("RadiologyOrders")
+                        .HasForeignKey("AdmissionRoundId");
+
                     b.HasOne("ERP.Entities.Models.Appointment", "Appointment")
                         .WithMany("RadiologyOrders")
                         .HasForeignKey("AppointmentId");
@@ -14539,6 +15242,8 @@ namespace ERP.Entities.Migrations
                         .HasForeignKey("StatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("AdmissionRound");
 
                     b.Navigation("Appointment");
 
@@ -14856,6 +15561,29 @@ namespace ERP.Entities.Migrations
                     b.Navigation("RetailOrderItems");
 
                     b.Navigation("RetailOrderReturn");
+                });
+
+            modelBuilder.Entity("ERP.Entities.Models.Room", b =>
+                {
+                    b.HasOne("ERP.Entities.Models.AspNetUsers", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById");
+
+                    b.HasOne("ERP.Entities.Models.AspNetUsers", "ModifiedBy")
+                        .WithMany()
+                        .HasForeignKey("ModifiedById");
+
+                    b.HasOne("ERP.Entities.Models.Ward", "Ward")
+                        .WithMany("Rooms")
+                        .HasForeignKey("WardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("ModifiedBy");
+
+                    b.Navigation("Ward");
                 });
 
             modelBuilder.Entity("ERP.Entities.Models.Roster", b =>
@@ -16289,6 +17017,37 @@ namespace ERP.Entities.Migrations
                     b.Navigation("ModifiedBy");
                 });
 
+            modelBuilder.Entity("ERP.Entities.Models.Ward", b =>
+                {
+                    b.HasOne("ERP.Entities.Models.AspNetUsers", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById");
+
+                    b.HasOne("ERP.Entities.Models.Department", "Department")
+                        .WithMany()
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ERP.Entities.Models.AspNetUsers", "ModifiedBy")
+                        .WithMany()
+                        .HasForeignKey("ModifiedById");
+
+                    b.HasOne("ERP.Entities.Models.Project", "Project")
+                        .WithMany()
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("Department");
+
+                    b.Navigation("ModifiedBy");
+
+                    b.Navigation("Project");
+                });
+
             modelBuilder.Entity("ERP.Entities.Models.WarehouseTransfer", b =>
                 {
                     b.HasOne("ERP.Entities.Models.AspNetUsers", "ApprovedBy")
@@ -16422,8 +17181,29 @@ namespace ERP.Entities.Migrations
                     b.Navigation("AccountCategorys");
                 });
 
+            modelBuilder.Entity("ERP.Entities.Models.Admission", b =>
+                {
+                    b.Navigation("AdmissionRounds");
+                });
+
+            modelBuilder.Entity("ERP.Entities.Models.AdmissionRound", b =>
+                {
+                    b.Navigation("LabOrders");
+
+                    b.Navigation("Medications");
+
+                    b.Navigation("RadiologyOrders");
+                });
+
+            modelBuilder.Entity("ERP.Entities.Models.AdmissionRoundMedication", b =>
+                {
+                    b.Navigation("MedicationAdministrations");
+                });
+
             modelBuilder.Entity("ERP.Entities.Models.Appointment", b =>
                 {
+                    b.Navigation("AdvancePayments");
+
                     b.Navigation("AppointmentPayments");
 
                     b.Navigation("Attachments");
@@ -16817,6 +17597,11 @@ namespace ERP.Entities.Migrations
                     b.Navigation("RetailOrderReturnDetail");
                 });
 
+            modelBuilder.Entity("ERP.Entities.Models.Room", b =>
+                {
+                    b.Navigation("Beds");
+                });
+
             modelBuilder.Entity("ERP.Entities.Models.Roster", b =>
                 {
                     b.Navigation("RosterDetail");
@@ -16908,6 +17693,11 @@ namespace ERP.Entities.Migrations
             modelBuilder.Entity("ERP.Entities.Models.VoucherType", b =>
                 {
                     b.Navigation("Transactions");
+                });
+
+            modelBuilder.Entity("ERP.Entities.Models.Ward", b =>
+                {
+                    b.Navigation("Rooms");
                 });
 
             modelBuilder.Entity("ERP.Entities.Models.WarehouseTransfer", b =>

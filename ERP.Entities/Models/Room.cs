@@ -6,6 +6,7 @@ namespace ERP.Entities.Models
     {
         [MaxLength(2)]
         public string Code { get; set; }
+        public string Name { get; set; }
         public long WardId { get; set; }
         public string Description { get; set; }
         public Ward Ward { get; set; }

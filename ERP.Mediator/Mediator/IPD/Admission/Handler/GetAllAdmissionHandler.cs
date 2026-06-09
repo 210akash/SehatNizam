@@ -33,6 +33,8 @@ namespace ERP.Mediator.Mediator.IPD.Admission.Handler
             Expression<Func<Entities.Models.Admission, object>>[] includes = {
                 x => x.Status,
                 x => x.CreatedBy,
+                x => x.AdmissionPackageMaster,
+                x => x.AdmissionPackageMaster.AdmissionPackageDetail,
                 x => x.AdmissionBeds.Where(y=>y.IsActive),
                 x => x.Appointment.Project,
                 x => x.Appointment.Patient,
@@ -50,6 +52,7 @@ namespace ERP.Mediator.Mediator.IPD.Admission.Handler
 
             List<string> thenIncludes = new()
             {
+                "AdmissionPackageMaster.AdmissionPackageDetail.Service",
                 "Appointment.AppointmentPayments.PaymentMode",
                 "Appointment.AppointmentPayments.PaymentStatus",
                 "AdmissionBeds.Bed",

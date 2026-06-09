@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ERP.Entities.Models;
+using System;
 using System.Collections.Generic;
 namespace ERP.BusinessModels.ResponseVM
 {
@@ -6,6 +7,7 @@ namespace ERP.BusinessModels.ResponseVM
     {
         public long Id { get; set; }
         public long AppointmentId { get; set; }
+        public long AdmissionPackageMasterId { get; set; }
         public GetAppointment Appointment { get; set; }
         public DateTime AdmissionDate { get; set; }
         public string AdmissionDiagnosis { get; set; }
@@ -17,6 +19,8 @@ namespace ERP.BusinessModels.ResponseVM
         public GetAppointmentStatus Status { get; set; }
         public long StatusId { get; set; }
         public ICollection<GetAdmissionBed> AdmissionBeds { get; set; }
+        public GetAdmissionPackageMaster AdmissionPackageMaster { get; set; }
+        
         //public ICollection<AdmissionRound> AdmissionRounds { get; set; }
     }
 }

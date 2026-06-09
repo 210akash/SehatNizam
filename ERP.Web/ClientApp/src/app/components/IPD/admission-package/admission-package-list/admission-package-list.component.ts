@@ -4,7 +4,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import Swal from 'sweetalert2';
 import { NotificationsService } from '../../../../Service/notification.service';
 import { AddAdmissionPackageComponent } from '../add-admission-package/add-admission-package.component';
 import { AdmissionPackageService } from '../admission-package.service';
@@ -111,34 +110,34 @@ export class AdmissionPackageListComponent {
         });
     }
 
-    deleteDialog(element: any) {
-        Swal.fire({
-            title: 'Confirmation',
-            text: `Are you sure you want to delete "${element.name}"?`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Yes, delete it!',
-            cancelButtonText: 'Cancel'
-        }).then((result) => {
-            if (!result.isConfirmed) {
-                return;
-            }
+    // deleteDialog(element: any) {
+    //     Swal.fire({
+    //         title: 'Confirmation',
+    //         text: `Are you sure you want to delete "${element.name}"?`,
+    //         icon: 'warning',
+    //         showCancelButton: true,
+    //         confirmButtonColor: '#d33',
+    //         cancelButtonColor: '#6c757d',
+    //         confirmButtonText: 'Yes, delete it!',
+    //         cancelButtonText: 'Cancel'
+    //     }).then((result) => {
+    //         if (!result.isConfirmed) {
+    //             return;
+    //         }
 
-            this.admissionPackageService.deleteAdmissionPackage(element.id).subscribe({
-                next: (data) => {
-                    if (data === true) {
-                        this.notificationsService.showNotification('Successfully Deleted!', 'snack-bar-success');
-                        this.bindData();
-                    }
-                },
-                error: (error) => {
-                    this.notificationsService.showNotification(error, 'snack-bar-danger');
-                }
-            });
-        });
-    }
+    //         this.admissionPackageService.deleteAdmissionPackage(element.id).subscribe({
+    //             next: (data) => {
+    //                 if (data === true) {
+    //                     this.notificationsService.showNotification('Successfully Deleted!', 'snack-bar-success');
+    //                     this.bindData();
+    //                 }
+    //             },
+    //             error: (error) => {
+    //                 this.notificationsService.showNotification(error, 'snack-bar-danger');
+    //             }
+    //         });
+    //     });
+    // }
 
     filterData() {
         this.currentPage = 0;

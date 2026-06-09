@@ -4,14 +4,16 @@ using ERP.Entities.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ERP.Entities.Migrations
 {
     [DbContext(typeof(ERPDbContext))]
-    partial class ERPDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260609181413_AdmissionPackage")]
+    partial class AdmissionPackage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -456,9 +458,6 @@ namespace ERP.Entities.Migrations
                     b.Property<string>("AdmissionDiagnosis")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("AdmissionPackageMasterId")
-                        .HasColumnType("bigint");
-
                     b.Property<long>("AppointmentId")
                         .HasColumnType("bigint");
 
@@ -496,8 +495,6 @@ namespace ERP.Entities.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AdmissionPackageMasterId");
 
                     b.HasIndex("AppointmentId");
 
@@ -11680,12 +11677,6 @@ namespace ERP.Entities.Migrations
 
             modelBuilder.Entity("ERP.Entities.Models.Admission", b =>
                 {
-                    b.HasOne("ERP.Entities.Models.AdmissionPackageMaster", "AdmissionPackageMaster")
-                        .WithMany()
-                        .HasForeignKey("AdmissionPackageMasterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("ERP.Entities.Models.Appointment", "Appointment")
                         .WithMany()
                         .HasForeignKey("AppointmentId")
@@ -11705,8 +11696,6 @@ namespace ERP.Entities.Migrations
                         .HasForeignKey("StatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("AdmissionPackageMaster");
 
                     b.Navigation("Appointment");
 

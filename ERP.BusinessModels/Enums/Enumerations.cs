@@ -124,4 +124,22 @@ namespace ERP.BusinessModels.Enums
         [Description("Absent")]
         Absent = 0
     };
+
+    public enum AppointmentStatus
+    {
+        [Description("Booked")]
+        Booked = 1,
+        [Description("Prescribed")]
+        Prescribed = 2,
+        [Description("Confirm")]
+        Confirm = 5,
+        [Description("Queue")]
+        Queue = 10,
+        [Description("Complete")]
+        Complete = 15,
+        [Description("Admitted")]
+        Admitted = 30,
+        [Description("Discharge")]
+        Discharge = 40
+    };
 }

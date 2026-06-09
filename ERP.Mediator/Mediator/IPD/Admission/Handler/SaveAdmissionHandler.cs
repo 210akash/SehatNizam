@@ -116,6 +116,7 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                     TotalPackageAmount = request.TotalPackageAmount,
                     CreatedById = sessionProvider.Session.LoggedInUserId,
                     StatusId = request.AppointmentStatusId,
+                    AdmissionPackageMasterId = request.AdmissionPackageMasterId,
                     CreatedDate = DateTime.Now,
                     IsActive = true,
                     IsDelete = false
@@ -126,21 +127,23 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                 // =====================================================
                 //4 PAYMENT
                 // =====================================================
+                var AdmissionPackageDetails = await unitOfWork.Repository<AdmissionPackageDetail>()
+                    .GetAsync(x => x.AdmissionPackageMasterId == request.AdmissionPackageMasterId,null,null, "Service", null,null);
 
-                if (request.AppointmentPayments != null)
+                if (AdmissionPackageDetails != null)
                 {
-                    foreach (var item in request.AppointmentPayments)
+                    foreach (var item in AdmissionPackageDetails)
                     {
                         var payment = new AppointmentPayment
                         {
                             AppointmentId = appointment.Id,
-                            VisitFee = item.VisitFee,
-                            Discount = item.Discount,
-                            TotalPayable = item.TotalPayable,
-                            PaymentModeId = item.PaymentModeId,
+                            VisitFee = item.Service.BasePrice,
+                            Discount = 0,
+                            TotalPayable = item.Service.BasePrice,
+                            PaymentModeId = request.PaymentModeId,
                             ServiceId = item.ServiceId,
                             PaymentDate = DateTime.Now,
-                            PaymentStatusId = item.PaymentStatusId,
+                            PaymentStatusId = 3,
                             CreatedById = sessionProvider.Session.LoggedInUserId,
                             CreatedDate = DateTime.Now,
                             IsActive = true,

@@ -95,3 +95,36 @@
   gap: 10px;
   margin-top: 18px;
 }
+
+.package-details {
+  grid-column: span 4;
+  margin-top: 12px;
+  padding: 12px;
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.package-services-header {
+  margin-bottom: 8px;
+  color: #374151;
+}
+
+.package-services-list {
+  list-style: disc inside;
+  margin: 0;
+  padding: 0;
+  color: #4b5563;
+  font-size: 14px;
+}
+
+.package-services-list li {
+  margin-bottom: 4px;
+}
+
+.package-total {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid #e5e7eb;
+  color: #1f2937;
+}

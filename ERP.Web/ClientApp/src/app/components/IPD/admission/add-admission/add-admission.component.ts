@@ -22,6 +22,7 @@ import { DoctorService } from '../../../opd/doctor/doctor.service';
 import { ServiceService } from '../../../opd/service/service.service';
 import { ReferrerService } from '../../../opd/referrer/referrer.service';
 import { AppointmentService } from '../../../opd/appointment/appointment.service';
+import { AdmissionPackageService } from '../../admission-package/admission-package.service';
 
 type Option<T = any> = { id: T; label: string };
 
@@ -55,6 +56,9 @@ export class AddAdmissionComponent implements OnInit {
   patientLoading = false;
   doctorList: any;
   referrerList: any[] = [];
+  packageList: any[] = [];
+  selectedPackageDetails: any[] = [];
+  packageTotal: number = 0;
 
   constructor(
     private fb: FormBuilder,
@@ -75,12 +79,14 @@ export class AddAdmissionComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private serviceService: ServiceService,
     private referrerService: ReferrerService,
+    private admissionPackageService: AdmissionPackageService,
     @Optional() @Inject(MAT_DIALOG_DATA) public data: { element: any} | null
   ) { }
 
   ngOnInit(): void {
     this.loadDepartments();
     this.getCityList();
+    this.getPackageList();
     this.getAppointmentTypeList();
     this.getVisitTypeList();
     this.getAllAppointmentStatus();
@@ -117,6 +123,8 @@ export class AddAdmissionComponent implements OnInit {
       confirmedDate: [null],
       appointmentStatusId: [30, Validators.required],
       totalPackageAmount: [0, Validators.required],
+      admissionPackageMasterId : [Validators.required],
+      paymentModeId: [5, Validators.required],
       patient: this.fb.group({
         name: ['', Validators.required],
         phoneNo: ['', Validators.required],
@@ -306,6 +314,34 @@ export class AddAdmissionComponent implements OnInit {
     this.cityService.getAllCities(_filterForm).subscribe(data => {
       this.cityList = data.item1;
     });
+  }
+
+getPackageList(): void {
+    let _filterForm = {};
+    this.admissionPackageService.getAllAdmissionPackages(_filterForm).subscribe(data => {
+      this.packageList = data.item1;
+    });
+  }
+
+  onPackageSelected(packageId: number): void {
+    if (!packageId) {
+      this.selectedPackageDetails = [];
+      this.packageTotal = 0;
+      this.admissionForm.get('totalPackageAmount')?.setValue(0);
+      return;
+    }
+    const selectedPackage = this.packageList.find((p: any) => p.id === packageId);
+    if (selectedPackage && selectedPackage.admissionPackageDetail) {
+      this.selectedPackageDetails = selectedPackage.admissionPackageDetail;
+      this.packageTotal = this.selectedPackageDetails.reduce(
+        (sum: number, item: any) => sum + (item.service?.basePrice || 0),
+        0
+      );
+    } else {
+      this.selectedPackageDetails = [];
+      this.packageTotal = 0;
+    }
+    this.admissionForm.get('totalPackageAmount')?.setValue(this.packageTotal);
   }
 
   async getAppointmentTypeList(): Promise<void> {

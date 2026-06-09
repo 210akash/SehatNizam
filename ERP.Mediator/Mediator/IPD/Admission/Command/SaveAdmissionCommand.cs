@@ -57,6 +57,8 @@ namespace ERP.Mediator.Mediator.IPD.Admission.Command
         // Existing patient
         public long BedId { get; set; }
         public decimal TotalPackageAmount { get; set; }
+        public long AdmissionPackageMasterId { get; set; }
+        public long PaymentModeId { get; set; }
         public string AdmissionDiagnosis { get; set; }
         public List<SaveAppointmentPaymentCommand> AppointmentPayments { get; set; }
     }

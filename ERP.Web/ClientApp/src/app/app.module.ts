@@ -1611,7 +1611,7 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         DeleteAdmissionBedComponent,
         AddAdmissionServiceComponent,
         DeleteAdmissionServiceComponent,
-        AdmissionServiceListComponent
+        AdmissionServiceListComponent,
         AdmissionPackageListComponent,
         AddAdmissionPackageComponent,
 

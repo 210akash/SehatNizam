@@ -25,8 +25,8 @@
     "@ng-bootstrap/ng-bootstrap": "^16.0.0",
     "@ngneat/input-mask": "^6.1.0",
     "@ngneat/until-destroy": "^10.0.0",
-    "angularx-qrcode": "^21.0.5",
     "@popperjs/core": "^2.11.8",
+    "angularx-qrcode": "^21.0.5",
     "file-saver": "^2.0.5",
     "font-awesome": "^4.7.0",
     "inputmask": "^5.0.9",
@@ -34,6 +34,7 @@
     "ngx-material-timepicker": "^13.1.1",
     "qrcode": "^1.5.4",
     "rxjs": "~7.8.0",
+    "sweetalert2": "^11.26.25",
     "tslib": "^2.3.0",
     "xlsx": "^0.18.5",
     "zone.js": "~0.15.0"

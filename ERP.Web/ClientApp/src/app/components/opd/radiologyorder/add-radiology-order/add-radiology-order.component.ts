@@ -158,11 +158,12 @@ export class AddRadiologyOrderComponent implements OnInit, OnDestroy {
       debounceTime(300),
       distinctUntilChanged(),
       switchMap((value: string | any) => {
-        const term = typeof value === 'string' ? value : value || '';
-        if (!term || term.length < 2) return of([]);
+        const term = typeof value === 'string'
+          ? value.trim()
+          : (typeof value?.name === 'string' ? value.name.trim() : '');
+        if (term.length < 2) return of([]);
         this.patientLoading = true;
         return this.patientService.getPatientByName(term).pipe(
-          map((data: any) => data?.item1 ?? data ?? []),
           finalize(() => (this.patientLoading = false))
         );
       })

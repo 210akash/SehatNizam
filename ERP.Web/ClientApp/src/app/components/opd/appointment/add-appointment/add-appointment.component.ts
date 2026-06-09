@@ -40,7 +40,7 @@ export class AddAppointmentComponent implements OnInit {
   phoneNoInputMask = createMask('0399-9999999');
   emailInputMask = createMask('*[*{0,50}]@*[*{0,50}].*[*{0,5}]');
   cityList: any;
-  appointmentTypeList: any;
+  appointmentTypeList: any[] = [];
   visitTypesList: any;
   paymentModesList: any;
   appointmentStatusList: any;
@@ -52,6 +52,7 @@ export class AddAppointmentComponent implements OnInit {
   patientSearchCtrl = new FormControl<string | any>('');
   filteredPatients$!: Observable<any[]>;
   patientLoading = false;
+  private selectedPatientId: number | null = null;
   doctorList: any;
   referrerList: any[] = [];
 
@@ -182,13 +183,14 @@ export class AddAppointmentComponent implements OnInit {
       debounceTime(300),
       distinctUntilChanged(),
       switchMap((value: string | any) => {
-        const term = typeof value === 'string' ? value : value || '';
-        if (!term || term.length < 2) {
+        const term = typeof value === 'string'
+          ? value.trim()
+          : (typeof value?.name === 'string' ? value.name.trim() : '');
+        if (term.length < 2) {
           return of([]);
         }
         this.patientLoading = true;
         return this.patientService.getPatientByName(term).pipe(
-          map((data: any) => data?.item1 ?? data ?? []),
           finalize(() => (this.patientLoading = false))
         );
       })
@@ -248,6 +250,7 @@ export class AddAppointmentComponent implements OnInit {
 
     if (element.patient) {
       this.patientSearchCtrl.setValue(element.patient);
+      this.selectedPatientId = element.patientId ?? element.patient?.id ?? null;
     }
 
     this.updateAge(element.patient?.dateOfBirth);
@@ -322,7 +325,7 @@ export class AddAppointmentComponent implements OnInit {
   async getAppointmentTypeList(): Promise<void> {
     let _filterForm = {};
     (await this.appointmentTypeService.getAllAppointmentType(_filterForm)).subscribe(data => {
-      this.appointmentTypeList = data.item1;
+      this.appointmentTypeList = Array.isArray(data?.item1) ? data.item1 : [];
     });
   }
 
@@ -371,9 +374,10 @@ export class AddAppointmentComponent implements OnInit {
 
     this.patientSearchCtrl.setValue(patient, { emitEvent: false });
 
+    this.selectedPatientId = patient.id ?? null;
+
     const patientGroup = this.appointmentForm.get('patient') as FormGroup;
     patientGroup.patchValue({
-      patientId: patient.name,
       name: patient.name,
       phoneNo: patient.phoneNo,
       secondaryPhoneNo: patient.secondaryPhoneNo,
@@ -401,6 +405,7 @@ export class AddAppointmentComponent implements OnInit {
     }
 
     this.patientSearchCtrl.setValue('', { emitEvent: false });
+    this.selectedPatientId = null;
 
     const patientGroup = this.appointmentForm.get('patient') as FormGroup;
     patientGroup.reset({
@@ -477,6 +482,7 @@ export class AddAppointmentComponent implements OnInit {
     const appointmentDateTime = this.combineDateAndTime(formValue.appointmentDate, formValue.appointmentTime);
     const payload: any = {
       ...formValue,
+      patientId: this.selectedPatientId ?? formValue.patientId ?? null,
       appointmentDate: appointmentDateTime,
       patient: {
         ...formValue.patient

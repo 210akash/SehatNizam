@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map } from 'rxjs';
+import { catchError, map, of } from 'rxjs';
 import { PatientEndPoints } from './patient.endpoints';
 import { environment } from '../../../../environments/environment';
 import { BaseService } from '../../../Service/base.service';
@@ -31,7 +31,18 @@ export class PatientService extends BaseService<any> {
     }
 
     getPatientByName(search: string) {
-        return this.get('?search=' + search, this.endPointControllerName + this.visitTypeEndPoints.getPatientByName)
-            .pipe(map((data: any) => data));
+        if (typeof search !== 'string' || !search.trim()) {
+            return of([]);
+        }
+
+        const query = '?search=' + encodeURIComponent(search.trim());
+        return this.get(query, this.endPointControllerName + this.visitTypeEndPoints.getPatientByName)
+            .pipe(
+                map((data: any) => {
+                    const list = data?.item1 ?? data?.Item1 ?? data?.data ?? data?.Data ?? data;
+                    return Array.isArray(list) ? list : [];
+                }),
+                catchError(() => of([]))
+            );
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace ERP.Mediator.AutoMapper.Configuration
+namespace ERP.Mediator.AutoMapper.Configuration
 {
     using ERP.BusinessModels.BaseVM;
     using ERP.BusinessModels.ParameterVM;
@@ -598,7 +598,18 @@
             this.CreateMap<PriorityLevel, GetPriorityLevel>().ReverseMap();
             this.CreateMap<Appointment, SaveAppointmentCommand>().ReverseMap();
             this.CreateMap<AppointmentPayment, SaveAppointmentPaymentCommand>().ReverseMap();
-            this.CreateMap<Patient, GetPatient>().ReverseMap();
+            this.CreateMap<Patient, GetPatient>()
+                .ForMember(d => d.Name, o => o.MapFrom(s => s.PatientMaster != null ? s.PatientMaster.Name : null))
+                .ForMember(d => d.PhoneNo, o => o.MapFrom(s => s.PatientMaster != null ? s.PatientMaster.PhoneNo : null))
+                .ForMember(d => d.SecondaryPhoneNo, o => o.MapFrom(s => s.PatientMaster != null ? s.PatientMaster.SecondaryPhoneNo : null))
+                .ForMember(d => d.Address, o => o.MapFrom(s => s.PatientMaster != null ? s.PatientMaster.Address : null))
+                .ForMember(d => d.CNIC, o => o.MapFrom(s => s.PatientMaster != null ? s.PatientMaster.CNIC : null))
+                .ForMember(d => d.Gender, o => o.MapFrom(s => s.PatientMaster != null ? s.PatientMaster.Gender : null))
+                .ForMember(d => d.Email, o => o.MapFrom(s => s.PatientMaster != null ? s.PatientMaster.Email : null))
+                .ForMember(d => d.DateOfBirth, o => o.MapFrom(s => s.PatientMaster != null ? s.PatientMaster.DateOfBirth : null))
+                .ForMember(d => d.Age, o => o.MapFrom(s => s.PatientMaster != null ? s.PatientMaster.Age : 0))
+                .ForMember(d => d.CityId, o => o.MapFrom(s => s.PatientMaster != null ? s.PatientMaster.CityId : null))
+                .ForMember(d => d.City, o => o.MapFrom(s => s.PatientMaster != null ? s.PatientMaster.City : null));
             this.CreateMap<AppointmentPayment, GetAppointmentPayment>().ReverseMap();
             this.CreateMap<RadiologyOrder, GetRadiologyOrder>().ReverseMap();
             this.CreateMap<LabOrder, GetLabOrder>().ReverseMap();

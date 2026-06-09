@@ -1,0 +1,10 @@
+.services-cell {
+  vertical-align: middle;
+}
+
+.services-total {
+  font-size: 12px;
+  color: #1565c0;
+  font-weight: 600;
+  margin-top: 2px;
+}

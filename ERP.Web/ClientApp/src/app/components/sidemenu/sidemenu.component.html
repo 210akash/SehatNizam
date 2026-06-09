@@ -698,6 +698,10 @@
               <a routerLink="/bed" *ngIf="hasRequiredRole(['admin','receptionist'])"
                 class="nested-link" [class.active-link]="isActive('/bed')">Bed</a>
             </div>
+            <div class="submenu">
+              <a routerLink="/admissionpackage" *ngIf="hasRequiredRole(['admin','receptionist'])"
+                class="nested-link" [class.active-link]="isActive('/admissionpackage')">Admission Packages</a>
+            </div>
           </div>
           <a routerLink="/admission" *ngIf="hasRequiredRole(['admin','receptionist'])" class="submenu-link" [class.active-link]="isActive('/admission')">Admission</a>
         </div>

@@ -927,6 +927,10 @@ import { BedListComponent } from './components/IPD/bed/bed-list/bed-list.compone
 import { AdmissionService } from './components/IPD/admission/admission.service';
 import { AdmissionEndPoints } from './components/IPD/admission/admission.endpoints';
 import { AddAdmissionComponent } from './components/IPD/admission/add-admission/add-admission.component';
+import { AdmissionPackageService } from './components/IPD/admission-package/admission-package.service';
+import { AdmissionPackageEndPoints } from './components/IPD/admission-package/admission-package.endpoints';
+import { AdmissionPackageListComponent } from './components/IPD/admission-package/admission-package-list/admission-package-list.component';
+import { AddAdmissionPackageComponent } from './components/IPD/admission-package/add-admission-package/add-admission-package.component';
 const matFormFieldDefaults: MatFormFieldDefaultOptions = {
     appearance: 'outline'
     , subscriptSizing: 'dynamic'
@@ -1587,6 +1591,8 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         DeleteBedComponent,
         BedListComponent,
         AddAdmissionComponent,
+        AdmissionPackageListComponent,
+        AddAdmissionPackageComponent,
 
     ],
     bootstrap: [AppComponent], imports: [
@@ -1893,6 +1899,8 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         BedEndPoints,
         AdmissionService,
         AdmissionEndPoints,
+        AdmissionPackageService,
+        AdmissionPackageEndPoints,
         { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
         { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },
         AuthenticationService, {

@@ -1,4 +1,4 @@
-﻿//-----------------------------------------------------------------------
+//-----------------------------------------------------------------------
 // <copyright file="SwaggerHelper.cs" company="sensyrtech">
 //     copy right sensyrtech.
 // </copyright>
@@ -25,6 +25,7 @@ namespace ERP.API.Helpers
             // Register the Swagger generator, defining 1 or more Swagger documents
             service.AddSwaggerGen(c =>
             {
+                c.CustomSchemaIds(type => type.FullName);
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ERP 1.0.0", Version = "v1", Description = "ERP" });
                 c.AddSecurityDefinition(
                     "Bearer",

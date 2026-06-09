@@ -52,6 +52,7 @@ namespace ERP.Mediator.AutoMapper.Configuration
     using ERP.Mediator.Mediator.Interview.Command;
     using ERP.Mediator.Mediator.IPD.Bed.Command;
     using ERP.Mediator.Mediator.IPD.Room.Command;
+    using ERP.Mediator.Mediator.IPD.AdmissionPackage.Command;
     using ERP.Mediator.Mediator.IPD.Ward.Command;
     using ERP.Mediator.Mediator.Issuance.Command;
     using ERP.Mediator.Mediator.Item.Command;
@@ -703,6 +704,11 @@ namespace ERP.Mediator.AutoMapper.Configuration
 
             CreateMap<Bed, SaveBedCommand>().ReverseMap();
             CreateMap<Bed, GetBed>().ReverseMap();
+
+            CreateMap<AdmissionPackageMaster, SaveAdmissionPackageMasterCommand>().ReverseMap();
+            CreateMap<AdmissionPackageMaster, GetAdmissionPackageMaster>().ReverseMap();
+            CreateMap<AdmissionPackageDetail, SaveAdmissionPackageDetailCommand>().ReverseMap();
+            CreateMap<AdmissionPackageDetail, GetAdmissionPackageDetail>().ReverseMap();
 
             //this.CreateMap<PayrollDetail, GetPayrollDetail>().ReverseMap();
 

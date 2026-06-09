@@ -1,0 +1,182 @@
+:host ::ng-deep .package-dialog-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px 16px 0;
+}
+
+:host ::ng-deep .package-dialog-header .mat-mdc-card-header-text,
+:host ::ng-deep .package-dialog-header .mat-card-header-text {
+  margin: 0;
+  text-align: center;
+  width: 100%;
+}
+
+:host ::ng-deep .package-dialog-header .mat-mdc-card-title,
+:host ::ng-deep .package-dialog-header mat-card-title {
+  text-align: center;
+  width: 100%;
+}
+
+.view-mode-content {
+  padding-top: 8px;
+}
+
+.services-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 12px 0;
+  min-height: 40px;
+}
+
+.services-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.services-label {
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 28px;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+.service-count-badge {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 12px;
+  border-radius: 14px;
+  background: #e3f2fd;
+  color: #1565c0;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+:host ::ng-deep .view-services-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  margin-bottom: 0;
+}
+
+:host ::ng-deep .view-services-table thead th,
+:host ::ng-deep .view-services-table tbody td,
+:host ::ng-deep .view-services-table tfoot td {
+  vertical-align: middle !important;
+  padding: 10px 8px !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border: 1px solid #dee2e6;
+}
+
+:host ::ng-deep .view-services-table thead th {
+  background: #f5f5f5 !important;
+  font-weight: 600;
+  text-align: center !important;
+}
+
+:host ::ng-deep .view-services-table tbody td {
+  text-align: center !important;
+}
+
+:host ::ng-deep .view-services-table .col-serial {
+  width: 10%;
+}
+
+:host ::ng-deep .view-services-table .col-code {
+  width: 20%;
+}
+
+:host ::ng-deep .view-services-table .col-name {
+  width: 45%;
+}
+
+:host ::ng-deep .view-services-table .col-price {
+  width: 25%;
+}
+
+:host ::ng-deep .view-services-table .empty-row {
+  text-align: center !important;
+  color: #6c757d;
+}
+
+:host ::ng-deep .view-services-table .summary-row td {
+  background: #fafafa;
+  border-top: 2px solid #e0e0e0;
+}
+
+:host ::ng-deep .view-services-table .summary-label-cell {
+  text-align: center !important;
+}
+
+:host ::ng-deep .view-services-table .summary-value-cell {
+  text-align: center !important;
+}
+
+.price-cell {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 56px;
+  padding-bottom: 8px;
+}
+
+.price-label {
+  font-size: 11px;
+  color: #757575;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.price-value {
+  font-size: 15px;
+  font-weight: 600;
+  color: #2e7d32;
+}
+
+.package-summary {
+  display: flex;
+  justify-content: flex-end;
+  gap: 24px;
+  margin: 16px 0 8px;
+  padding: 12px 16px;
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+}
+
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  min-width: 120px;
+}
+
+.summary-label {
+  font-size: 12px;
+  color: #6c757d;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.summary-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #212529;
+}
+
+.total-item .summary-value {
+  color: #1565c0;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 16px;
+}

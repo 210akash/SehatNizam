@@ -1,4 +1,4 @@
-﻿namespace ERP.Entities.Models
+namespace ERP.Entities.Models
 {
     using Microsoft.EntityFrameworkCore;
 
@@ -228,6 +228,8 @@
         public virtual DbSet<AdmissionRoundMedication> AdmissionRoundMedication { get; set; }
         public virtual DbSet<MedicationAdministration> MedicationAdministration { get; set; }
         public virtual DbSet<AdvancePayment> AdvancePayment { get; set; }
+        public virtual DbSet<AdmissionPackageMaster> AdmissionPackageMaster { get; set; }
+        public virtual DbSet<AdmissionPackageDetail> AdmissionPackageDetail { get; set; }
         #endregion
 
 
@@ -1104,6 +1106,22 @@
             .WithMany()
             .HasForeignKey(c => c.CreatedById)
             .OnDelete(DeleteBehavior.Restrict);
+
+            #endregion
+
+            #region Admission Package
+
+            modelBuilder.Entity<AdmissionPackageDetail>()
+                .HasOne(p => p.AdmissionPackageMaster)
+                .WithMany(p => p.AdmissionPackageDetail)
+                .HasForeignKey(p => p.AdmissionPackageMasterId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<AdmissionPackageDetail>()
+                .HasOne(p => p.Service)
+                .WithMany()
+                .HasForeignKey(p => p.ServiceId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             #endregion
 

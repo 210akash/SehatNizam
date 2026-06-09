@@ -53,7 +53,6 @@
     <Compile Remove="Mediator\IPD\Admission\Handler\ConfirmAppoinmentHandler.cs" />
     <Compile Remove="Mediator\IPD\Admission\Handler\DeleteGRNHandler.cs" />
     <Compile Remove="Mediator\IPD\Admission\Handler\GetAllAppointmentByDoctorHandler.cs" />
-    <Compile Remove="Mediator\IPD\Admission\Handler\GetAllAppointmentHandler.cs" />
     <Compile Remove="Mediator\IPD\Admission\Handler\GetAllAppointmentStatusHandler.cs" />
     <Compile Remove="Mediator\IPD\Admission\Handler\GetAllGRNHandler.cs" />
     <Compile Remove="Mediator\IPD\Admission\Handler\GetAllPurchaseInvoiceHandler.cs" />
@@ -77,7 +76,6 @@
     <Compile Remove="Mediator\IPD\Admission\Query\ConfirmAppoinmentQuery.cs" />
     <Compile Remove="Mediator\IPD\Admission\Query\DeleteGRNQuery.cs" />
     <Compile Remove="Mediator\IPD\Admission\Query\GetAllAppointmentByDoctorQuery.cs" />
-    <Compile Remove="Mediator\IPD\Admission\Query\GetAllAppointmentQuery.cs" />
     <Compile Remove="Mediator\IPD\Admission\Query\GetAllAppointmentStatusQuery.cs" />
     <Compile Remove="Mediator\IPD\Admission\Query\GetAllGRNQuery.cs" />
     <Compile Remove="Mediator\IPD\Admission\Query\GetAllPurchaseInvoiceQuery.cs" />
@@ -141,7 +139,6 @@
     <Folder Include="Mediator\Doctor\Command\" />
     <Folder Include="Mediator\Email\Command\" />
     <Folder Include="Mediator\Employee\Command\" />
-    <Folder Include="Mediator\IPD\Admission\Query\" />
     <Folder Include="Mediator\Ledger\Command\" />
     <Folder Include="Mediator\User\Validator\" />
     <Folder Include="Dll\" />

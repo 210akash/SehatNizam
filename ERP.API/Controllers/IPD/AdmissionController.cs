@@ -2,6 +2,7 @@
 using ERP.BusinessModels.Enums;
 using ERP.BusinessModels.ResponseVM;
 using ERP.Mediator.Mediator.IPD.Admission.Command;
+using ERP.Mediator.Mediator.IPD.Admission.Query;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,19 +24,19 @@ namespace ERP.API.Controllers
             this.mediator = mediator;
         }
 
-        //[HttpPost]
-        //[Route("GetAllAdmissions")]
-        //public async Task<ActionResult<Tuple<IEnumerable<GetAdmission>, long>>> GetAllAdmissions(GetAllAdmissionQuery command)
-        //{
-        //    try
-        //    {
-        //        return await this.mediator.Send(command);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return this.Result(ResponseStatus.Error, null, ex.Message);
-        //    }
-        //}
+        [HttpPost]
+        [Route("GetAllAdmissions")]
+        public async Task<ActionResult<Tuple<IEnumerable<GetAdmission>, long>>> GetAllAdmissions(GetAllAdmissionQuery command)
+        {
+            try
+            {
+                return await this.mediator.Send(command);
+            }
+            catch (Exception ex)
+            {
+                return this.Result(ResponseStatus.Error, null, ex.Message);
+            }
+        }
 
         //[HttpPost]
         //[Route("GetAllAdmissionByDoctor")]

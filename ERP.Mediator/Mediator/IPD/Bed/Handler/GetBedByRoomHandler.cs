@@ -22,7 +22,7 @@ namespace ERP.Mediator.Mediator.IPD.Bed.Handler
 
         public async Task<List<GetBed>> Handle(GetBedByRoomQuery request, CancellationToken cancellationToken)
         {
-            var Bed = await unitOfWork.Repository<Entities.Models.Bed>().GetAsync(y => y.IsActive == true && y.RoomId == request.RoomId);
+            var Bed = await unitOfWork.Repository<Entities.Models.Bed>().GetAsync(y => y.IsActive == true && y.RoomId == request.RoomId && (!request.Vacant || !y.IsOccupied == request.Vacant));
             var _Bed = mapper.Map<List<GetBed>>(Bed);
             return _Bed;
         }

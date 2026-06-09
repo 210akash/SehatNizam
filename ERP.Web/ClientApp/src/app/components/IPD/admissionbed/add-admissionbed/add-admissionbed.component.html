@@ -1,0 +1,50 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Assign Bed Form</mat-card-title>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+    <form [formGroup]="admissionBedForm">
+     <div class="row">
+       <div class="col-md-4">
+          <mat-form-field class="form-field" >
+            <mat-label>Ward</mat-label>
+            <mat-select formControlName="wardId" (selectionChange)="getroomList();reset()">
+              <mat-option *ngFor="let ward of wardList" [value]="ward.id" >
+                {{ ward.code }} :  {{ ward.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          </div>
+           <div class="col-md-4">
+          <mat-form-field class="form-field" >
+            <mat-label>Room</mat-label>
+            <mat-select formControlName="roomId" (selectionChange)="getbedList()">
+              <mat-option *ngFor="let room of roomList" [value]="room.id" >
+                {{ room.code }} :  {{ room.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+            <div class="col-md-4">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Bed</mat-label>
+            <mat-select formControlName="bedId">
+              <mat-option *ngFor="let bed of bedList" [value]="bed.id">
+                 {{  bed.code }}  :  {{  bed.bedNo }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          </div>
+      </div>
+      <div class="button-container">
+        <button mat-flat-button color="primary" type="button" (click)="SaveData()">
+          <span class="mat-button-wrapper">Save</span>
+        </button>
+        <button mat-flat-button color="warn" [mat-dialog-close]="true">
+          <span class="mat-button-wrapper">Close</span>
+        </button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

@@ -8,17 +8,14 @@ namespace ERP.Entities.Models
         public Appointment Appointment { get; set; }
         public DateTime AdmissionDate { get; set; }
         public string AdmissionDiagnosis { get; set; }
-
-        public long? BedId { get; set; }
-        public Bed Bed { get; set; }
+      
         public decimal TotalPackageAmount { get; set; }
-
         public DateTime? DischargeDate { get; set; }
         public string DischargeSummary { get; set; }
 
         public AppointmentStatus Status { get; set; }
         public long StatusId { get; set; }
         public ICollection<AdmissionRound> AdmissionRounds { get; set; }
-
+        public ICollection<AdmissionBed> AdmissionBeds { get; set; }
     }
 }

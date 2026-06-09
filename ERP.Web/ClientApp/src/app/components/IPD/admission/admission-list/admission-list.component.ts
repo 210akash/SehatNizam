@@ -3,41 +3,40 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort'; // Import MatSort and Sort
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { AppointmentService } from '../appointment.service';
 import { ConstantService } from '../../../../Service/constant.service';
 import { Router } from '@angular/router';
-import { PrintAppoinmentComponent } from '../print-appoinment/print-appoinment.component';
-import { ConfirmAppointmentComponent } from '../confirm-appointment/confirm-appointment.component';
 import { MatDialog } from '@angular/material/dialog';
-import { PrintReceiptAppoinmentComponent } from '../print-receipt-appoinment/print-receipt-appoinment.component';
 import { DepartmentService } from '../../../department/department.service';
+import { AdmissionService } from '../admission.service';
+import { AppointmentService } from '../../../opd/appointment/appointment.service';
+import { PrintReceiptAdmissionComponent } from '../print-receipt-admission/print-receipt-admission.component';
+import { AddAdmissionBedComponent } from '../../admissionbed/add-admissionbed/add-admissionbed.component';
+import { AdmissionBedListComponent } from '../../admissionbed/admissionbed-list/admissionbed-list.component';
+import { AdmissionServiceListComponent } from '../../admissionservice/admissionservice-list/admissionservice-list.component';
 
 @Component({
-  selector: 'app-appointment-list',
-  templateUrl: './appointment-list.component.html',
-  styleUrls: ['./appointment-list.component.css'],
+  selector: 'app-admission-list',
+  templateUrl: './admission-list.component.html',
+  styleUrls: ['./admission-list.component.css'],
   standalone: false
 })
 
-export class AppointmentListComponent {
+export class AdmissionListComponent {
   [x: string]: any;
   @Output() getAppointmentCount: EventEmitter<void> = new EventEmitter<void>();
-  AppointmentFilterForm!: FormGroup;
+  AdmissionFilterForm!: FormGroup;
   isLoading = false;
   currentPage = 0;
   pageSizeOptions: number[] = [5, 10, 25, 100];
   displayedColumns: string[] = [
-    'appointmentDate',
-    'bookingNumber',
+    'admissionDate',
     'patient',
+    'mrn',
     'tokenNumber',
     'doctor',
     'department',
-    'priority',
-    'appointmentType',
-    'visitType',
-    'reason',
     'referrer',
+    'bed',
     'status',
     'actions'
   ];
@@ -57,16 +56,17 @@ export class AppointmentListComponent {
 
   constructor(
     private appointmentService: AppointmentService,
+    private admissionService: AdmissionService,
     private formBuilder: FormBuilder,
     private constantService: ConstantService,
-        private departmentService: DepartmentService,
+   private departmentService: DepartmentService,
     private router: Router,
     private dialog: MatDialog,
   ) { }
 
   async ngOnInit(): Promise<void> {
     this.pageSize = this.constantService.defaultItemPerPage;
-    this.AppointmentFilterForm = this.formBuilder.group({
+    this.AdmissionFilterForm = this.formBuilder.group({
       id:[null],
       bookingFormType : [5],
       tokenNo: [''],
@@ -103,22 +103,15 @@ export class AppointmentListComponent {
         take: this.pageSize
       };
     const appointmentFilterForm = {
-      ...this.AppointmentFilterForm.value
+      ...this.AdmissionFilterForm.value
     };
       // Set loading indicator
       this.isLoading = true;
       appointmentFilterForm["PagingData"] = pagingData;
-      // let fdate = new Date(appointmentFilterForm.fdate);
-      // let tdate = new Date(appointmentFilterForm.tdate);
-
-      // appointmentFilterForm['fdate'] = fdate.toLocaleDateString();
-      // appointmentFilterForm['tdate'] = tdate.toLocaleDateString();
-
       // Call the service method and subscribe with the observer
       appointmentFilterForm['fDate'] = this.constantService.formatDate(appointmentFilterForm['fDate']);
       appointmentFilterForm['tDate'] = this.constantService.formatDate(appointmentFilterForm['tDate']);
-
-      (await this.appointmentService.getAllAppointments(appointmentFilterForm)).subscribe({
+      (await this.admissionService.getAllAdmissions(appointmentFilterForm)).subscribe({
         next: (data: any) => {
           // Update data source for MatTable
           this.dataSource = new MatTableDataSource(data.item1);
@@ -153,27 +146,23 @@ export class AppointmentListComponent {
     this.bindData(); // Re-fetch data on page change
   }
 
-  openAppointmentDialog(element: any) {
-    const navigationExtras = {
-      queryParams: { appointmentStatusId: 5 },
-      state: element ? { element } : {}
-    };
-    this.router.navigate(['/newappointment'], navigationExtras);
+  openAdmissionDialog(element: any) {
+    this.router.navigate(['/addadmission']);
   }
 
-   printAppoinmnetDialog(element: any) {
-    const dialogRef = this.dialog.open(PrintAppoinmentComponent, {
-      panelClass: 'cstm_width_1100',
-      maxHeight: '90vh',
-      data: {
-        element: element,
-      },
-      disableClose: true
-    });
-  }
+  //  printAppoinmnetDialog(element: any) {
+  //   const dialogRef = this.dialog.open(PrintAppoinmentComponent, {
+  //     panelClass: 'cstm_width_1100',
+  //     maxHeight: '90vh',
+  //     data: {
+  //       element: element,
+  //     },
+  //     disableClose: true
+  //   });
+  // }
   
-   printrecreiptAppoinmnetDialog(element: any) {
-    const dialogRef = this.dialog.open(PrintReceiptAppoinmentComponent, {
+   printrecreiptAdmissionDialog(element: any) {
+    const dialogRef = this.dialog.open(PrintReceiptAdmissionComponent, {
       panelClass: 'cstm_width_400',
       maxHeight: '90vh',
       data: {
@@ -183,24 +172,75 @@ export class AppointmentListComponent {
     });
   }
 
-  openConfirmDialog(element: any) {
-    const dialogRef = this.dialog.open(ConfirmAppointmentComponent, {
-      maxWidth: '560px',
-      disableClose: true,
-      data: {
-        element: element,
-      }
-    });
 
-    dialogRef.afterClosed().subscribe((confirmed: boolean) => {
-      if (confirmed) {
-        this.bindData();
-      }
+ openAddAdmissionServiceDialog(element: any) {
+    const dialogRef = this.dialog.open(AdmissionServiceListComponent, {
+      id: 'message-Insurance',
+      width: '50%',
+      maxHeight: '800px',
+      height: 'auto',
+      data: {
+        element: element
+      },
+      disableClose: true
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      this.bindData();
     });
   }
+
+  openAddAdmissionBedDialog(element: any) {
+    const dialogRef = this.dialog.open(AdmissionBedListComponent, {
+      id: 'message-Insurance',
+      width: '50%',
+      maxHeight: '800px',
+      height: 'auto',
+      data: {
+        element: element
+      },
+      disableClose: true
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      this.bindData();
+    });
+  }
+
+  // openConfirmDialog(element: any) {
+  //   const dialogRef = this.dialog.open(ConfirmAppointmentComponent, {
+  //     maxWidth: '560px',
+  //     disableClose: true,
+  //     data: {
+  //       element: element,
+  //     }
+  //   });
+
+  //   dialogRef.afterClosed().subscribe((confirmed: boolean) => {
+  //     if (confirmed) {
+  //       this.bindData();
+  //     }
+  //   });
+  // }
 
   filterData() {
     this.bindData();
   }
+
+  formatBed(element: any): string {
+  if (!element.admissionBeds || element.admissionBeds.length === 0) {
+    return 'N/A';
+  }
+
+  const bedInfo = element.admissionBeds[0]?.bed;
+  const ward = bedInfo?.room?.ward?.name;
+  const room = bedInfo?.room?.name;
+  const bedNo = bedInfo?.bedNo;
+
+  const parts = [];
+  if (ward) parts.push(ward);
+  if (room) parts.push(room);
+  if (bedNo) parts.push(bedNo);
+
+  return parts.length > 0 ? parts.join(' > ') : 'N/A';
+}
 
 }

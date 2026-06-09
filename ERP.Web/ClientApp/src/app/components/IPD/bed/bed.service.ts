@@ -44,8 +44,8 @@ export class BedService extends BaseService<any> {
             .pipe(map((data: any) => data));
     }
 
-    getBedByRoom(RoomId:number) {
-        return this.get('?roomId=' + RoomId, this.endPointControllerName + this.bedEndPoints.getBedByRoom)
+    getBedByRoom(RoomId:number,vacant:boolean) {
+        return this.get('?roomId=' + RoomId + '&vacant='+ vacant , this.endPointControllerName + this.bedEndPoints.getBedByRoom)
             .pipe(map((data: any) => data));
     }
 }

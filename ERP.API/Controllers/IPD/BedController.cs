@@ -86,11 +86,11 @@ namespace ERP.API.Controllers
 
         [HttpGet]
         [Route("GetBedByRoom")]
-        public async Task<ActionResult<List<GetBed>>> GetBedByRoom(long RoomId)
+        public async Task<ActionResult<List<GetBed>>> GetBedByRoom(long RoomId,bool Vacant)
         {
             try
             {
-                return await mediator.Send(new GetBedByRoomQuery(RoomId));
+                return await mediator.Send(new GetBedByRoomQuery(RoomId, Vacant));
             }
             catch (Exception ex)
             {

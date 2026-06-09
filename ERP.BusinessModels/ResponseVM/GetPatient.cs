@@ -8,6 +8,16 @@ namespace ERP.BusinessModels.ResponseVM
     {
         public long Id { get; set; }
         public string MRN { get; set; }
+        public long ProjectId { get; set; }
+        public GetProject Project { get; set; }
+        public long PatientMasterId { get; set; }
+        public GetPatientMaster PatientMaster { get; set; }
+        public List<Appointment> PatientAppointments { get; set; }
+    }
+
+    public class GetPatientMaster
+    {
+        public long Id { get; set; }
         public string Name { get; set; }
         public string PhoneNo { get; set; }
         public string SecondaryPhoneNo { get; set; }
@@ -19,8 +29,8 @@ namespace ERP.BusinessModels.ResponseVM
         public int Age { get; set; }
         public long? CityId { get; set; }
         public GetCity City { get; set; }
-        public long ProjectId { get; set; }
-        public GetProject Project { get; set; }
         public List<Appointment> PatientAppointments { get; set; }
     }
+
+
 }

@@ -449,7 +449,7 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
 
             var lastAppointment =
                 await unitOfWork.Repository<Entities.Models.Appointment>()
-                .GetOneAsync(x => x.IsActive, orderBy);
+                .GetOneAsync(x => x.IsActive && x.ProjectId == sessionProvider.Session.SelectedWarehouseId, orderBy);
 
             int nextNumber = 1;
 

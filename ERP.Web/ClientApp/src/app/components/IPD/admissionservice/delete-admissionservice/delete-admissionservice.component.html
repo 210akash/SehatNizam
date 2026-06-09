@@ -1,0 +1,32 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Delete Admission Service</mat-card-title>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+      <input type="hidden" formControlName="id" />
+      <mat-form-field appearance="outline" style="width: 100%;">
+        <mat-label>Vehicle</mat-label>
+        <input matInput value="{{this.data.element.vehicle.name}}" type="text" readonly>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" style="width: 100%;">
+        <mat-label>Tracker Company</mat-label>
+        <input matInput value="{{this.data.element.trackerCompany.name}}" type="text" readonly>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" style="width: 100%;">
+        <mat-label>Tracker No</mat-label>
+        <input matInput formControlName="trackerNo" type="text" readonly>
+      </mat-form-field>
+
+      <div class="button-container">
+        <button mat-flat-button color="primary" type="button" (click)="delete()">
+          <span class="mat-button-wrapper">Delete</span>
+        </button>
+        <button mat-flat-button color="warn" [mat-dialog-close]="true">
+          <span class="mat-button-wrapper">Close</span>
+        </button>
+      </div>
+  </mat-card-content>
+</mat-card>

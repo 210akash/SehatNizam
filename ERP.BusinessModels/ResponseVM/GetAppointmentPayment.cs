@@ -13,6 +13,8 @@ namespace ERP.BusinessModels.ResponseVM
         public decimal TotalPayable { get; set; } = 0m;
         public GetPaymentMode PaymentMode { get; set; }
         public long PaymentModeId { get; set; }
+        public long ServiceId { get; set; }
+        public GetService Service { get; set; }
         public DateTime PaymentDate { get; set; }
         public GetStatus PaymentStatus { get; set; }
         public long PaymentStatusId { get; set; }

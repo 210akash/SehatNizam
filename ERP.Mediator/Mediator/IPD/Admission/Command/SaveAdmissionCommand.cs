@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using ERP.Mediator.Mediator.Appointment.Command;
+using MediatR;
 using System;
 using System.Collections.Generic;
 
@@ -58,33 +59,5 @@ namespace ERP.Mediator.Mediator.IPD.Admission.Command
         public decimal TotalPackageAmount { get; set; }
         public string AdmissionDiagnosis { get; set; }
         public List<SaveAppointmentPaymentCommand> AppointmentPayments { get; set; }
-    }
-
-    public class PatientCommand
-    {
-        public string Name { get; set; }
-        public string PhoneNo { get; set; }
-        public string SecondaryPhoneNo { get; set; }
-        public string Address { get; set; }
-        public string CNIC { get; set; }
-        public string Gender { get; set; }
-        public string Email { get; set; }
-        public DateTime? DateOfBirth { get; set; }
-        public int Age { get; set; }
-        public long CityId { get; set; }
-        public long ProjectId { get; set; }
-    }
-
-    public class SaveAppointmentPaymentCommand
-    {
-        public long Id { get; set; }   // Id (for update)
-        public long AppointmentId { get; set; }
-        public long ServiceId { get; set; }   // ✔️ ADD THIS ONLY
-        public decimal VisitFee { get; set; } = 0m;
-        public decimal Discount { get; set; } = 0m;
-        public decimal TotalPayable { get; set; } = 0m;
-        public long PaymentModeId { get; set; }
-        public DateTime PaymentDate { get; set; }
-        public long PaymentStatusId { get; set; }
     }
 }

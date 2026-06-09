@@ -46,9 +46,9 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                 //}
                 //else
                 //{
-                    result = await CreateAppointmentAsync(
-                        request,
-                        cancellationToken);
+                result = await CreateAppointmentAsync(
+                    request,
+                    cancellationToken);
                 //}
 
                 await transaction.CommitAsync(cancellationToken);
@@ -76,10 +76,7 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                 // =====================================================
                 // 2️⃣ CREATE APPOINTMENT
                 // =====================================================
-                var TokenNumber = "";
-                if (request.DoctorId == null)
-                    TokenNumber = await GenerateAppointmentCodeAsync();
-
+                var TokenNumber = await GenerateAppointmentCodeAsync();
                 var appointment = new Entities.Models.Appointment
                 {
                     AppointmentDate = request.AppointmentDate,
@@ -110,22 +107,21 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                 // =====================================================
                 // 3️⃣ PAYMENT
                 // =====================================================
-            
-                        var Admission = new Entities.Models.Admission
-                        {
-                            AppointmentId = appointment.Id,
-                            AdmissionDate = DateTime.Now,
-                            BedId = request.BedId,
-                            AdmissionDiagnosis = request.AdmissionDiagnosis,
-                            TotalPackageAmount = request.TotalPackageAmount,
-                            CreatedById = sessionProvider.Session.LoggedInUserId,
-                            CreatedDate = DateTime.Now,
-                            IsActive = true,
-                            IsDelete = false
-                        };
 
-                        await unitOfWork.Repository<Entities.Models.Admission>()
-                            .AddAsync(Admission);
+                var Admission = new Admission
+                {
+                    AppointmentId = appointment.Id,
+                    AdmissionDate = DateTime.Now,
+                    AdmissionDiagnosis = request.AdmissionDiagnosis,
+                    TotalPackageAmount = request.TotalPackageAmount,
+                    CreatedById = sessionProvider.Session.LoggedInUserId,
+                    StatusId = request.AppointmentStatusId,
+                    CreatedDate = DateTime.Now,
+                    IsActive = true,
+                    IsDelete = false
+                };
+
+                await unitOfWork.Repository<Admission>().AddAsync(Admission);
 
                 // =====================================================
                 //4 PAYMENT
@@ -247,7 +243,7 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
 
             var lastAppointment =
                 await unitOfWork.Repository<Entities.Models.Appointment>()
-                .GetOneAsync(x => x.IsActive, orderBy);
+                .GetOneAsync(x => x.IsActive && x.ProjectId == sessionProvider.Session.SelectedWarehouseId, orderBy);
 
             int nextNumber = 1;
 

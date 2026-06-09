@@ -1,0 +1,66 @@
+<div class="card print-dialog">
+  <!-- Header with actions -->
+  <div class="card-header no-print" style="padding: 10px; border-bottom: 1px solid #ccc; display: flex; justify-content: space-between; align-items: center;">
+    <div class="card-title" style="font-size: 18px; font-weight: bold;">Appointment Receipt</div>
+    <div class="header-actions">
+      <button mat-flat-button color="primary" type="button" class="print-button mr-2" (click)="printDocument()">
+        <span class="mat-button-wrapper">Print</span>
+      </button>
+      <button mat-flat-button color="default" type="button" (click)="closeDialog()">
+        <span class="mat-button-wrapper">Close</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Body -->
+  <div class="card-body" id="printDoc" style="padding: 20px; font-family: Arial, sans-serif;">
+    
+    <!-- Hospital Name & QR -->
+    <div class="hospital-copy" style="text-align: center; margin-bottom: 15px;">
+      <h2 style="margin: 0;">{{ getHospitalName() }}</h2>
+      <p style="margin: 2px 0 10px 0; font-size: 14px;">{{ getHospitalSubtitle() }}</p>
+     
+    </div>
+     <div class="qr-box  mb-2" aria-hidden="true">
+  <img *ngIf="qrCodeUrl; else qrFallback" [src]="qrCodeUrl" alt="" class="qr-image" />
+  <ng-template #qrFallback>
+    <div class="qr-grid">
+      <span *ngFor="let cell of qrCells" [class.filled]="cell"></span>
+    </div>
+  </ng-template>
+</div>
+
+    <!-- Patient & Appointment Info -->
+    <div class="summary-card" style="display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 14px;">
+      
+      <!-- Left Column: Patient Info -->
+      <div class="patient-info" style="line-height: 1.6;">
+        <div><strong>Patient Name:</strong> {{ data.element?.patient?.name || '-' }}</div>
+        <div><strong>MRN:</strong> {{ data.element?.patient?.mrn || '-' }}</div>
+        <div><strong>Age / Gender:</strong> {{ getPatientAgeGender() }}</div>
+      </div>
+
+      <!-- Right Column: Appointment Info -->
+      <div class="appointment-info" style="text-align: right; line-height: 1.6;">
+        <div><strong>Date:</strong> {{ formatAppointmentDateLong() }}</div>
+        <div><strong>Time:</strong> {{ formatAppointmentTime() }}</div>
+        <div><strong>Token:</strong> {{ data.element?.tokenNumber || '-' }}</div>
+        <div><strong>Department:</strong> {{ data.element?.department?.name || '-' }}</div>
+        <div><strong>Doctor:</strong> {{ getDoctorName() }}</div>
+        <div><strong>Booked By:</strong> {{ data.element?.createdBy?.firstName + ' ' + data.element?.createdBy?.lastName }}</div>
+      </div>
+    </div>
+
+    <!-- Payment Info -->
+    <div class="payment-section" style="border-top: 1px solid #ccc; padding-top: 10px; margin-bottom: 15px; font-size: 14px;">
+      <div><strong>Payment Mode:</strong> {{ data.element?.appointmentPayments[0]?.paymentMode?.name || '-' }}</div>
+      <div><strong>Amount Paid:</strong> {{ data.element?.appointmentPayments[0]?.totalPayable | currency:'PKR':'symbol':'1.2-2' }}</div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer" style="border-top: 1px solid #ccc; padding-top: 10px; font-size: 12px; text-align: center; color: #555;">
+      Printed on {{ currentDate }}, {{ currentTime }} · {{ getHospitalName() }} · Appointment Receipt
+    </div>
+
+  </div>
+</div>

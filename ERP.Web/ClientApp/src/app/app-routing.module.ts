@@ -141,6 +141,8 @@ import { WardListComponent } from './components/IPD/ward/ward-list/ward-list.com
 import { RoomListComponent } from './components/IPD/room/room-list/room-list.component';
 import { BedListComponent } from './components/IPD/bed/bed-list/bed-list.component';
 import { AddAdmissionComponent } from './components/IPD/admission/add-admission/add-admission.component';
+import { AdmissionListComponent } from './components/IPD/admission/admission-list/admission-list.component';
+import { AdmissionBedListComponent } from './components/IPD/admissionbed/admissionbed-list/admissionbed-list.component';
 import { AdmissionPackageListComponent } from './components/IPD/admission-package/admission-package-list/admission-package-list.component';
 
 const routes: Routes = [
@@ -287,6 +289,7 @@ const routes: Routes = [
       { path: 'ward', component: WardListComponent, canActivate: [AuthGuard] },
       { path: 'room', component: RoomListComponent, canActivate: [AuthGuard] },
       { path: 'bed', component: BedListComponent, canActivate: [AuthGuard] },
+      { path: 'admission', component: AdmissionListComponent, canActivate: [AuthGuard] },
       { path: 'addadmission', component: AddAdmissionComponent, canActivate: [AuthGuard] },
       { path: 'admissionpackage', component: AdmissionPackageListComponent, canActivate: [AuthGuard] },
     ]

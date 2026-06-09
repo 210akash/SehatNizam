@@ -927,6 +927,19 @@ import { BedListComponent } from './components/IPD/bed/bed-list/bed-list.compone
 import { AdmissionService } from './components/IPD/admission/admission.service';
 import { AdmissionEndPoints } from './components/IPD/admission/admission.endpoints';
 import { AddAdmissionComponent } from './components/IPD/admission/add-admission/add-admission.component';
+import { AdmissionListComponent } from './components/IPD/admission/admission-list/admission-list.component';
+import { PrintReceiptAdmissionComponent } from './components/IPD/admission/print-receipt-admission/print-receipt-admission.component';
+import { AddAdmissionBedComponent } from './components/IPD/admissionbed/add-admissionbed/add-admissionbed.component';
+import { AdmissionBedListComponent } from './components/IPD/admissionbed/admissionbed-list/admissionbed-list.component';
+import { DeleteAdmissionBedComponent } from './components/IPD/admissionbed/delete-admissionbed/delete-admissionbed.component';
+import { AdmissionBedEndPoints } from './components/IPD/admissionbed/admissionbed.endpoints';
+import { AdmissionBedService } from './components/IPD/admissionbed/admissionbed.service';
+import { AdmissionServiceService } from './components/IPD/admissionservice/admissionservice.service';
+import { AdmissionServiceEndPoints } from './components/IPD/admissionservice/admissionservice.endpoints';
+import { AddAdmissionServiceComponent } from './components/IPD/admissionservice/add-admissionservice/add-admissionservice.component';
+import { DeleteAdmissionServiceComponent } from './components/IPD/admissionservice/delete-admissionservice/delete-admissionservice.component';
+import { AdmissionServiceListComponent } from './components/IPD/admissionservice/admissionservice-list/admissionservice-list.component';
+
 import { AdmissionPackageService } from './components/IPD/admission-package/admission-package.service';
 import { AdmissionPackageEndPoints } from './components/IPD/admission-package/admission-package.endpoints';
 import { AdmissionPackageListComponent } from './components/IPD/admission-package/admission-package-list/admission-package-list.component';
@@ -1591,6 +1604,14 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         DeleteBedComponent,
         BedListComponent,
         AddAdmissionComponent,
+        AdmissionListComponent,
+        PrintReceiptAdmissionComponent,
+        AddAdmissionBedComponent,
+        AdmissionBedListComponent,
+        DeleteAdmissionBedComponent,
+        AddAdmissionServiceComponent,
+        DeleteAdmissionServiceComponent,
+        AdmissionServiceListComponent
         AdmissionPackageListComponent,
         AddAdmissionPackageComponent,
 
@@ -1901,6 +1922,10 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         AdmissionEndPoints,
         AdmissionPackageService,
         AdmissionPackageEndPoints,
+        AdmissionBedService,
+        AdmissionBedEndPoints,
+        AdmissionServiceService,
+        AdmissionServiceEndPoints,
         { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
         { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },
         AuthenticationService, {

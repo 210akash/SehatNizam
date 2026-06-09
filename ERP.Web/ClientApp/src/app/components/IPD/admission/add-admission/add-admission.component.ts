@@ -75,24 +75,10 @@ export class AddAdmissionComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private serviceService: ServiceService,
     private referrerService: ReferrerService,
-    @Optional() @Inject(MAT_DIALOG_DATA) public data: { element: any, appointmentStatusId: number } | null
+    @Optional() @Inject(MAT_DIALOG_DATA) public data: { element: any} | null
   ) { }
 
-  private getRouteState(): { element?: any; appointmentStatusId?: number } {
-    const queryStatusId = Number(this.activatedRoute.snapshot.queryParamMap.get('appointmentStatusId'));
-    return {
-      ...(history.state ?? {}),
-      ...(this.router.getCurrentNavigation()?.extras?.state ?? {}),
-      ...(this.data ?? {}),
-      element: this.data?.element ?? this.router.getCurrentNavigation()?.extras?.state?.['element'] ?? history.state?.element,
-      appointmentStatusId: Number.isFinite(queryStatusId) && queryStatusId > 0
-        ? queryStatusId
-        : (history.state?.appointmentStatusId ?? this.data?.appointmentStatusId)
-    };
-  }
-
   ngOnInit(): void {
-    this.initialNavigationState = this.getRouteState();
     this.loadDepartments();
     this.getCityList();
     this.getAppointmentTypeList();
@@ -102,7 +88,7 @@ export class AddAdmissionComponent implements OnInit {
     this.getPaymentModesList();
     this.getAllPriorityLevel();
     this.buildForm();
-    this.patchEditData();
+    //this.patchEditData();
     this.setupCalculations();
     this.setupPatientAutocomplete();
     this.setupAppointmentStatusWatcher();
@@ -129,7 +115,8 @@ export class AddAdmissionComponent implements OnInit {
       confirmationNotes: [''],
       admissionDiagnosis: ['', Validators.required],
       confirmedDate: [null],
-      appointmentStatusId: [20, Validators.required],
+      appointmentStatusId: [30, Validators.required],
+      totalPackageAmount: [0, Validators.required],
       patient: this.fb.group({
         name: ['', Validators.required],
         phoneNo: ['', Validators.required],
@@ -198,18 +185,18 @@ export class AddAdmissionComponent implements OnInit {
   }
 
   private patchEditData(): void {
-    const state = this.initialNavigationState.element || this.initialNavigationState.appointmentStatusId
-      ? this.initialNavigationState
-      : this.getRouteState();
-    const element = state.element;
-    const appointmentStatusId = state.appointmentStatusId;
-    if (!element) {
-      if (appointmentStatusId != null) {
-        this.admissionForm.patchValue({ appointmentStatusId });
-      }
-      return;
-    }
-
+    // const state = this.initialNavigationState.element || this.initialNavigationState.appointmentStatusId
+    //   ? this.initialNavigationState
+    //   : this.getRouteState();
+    // const element = state.element;
+    // const appointmentStatusId = state.appointmentStatusId;
+    // if (!element) {
+    //   if (appointmentStatusId != null) {
+    //     this.admissionForm.patchValue({ appointmentStatusId });
+    //   }
+    //   return;
+    // }
+    var element  = this.data?.element;
     // Prefer the payment entry that matches this appointmentId; fallback to first or single payment object
     const payment =
       element.appointmentPayments?.find((p: any) => p.appointmentId === element.id) ||
@@ -222,7 +209,7 @@ export class AddAdmissionComponent implements OnInit {
 
     this.admissionForm.patchValue({
       ...element,
-      appointmentStatusId: appointmentStatusId ?? element.appointmentStatusId ?? 1,
+      appointmentStatusId: element.appointmentStatusId ?? 1,
       appointmentDate: this.toInputDate(element.appointmentDate),
       appointmentTime: this.toInputTime(element.appointmentDate),
       doctor: doctorObj,
@@ -425,21 +412,8 @@ export class AddAdmissionComponent implements OnInit {
   }
 
   onCancel(): void {
-    if (this.initialNavigationState.appointmentStatusId == 1) {
-      this.router.navigate(['/bookappointment']);
+      this.router.navigate(['/admission']);
       return;
-    }
-    else {
-      this.router.navigate(['/appointment']);
-      return;
-    }
-    // // When opened as a page, navigate back to the appointment list.
-    // const canGoBack = window.history.length > 1;
-    // if (canGoBack) {
-    //   window.history.back();
-    // } else {
-    //   this.router.navigate(['/appointment']);
-    // }
   }
 
   onSubmit(): void {

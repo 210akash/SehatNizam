@@ -4,9 +4,9 @@ using ERP.BusinessModels.ResponseVM;
 using ERP.Entities.Models;
 using MediatR;
 
-namespace ERP.Mediator.Mediator.Appointment.Query
+namespace ERP.Mediator.Mediator.IPD.Admission.Query
 {
-    public class GetAllAppointmentQuery : IRequest<Tuple<IEnumerable<GetAppointment>, long>>
+    public class GetAllAdmissionQuery : IRequest<Tuple<IEnumerable<GetAdmission>, long>>
     {
         public long? Id { get; set; }
         public DateTime FDate { get; set; }

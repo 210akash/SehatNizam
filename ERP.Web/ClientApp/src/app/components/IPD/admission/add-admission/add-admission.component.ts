@@ -39,7 +39,7 @@ export class AddAdmissionComponent implements OnInit {
   successMessage = '';
   errorMessage = '';
   cnicInputMask = createMask('99999-9999999-9');
-  phoneNoInputMask = createMask('0399-9999999');
+  phoneNoInputMask = createMask('03999999999');
   emailInputMask = createMask('*[*{0,50}]@*[*{0,50}].*[*{0,5}]');
   cityList: any;
   appointmentTypeList: any;
@@ -394,21 +394,20 @@ getPackageList(): void {
       return;
     }
 
-    this.patientSearchCtrl.setValue(patient, { emitEvent: false });
+    this.patientSearchCtrl.setValue(patient.patientMaster, { emitEvent: false });
 
     const patientGroup = this.admissionForm.get('patient') as FormGroup;
     patientGroup.patchValue({
-      patientId: patient.name,
-      name: patient.name,
-      phoneNo: patient.phoneNo,
-      secondaryPhoneNo: patient.secondaryPhoneNo,
-      address: patient.address,
-      cnic: patient.cnic,
-      gender: patient.gender || 'male',
-      email: patient.email,
-      dateOfBirth: patient.dateOfBirth ? this.toInputDate(patient.dateOfBirth) : null,
-      age: patient.age,
-      cityId: patient.cityId,
+      name: patient.patientMaster?.name,
+      phoneNo: patient.patientMaster?.phoneNo,
+      secondaryPhoneNo: patient.patientMaster?.secondaryPhoneNo,
+      address: patient.patientMaster?.address,
+      cnic: patient.patientMaster?.cnic,
+      gender: patient.patientMaster?.gender || 'male',
+      email: patient.patientMaster?.email,
+      dateOfBirth: patient.patientMaster?.dateOfBirth ? this.toInputDate(patient.dateOfBirth) : null,
+      age: patient.patientMaster?.age,
+      cityId: patient.patientMaster?.cityId,
       projectId: patient.projectId ?? 0
     });
 

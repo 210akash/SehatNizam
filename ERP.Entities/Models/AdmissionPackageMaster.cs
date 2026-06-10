@@ -6,7 +6,6 @@ namespace ERP.Entities.Models
     {
         public string Name { get; set; }
         public string Description { get; set; }
-
         public virtual ICollection<AdmissionPackageDetail> AdmissionPackageDetail { get; set; }
     }
 }

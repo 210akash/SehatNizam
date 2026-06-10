@@ -17,7 +17,7 @@
       <div class="col-md-4">
         <div class="info-box">
           <label>Name</label>
-          <div>{{ data.element?.name }}</div>
+          <div>{{ data.element?.patientMaster?.name }}</div>
         </div>
       </div>
 
@@ -31,28 +31,28 @@
       <div class="col-md-4">
         <div class="info-box">
           <label>Phone</label>
-          <div>{{ data.element?.phoneNo }}</div>
+          <div>{{ data.element?.patientMaster?.phoneNo }}</div>
         </div>
       </div>
 
       <div class="col-md-4">
         <div class="info-box">
           <label>CNIC</label>
-          <div>{{ data.element?.cnic }}</div>
+          <div>{{ data.element?.patientMaster?.cnic }}</div>
         </div>
       </div>
 
       <div class="col-md-4">
         <div class="info-box">
           <label>Gender</label>
-          <div>{{ data.element?.gender }}</div>
+          <div>{{ data.element?.patientMaster?.gender }}</div>
         </div>
       </div>
 
       <div class="col-md-4">
         <div class="info-box">
           <label>Date of Birth</label>
-          <div>{{ data.element?.dateOfBirth | date:'mediumDate' }}</div>
+          <div>{{ data.element?.patientMaster?.dateOfBirth | date:'mediumDate' }}</div>
         </div>
       </div>
 
@@ -66,14 +66,14 @@
       <div class="col-md-6">
         <div class="info-box">
           <label>City</label>
-          <div>{{ data.element?.city?.name }}</div>
+          <div>{{ data.element?.patientMaster?.city?.name }}</div>
         </div>
       </div>
 
       <div class="col-md-6">
         <div class="info-box">
           <label>Address</label>
-          <div>{{ data.element?.address || '-' }}</div>
+          <div>{{ data.element?.patientMaster?.address || '-' }}</div>
         </div>
       </div>
 

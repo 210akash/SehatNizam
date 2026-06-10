@@ -45,7 +45,7 @@
             <!--Name  Column-->
             <ng-container matColumnDef="name">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-dark"> Name</th>
-                <td  mat-cell *matCellDef="let element"> {{element.name}} </td>
+                <td  mat-cell *matCellDef="let element"> {{element.patientMaster?.name}} </td>
             </ng-container>
 
             <!--Description  Column-->
@@ -57,7 +57,7 @@
               <!--Description  Column-->
             <ng-container matColumnDef="phoneNo">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-dark"> Phone No.</th>
-                <td  mat-cell *matCellDef="let element"> {{element.phoneNo}} </td>
+                <td  mat-cell *matCellDef="let element"> {{element.patientMaster?.phoneNo}} </td>
             </ng-container>
 
                 <!--Description  Column-->

@@ -1,6 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 import { ConstantService } from '../../../../Service/constant.service';
 import { ServiceService } from '../service.service';
 import { AddServiceComponent } from '../add-service/add-service.component';
@@ -15,11 +18,18 @@ import { DepartmentService } from '../../../department/department.service';
   standalone: false
 })
 export class ServiceListComponent implements OnInit {
-  dataSource: any = [];
+  dataSource!: MatTableDataSource<any>;
   form!: FormGroup;
   displayedColumns: string[] = ['code', 'name', 'basePrice', 'departmentName', 'isActive', 'actions'];
   isLoading = false;
   departments: any[] = [];
+  currentPage = 0;
+  pageSizeOptions: number[] = [5, 10, 25, 100];
+  pageSize = 10;
+  totalRows = 0;
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
 
   constructor(
     private dialog: MatDialog,
@@ -51,24 +61,36 @@ export class ServiceListComponent implements OnInit {
 
   bindData(): void {
     this.isLoading = true;
-    const filter: any = {};
+    const filter: any = {
+      currentPage: this.currentPage,
+      take: this.pageSize
+    };
     const deptId = this.form.value.departmentId;
     if (deptId) {
       filter.departmentId = +deptId;
     }
     this.service.getAllServices(filter).subscribe({
       next: (data: any) => {
-        this.dataSource = data.item1 || [];
+        this.dataSource = new MatTableDataSource(data.item1 || []);
+        this.totalRows = data.item2 || 0;
+        this.dataSource.sort = this.sort;
         this.isLoading = false;
       },
       error: () => {
-        this.dataSource = [];
+        this.totalRows = 0;
         this.isLoading = false;
       }
     });
   }
 
+  pageChanged(event: PageEvent): void {
+    this.pageSize = event.pageSize;
+    this.currentPage = event.pageIndex;
+    this.bindData();
+  }
+
   filterData(): void {
+    this.currentPage = 0;
     this.bindData();
   }
 

@@ -49,6 +49,7 @@ namespace ERP.Mediator.Mediator.Patient.Handler
 
             List<string> thenIncludes = new()
             {
+                "PatientAppointments.AppointmentStatus",
                 "PatientAppointments.Department",
                 "PatientAppointments.Doctor",
                 "PatientAppointments.Attachments",

@@ -27,7 +27,7 @@
             <mat-autocomplete #patientAuto="matAutocomplete" [displayWith]="displayPatient"
               (optionSelected)="onPatientSelected($event.option.value)">
               <mat-option *ngFor="let patient of filteredPatients$ | async" [value]="patient">
-                {{ patient.name }} - {{ patient.phoneNo }}
+                {{ patient.patientMaster.name }} - {{ patient.patientMaster.phoneNo }}
               </mat-option>
             </mat-autocomplete>
           </mat-form-field>
@@ -255,7 +255,6 @@
             </mat-form-field>
 
             -->
-          </div>
           </div>
       </section>
       <div class="button-container">

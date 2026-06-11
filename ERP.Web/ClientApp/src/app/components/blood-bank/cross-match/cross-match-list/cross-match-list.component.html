@@ -1,0 +1,129 @@
+<div class="header-container">
+
+  <h2>Blood Cross Match</h2>
+
+</div>
+
+<div class="body-container">
+
+  <form [formGroup]="filterForm">
+
+    <div class="row">
+
+      <div class="col-md-6">
+
+        <mat-form-field class="form-field" style="width:100%">
+
+          <mat-label>Request Code</mat-label>
+
+          <input matInput formControlName="requestCode" (keyup)="filterData()">
+
+        </mat-form-field>
+
+      </div>
+
+    </div>
+
+  </form>
+
+  <div class="mat-elevation-z8 table-responsive mt-2">
+
+    <table mat-table [dataSource]="dataSource" matSort>
+
+      <ng-container matColumnDef="requestCode">
+
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Request</th>
+
+        <td mat-cell *matCellDef="let element">{{ getRequestCode(element) }}</td>
+
+      </ng-container>
+
+      <ng-container matColumnDef="patientName">
+
+        <th mat-header-cell *matHeaderCellDef>Patient</th>
+
+        <td mat-cell *matCellDef="let element">{{ getPatientName(element) }}</td>
+
+      </ng-container>
+
+      <ng-container matColumnDef="patientCNIC">
+
+        <th mat-header-cell *matHeaderCellDef>CNIC</th>
+
+        <td mat-cell *matCellDef="let element">{{ getPatientCNIC(element) }}</td>
+
+      </ng-container>
+
+      <ng-container matColumnDef="requestDetails">
+
+        <th mat-header-cell *matHeaderCellDef>Group | Component | Qty</th>
+
+        <td mat-cell *matCellDef="let element">{{ getRequestDetails(element) }}</td>
+
+      </ng-container>
+
+      <ng-container matColumnDef="unit">
+
+        <th mat-header-cell *matHeaderCellDef>Unit</th>
+
+        <td mat-cell *matCellDef="let element">{{ getUnitNo(element) }}</td>
+
+      </ng-container>
+
+      <ng-container matColumnDef="crossMatchDate">
+
+        <th mat-header-cell *matHeaderCellDef>Date</th>
+
+        <td mat-cell *matCellDef="let element">{{ element.crossMatchDate ? (element.crossMatchDate | date:'dd-MMM-yy') : '—' }}</td>
+
+      </ng-container>
+
+      <ng-container matColumnDef="result">
+
+        <th mat-header-cell *matHeaderCellDef>Result</th>
+
+        <td mat-cell *matCellDef="let element">{{ getResultText(element.result) }}</td>
+
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+
+        <th mat-header-cell *matHeaderCellDef style="width: 14%;">Actions</th>
+
+        <td mat-cell *matCellDef="let element">
+
+          <div class="action_btns">
+
+            <button *ngIf="isNotAssigned(element)" mat-mini-fab matTooltip="Assign Unit" color="success"
+
+              (click)="assignUnitDialog(element)"><mat-icon>add_link</mat-icon></button>
+
+            <button *ngIf="isInProcess(element)" mat-mini-fab matTooltip="Update Result" color="primary"
+
+              (click)="updateResultDialog(element)"><mat-icon>edit</mat-icon></button>
+
+            <button *ngIf="isInProcess(element)" mat-mini-fab matTooltip="Delete" color="warn"
+
+              (click)="deleteDialog(element)"><mat-icon>delete</mat-icon></button>
+
+          </div>
+
+        </td>
+
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+    </table>
+
+    <mat-paginator #paginator [length]="totalRows" [pageIndex]="currentPage" [pageSize]="take"
+
+      [pageSizeOptions]="pageSizeOptions" (page)="pageChanged($event)"></mat-paginator>
+
+  </div>
+
+</div>
+
+

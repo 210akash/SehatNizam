@@ -1,0 +1,73 @@
+<mat-card>
+  <mat-card-header><mat-card-title>{{ dialogTitle }}</mat-card-title></mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content *ngIf="!isLoading">
+    <form [formGroup]="form">
+      <div class="row">
+        <div class="col-md-6" *ngIf="isEditMode || isViewMode">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Donor Code</mat-label>
+            <input matInput formControlName="donorCode" type="text" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Name</mat-label>
+            <input matInput appBloodBankTextOnly formControlName="name" type="text" maxlength="50" [readonly]="isViewMode">
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field style="width: 100%;">
+            <mat-label>CNIC</mat-label>
+            <input matInput appBloodBankCnic formControlName="cnic" type="text" placeholder="32020-5555555-5" [readonly]="isViewMode">
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Mobile</mat-label>
+            <input matInput formControlName="mobile" type="tel" maxlength="15" inputmode="numeric"
+              (keypress)="allowDigitsOnly($event)" (input)="onMobileInput($event)" [readonly]="isViewMode">
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Gender</mat-label>
+            <mat-select formControlName="gender" [disabled]="isViewMode">
+              <mat-option *ngFor="let gender of genders" [value]="gender">{{ gender }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Date of Birth</mat-label>
+            <input matInput [matDatepicker]="dobPicker" formControlName="dateOfBirth" [max]="maxDate" [readonly]="isViewMode">
+            <mat-datepicker-toggle matIconSuffix [for]="dobPicker" *ngIf="!isViewMode"></mat-datepicker-toggle>
+            <mat-datepicker #dobPicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Blood Group</mat-label>
+            <mat-select formControlName="bloodGroupMasterId" [disabled]="isViewMode">
+              <mat-option *ngFor="let item of bloodGroups" [value]="item.id">{{ item.code }} - {{ item.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-checkbox formControlName="isDeferred" [disabled]="isViewMode">Is Deferred</mat-checkbox>
+        </div>
+        <div class="col-md-12" *ngIf="form.get('isDeferred')?.value">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Deferral Reason</mat-label>
+            <textarea matInput rows="2" formControlName="deferralReason" [readonly]="isViewMode"></textarea>
+          </mat-form-field>
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="button-container">
+        <button *ngIf="!isViewMode" mat-flat-button color="success" type="button" (click)="saveData()" [disabled]="isLoading">Save</button>
+        <button mat-flat-button color="default" [mat-dialog-close]="true">Close</button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

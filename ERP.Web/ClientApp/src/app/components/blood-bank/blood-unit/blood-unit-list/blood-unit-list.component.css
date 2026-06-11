@@ -1,0 +1,10 @@
+.storage-empty {
+    color: #9e9e9e;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.storage-assigned {
+    font-size: 0.85rem;
+    line-height: 1.3;
+}

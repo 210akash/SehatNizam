@@ -30,29 +30,26 @@ namespace ERP.Mediator.Mediator.Rack.Handler
 
         async Task<long> IRequestHandler<SaveRackCommand, long>.Handle(SaveRackCommand request, CancellationToken cancellationToken)
         {
-            var Rack = await unitOfWork.Repository<Entities.Models.Rack>().GetFirstAsNoTrackingAsync(x => x.Id == request.Id);
-            //var checkDuplicate = await unitOfWork.Repository<Entities.Models.Rack>().GetAsync(x => x.Name.ToLower() == request.Name.ToLower() && x.IsActive == true && x.IsDelete == false && x.Id != request.Id);
+            var rack = await unitOfWork.Repository<Entities.Models.Rack>().GetFirstAsNoTrackingAsync(x => x.Id == request.Id);
 
-            //if (checkDuplicate.Count() == 0)
-            //{
-            if (Rack == null)
+            if (rack == null)
             {
-                var _Rack = mapper.Map<Entities.Models.Rack>(request);
-                _Rack.CreatedById = sessionProvider.Session.LoggedInUserId;
-                _Rack.CompanyId = sessionProvider.Session.CompanyId;
-                _Rack.CreatedDate = DateTime.Now;
-                unitOfWork.Repository<Entities.Models.Rack>().Add(_Rack);
+                var newRack = mapper.Map<Entities.Models.Rack>(request);
+                newRack.CreatedById = sessionProvider.Session.LoggedInUserId;
+                newRack.CompanyId = sessionProvider.Session.CompanyId;
+                newRack.CreatedDate = DateTime.Now;
+                unitOfWork.Repository<Entities.Models.Rack>().Add(newRack);
                 SaveChanges();
             }
             else
             {
-                var _Rack = mapper.Map<Entities.Models.Rack>(request);
-                _Rack.CreatedById = Rack.CreatedById;
-                _Rack.CreatedDate = Rack.CreatedDate;
-                _Rack.CompanyId = sessionProvider.Session.CompanyId;
-                _Rack.ModifiedById = sessionProvider.Session.LoggedInUserId;
-                _Rack.ModifiedDate = DateTime.Now;
-                unitOfWork.Repository<Entities.Models.Rack>().Update(_Rack);
+                var updatedRack = mapper.Map<Entities.Models.Rack>(request);
+                updatedRack.CreatedById = rack.CreatedById;
+                updatedRack.CreatedDate = rack.CreatedDate;
+                updatedRack.CompanyId = rack.CompanyId;
+                updatedRack.ModifiedById = sessionProvider.Session.LoggedInUserId;
+                updatedRack.ModifiedDate = DateTime.Now;
+                unitOfWork.Repository<Entities.Models.Rack>().Update(updatedRack);
                 SaveChanges();
             }
             return 200;

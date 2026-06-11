@@ -142,4 +142,36 @@ namespace ERP.BusinessModels.Enums
         [Description("Discharge")]
         Discharge = 40
     };
+
+    public enum BloodUnitStatus
+    {
+        Available = 1,
+        Reserved = 2,
+        Issued = 3,
+        Discarded = 4,
+        Expired = 5
+    }
+
+    public enum BloodScreeningStatus
+    {
+        Pending = 1,
+        Pass = 2,
+        Fail = 3,
+        Deferred = 4
+    }
+
+    public enum BloodCrossMatchResult
+    {
+        Compatible = 1,
+        Incompatible = 2,
+        InProcess = 3
+    }
+
+    public enum BloodRequestStatus
+    {
+        Pending = 1,
+        CrossMatched = 2,
+        Issued = 3,
+        Cancelled = 4
+    }
 }

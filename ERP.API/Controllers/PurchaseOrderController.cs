@@ -9,6 +9,7 @@ using MediatR;
 using ERP.Mediator.Mediator.PurchaseOrder.Query;
 using ERP.Mediator.Mediator.PurchaseOrder.Command;
 using Microsoft.AspNetCore.Authorization;
+using ERP.Mediator.Mediator.ComparativeStatement.Query;
 
 namespace ERP.API.Controllers
 {
@@ -218,7 +219,7 @@ namespace ERP.API.Controllers
         {
             try
             {
-                return await mediator.Send(new GetPendingDemandItemsQuery(PurchaseDemandId, PurchaseOrderId, VendorId));
+                return await mediator.Send(new Mediator.Mediator.PurchaseOrder.Query.GetPendingDemandItemsQuery(PurchaseDemandId, PurchaseOrderId, VendorId));
             }
             catch (Exception ex)
             {

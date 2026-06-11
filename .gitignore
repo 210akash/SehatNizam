@@ -349,3 +349,4 @@ healthchecksdb
 /ERP.Web/ClientApp/src/app/components/purchaseorder/purchaseorder.service.ts
 /ERP.API/appsettings.Development.json
 /env .env
+/ERP.Web/ClientApp/src/app/components/opd/referrer/delete-referrer/delete- referrer.component.html

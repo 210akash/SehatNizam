@@ -1,0 +1,110 @@
+<mat-card class="log-card">
+  <mat-card-header class="log-header">
+    <div class="log-header-text">
+      <mat-card-title>Blood Request Log</mat-card-title>
+      <mat-card-subtitle>Lifecycle & audit trail</mat-card-subtitle>
+    </div>
+    <span class="entry-count" *ngIf="log?.entries?.length">{{ log.entries.length }} events</span>
+  </mat-card-header>
+
+  <mat-divider></mat-divider>
+
+  <mat-card-content class="log-body">
+    <div *ngIf="isLoading" class="loading-state">
+      <mat-spinner diameter="36"></mat-spinner>
+      <span>Loading request history...</span>
+    </div>
+
+    <div class="log-content" *ngIf="!isLoading && log">
+      <section class="summary-panel">
+        <div class="summary-grid">
+          <div class="summary-item">
+            <span class="summary-label">Request Code</span>
+            <span class="summary-value code">{{ getBloodRequest()?.code || '—' }}</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Patient</span>
+            <span class="summary-value">{{ getBloodRequest()?.patientName || '—' }}</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">CNIC</span>
+            <span class="summary-value">{{ getBloodRequest()?.patientCNIC || '—' }}</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Blood Group</span>
+            <span class="summary-value">{{ getBloodGroupName() }}</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Component</span>
+            <span class="summary-value">{{ getComponentTypeName() }}</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Quantity</span>
+            <span class="summary-value">{{ getBloodRequest()?.quantity ?? '—' }}</span>
+          </div>
+        </div>
+
+        <div class="current-step-banner" [ngClass]="getCurrentStepClass()">
+          <mat-icon>{{ getCurrentStepIcon() }}</mat-icon>
+          <div class="current-step-text">
+            <span class="current-step-label">Current Step</span>
+            <strong>{{ log.currentStep }}</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="timeline-section">
+        <div class="timeline-heading">
+          <h3>Activity Timeline</h3>
+        </div>
+
+        <div class="timeline-scroll" *ngIf="log.entries?.length; else emptyLog">
+          <article
+            class="timeline-entry"
+            *ngFor="let entry of log.entries; trackBy: trackByEventDate"
+            [class.reverted]="entry.isReverted"
+            [ngClass]="getOutcomeClass(entry.outcome, entry.isReverted)">
+            <div class="entry-icon-wrap">
+              <mat-icon>{{ getStepIcon(entry.step) }}</mat-icon>
+            </div>
+
+            <div class="entry-card">
+              <div class="entry-top">
+                <div class="entry-title-wrap">
+                  <h4 class="entry-step">{{ entry.step }}</h4>
+                  <span class="entry-date">{{ entry.eventDate | date:'dd MMM yyyy, hh:mm a' }}</span>
+                </div>
+                <span class="outcome-chip" [ngClass]="getOutcomeClass(entry.outcome, entry.isReverted)">
+                  {{ entry.outcome }}
+                </span>
+              </div>
+
+              <p class="entry-desc">{{ entry.description }}</p>
+
+              <div class="entry-meta" *ngIf="entry.unitNo || entry.performedBy">
+                <span class="meta-chip" *ngIf="entry.unitNo">
+                  <mat-icon>inventory_2</mat-icon>
+                  Unit {{ entry.unitNo }}
+                </span>
+                <span class="meta-chip" *ngIf="entry.performedBy">
+                  <mat-icon>person</mat-icon>
+                  {{ entry.performedBy }}
+                </span>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <ng-template #emptyLog>
+          <div class="empty-log">No activity recorded for this request yet.</div>
+        </ng-template>
+      </section>
+    </div>
+  </mat-card-content>
+
+  <mat-divider></mat-divider>
+
+  <div class="button-container log-actions">
+    <button mat-flat-button color="default" [mat-dialog-close]="true">Close</button>
+  </div>
+</mat-card>

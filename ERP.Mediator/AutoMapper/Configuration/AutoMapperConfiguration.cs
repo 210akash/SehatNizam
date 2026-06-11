@@ -15,6 +15,15 @@ namespace ERP.Mediator.AutoMapper.Configuration
     using ERP.Mediator.Mediator.Appointment.Command;
     using ERP.Mediator.Mediator.Area.Command;
     using ERP.Mediator.Mediator.Auth.Command;
+    using ERP.Mediator.Mediator.BloodBank.BloodGroup.Command;
+    using ERP.Mediator.Mediator.BloodBank.BloodUnit.Command;
+    using ERP.Mediator.Mediator.BloodBank.ComponentType.Command;
+    using ERP.Mediator.Mediator.BloodBank.CrossMatch.Command;
+    using ERP.Mediator.Mediator.BloodBank.Donation.Command;
+    using ERP.Mediator.Mediator.BloodBank.Donor.Command;
+    using ERP.Mediator.Mediator.BloodBank.Fridge.Command;
+    using ERP.Mediator.Mediator.BloodBank.Issue.Command;
+    using ERP.Mediator.Mediator.BloodBank.Request.Command;
     using ERP.Mediator.Mediator.CandidateEvaluationCategory.Command;
     using ERP.Mediator.Mediator.Category.Command;
     using ERP.Mediator.Mediator.City.Command;
@@ -727,6 +736,27 @@ namespace ERP.Mediator.AutoMapper.Configuration
             CreateMap<AdmissionPackageDetail, GetAdmissionPackageDetail>().ReverseMap();
 
             //this.CreateMap<PayrollDetail, GetPayrollDetail>().ReverseMap();
+
+            CreateMap<BloodComponentType, SaveBloodComponentTypeCommand>().ReverseMap();
+            CreateMap<BloodComponentType, GetBloodComponentType>().ReverseMap();
+            CreateMap<BloodGroupMaster, SaveBloodGroupMasterCommand>().ReverseMap();
+            CreateMap<BloodGroupMaster, GetBloodGroupMaster>().ReverseMap();
+            CreateMap<BloodFridge, SaveFridgeCommand>().ReverseMap();
+            CreateMap<BloodFridge, GetBloodFridge>().ReverseMap();
+            CreateMap<BloodRack, ERP.Mediator.Mediator.BloodBank.Rack.Command.SaveRackCommand>().ReverseMap();
+            CreateMap<BloodRack, GetBloodRack>().ReverseMap();
+            CreateMap<BloodDonor, SaveBloodDonorCommand>().ReverseMap();
+            CreateMap<BloodDonor, GetBloodDonor>().ReverseMap();
+            CreateMap<BloodDonation, SaveBloodDonationCommand>().ReverseMap();
+            CreateMap<BloodDonation, GetBloodDonation>().ReverseMap();
+            CreateMap<BloodUnit, SaveBloodUnitCommand>().ReverseMap();
+            CreateMap<BloodUnit, GetBloodUnit>().ReverseMap();
+            CreateMap<BloodRequest, SaveBloodRequestCommand>().ReverseMap();
+            CreateMap<BloodRequest, GetBloodRequest>().ReverseMap();
+            CreateMap<BloodCrossMatch, SaveBloodCrossMatchCommand>().ReverseMap();
+            CreateMap<BloodCrossMatch, GetBloodCrossMatch>().ReverseMap();
+            CreateMap<BloodIssue, SaveBloodIssueCommand>().ReverseMap();
+            CreateMap<BloodIssue, GetBloodIssue>().ReverseMap();
 
         }
     }

@@ -727,6 +727,8 @@ import { InterviewEndPoints } from './components/interview/interview.endpoints';
 import { AddCommentsComponent } from './components/interview/add-comments/add-comments.component';
 import { MatChipsModule } from '@angular/material/chips';
 import { HasRoleDirective } from './components/Shared/has-role.directive';
+import { BloodBankTextOnlyDirective } from './components/blood-bank/shared/blood-bank-text-only.directive';
+import { BloodBankCnicDirective } from './components/blood-bank/shared/blood-bank-cnic.directive';
 import { ProcessPurchaseInvoiceComponent } from './components/purchaseinvoice/process-purchaseinvoice/process-purchaseinvoice.component';
 import { RetailOrderEndPoints } from './components/order/retail-orders/retail-order.endpoints';
 import { RetailOrderService } from './components/order/retail-orders/retail-order.service';
@@ -944,6 +946,58 @@ import { AdmissionPackageService } from './components/IPD/admission-package/admi
 import { AdmissionPackageEndPoints } from './components/IPD/admission-package/admission-package.endpoints';
 import { AdmissionPackageListComponent } from './components/IPD/admission-package/admission-package-list/admission-package-list.component';
 import { AddAdmissionPackageComponent } from './components/IPD/admission-package/add-admission-package/add-admission-package.component';
+import { ComponentTypeListComponent } from './components/blood-bank/component-type/component-type-list/component-type-list.component';
+import { AddComponentTypeComponent } from './components/blood-bank/component-type/add-component-type/add-component-type.component';
+import { ComponentTypeService } from './components/blood-bank/component-type/component-type.service';
+import { ComponentTypeEndPoints } from './components/blood-bank/component-type/component-type.endpoints';
+import { BloodGroupListComponent } from './components/blood-bank/blood-group/blood-group-list/blood-group-list.component';
+import { AddBloodGroupComponent } from './components/blood-bank/blood-group/add-blood-group/add-blood-group.component';
+import { BloodGroupService } from './components/blood-bank/blood-group/blood-group.service';
+import { BloodGroupEndPoints } from './components/blood-bank/blood-group/blood-group.endpoints';
+import { BloodFridgeListComponent } from './components/blood-bank/blood-fridge/blood-fridge-list/blood-fridge-list.component';
+import { AddBloodFridgeComponent } from './components/blood-bank/blood-fridge/add-blood-fridge/add-blood-fridge.component';
+import { BloodFridgeService } from './components/blood-bank/blood-fridge/blood-fridge.service';
+import { BloodFridgeEndPoints } from './components/blood-bank/blood-fridge/blood-fridge.endpoints';
+import { BloodRackListComponent } from './components/blood-bank/blood-rack/blood-rack-list/blood-rack-list.component';
+import { AddBloodRackComponent } from './components/blood-bank/blood-rack/add-blood-rack/add-blood-rack.component';
+import { BloodRackService } from './components/blood-bank/blood-rack/blood-rack.service';
+import { BloodRackEndPoints } from './components/blood-bank/blood-rack/blood-rack.endpoints';
+import { DonorListComponent } from './components/blood-bank/donor/donor-list/donor-list.component';
+import { AddDonorComponent } from './components/blood-bank/donor/add-donor/add-donor.component';
+import { DonorService } from './components/blood-bank/donor/donor.service';
+import { DonorEndPoints } from './components/blood-bank/donor/donor.endpoints';
+import { DonationListComponent } from './components/blood-bank/donation/donation-list/donation-list.component';
+import { AddDonationComponent } from './components/blood-bank/donation/add-donation/add-donation.component';
+import { DonationService } from './components/blood-bank/donation/donation.service';
+import { DonationEndPoints } from './components/blood-bank/donation/donation.endpoints';
+import { BloodUnitListComponent } from './components/blood-bank/blood-unit/blood-unit-list/blood-unit-list.component';
+import { AddBloodUnitComponent } from './components/blood-bank/blood-unit/add-blood-unit/add-blood-unit.component';
+import { BloodUnitService } from './components/blood-bank/blood-unit/blood-unit.service';
+import { BloodUnitEndPoints } from './components/blood-bank/blood-unit/blood-unit.endpoints';
+import { BloodRequestListComponent } from './components/blood-bank/blood-request/blood-request-list/blood-request-list.component';
+import { AddBloodRequestComponent } from './components/blood-bank/blood-request/add-blood-request/add-blood-request.component';
+import { BloodRequestService } from './components/blood-bank/blood-request/blood-request.service';
+import { BloodRequestEndPoints } from './components/blood-bank/blood-request/blood-request.endpoints';
+import { CrossMatchListComponent } from './components/blood-bank/cross-match/cross-match-list/cross-match-list.component';
+import { AddCrossMatchComponent } from './components/blood-bank/cross-match/add-cross-match/add-cross-match.component';
+import { CrossMatchService } from './components/blood-bank/cross-match/cross-match.service';
+import { CrossMatchEndPoints } from './components/blood-bank/cross-match/cross-match.endpoints';
+import { IssueListComponent } from './components/blood-bank/issue/issue-list/issue-list.component';
+import { AddIssueComponent } from './components/blood-bank/issue/add-issue/add-issue.component';
+import { DeleteIssueComponent } from './components/blood-bank/issue/delete-issue/delete-issue.component';
+import { IssueService } from './components/blood-bank/issue/issue.service';
+import { IssueEndPoints } from './components/blood-bank/issue/issue.endpoints';
+import { DeleteComponentTypeComponent } from './components/blood-bank/component-type/delete-component-type/delete-component-type.component';
+import { DeleteBloodGroupComponent } from './components/blood-bank/blood-group/delete-blood-group/delete-blood-group.component';
+import { DeleteBloodFridgeComponent } from './components/blood-bank/blood-fridge/delete-blood-fridge/delete-blood-fridge.component';
+import { DeleteBloodRackComponent } from './components/blood-bank/blood-rack/delete-blood-rack/delete-blood-rack.component';
+import { DeleteDonorComponent } from './components/blood-bank/donor/delete-donor/delete-donor.component';
+import { DeleteDonationComponent } from './components/blood-bank/donation/delete-donation/delete-donation.component';
+import { DeleteBloodUnitComponent } from './components/blood-bank/blood-unit/delete-blood-unit/delete-blood-unit.component';
+import { DeleteBloodRequestComponent } from './components/blood-bank/blood-request/delete-blood-request/delete-blood-request.component';
+import { BloodRequestLogComponent } from './components/blood-bank/blood-request/blood-request-log/blood-request-log.component';
+import { ReturnToCrossMatchComponent } from './components/blood-bank/issue/return-to-cross-match/return-to-cross-match.component';
+import { DeleteCrossMatchComponent } from './components/blood-bank/cross-match/delete-cross-match/delete-cross-match.component';
 const matFormFieldDefaults: MatFormFieldDefaultOptions = {
     appearance: 'outline'
     , subscriptSizing: 'dynamic'
@@ -1614,6 +1668,40 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         AdmissionServiceListComponent,
         AdmissionPackageListComponent,
         AddAdmissionPackageComponent,
+        ComponentTypeListComponent,
+        AddComponentTypeComponent,
+        DeleteComponentTypeComponent,
+        BloodGroupListComponent,
+        AddBloodGroupComponent,
+        DeleteBloodGroupComponent,
+        BloodFridgeListComponent,
+        AddBloodFridgeComponent,
+        DeleteBloodFridgeComponent,
+        BloodRackListComponent,
+        AddBloodRackComponent,
+        DeleteBloodRackComponent,
+        DonorListComponent,
+        AddDonorComponent,
+        DeleteDonorComponent,
+        DonationListComponent,
+        AddDonationComponent,
+        DeleteDonationComponent,
+        BloodUnitListComponent,
+        AddBloodUnitComponent,
+        DeleteBloodUnitComponent,
+        BloodRequestListComponent,
+        AddBloodRequestComponent,
+        DeleteBloodRequestComponent,
+        BloodRequestLogComponent,
+        ReturnToCrossMatchComponent,
+        CrossMatchListComponent,
+        AddCrossMatchComponent,
+        DeleteCrossMatchComponent,
+        IssueListComponent,
+        AddIssueComponent,
+        DeleteIssueComponent,
+        BloodBankTextOnlyDirective,
+        BloodBankCnicDirective,
 
     ],
     bootstrap: [AppComponent], imports: [
@@ -1922,6 +2010,26 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         AdmissionEndPoints,
         AdmissionPackageService,
         AdmissionPackageEndPoints,
+        ComponentTypeService,
+        ComponentTypeEndPoints,
+        BloodGroupService,
+        BloodGroupEndPoints,
+        BloodFridgeService,
+        BloodFridgeEndPoints,
+        BloodRackService,
+        BloodRackEndPoints,
+        DonorService,
+        DonorEndPoints,
+        DonationService,
+        DonationEndPoints,
+        BloodUnitService,
+        BloodUnitEndPoints,
+        BloodRequestService,
+        BloodRequestEndPoints,
+        CrossMatchService,
+        CrossMatchEndPoints,
+        IssueService,
+        IssueEndPoints,
         AdmissionBedService,
         AdmissionBedEndPoints,
         AdmissionServiceService,

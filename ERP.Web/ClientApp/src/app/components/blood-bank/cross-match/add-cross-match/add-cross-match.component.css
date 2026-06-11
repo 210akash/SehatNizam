@@ -1,0 +1,5 @@
+::ng-deep .cross-match-option .mdc-list-item__primary-text {
+    white-space: normal;
+    line-height: 1.35;
+}
+

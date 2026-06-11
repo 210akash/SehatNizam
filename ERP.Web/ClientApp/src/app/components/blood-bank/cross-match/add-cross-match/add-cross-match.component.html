@@ -1,0 +1,158 @@
+<mat-card>
+
+  <mat-card-header><mat-card-title>{{ dialogTitle }}</mat-card-title></mat-card-header>
+
+  <mat-divider></mat-divider>
+
+  <mat-card-content *ngIf="!isLoading">
+
+    <form [formGroup]="form">
+
+      <div class="row">
+
+        <div class="col-md-12" *ngIf="selectedRequest">
+
+          <mat-form-field style="width: 100%;">
+
+            <mat-label>Blood Request</mat-label>
+
+            <input matInput [value]="getRequestLabel(selectedRequest)" type="text" readonly>
+
+          </mat-form-field>
+
+        </div>
+
+        <div class="col-md-12" *ngIf="selectedRequest && mode === 'assign'">
+
+          <mat-form-field style="width: 100%;">
+
+            <mat-label>Required</mat-label>
+
+            <input matInput [value]="getRequestDetailsLabel(selectedRequest)" type="text" readonly>
+
+          </mat-form-field>
+
+        </div>
+
+        <div class="col-md-12" *ngIf="showUnitPicker">
+
+          <mat-form-field style="width: 100%;">
+
+            <mat-label>Blood Unit</mat-label>
+
+            <input matInput [formControl]="unitSearchCtrl" [matAutocomplete]="unitAuto"
+
+              placeholder="Search by Unit No">
+
+            <mat-autocomplete #unitAuto="matAutocomplete" [displayWith]="displayUnit"
+
+              (optionSelected)="onUnitSelected($event.option.value)">
+
+              <mat-option *ngFor="let item of filteredUnits$ | async" [value]="item" class="cross-match-option">
+
+                {{ getUnitLabel(item) }}
+
+              </mat-option>
+
+            </mat-autocomplete>
+
+            <mat-error *ngIf="unitSearchCtrl.touched && unitSearchCtrl.hasError('required')">
+              Blood unit is required
+            </mat-error>
+            <mat-hint *ngIf="noMatchingUnits && !(unitSearchCtrl.touched && unitSearchCtrl.hasError('required'))">
+              No available units match this request blood group and component type.
+            </mat-hint>
+
+          </mat-form-field>
+
+        </div>
+
+        <div class="col-md-12" *ngIf="!showUnitPicker && selectedUnit">
+
+          <mat-form-field style="width: 100%;">
+
+            <mat-label>Blood Unit</mat-label>
+
+            <input matInput [value]="getUnitLabel(selectedUnit)" type="text" readonly>
+
+          </mat-form-field>
+
+        </div>
+
+        <div class="col-md-6">
+
+          <mat-form-field style="width: 100%;">
+
+            <mat-label>Cross Match Date</mat-label>
+
+            <input matInput [matDatepicker]="crossMatchDatePicker" formControlName="crossMatchDate"
+
+              placeholder="DD/MM/YYYY" [readonly]="isDateReadonly">
+
+            <mat-datepicker-toggle matIconSuffix [for]="crossMatchDatePicker" *ngIf="mode === 'assign'"></mat-datepicker-toggle>
+
+            <mat-datepicker #crossMatchDatePicker></mat-datepicker>
+
+          </mat-form-field>
+
+        </div>
+
+        <div class="col-md-6" *ngIf="showResultField">
+
+          <mat-form-field style="width: 100%;">
+
+            <mat-label>Result</mat-label>
+
+            <mat-select formControlName="result">
+
+              <mat-option *ngFor="let item of resultList" [value]="item.value">{{ item.name }}</mat-option>
+
+            </mat-select>
+
+          </mat-form-field>
+
+        </div>
+
+        <div class="col-md-6" *ngIf="mode === 'assign'">
+
+          <mat-form-field style="width: 100%;">
+
+            <mat-label>Result</mat-label>
+
+            <input matInput value="In Process" type="text" readonly>
+
+          </mat-form-field>
+
+        </div>
+
+        <div class="col-md-12">
+
+          <mat-form-field style="width: 100%;">
+
+            <mat-label>Remarks</mat-label>
+
+            <textarea matInput rows="2" formControlName="remarks" [readonly]="mode === 'view'"></textarea>
+
+          </mat-form-field>
+
+        </div>
+
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <div class="button-container">
+
+        <button *ngIf="mode !== 'view'" mat-flat-button color="success" type="button" (click)="saveData()" [disabled]="isLoading">Save</button>
+
+        <button mat-flat-button color="default" [mat-dialog-close]="true">Close</button>
+
+      </div>
+
+    </form>
+
+  </mat-card-content>
+
+</mat-card>
+
+

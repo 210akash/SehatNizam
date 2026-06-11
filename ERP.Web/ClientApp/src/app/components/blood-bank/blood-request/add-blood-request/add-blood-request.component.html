@@ -1,0 +1,82 @@
+<mat-card>
+  <mat-card-header><mat-card-title>{{ dialogTitle }}</mat-card-title></mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content *ngIf="!isLoading">
+    <form [formGroup]="form">
+      <div class="row">
+        <div class="col-md-12">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Admission (optional)</mat-label>
+            <mat-select formControlName="admissionId" [disabled]="isViewMode" (selectionChange)="onAdmissionSelected($event.value)">
+              <mat-option [value]="null">— None —</mat-option>
+              <mat-option *ngFor="let adm of admissionList" [value]="adm.id">
+                #{{ adm.id }} — {{ adm.appointment?.patient?.patientMaster?.name || adm.appointment?.patient?.name || 'Patient' }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Patient Name</mat-label>
+            <input matInput appBloodBankTextOnly formControlName="patientName" type="text" maxlength="50" [readonly]="isViewMode">
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Patient CNIC</mat-label>
+            <input matInput appBloodBankCnic formControlName="patientCNIC" type="text" placeholder="32020-5555555-5" [readonly]="isViewMode">
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Blood Group</mat-label>
+            <mat-select formControlName="bloodGroupMasterId" [disabled]="isViewMode">
+              <mat-option *ngFor="let item of bloodGroupList" [value]="item.id">{{ item.code }} - {{ item.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Component Type</mat-label>
+            <mat-select formControlName="bloodComponentTypeId" [disabled]="isViewMode">
+              <mat-option *ngFor="let item of componentTypeList" [value]="item.id">{{ item.code }} - {{ item.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Quantity</mat-label>
+            <input matInput formControlName="quantity" type="number" min="1" step="1" [readonly]="isViewMode"
+              (keypress)="blockInvalidQuantity($event)" (input)="onQuantityInput($event)">
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Request Date</mat-label>
+            <input matInput [matDatepicker]="requestDatePicker" formControlName="requestDate"
+              placeholder="DD/MM/YYYY" [readonly]="isViewMode">
+            <mat-datepicker-toggle matIconSuffix [for]="requestDatePicker" *ngIf="!isViewMode"></mat-datepicker-toggle>
+            <mat-datepicker #requestDatePicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6" *ngIf="showStatusField">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Status</mat-label>
+            <input matInput [value]="statusText" type="text" readonly>
+          </mat-form-field>
+        </div>
+        <div class="col-md-12">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Remarks</mat-label>
+            <textarea matInput rows="2" formControlName="remarks" [readonly]="isViewMode"></textarea>
+          </mat-form-field>
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="button-container">
+        <button *ngIf="isRequestEditable" mat-flat-button color="success" type="button" (click)="saveData()" [disabled]="isLoading">Save</button>
+        <button mat-flat-button color="default" [mat-dialog-close]="true">Close</button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

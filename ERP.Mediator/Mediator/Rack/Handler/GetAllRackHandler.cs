@@ -26,18 +26,16 @@ namespace ERP.Mediator.Mediator.Rack.Handler
         public async Task<Tuple<IEnumerable<GetRack>, long>> Handle(GetAllRackQuery request, CancellationToken cancellationToken)
         {
             Expression<Func<Entities.Models.Rack, bool>> predicate = x => x.IsActive == true
-            && (string.IsNullOrEmpty(request.Name) || x.Name.ToLower().Contains(request.Name.ToLower()))
-            ;
+                && (string.IsNullOrEmpty(request.Name) || x.Name.ToLower().Contains(request.Name.ToLower()));
 
-            Expression<Func<Entities.Models.Rack, object>>[] includes = {x => x.Company};
+            Expression<Func<Entities.Models.Rack, object>>[] includes = { x => x.Company, x => x.CreatedBy };
+            Expression<Func<Entities.Models.Rack, object>> orderByDescending = x => x.ModifiedDate ?? x.CreatedDate;
 
-            Expression<Func<Entities.Models.Rack, object>> OrderBy = null;
-            Expression<Func<Entities.Models.Rack, object>> OrderByDescending = x => x.ModifiedDate ?? x.CreatedDate;
+            var entity = unitOfWork.Repository<Entities.Models.Rack>()
+                .GetPagingWhereAsNoTrackingAsync(predicate, request.PagingData, null, orderByDescending, null, includes);
+            var racks = mapper.Map<IEnumerable<GetRack>>(entity.Item1.ToList()).ToList();
 
-            var entity = unitOfWork.Repository<Entities.Models.Rack>().GetPagingWhereAsNoTrackingAsync(predicate, request.PagingData, OrderBy, OrderByDescending, null, includes);
-            var Rack = mapper.Map<IEnumerable<GetRack>>(entity.Item1.ToList()).ToList();
-
-            return new Tuple<IEnumerable<GetRack>, long>(Rack, entity.Item2);
+            return new Tuple<IEnumerable<GetRack>, long>(racks, entity.Item2);
         }
     }
 }

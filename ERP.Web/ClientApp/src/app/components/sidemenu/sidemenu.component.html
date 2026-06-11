@@ -708,6 +708,27 @@
       </div>
 
 
+      <!-- Manage Blood Bank -->
+      <div class="nav-group" *ngIf="hasRequiredRole(['admin','blood bank technician','lab technician'])">
+        <button (click)="toggleSubMenu('bloodbank')" class="nav-button">
+          <i class="fas fa-tint"></i>
+          <span>Manage Blood Bank</span>
+          <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('bloodbank')"></i>
+        </button>
+        <div class="submenu" *ngIf="isSubMenuVisible('bloodbank')">
+          <a routerLink="/bloodcomponenttype" class="submenu-link" [class.active-link]="isActive('/bloodcomponenttype')">Component Types</a>
+          <a routerLink="/bloodgroup" class="submenu-link" [class.active-link]="isActive('/bloodgroup')">Blood Groups</a>
+          <a routerLink="/bloodfridge" class="submenu-link" [class.active-link]="isActive('/bloodfridge')">Blood Fridges</a>
+          <a routerLink="/bloodrack" class="submenu-link" [class.active-link]="isActive('/bloodrack')">Blood Racks</a>
+          <a routerLink="/blooddonor" class="submenu-link" [class.active-link]="isActive('/blooddonor')">Donors</a>
+          <a routerLink="/blooddonation" class="submenu-link" [class.active-link]="isActive('/blooddonation')">Donations</a>
+          <a routerLink="/bloodunit" class="submenu-link" [class.active-link]="isActive('/bloodunit')">Blood Units</a>
+          <a routerLink="/bloodrequest" class="submenu-link" [class.active-link]="isActive('/bloodrequest')">Blood Requests</a>
+          <a routerLink="/bloodcrossmatch" class="submenu-link" [class.active-link]="isActive('/bloodcrossmatch')">Cross Match</a>
+          <a routerLink="/bloodissue" class="submenu-link" [class.active-link]="isActive('/bloodissue')">Blood Issue</a>
+        </div>
+      </div>
+
       <!-- Manage Laboratory -->
       <div class="nav-group" *ngIf="hasRequiredRole(['lab technician'])">
         <button (click)="toggleSubMenu('laboratory')" class="nav-button">

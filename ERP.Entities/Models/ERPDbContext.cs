@@ -232,6 +232,19 @@ namespace ERP.Entities.Models
         public virtual DbSet<AdmissionPackageDetail> AdmissionPackageDetail { get; set; }
         #endregion
 
+        #region Blood Bank
+        public virtual DbSet<BloodComponentType> BloodComponentType { get; set; }
+        public virtual DbSet<BloodGroupMaster> BloodGroupMaster { get; set; }
+        public virtual DbSet<BloodFridge> BloodFridge { get; set; }
+        public virtual DbSet<BloodRack> BloodRack { get; set; }
+        public virtual DbSet<BloodDonor> BloodDonor { get; set; }
+        public virtual DbSet<BloodDonation> BloodDonation { get; set; }
+        public virtual DbSet<BloodUnit> BloodUnit { get; set; }
+        public virtual DbSet<BloodRequest> BloodRequest { get; set; }
+        public virtual DbSet<BloodCrossMatch> BloodCrossMatch { get; set; }
+        public virtual DbSet<BloodIssue> BloodIssue { get; set; }
+        #endregion
+
 
         #endregion
 
@@ -1121,6 +1134,124 @@ namespace ERP.Entities.Models
                 .HasOne(p => p.Service)
                 .WithMany()
                 .HasForeignKey(p => p.ServiceId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            #endregion
+
+            #region Blood Bank
+
+            modelBuilder.Entity<BloodRack>()
+                .HasOne(r => r.BloodFridge)
+                .WithMany()
+                .HasForeignKey(r => r.BloodFridgeId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<BloodDonor>()
+                .HasOne(d => d.BloodGroupMaster)
+                .WithMany()
+                .HasForeignKey(d => d.BloodGroupMasterId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<BloodDonor>()
+                .HasOne(d => d.PatientMaster)
+                .WithMany()
+                .HasForeignKey(d => d.PatientMasterId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<BloodDonation>()
+                .HasOne(d => d.BloodDonor)
+                .WithMany()
+                .HasForeignKey(d => d.BloodDonorId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<BloodDonation>()
+                .HasOne(d => d.BloodComponentType)
+                .WithMany()
+                .HasForeignKey(d => d.BloodComponentTypeId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<BloodDonation>()
+                .HasOne(d => d.BloodGroupMaster)
+                .WithMany()
+                .HasForeignKey(d => d.BloodGroupMasterId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<BloodUnit>()
+                .HasOne(u => u.BloodDonation)
+                .WithMany()
+                .HasForeignKey(u => u.BloodDonationId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<BloodUnit>()
+                .HasOne(u => u.BloodComponentType)
+                .WithMany()
+                .HasForeignKey(u => u.BloodComponentTypeId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<BloodUnit>()
+                .HasOne(u => u.BloodGroupMaster)
+                .WithMany()
+                .HasForeignKey(u => u.BloodGroupMasterId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<BloodUnit>()
+                .HasOne(u => u.BloodFridge)
+                .WithMany()
+                .HasForeignKey(u => u.BloodFridgeId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<BloodUnit>()
+                .HasOne(u => u.BloodRack)
+                .WithMany()
+                .HasForeignKey(u => u.BloodRackId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<BloodRequest>()
+                .HasOne(r => r.Admission)
+                .WithMany()
+                .HasForeignKey(r => r.AdmissionId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<BloodRequest>()
+                .HasOne(r => r.BloodGroupMaster)
+                .WithMany()
+                .HasForeignKey(r => r.BloodGroupMasterId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<BloodRequest>()
+                .HasOne(r => r.BloodComponentType)
+                .WithMany()
+                .HasForeignKey(r => r.BloodComponentTypeId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<BloodCrossMatch>()
+                .HasOne(c => c.BloodRequest)
+                .WithMany()
+                .HasForeignKey(c => c.BloodRequestId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<BloodCrossMatch>()
+                .HasOne(c => c.BloodUnit)
+                .WithMany()
+                .HasForeignKey(c => c.BloodUnitId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<BloodIssue>()
+                .HasOne(i => i.BloodRequest)
+                .WithMany()
+                .HasForeignKey(i => i.BloodRequestId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<BloodIssue>()
+                .HasOne(i => i.BloodUnit)
+                .WithMany()
+                .HasForeignKey(i => i.BloodUnitId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<BloodIssue>()
+                .HasOne(i => i.BloodCrossMatch)
+                .WithMany()
+                .HasForeignKey(i => i.BloodCrossMatchId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             #endregion

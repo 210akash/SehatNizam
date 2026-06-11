@@ -127,19 +127,16 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                 // =====================================================
                 //4 PAYMENT
                 // =====================================================
-                var AdmissionPackageDetails = await unitOfWork.Repository<AdmissionPackageDetail>()
-                    .GetAsync(x => x.AdmissionPackageMasterId == request.AdmissionPackageMasterId,null,null, "Service", null,null);
-
-                if (AdmissionPackageDetails != null)
+                if (request.AppointmentPayments != null)
                 {
-                    foreach (var item in AdmissionPackageDetails)
+                    foreach (var item in request.AppointmentPayments)
                     {
                         var payment = new AppointmentPayment
                         {
                             AppointmentId = appointment.Id,
-                            VisitFee = item.Service.BasePrice,
-                            Discount = 0,
-                            TotalPayable = item.Service.BasePrice,
+                            VisitFee = item.VisitFee,
+                            Discount = item.Discount,
+                            TotalPayable = item.VisitFee - item.Discount,
                             PaymentModeId = request.PaymentModeId,
                             ServiceId = item.ServiceId,
                             PaymentDate = DateTime.Now,

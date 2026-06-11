@@ -8,7 +8,6 @@ namespace ERP.Mediator.Mediator.ServiceType.Query
 {
     public class GetAllServiceTypesQuery : IRequest<Tuple<IEnumerable<GetServiceType>, long>>
     {
-        public long? DepartmentId { get; set; }
         public string Name { get; set; }
         public PagingData PagingData { get; set; }
 

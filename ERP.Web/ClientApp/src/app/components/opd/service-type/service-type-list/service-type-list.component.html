@@ -11,7 +11,7 @@
       <div class="col-lg-3 col-md-4 col-sm-6 col-12">
         <mat-form-field class="filter-field" appearance="outline">
           <mat-label>Search</mat-label>
-          <input matInput formControlName="searchText" placeholder="Search by name" />
+          <input matInput formControlName="name" placeholder="Search by name" (keyup)="bindData()" />
           <mat-icon matSuffix>search</mat-icon>
         </mat-form-field>
       </div>
@@ -26,24 +26,15 @@
       <td mat-cell *matCellDef="let e">{{ e.name }}</td>
     </ng-container>
 
-    <ng-container matColumnDef="isActive">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Active</th>
-      <td mat-cell *matCellDef="let e">
-        <span [class]="e.isActive ? 'badge badge-success' : 'badge badge-danger'">
-          {{ e.isActive ? 'Active' : 'Inactive' }}
-        </span>
-      </td>
-    </ng-container>
-
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef style="width: 15%;">Actions</th>
       <td mat-cell *matCellDef="let e">
         <div class="action_btns">
+            <button mat-mini-fab matTooltip="Edit" color="accent" (click)="openEdit(e)">
+            <mat-icon aria-label="Edit">edit</mat-icon>
+          </button>
           <button mat-mini-fab matTooltip="View" color="primary" (click)="openView(e)">
             <mat-icon aria-label="View">visibility</mat-icon>
-          </button>
-          <button mat-mini-fab matTooltip="Edit" color="accent" (click)="openEdit(e)">
-            <mat-icon aria-label="Edit">edit</mat-icon>
           </button>
           <button mat-mini-fab matTooltip="Delete" color="warn" (click)="openDelete(e)">
             <mat-icon aria-label="Delete">delete</mat-icon>

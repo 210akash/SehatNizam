@@ -45,11 +45,12 @@ export class ServiceListComponent implements OnInit {
 
   ngOnInit(): void {
     this.form = this.fb.group({
-      searchText: [''],
+      name: [''],
       departmentId: [''],
       serviceTypeId: ['']
     });
     this.loadDepartments();
+    this.loadServiceType();
     this.bindData();
   }
 
@@ -65,7 +66,7 @@ export class ServiceListComponent implements OnInit {
   }
 
   loadDepartments(): void {
-    this.departmentService.getAllDepartments({}).subscribe({
+    this.departmentService.getClinicalDepartment().subscribe({
       next: (res: any) => {
         this.departments = res?.item1 ?? res ?? [];
       },
@@ -77,19 +78,28 @@ export class ServiceListComponent implements OnInit {
 
   bindData(): void {
     this.isLoading = true;
-    const filter: any = {
+
+    const pagingData = {
       currentPage: this.currentPage,
       take: this.pageSize
     };
-    const deptId = this.form.value.departmentId;
-    if (deptId) {
-      filter.departmentId = +deptId;
-    }
-    this.service.getAllServices(filter).subscribe({
+
+    const _FilterForm = {
+      ...this.form.value,
+      PagingData: pagingData
+    };
+
+    this.service.getAllServices(_FilterForm).subscribe({
       next: (data: any) => {
         this.dataSource = new MatTableDataSource(data.item1 || []);
         this.totalRows = data.item2 || 0;
         this.dataSource.sort = this.sort;
+        setTimeout(() => {
+          if (this.paginator) {
+            this.paginator.pageIndex = this.currentPage;
+            this.paginator.length = this.totalRows;
+          }
+        });
         this.isLoading = false;
       },
       error: () => {
@@ -121,6 +131,7 @@ export class ServiceListComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      this.currentPage = 0;
       this.bindData();
     });
   }
@@ -145,6 +156,7 @@ export class ServiceListComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      this.currentPage = 0;
       this.bindData();
     });
   }

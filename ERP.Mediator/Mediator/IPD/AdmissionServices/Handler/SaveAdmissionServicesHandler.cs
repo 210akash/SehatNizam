@@ -38,7 +38,7 @@ namespace ERP.Mediator.Mediator.IPD.AdmissionServices.Handler
                 return 404;
             }
 
-            if (Service.ServiceType.Id == 2)
+            if (Service.ServiceType.Name == "Laboratory")
             {
                 var LaborderType = await unitOfWork.Repository<Entities.Models.LabOrderType>()
                     .GetFirstAsNoTrackingAsync(x => x.ServiceId == Service.Id && x.IsActive == true);
@@ -54,7 +54,7 @@ namespace ERP.Mediator.Mediator.IPD.AdmissionServices.Handler
 
                 unitOfWork.Repository<Entities.Models.LabOrder>().Add(labOrder);
             }
-            else if (Service.ServiceType.Id == 3)
+            else if (Service.ServiceType.Name == "Radiology")
             {
                 var RadiologyType = await unitOfWork.Repository<Entities.Models.RadiologyType>()
                    .GetFirstAsNoTrackingAsync(x => x.ServiceId == Service.Id && x.IsActive == true);

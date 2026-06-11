@@ -59,6 +59,7 @@ export class AddAdmissionComponent implements OnInit {
   packageList: any[] = [];
   selectedPackageDetails: any[] = [];
   packageTotal: number = 0;
+  selectedServiceId: number | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -123,7 +124,7 @@ export class AddAdmissionComponent implements OnInit {
       confirmedDate: [null],
       appointmentStatusId: [30, Validators.required],
       totalPackageAmount: [0, Validators.required],
-      admissionPackageMasterId : [Validators.required],
+      admissionPackageMasterId : [null,Validators.required],
       paymentModeId: [5, Validators.required],
       patient: this.fb.group({
         name: ['', Validators.required],
@@ -139,7 +140,6 @@ export class AddAdmissionComponent implements OnInit {
         projectId: [0, Validators.required]
       }),
       appointmentPayment: this.fb.array([
-        this.createPaymentForm()
       ])
     });
   }
@@ -154,7 +154,7 @@ export class AddAdmissionComponent implements OnInit {
       appointmentId: [0],
       visitFee: [0, Validators.min(0)],
       discount: [0, Validators.min(0)],
-      totalPayable: [{ value: 0, disabled: true }],
+      totalPayable: [0],
       paymentModeId: [5, Validators.required],
       serviceId: [null, Validators.required],
       paymentDate: [this.minDate, Validators.required],
@@ -168,9 +168,71 @@ export class AddAdmissionComponent implements OnInit {
       .get('dateOfBirth')
       ?.valueChanges.subscribe((dob) => this.updateAge(dob));
 
-    // const paymentGroup = this.admissionForm.get('appointmentPayment') as FormGroup;
-    // paymentGroup.valueChanges.subscribe(() => this.updateTotalPayable());
-    this.paymentGroup.valueChanges.subscribe(() => this.updateTotalPayable());
+    this.admissionForm.get('appointmentPayment')?.valueChanges.subscribe(() => {
+      this.updateTotalPayable();
+    });
+  }
+
+  get appointmentPayments(): FormArray {
+    return this.admissionForm.get('appointmentPayment') as FormArray;
+  }
+
+  addServiceToPayment(): void {
+    if (!this.selectedServiceId) {
+      this.notifications.showNotification('Please select a service first', 'snack-bar-danger');
+      return;
+    }
+
+    const selectedService = this.services.find(s => s.id === this.selectedServiceId);
+    if (!selectedService) return;
+
+    const paymentExists = this.appointmentPayments.controls.some(
+      (ctrl: any) => ctrl.get('serviceId')?.value === this.selectedServiceId
+    );
+
+    if (paymentExists) {
+      this.notifications.showNotification('Service already added', 'snack-bar-danger');
+      return;
+    }
+
+    this.appointmentPayments.push(this.fb.group({
+      id: [0],
+      appointmentId: [0],
+      visitFee: [selectedService.basePrice || 0],
+      discount: [0, Validators.min(0)],
+      totalPayable: [0],
+      paymentModeId: [5, Validators.required],
+      serviceId: [this.selectedServiceId, Validators.required],
+      paymentDate: [this.minDate, Validators.required],
+      paymentStatusId: [1, Validators.required]
+    }));
+
+    this.selectedServiceId = null;
+    this.updateTotalPayable();
+  }
+
+  removeService(index: number): void {
+    if (this.appointmentPayments.length > 1 || index !== 0) {
+      this.appointmentPayments.removeAt(index);
+      this.updateTotalPayable();
+    }
+  }
+
+  getServiceName(serviceId: number): string {
+    const service = this.services.find(s => s.id === serviceId);
+    return service ? service.name : '';
+  }
+
+  calculateRowAmount(row: any): number {
+    const fee = Number(row.get('visitFee')?.value) || 0;
+    const discount = Number(row.get('discount')?.value) || 0;
+    return fee - discount;
+  }
+
+  hasServicesAdded(): boolean {
+    return this.appointmentPayments.controls.some(
+      (ctrl: any) => ctrl.get('serviceId')?.value
+    );
   }
 
   private setupPatientAutocomplete(): void {
@@ -253,12 +315,10 @@ export class AddAdmissionComponent implements OnInit {
 
   private setupAppointmentStatusWatcher(): void {
     this.admissionForm.get('appointmentStatusId')?.valueChanges.subscribe((statusId: number) => {
-      const paymentGroup = this.admissionForm.get('appointmentPayment') as FormGroup;
-
       if (Number(statusId) === 5) {
-        // Set paymentStatusId = 3 without affecting other fields
-        paymentGroup.patchValue({
-          paymentStatusId: 3
+        // Set paymentStatusId = 3 for all payments
+        this.appointmentPayments.controls.forEach((payment: any) => {
+          payment.get('paymentStatusId')?.patchValue(3);
         });
       }
     });
@@ -275,39 +335,31 @@ export class AddAdmissionComponent implements OnInit {
       }
     });
   }
+public getIPDService(): void {
+  const departmentId = this.admissionForm.get('departmentId')?.value;
+  const _filterForm = { departmentId: departmentId };
 
-  public getOPDServiceByDepartment(): void {
-    const departmentId = this.admissionForm.get('departmentId')?.value;
-    if (departmentId > 0) {
-      const _filterForm = { departmentId: departmentId };
-      this.serviceService.getAllServices(_filterForm).subscribe({
-        next: (res: any) => {
-          // Assign services from response
-          this.services = res?.item1 ?? res ?? [];
+  this.serviceService.getAllServices(_filterForm).subscribe({
+    next: (res: any) => {
+      // Assign services from response
+      const allServices = res?.item1 ?? res ?? [];
 
-          // Check if an OPD service exists
-          const opdService = this.services.find(
-            (s: any) => s.serviceType?.name === 'OPD' && s.name === 'OPD'
-          );
+      // Get all IPD services
+      this.services = allServices.filter(
+        (s: any) => s.serviceType?.name === 'IPD'
+      );
 
-          if (opdService) {
-            (this.admissionForm.get('appointmentPayment') as FormArray)
-              .at(0)
-              .patchValue({
-                serviceId: opdService.id
-              });
-          }
-          else {
-            this.notifications.showNotification('No OPD Service Found Against Department', 'snack-bar-danger');
-          }
-        },
-        error: () => {
-          // Fallback: keep an empty list; UI will show required validation
-          this.services = [];
-        }
-      });
+      // Optional: if you want to handle the case when no IPD services exist
+      if (this.services.length === 0) {
+        this.notifications.showNotification('No IPD Service Found Against Department', 'snack-bar-danger');
+      }
+    },
+    error: () => {
+      // Fallback: keep an empty list; UI will show required validation
+      this.services = [];
     }
-  }
+  });
+}
 
   getCityList(): void {
     let _filterForm = {};
@@ -451,7 +503,7 @@ getPackageList(): void {
       return;
   }
 
-  onSubmit(): void {
+onSubmit(): void {
     this.successMessage = '';
     this.errorMessage = '';
 
@@ -462,23 +514,17 @@ getPackageList(): void {
       return;
     }
 
+    if (!this.hasServicesAdded()) {
+      this.errorMessage = 'Please add at least one service.';
+      this.notifications.showNotification(this.errorMessage, 'snack-bar-danger');
+      return;
+    }
 
     const statusId = Number(this.admissionForm.get('appointmentStatusId')?.value);
-    const paymentArray = this.admissionForm.get('appointmentPayment') as any;
-    const firstPayment = paymentArray?.value?.[0];
-    const visitFee = Number(firstPayment?.visitFee) || 0;
     const totalPayable = this.calculateTotalPayable();
 
-    // if (statusId === 5 && (visitFee <= 0 || totalPayable <= 0)) {
-    //   this.errorMessage = 'For confirmed appointments, Visit Fee and Total Payable must be greater than 0.';
-    //   this.notifications.showNotification(this.errorMessage, 'snack-bar-danger');
-    //   return;
-    // }
-    // const paymentGroup = this.admissionForm.get('appointmentPayment') as FormGroup;
-    // const visitFee = Number(paymentGroup.get('visitFee')?.value) || 0;
-    // const totalPayable = this.calculateTotalPayable();
-    // if (statusId === 5 && (visitFee <= 0 || totalPayable <= 0)) {
-    //   this.errorMessage = 'For confirmed appointments, Visit Fee and Total Payable must be greater than 0.';
+    // if (statusId === 5 && totalPayable <= 0) {
+    //   this.errorMessage = 'For confirmed appointments, Total Payable must be greater than 0.';
     //   this.notifications.showNotification(this.errorMessage, 'snack-bar-danger');
     //   return;
     // }
@@ -486,21 +532,22 @@ getPackageList(): void {
     this.isSubmitting = true;
     const formValue = this.admissionForm.getRawValue();
     const appointmentDateTime = this.combineDateAndTime(formValue.appointmentDate, formValue.appointmentTime);
+
+    // Filter payment rows to only include those with a valid serviceId
+    const payments = formValue.appointmentPayment.filter((p: any) => p.serviceId);
+
     const payload: any = {
       ...formValue,
       appointmentDate: appointmentDateTime,
       patient: {
         ...formValue.patient
       },
-
-      appointmentPayment: [{
-        ...formValue.appointmentPayment[0],
-        totalPayable: this.calculateTotalPayable()
-      }]
+      appointmentPayments: payments.map((p: any) => ({
+        ...p,
+        totalPayable: totalPayable,
+        paymentStatusId: formValue.appointmentStatusId
+      }))
     };
-
-    // Keep payment status in sync with appointment status for now
-    payload.appointmentPayment.paymentStatusId = payload.appointmentStatusId;
 
     delete payload.appointmentTime; // not part of backend contract
 
@@ -554,19 +601,21 @@ getPackageList(): void {
 
   private updateTotalPayable(): void {
     const total = this.calculateTotalPayable();
-    // const paymentGroup = this.admissionForm.get('appointmentPayment') as FormGroup;
-    // paymentGroup.get('totalPayable')?.setValue(total, { emitEvent: false });
-    this.paymentGroup.get('totalPayable')?.setValue(total, { emitEvent: false });
+    this.appointmentPayments.controls.forEach((payment: any) => {
+      payment.get('totalPayable')?.setValue(total, { emitEvent: false });
+    });
   }
 
   private calculateTotalPayable(): number {
-    // const paymentGroup = this.admissionForm.get('appointmentPayment') as FormGroup;
-    // const fee = Number(paymentGroup.get('visitFee')?.value) || 0;
-    // const discount = Number(paymentGroup.get('discount')?.value) || 0;
-    const fee = Number(this.paymentGroup.get('visitFee')?.value) || 0;
-    const discount = Number(this.paymentGroup.get('discount')?.value) || 0;
-    const total = fee - discount;
-    return total < 0 ? 0 : Number(total.toFixed(2));
+    const payments = this.appointmentPayments.controls;
+    let total = 0;
+    payments.forEach((payment: any) => {
+      const fee = Number(payment.get('visitFee')?.value) || 0;
+      const discount = Number(payment.get('discount')?.value) || 0;
+      const rowAmount = fee - discount;
+      total += rowAmount > 0 ? rowAmount : 0;
+    });
+    return Number(total.toFixed(2));
   }
 
   private combineDateAndTime(date: string | Date, time: string): Date {
@@ -629,11 +678,10 @@ getPackageList(): void {
     this.admissionForm.get('doctor')?.patchValue(selectedValue);
 
     const consultationFee = Number(selectedValue?.doctorProfile?.consultationFee ?? 0);
-    this.paymentGroup.get('visitFee')?.setValue(consultationFee, { emitEvent: true });
-    this.paymentGroup.get('visitFee')?.disable({ emitEvent: false });
-    this.getOPDServiceByDepartment();
-    // paymentGroup.get('visitFee')?.setValue(consultationFee, { emitEvent: true });
-    // paymentGroup.get('visitFee')?.disable({ emitEvent: false });
+    const firstPayment = this.appointmentPayments.at(0);
+    firstPayment?.get('visitFee')?.setValue(consultationFee, { emitEvent: true });
+    firstPayment?.get('visitFee')?.disable({ emitEvent: false });
+    this.getIPDService();
   }
 
   getdoctor(itemId: string) {
@@ -647,9 +695,9 @@ getPackageList(): void {
       this.admissionForm.get('doctorId')?.patchValue(0);
       this.admissionForm.get('doctorName')?.patchValue('');
       this.admissionForm.get('doctor')?.patchValue('');
-      const paymentGroup = this.admissionForm.get('appointmentPayment') as FormGroup;
-      paymentGroup.get('visitFee')?.enable({ emitEvent: false });
-      paymentGroup.get('visitFee')?.setValue(0, { emitEvent: true });
+      const firstPayment = this.appointmentPayments.at(0);
+      firstPayment?.get('visitFee')?.enable({ emitEvent: false });
+      firstPayment?.get('visitFee')?.setValue(0, { emitEvent: true });
     }
   }
 

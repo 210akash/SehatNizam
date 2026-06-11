@@ -9,7 +9,6 @@ using MediatR;
 using ERP.Mediator.Mediator.PurchaseOrder.Query;
 using ERP.Mediator.Mediator.PurchaseOrder.Command;
 using Microsoft.AspNetCore.Authorization;
-using ERP.Mediator.Mediator.ComparativeStatement.Query;
 
 namespace ERP.API.Controllers
 {

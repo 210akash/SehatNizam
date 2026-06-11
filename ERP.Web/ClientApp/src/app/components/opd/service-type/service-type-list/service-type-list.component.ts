@@ -19,7 +19,7 @@ import { DeleteServiceTypeComponent } from '../delete-service-type/delete-servic
 export class ServiceTypeListComponent implements OnInit {
   dataSource!: MatTableDataSource<any>;
   form!: FormGroup;
-  displayedColumns: string[] = ['name', 'isActive', 'actions'];
+  displayedColumns: string[] = ['name',  'actions'];
   isLoading = false;
 
   currentPage = 0;
@@ -39,18 +39,27 @@ export class ServiceTypeListComponent implements OnInit {
 
   ngOnInit(): void {
     this.form = this.fb.group({
-      searchText: ['']
+      name: ['']
     });
     this.bindData();
   }
 
   bindData(): void {
     this.isLoading = true;
-    const filter: any = {
+
+    // Prepare paging data
+    const pagingData = {
       currentPage: this.currentPage,
-      take: this.pageSize
+          take: this.pageSize
     };
-    this.serviceType.getAllServiceTypes(filter).subscribe({
+
+    // Clone the form value and add paging data
+    const _FilterForm = {
+      ...this.form.value,
+      PagingData: pagingData
+    };
+
+    this.serviceType.getAllServiceTypes(_FilterForm).subscribe({
       next: (data: any) => {
         this.dataSource = new MatTableDataSource(data.item1 || []);
         this.totalRows = data.item2 || 0;

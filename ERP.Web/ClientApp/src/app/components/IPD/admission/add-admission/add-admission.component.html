@@ -107,126 +107,140 @@
       </section>
 
       <!-- Admission -->
-    <!-- Admission -->
-<section class="section">
-  <div class="section-head">
-    <mat-icon fontIcon="event" class="icon"></mat-icon>
-    <div>
-      <div class="section-title">Admission Details</div>
-      <div class="section-sub">Schedule and provider</div>
-    </div>
-  </div>
+      <!-- Admission -->
+      <section class="section">
+        <div class="section-head">
+          <mat-icon fontIcon="event" class="icon"></mat-icon>
+          <div>
+            <div class="section-title">Admission Details</div>
+            <div class="section-sub">Schedule and provider</div>
+          </div>
+        </div>
 
-  <!-- First Row -->
-  <div class="grid-4">
-    <mat-form-field appearance="outline">
-      <mat-label>Date</mat-label>
-      <input matInput [matDatepicker]="appDate" formControlName="appointmentDate" [min]="minDate" />
-      <mat-datepicker-toggle matIconSuffix [for]="appDate"></mat-datepicker-toggle>
-      <mat-datepicker #appDate></mat-datepicker>
-    </mat-form-field>
+        <!-- First Row -->
+        <div class="grid-4">
+          <mat-form-field appearance="outline">
+            <mat-label>Date</mat-label>
+            <input matInput [matDatepicker]="appDate" formControlName="appointmentDate" [min]="minDate" />
+            <mat-datepicker-toggle matIconSuffix [for]="appDate"></mat-datepicker-toggle>
+            <mat-datepicker #appDate></mat-datepicker>
+          </mat-form-field>
 
-    <mat-form-field appearance="outline">
-      <mat-label>Time</mat-label>
-      <input matInput type="time" formControlName="appointmentTime" />
-    </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Time</mat-label>
+            <input matInput type="time" formControlName="appointmentTime" />
+          </mat-form-field>
 
-    <div class="span-2">
-      <label class="text-sm label-inline">Priority Level</label>
-      <mat-radio-group formControlName="priorityLevelId" class="priority-radio">
-        <mat-radio-button *ngFor="let p of priorityLevelList" [value]="p.id">{{ p.name }}</mat-radio-button>
-      </mat-radio-group>
-    </div>
-  </div>
+          <div class="span-2">
+            <label class="text-sm label-inline">Priority Level</label>
+            <mat-radio-group formControlName="priorityLevelId" class="priority-radio">
+              <mat-radio-button *ngFor="let p of priorityLevelList" [value]="p.id">{{ p.name }}</mat-radio-button>
+            </mat-radio-group>
+          </div>
+           <!-- Fifth Row -->
+          <div class="span-2">
+            <label class="text-sm label-inline">Admission Status</label>
+            <mat-radio-group formControlName="appointmentStatusId" class="priority-radio">
+              <mat-radio-button [value]="30" [disabled]="true">
+                Admitted
+              </mat-radio-button>
+            </mat-radio-group>
+          </div>
+        </div>
 
-  <!-- Second Row -->
-  <div class="grid-4">
-   
-    <mat-form-field appearance="outline">
-      <mat-label>Department / Specialty</mat-label>
-      <mat-select formControlName="departmentId" (selectionChange)="getOPDServiceByDepartment()">
-        <mat-option [value]="null">Select Department</mat-option>
-        <mat-option *ngFor="let dept of departments" [value]="dept.id">{{ dept.name }}</mat-option>
-      </mat-select>
-    </mat-form-field>
+        <!-- Second Row -->
+        <div class="grid-4">
 
-    <mat-form-field appearance="outline">
-      <mat-label>Doctor</mat-label>
-      <input matInput formControlName="doctorName" [matAutocomplete]="doctorAuto" (keyup)="getDoctorList($event);"
-        class="form-control" (input)="onDoctorInputCleared($event)" type="search"
-        [matTooltip]="this.admissionForm.get('doctor')?.value ? this.admissionForm.get('doctor')?.value.hrCode  + ' ' +
+          <mat-form-field appearance="outline">
+            <mat-label>Department / Specialty</mat-label>
+            <mat-select formControlName="departmentId" (selectionChange)="getIPDService()">
+              <mat-option [value]="null">Select Department</mat-option>
+              <mat-option *ngFor="let dept of departments" [value]="dept.id">{{ dept.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Doctor</mat-label>
+            <input matInput formControlName="doctorName" [matAutocomplete]="doctorAuto" (keyup)="getDoctorList($event);"
+              class="form-control" (input)="onDoctorInputCleared($event)" type="search"
+              [matTooltip]="this.admissionForm.get('doctor')?.value ? this.admissionForm.get('doctor')?.value.hrCode  + ' ' +
         this.admissionForm.get('doctor')?.value.firstName + ' ' + this.admissionForm.get('doctor')?.value.lastName : 'No Doctor Selected'" />
-      <mat-autocomplete #doctorAuto="matAutocomplete" (optionSelected)="onOptionSelected($event)">
-        <mat-option *ngFor="let doctor of doctorList" [value]="doctor">
-          {{ doctor?.hrCode }} : {{ doctor?.firstName }} {{ doctor?.lastName }} ({{doctor?.designation}})
-        </mat-option>
-      </mat-autocomplete>
-    </mat-form-field>
-     <mat-form-field appearance="outline">
-      <mat-label>Referrer</mat-label>
-      <input matInput formControlName="referrerName" [matAutocomplete]="auto" (keyup)="getReferrerList($event);"
-        class="form-control" (input)="onReferrerInputCleared($event)" type="search"
-        [matTooltip]="this.admissionForm.get('referrer')?.value ? this.admissionForm.get('referrer')?.value.hrCode  + ' ' +
+            <mat-autocomplete #doctorAuto="matAutocomplete" (optionSelected)="onOptionSelected($event)">
+              <mat-option *ngFor="let doctor of doctorList" [value]="doctor">
+                {{ doctor?.hrCode }} : {{ doctor?.firstName }} {{ doctor?.lastName }} ({{doctor?.designation}})
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Referrer</mat-label>
+            <input matInput formControlName="referrerName" [matAutocomplete]="auto" (keyup)="getReferrerList($event);"
+              class="form-control" (input)="onReferrerInputCleared($event)" type="search"
+              [matTooltip]="this.admissionForm.get('referrer')?.value ? this.admissionForm.get('referrer')?.value.hrCode  + ' ' +
         this.admissionForm.get('referrer')?.value.name + ' ' + this.admissionForm.get('referrer')?.value.hospital : 'No Referrer Selected'" />
-      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionReferrerSelected($event)">
-        <mat-option *ngFor="let referrer of referrerList" [value]="referrer">
-          {{ referrer?.name }} : {{ referrer?.hospital }}
-        </mat-option>
-      </mat-autocomplete>
-    </mat-form-field>
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionReferrerSelected($event)">
+              <mat-option *ngFor="let referrer of referrerList" [value]="referrer">
+                {{ referrer?.name }} : {{ referrer?.hospital }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
 
-  </div>
+        </div>
 
-  <!-- Third Row - Full width fields -->
-  <div class="grid-12">
-    <mat-form-field appearance="outline">
-      <mat-label>Reason for Visit / Complaint</mat-label>
-      <input matInput formControlName="reason" placeholder="e.g. Fever, Headache, Checkup" />
-    </mat-form-field>
-  </div>
+        <div class="grid-4">
+          <mat-form-field appearance="outline">
+            <mat-label>Reason for Visit / Complaint</mat-label>
+            <input matInput formControlName="reason" placeholder="e.g. Fever, Headache, Checkup" />
+          </mat-form-field>
+        </div>
+ 
+        <div class="grid-4">
+          <mat-form-field appearance="outline">
+            <mat-label>Admission Diagnosis</mat-label>
+            <input matInput formControlName="admissionDiagnosis" placeholder="e.g. Pneumonia, Hypertension" />
+          </mat-form-field>
+        </div>
 
-  <!-- Fourth Row -->
-  <div class="grid-12">
-    <mat-form-field appearance="outline">
-      <mat-label>Admission Diagnosis</mat-label>
-      <input matInput formControlName="admissionDiagnosis" placeholder="e.g. Pneumonia, Hypertension" />
-    </mat-form-field>
-  </div>
-
-  <!-- Fifth Row -->
-  <div class="grid-4">
-    <div class="span-4">
-      <label class="text-sm label-inline">Admission Status</label>
-      <mat-radio-group formControlName="appointmentStatusId" class="priority-radio">
-        <mat-radio-button [value]="30" [disabled]="true">
-          Admitted
-        </mat-radio-button>
-      </mat-radio-group>
-    </div>
-  </div>
-</section>
+       
+      </section>
 
       <!-- Payment -->
       <section class="section">
-          <div class="section-head">
-            <mat-icon fontIcon="credit_card" class="icon"></mat-icon>
-            <div>
-              <div class="section-title">Payment & Billing</div>
-              <div class="section-sub">Fees, discounts, and status</div>
-            </div>
+        <div class="section-head">
+          <mat-icon fontIcon="credit_card" class="icon"></mat-icon>
+          <div>
+            <div class="section-title">Payment & Services</div>
+            <div class="section-sub">Package and services management</div>
           </div>
+        </div>
 
-<div class="grid-4">
+        <div class="payment-side-by-side">
+          <!-- LEFT: Payment & Billing Package -->
+          <div class="payment-col">
+            <div class="col-header">
+              <mat-icon fontIcon="inventory" class="icon-sm"></mat-icon>
+              <span class="section-title">Payment & Package</span>
+            </div>
+
             <mat-form-field appearance="outline">
+              <mat-label>Payment Method</mat-label>
+              <mat-select formControlName="paymentModeId">
+                <mat-option *ngFor="let paymentMode of paymentModesList" [value]="paymentMode.id">{{ paymentMode.name
+                  }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="package-field">
               <mat-label>Package</mat-label>
-              <mat-select formControlName="admissionPackageMasterId" (selectionChange)="onPackageSelected($event.value)">
-                <mat-option *ngFor="let package of packageList" [value]="package.id">{{ package.name }}</mat-option>
+              <mat-select formControlName="admissionPackageMasterId"
+                (selectionChange)="onPackageSelected($event.value)">
+                     <mat-option [value]="null">Select Package</mat-option>
+              <mat-option *ngFor="let package of packageList" [value]="package.id">{{ package.name }}</mat-option>
               </mat-select>
             </mat-form-field>
 
             <div *ngIf="selectedPackageDetails.length > 0" class="package-details">
               <div class="package-services-header">
-                <strong>Services Included:</strong>
+                <strong>Services Included in Package:</strong>
               </div>
               <ul class="package-services-list">
                 <li *ngFor="let detail of selectedPackageDetails">
@@ -234,29 +248,67 @@
                 </li>
               </ul>
               <div class="package-total">
-                <strong>Total: {{ packageTotal | number }}</strong>
+                <strong>Total Package Amount: {{ packageTotal | number }}</strong>
               </div>
             </div>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Payment Method</mat-label>
-              <mat-select formControlName="paymentModeId">
-                <mat-option *ngFor="let paymentMode of paymentModesList" [value]="paymentMode.id">{{ paymentMode.name }}</mat-option>
-              </mat-select>
-            </mat-form-field>
-            <!-- <mat-form-field appearance="outline">
-              <mat-label>Discount / Insurance</mat-label>
-              <input matInput type="number" formControlName="discount" min="0" step="0.01" />
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Total Payable</mat-label>
-              <input matInput formControlName="totalPayable" readonly />
-            </mat-form-field>
-
-            -->
           </div>
+
+          <!-- RIGHT: Services -->
+          <div class="services-col">
+            <div class="col-header">
+              <mat-icon fontIcon="medical_services" class="icon-sm"></mat-icon>
+              <span class="section-title">Services</span>
+              <span class="section-sub">Services against department</span>
+            </div>
+
+            <div class="row-actions">
+              <mat-form-field appearance="outline" class="flex-grow">
+                <mat-label>Select Service</mat-label>
+                <mat-select [(ngModel)]="selectedServiceId" [ngModelOptions]="{standalone: true}">
+                  <mat-option *ngFor="let service of services" [value]="service.id">
+                    {{ service.name }} - {{ service.basePrice | number }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <button mat-flat-button color="primary" type="button" (click)="addServiceToPayment()">Add Service</button>
+            </div>
+
+            <div class="table-responsive">
+              <table class="table table-bordered align-middle">
+                <thead>
+                  <tr>
+                    <th width="35%">Service</th>
+                    <th width="20%">Rate</th>
+                    <th width="20%">Discount</th>
+                    <th width="20%">Amount</th>
+                    <th width="5%">Action</th>
+                  </tr>
+                </thead>
+                <tbody formArrayName="appointmentPayment">
+                  <tr *ngFor="let row of appointmentPayments.controls; let i = index" [formGroupName]="i">
+                    <td>{{ getServiceName(row.get('serviceId')?.value) }}</td>
+                    <td>{{ row.get('visitFee')?.value | number }}</td>
+                    <td>
+                      <input type="number" class="form-control" formControlName="discount" min="0" />
+                    </td>
+                    <td>{{ calculateRowAmount(row) | number }}</td>
+                    <td class="text-center">
+                      <button mat-icon-button color="warn" type="button" (click)="removeService(i)"
+                        [disabled]="i === 0 && appointmentPayments.length === 1">
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr *ngIf="!hasServicesAdded()">
+                    <td colspan="5" class="text-center text-muted">No services added yet.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </section>
+
       <div class="button-container">
         <button mat-flat-button color="success" type="button" (click)="onSubmit()">
           <span class="mat-button-wrapper">Save</span>

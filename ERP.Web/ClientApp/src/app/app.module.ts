@@ -998,6 +998,11 @@ import { DeleteBloodRequestComponent } from './components/blood-bank/blood-reque
 import { BloodRequestLogComponent } from './components/blood-bank/blood-request/blood-request-log/blood-request-log.component';
 import { ReturnToCrossMatchComponent } from './components/blood-bank/issue/return-to-cross-match/return-to-cross-match.component';
 import { DeleteCrossMatchComponent } from './components/blood-bank/cross-match/delete-cross-match/delete-cross-match.component';
+import { AdvancePaymentListComponent } from './components/opd/advancepayment/advancepayment-list/advancepayment-list.component';
+import { AddAdvancePaymentComponent } from './components/opd/advancepayment/add-advancepayment/add-advancepayment.component';
+import { DeleteAdvancePaymentComponent } from './components/opd/advancepayment/delete-advancepayment/delete-advancepayment.component';
+import { AdvancePaymentService } from './components/opd/advancepayment/advancepayment.service';
+import { AdvancePaymentEndPoints } from './components/opd/advancepayment/advancepayment.endpoints';
 const matFormFieldDefaults: MatFormFieldDefaultOptions = {
     appearance: 'outline'
     , subscriptSizing: 'dynamic'
@@ -1702,6 +1707,9 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         DeleteIssueComponent,
         BloodBankTextOnlyDirective,
         BloodBankCnicDirective,
+        AdvancePaymentListComponent,
+        AddAdvancePaymentComponent,
+        DeleteAdvancePaymentComponent,
 
     ],
     bootstrap: [AppComponent], imports: [
@@ -2034,6 +2042,8 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         AdmissionBedEndPoints,
         AdmissionServiceService,
         AdmissionServiceEndPoints,
+        AdvancePaymentService,
+        AdvancePaymentEndPoints,
         { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
         { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },
         AuthenticationService, {

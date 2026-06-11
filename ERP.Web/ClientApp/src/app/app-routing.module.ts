@@ -154,6 +154,7 @@ import { BloodUnitListComponent } from './components/blood-bank/blood-unit/blood
 import { BloodRequestListComponent } from './components/blood-bank/blood-request/blood-request-list/blood-request-list.component';
 import { CrossMatchListComponent } from './components/blood-bank/cross-match/cross-match-list/cross-match-list.component';
 import { IssueListComponent } from './components/blood-bank/issue/issue-list/issue-list.component';
+import { AdvancePaymentListComponent } from './components/opd/advancepayment/advancepayment-list/advancepayment-list.component';
 
 const routes: Routes = [
   {
@@ -312,6 +313,7 @@ const routes: Routes = [
       { path: 'bloodrequest', component: BloodRequestListComponent, canActivate: [AuthGuard] },
       { path: 'bloodcrossmatch', component: CrossMatchListComponent, canActivate: [AuthGuard] },
       { path: 'bloodissue', component: IssueListComponent, canActivate: [AuthGuard] },
+      { path: 'advancepayment', component: AdvancePaymentListComponent, canActivate: [AuthGuard] },
     ]
   },
   {

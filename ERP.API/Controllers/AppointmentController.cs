@@ -70,7 +70,7 @@ namespace ERP.API.Controllers
 
         [HttpGet]
         [Route("GetAppointmentByToken")]
-        public async Task<ActionResult<List<GetAppointment>>> GetAppointmentByToken(string Token, long StatusId)
+        public async Task<ActionResult<List<GetAppointment>>> GetAppointmentByToken(string Token, long? StatusId)
         {
             try
             {

@@ -1,0 +1,74 @@
+<div class="header-container">
+    <h2>Advance Payments</h2>
+      <ng-container>
+        <div class="header-btns">
+          <button mat-mini-fab aria-label="Add" color="success" (click)="openServiceDialog(null)" matTooltip="Add New Advance Payment">
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+      </ng-container>
+</div>
+<div class="body-container">
+  <div class="mat-elevation-z8 table-responsive">
+<table mat-table [dataSource]="dataSource" matSort>
+
+      <ng-container matColumnDef="appoinmentno">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by Appointment No"> Appointment No </th>
+        <td mat-cell *matCellDef="let element"> {{ element.appointment?.id }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="mrnno">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by MRN"> MRN </th>
+        <td mat-cell *matCellDef="let element"> {{ element.appointment?.patient?.mrn }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="patientname">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by Patient Name"> Patient Name </th>
+        <td mat-cell *matCellDef="let element"> {{ element.appointment?.patient?.name }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="paymentMode">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by Payment Mode"> Payment Mode </th>
+        <td mat-cell *matCellDef="let element"> {{ element.paymentMode?.name }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="amount">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by Amount"> Amount </th>
+        <td mat-cell *matCellDef="let element"> {{ element.amount }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="paymentDate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by Payment Date"> Payment Date </th>
+        <td mat-cell *matCellDef="let element"> {{ element.paymentDate | date :'short' }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by Status"> Status </th>
+        <td mat-cell *matCellDef="let element"> {{ element.status }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef style="width: 11%;"> Actions </th>
+        <td mat-cell *matCellDef="let element">
+
+          <button  mat-mini-fab matTooltip="Delete"  color="warn" (click)="deleteServiceDialog(element)">
+            <mat-icon aria-label="Delete">delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+    <mat-divider></mat-divider>
+
+    <mat-paginator #paginator
+                  [length]="totalRows"
+                  [pageIndex]="currentPage"
+                  [pageSize]="take"
+                  [pageSizeOptions]="pageSizeOptions"
+                  (page)="pageChanged($event)"
+                  aria-label="Select page">
+    </mat-paginator>
+  </div>
+</div>

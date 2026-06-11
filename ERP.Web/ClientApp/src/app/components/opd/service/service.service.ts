@@ -38,4 +38,9 @@ export class ServiceService extends BaseService<any> {
         return this.delete(id, this.endPointControllerName + this.ServiceEndPoints.deleteService)
             .pipe();
     }
+    
+    getServiceCode() {
+        return this.get(this.endPointControllerName + this.ServiceEndPoints.getCodeService)
+            .pipe(map((data: any) => data));
+    }
 }

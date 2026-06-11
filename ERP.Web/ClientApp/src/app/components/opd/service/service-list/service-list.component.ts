@@ -10,6 +10,7 @@ import { AddServiceComponent } from '../add-service/add-service.component';
 import { ViewServiceComponent } from '../view-service/view-service.component';
 import { DeleteServiceComponent } from '../delete-service/delete-service.component';
 import { DepartmentService } from '../../../department/department.service';
+import { ServiceTypeService } from '../../service-type/service-type.service';
 
 @Component({
   selector: 'app-service-list',
@@ -20,9 +21,10 @@ import { DepartmentService } from '../../../department/department.service';
 export class ServiceListComponent implements OnInit {
   dataSource!: MatTableDataSource<any>;
   form!: FormGroup;
-  displayedColumns: string[] = ['code', 'name', 'basePrice', 'departmentName', 'isActive', 'actions'];
+  displayedColumns: string[] = ['code', 'name', 'basePrice', 'departmentName','serviceType', 'isActive', 'actions'];
   isLoading = false;
   departments: any[] = [];
+  serviceType : any[] = [];
   currentPage = 0;
   pageSizeOptions: number[] = [5, 10, 25, 100];
   pageSize = 10;
@@ -36,16 +38,30 @@ export class ServiceListComponent implements OnInit {
     private fb: FormBuilder,
     private constantService: ConstantService,
     private service: ServiceService,
-    private departmentService: DepartmentService
+    private departmentService: DepartmentService,
+    private serviceTypeService: ServiceTypeService,
+    
   ) { }
 
   ngOnInit(): void {
     this.form = this.fb.group({
       searchText: [''],
-      departmentId: ['']
+      departmentId: [''],
+      serviceTypeId: ['']
     });
     this.loadDepartments();
     this.bindData();
+  }
+
+  loadServiceType(): void {
+    this.serviceTypeService.getAllServiceTypes({}).subscribe({
+      next: (res: any) => {
+        this.serviceType = res?.item1 ?? res ?? [];
+      },
+      error: () => {
+        this.serviceType = [];
+      }
+    });
   }
 
   loadDepartments(): void {
@@ -94,22 +110,42 @@ export class ServiceListComponent implements OnInit {
     this.bindData();
   }
 
-  openAdd(): void {
-    this.dialog.open(AddServiceComponent, { data: { element: {} }, width: '50%', disableClose: true })
-      .afterClosed().subscribe(() => this.bindData());
+  openService(element: any) {
+    const dialogRef = this.dialog.open(AddServiceComponent, {
+      panelClass: 'cstm_width_500',
+      height: 'auto',
+      data: {
+        element: element,
+      },
+      disableClose: true
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.bindData();
+    });
   }
 
-  openEdit(element: any): void {
-    this.dialog.open(AddServiceComponent, { data: { element }, width: '50%', disableClose: true })
-      .afterClosed().subscribe(() => this.bindData());
+  viewServiceDialog(element: any): void {
+    this.dialog.open(ViewServiceComponent, {
+      data: { element: element },
+      panelClass: 'cstm_width_500',
+      height: 'auto',
+      disableClose: true
+    });
   }
 
-  openView(element: any): void {
-    this.dialog.open(ViewServiceComponent, { data: { element }, width: '40%', disableClose: true });
-  }
+  deleteServiceDialog(element: any) {
+    const dialogRef = this.dialog.open(DeleteServiceComponent, {
+      panelClass: 'cstm_width_500',
+      height: 'auto',
+      data: {
+        element: element,
+      },
+      disableClose: true
+    });
 
-  openDelete(element: any): void {
-    this.dialog.open(DeleteServiceComponent, { data: { element }, width: '30%', disableClose: true })
-      .afterClosed().subscribe(() => this.bindData());
+    dialogRef.afterClosed().subscribe(result => {
+      this.bindData();
+    });
   }
 }

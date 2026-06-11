@@ -5,6 +5,7 @@ import { NotificationsService } from '../../../../Service/notification.service';
 import { ServiceService } from '../service.service';
 import { DepartmentService } from '../../../department/department.service';
 import { ServiceTypeService } from '../../service-type/service-type.service';
+import { ConstantService } from '../../../../Service/constant.service';
 
 @Component({
   selector: 'app-add-service',
@@ -26,21 +27,40 @@ export class AddServiceComponent implements OnInit {
     private notifications: NotificationsService,
     private departmentService: DepartmentService,
     private serviceTypeService: ServiceTypeService,
+    private constantService: ConstantService, 
     @Inject(MAT_DIALOG_DATA) public data: { element: any }
   ) { }
 
   ngOnInit(): void {
-    this.isEdit = this.data?.element?.id != null;
     this.form = this.fb.group({
-      id: [this.isEdit ? this.data.element.id : 0],
-      code: [this.isEdit ? this.data.element.code : '', Validators.required],
-      name: [this.isEdit ? this.data.element.name : '', Validators.required],
-      basePrice: [this.isEdit ? this.data.element.basePrice : 0, [Validators.required, Validators.min(0)]],
-      departmentId: [this.isEdit ? this.data.element.departmentId : null],
-      serviceTypeId: [this.isEdit ? this.data.element.serviceTypeId : null]
+      id: [0],
+      code: ['', Validators.required],
+      name: ['', Validators.required],
+      description: ['', Validators.required],
+      basePrice: [ 0, [Validators.required, Validators.min(0)]],
+      departmentId: ['', Validators.required],
+      serviceTypeId: ['', Validators.required]
     });
     this.loadServiceType();
     this.loadDepartments();
+    this.LoadData(this.data.element);
+  }
+
+  LoadData(element: any) {
+    if (element != null) {
+      this.isEdit = true;
+      this.constantService.LoadData(element, this.form);
+    }
+    else   
+     this.getServiceCode();
+  }
+
+  getServiceCode() {
+    this.service.getServiceCode().subscribe((data: any) => {
+      this.form.get('code')?.patchValue(data.code);
+      console.log(data.code);
+      console.log(this.form.get('code')?.value);
+    });
   }
 
   loadServiceType(): void {
@@ -55,7 +75,7 @@ export class AddServiceComponent implements OnInit {
   }
 
   loadDepartments(): void {
-    this.departmentService.getAllDepartments({}).subscribe({
+    this.departmentService.getClinicalDepartment().subscribe({
       next: (res: any) => {
         this.departments = res?.item1 ?? res ?? [];
       },

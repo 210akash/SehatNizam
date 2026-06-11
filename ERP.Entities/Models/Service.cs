@@ -7,6 +7,7 @@ namespace ERP.Entities.Models
         [MaxLength(10)]
         public string Code { get; set; }
         public string Name { get; set; }           // ECG, X-Ray, Procedure
+        public string Description { get; set; }           // ECG, X-Ray, Procedure
         public decimal BasePrice { get; set; }
         public long? DepartmentId { get; set; }
         public Department Department { get; set; }

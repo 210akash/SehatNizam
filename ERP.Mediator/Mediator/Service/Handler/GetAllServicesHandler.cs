@@ -27,8 +27,8 @@ namespace ERP.Mediator.Mediator.Services.Handler
         {
             Expression<Func<Entities.Models.Service, bool>> predicate = x => x.IsActive == true
             && (request.DepartmentId  == null || x.DepartmentId  == request.DepartmentId)
-            && (string.IsNullOrEmpty(request.Name) || x.Name.ToLower().Contains(request.Name.ToLower()))
-            ;
+            && (request.ServiceTypeId == null || x.ServiceTypeId == request.ServiceTypeId)
+            && (string.IsNullOrEmpty(request.Name) || x.Name.ToLower().Contains(request.Name.ToLower()));
 
             Expression<Func<Entities.Models.Service, object>>[] includes = {
                 x => x.Department,
@@ -37,10 +37,8 @@ namespace ERP.Mediator.Mediator.Services.Handler
 
             Expression<Func<Entities.Models.Service, object>> OrderBy = null;
             Expression<Func<Entities.Models.Service, object>> OrderByDescending = x => x.ModifiedDate ?? x.CreatedDate;
-
             var entity = unitOfWork.Repository<Entities.Models.Service>().GetPagingWhereAsNoTrackingAsync(predicate, request.PagingData, OrderBy, OrderByDescending, null, includes);
             var Services = mapper.Map<IEnumerable<GetService>>(entity.Item1.ToList()).ToList();
-
             return new Tuple<IEnumerable<GetService>, long>(Services, entity.Item2);
         }
     }

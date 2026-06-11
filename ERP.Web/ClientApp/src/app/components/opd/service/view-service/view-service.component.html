@@ -1,40 +1,56 @@
 <mat-card>
-  <mat-card-header><mat-card-title>View Service</mat-card-title></mat-card-header>
+  <mat-card-header>
+    <mat-card-title>View Service</mat-card-title>
+  </mat-card-header>
+  <mat-divider></mat-divider>
   <mat-card-content>
     <form [formGroup]="form">
-      <mat-form-field class="form-field">
-        <mat-label>Code</mat-label>
-        <input matInput formControlName="code" readonly />
+      <div class="row justify-content-center">
+        <div class="col-md-3">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Code</mat-label>
+          <input matInput [value]="this.data.element.code" type="text" readonly class="text-center">
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+           <mat-form-field style="width: 100%;">
+            <mat-label>Service Type</mat-label>
+            <input matInput [value]="this.data.element.serviceType?.name" type="text" readonly>
+          </mat-form-field>
+        </div>
+         <div class="col-md-6">
+           <mat-form-field style="width: 100%;">
+            <mat-label>Department</mat-label>
+            <input matInput [value]="this.data.element.department?.name" type="text" readonly>
+          </mat-form-field>
+        </div>
+       
+        <div class="col-md-6">
+          <mat-form-field class="form-field">
+            <mat-label>Name</mat-label>
+              <input matInput [value]="this.data.element.name" type="text" readonly class="text-center">
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field class="form-field">
+            <mat-label>Base Price</mat-label>
+              <input matInput [value]="this.data.element.basePrice" type="text" readonly class="text-center">
+          </mat-form-field>
+        </div>
+          <div class="col-md-12">
+      <mat-form-field>
+        <mat-label>Description</mat-label>
+        <textarea matInput rows="2"  [value]="this.data.element.description"  readonly>
+        </textarea>
       </mat-form-field>
-
-      <mat-form-field class="form-field">
-        <mat-label>Name</mat-label>
-        <input matInput formControlName="name" readonly />
-      </mat-form-field>
-
-      <mat-form-field class="form-field">
-        <mat-label>Base Price</mat-label>
-        <input matInput formControlName="basePrice" readonly />
-      </mat-form-field>
-
-      <mat-form-field class="form-field">
-        <mat-label>Department</mat-label>
-        <input matInput formControlName="departmentId" readonly />
-      </mat-form-field>
-
-            <mat-form-field class="form-field">
-        <mat-label>Service Type</mat-label>
-        <input matInput formControlName="serviceTypeId" readonly />
-      </mat-form-field>
-
-
-      <mat-form-field class="form-field">
-        <mat-label>Active</mat-label>
-        <mat-select formControlName="isActive" >
-          <mat-option [value]="true">Active</mat-option>
-          <mat-option [value]="false">Inactive</mat-option>
-        </mat-select>
-      </mat-form-field>
+          </div>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="button-container">
+        <button mat-flat-button [mat-dialog-close]="true">Cancel</button>
+      </div>
     </form>
   </mat-card-content>
 </mat-card>

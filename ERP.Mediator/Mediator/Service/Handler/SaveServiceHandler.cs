@@ -68,7 +68,6 @@ namespace ERP.Mediator.Mediator.Service.Handler
                 // Create new
                 service = mapper.Map<Entities.Models.Service>(request);
                 service.CreatedById = this.sessionProvider.Session.LoggedInUserId;
-                service.ProjectId = this.sessionProvider.Session.SelectedWarehouseId;
                 service.IsActive = true;
 
                 await unitOfWork.Repository<Entities.Models.Service>().AddAsync(service);

@@ -1,12 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 import { ConstantService } from '../../../../Service/constant.service';
 import { ServiceTypeService } from '../service-type.service';
 import { AddServiceTypeComponent } from '../add-service-type/add-service-type.component';
 import { ViewServiceTypeComponent } from '../view-service-type/view-service-type.component';
 import { DeleteServiceTypeComponent } from '../delete-service-type/delete-service-type.component';
-
 
 @Component({
   selector: 'app-service-type-list',
@@ -15,11 +17,18 @@ import { DeleteServiceTypeComponent } from '../delete-service-type/delete-servic
   standalone: false
 })
 export class ServiceTypeListComponent implements OnInit {
-  dataSource: any = [];
+  dataSource!: MatTableDataSource<any>;
   form!: FormGroup;
   displayedColumns: string[] = ['name', 'isActive', 'actions'];
   isLoading = false;
-  departments: any[] = [];
+
+  currentPage = 0;
+  pageSizeOptions: number[] = [5, 10, 25, 100];
+  pageSize = 10;
+  totalRows = 0;
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
 
   constructor(
     private dialog: MatDialog,
@@ -37,39 +46,71 @@ export class ServiceTypeListComponent implements OnInit {
 
   bindData(): void {
     this.isLoading = true;
-    const filter: any = {};
+    const filter: any = {
+      currentPage: this.currentPage,
+      take: this.pageSize
+    };
     this.serviceType.getAllServiceTypes(filter).subscribe({
       next: (data: any) => {
-        this.dataSource = data.item1 || [];
+        this.dataSource = new MatTableDataSource(data.item1 || []);
+        this.totalRows = data.item2 || 0;
+        this.dataSource.sort = this.sort;
         this.isLoading = false;
       },
       error: () => {
-        this.dataSource = [];
+        this.totalRows = 0;
         this.isLoading = false;
       }
     });
   }
 
+  pageChanged(event: PageEvent): void {
+    this.pageSize = event.pageSize;
+    this.currentPage = event.pageIndex;
+    this.bindData();
+  }
+
   filterData(): void {
+    this.currentPage = 0;
     this.bindData();
   }
 
   openAdd(): void {
-    this.dialog.open(AddServiceTypeComponent, { data: { element: {} }, width: '50%', disableClose: true })
-      .afterClosed().subscribe(() => this.bindData());
+    const dialogRef = this.dialog.open(AddServiceTypeComponent, {
+      data: { element: {} },
+      panelClass: 'cstm_width_500',
+      height: 'auto',
+      disableClose: true
+    });
+    dialogRef.afterClosed().subscribe(() => this.bindData());
   }
 
   openEdit(element: any): void {
-    this.dialog.open(AddServiceTypeComponent, { data: { element }, width: '50%', disableClose: true })
-      .afterClosed().subscribe(() => this.bindData());
+    const dialogRef = this.dialog.open(AddServiceTypeComponent, {
+      data: { element },
+      panelClass: 'cstm_width_500',
+      height: 'auto',
+      disableClose: true
+    });
+    dialogRef.afterClosed().subscribe(() => this.bindData());
   }
 
   openView(element: any): void {
-    this.dialog.open(ViewServiceTypeComponent, { data: { element }, width: '40%', disableClose: true });
+    this.dialog.open(ViewServiceTypeComponent, {
+      data: { element },
+      panelClass: 'cstm_width_500',
+      height: 'auto',
+      disableClose: true
+    });
   }
 
   openDelete(element: any): void {
-    this.dialog.open(DeleteServiceTypeComponent, { data: { element }, width: '30%', disableClose: true })
-      .afterClosed().subscribe(() => this.bindData());
+    const dialogRef = this.dialog.open(DeleteServiceTypeComponent, {
+      data: { element },
+      panelClass: 'cstm_width_500',
+      height: 'auto',
+      disableClose: true
+    });
+    dialogRef.afterClosed().subscribe(() => this.bindData());
   }
 }

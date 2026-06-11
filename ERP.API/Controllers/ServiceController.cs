@@ -25,8 +25,6 @@ namespace ERP.API.Controllers
             this.mediator = mediator;
         }
 
-
-
         [HttpPost]
         [Route("GetAllService")]
         public async Task<ActionResult<Tuple<IEnumerable<GetService>, long>>> GetAll(GetAllServicesQuery getAllServiceQuery)
@@ -89,6 +87,22 @@ namespace ERP.API.Controllers
                 {
                     return this.Result(ResponseStatus.Error, null, "Something went Wrong!");
                 }
+            }
+            catch (Exception ex)
+            {
+                return this.Result(ResponseStatus.Error, null, ex.Message);
+            }
+        }
+
+
+        [HttpGet]
+        [Route("GetCodeService")]
+        public async Task<ActionResult<string>> GetCodeService()
+        {
+            try
+            {
+                string code = await mediator.Send(new GetServiceCodeQuery());
+                return Ok(new { code = code });
             }
             catch (Exception ex)
             {

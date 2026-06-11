@@ -1,23 +1,28 @@
 <mat-card>
-  <mat-card-header><mat-card-title>View ServiceType</mat-card-title></mat-card-header>
+  <mat-card-header>
+    <mat-card-title>View Service Type</mat-card-title>
+  </mat-card-header>
+  <mat-divider></mat-divider>
   <mat-card-content>
     <form [formGroup]="form">
-      <mat-form-field class="form-field">
-        <mat-label>Code</mat-label>
-        <input matInput formControlName="code" readonly />
-      </mat-form-field>
-
-      <mat-form-field class="form-field">
-        <mat-label>Name</mat-label>
-        <input matInput formControlName="name" readonly />
-      </mat-form-field>
-      <mat-form-field class="form-field">
-        <mat-label>Active</mat-label>
-        <mat-select formControlName="isActive" >
-          <mat-option [value]="true">Active</mat-option>
-          <mat-option [value]="false">Inactive</mat-option>
-        </mat-select>
-      </mat-form-field>
+      <div class="row">
+        <div class="col-md-6">
+          <mat-form-field class="form-field">
+            <mat-label>Name</mat-label>
+            <input matInput [value]="this.data.element.name" type="text" readonly class="text-center">
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field class="form-field">
+            <mat-label>Active</mat-label>
+            <input matInput [value]="this.data.element.isActive ? 'Active' : 'Inactive'" type="text" readonly class="text-center">
+          </mat-form-field>
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="button-container">
+        <button mat-flat-button [mat-dialog-close]="true">Cancel</button>
+      </div>
     </form>
   </mat-card-content>
 </mat-card>

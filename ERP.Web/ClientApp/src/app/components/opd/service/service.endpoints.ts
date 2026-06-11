@@ -3,4 +3,5 @@ export class ServiceEndPoints {
     public readonly getServiceById = '/GetServiceById';
     public readonly saveService = '/SaveService';
     public readonly deleteService = '/DeleteService';
+    public readonly getCodeService = '/GetCodeService';
 }

@@ -61,7 +61,6 @@ namespace ERP.Mediator.Mediator.IPD.AdmissionPackage.Handler
             {
                 var newPackage = mapper.Map<AdmissionPackageMaster>(request);
                 newPackage.CreatedById = sessionProvider.Session.LoggedInUserId;
-                newPackage.ProjectId = sessionProvider.Session.SelectedWarehouseId;
                 newPackage.CreatedDate = DateTime.Now;
 
                 foreach (var detail in newPackage.AdmissionPackageDetail)
@@ -82,7 +81,6 @@ namespace ERP.Mediator.Mediator.IPD.AdmissionPackage.Handler
                 var updatedPackage = mapper.Map<AdmissionPackageMaster>(masterUpdate);
                 updatedPackage.CreatedById = package.CreatedById;
                 updatedPackage.CreatedDate = package.CreatedDate;
-                updatedPackage.ProjectId = package.ProjectId;
                 updatedPackage.ModifiedById = sessionProvider.Session.LoggedInUserId;
                 updatedPackage.ModifiedDate = DateTime.Now;
                 unitOfWork.Repository<AdmissionPackageMaster>().Update(updatedPackage);

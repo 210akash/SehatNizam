@@ -721,6 +721,21 @@
       </div>
 
 
+      <!-- Billing -->
+      <div class="nav-group" *ngIf="hasRequiredRole(['admin','blood bank technician','lab technician'])">
+        <button (click)="toggleSubMenu('billing')" class="nav-button">
+          <i class="fas fa-file-invoice-dollar"></i>
+          <span>Billing</span>
+          <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('billing')"></i>
+        </button>
+        <div class="submenu" *ngIf="isSubMenuVisible('billing')">
+          <a routerLink="/appointmentpayment"
+             *ngIf="hasRequiredRole(['admin','blood bank technician','lab technician'])"
+             class="submenu-link"
+             [class.active-link]="isActive('/appointmentpayment')">Appointment Payment</a>
+        </div>
+      </div>
+
       <!-- Manage Blood Bank -->
       <div class="nav-group" *ngIf="hasRequiredRole(['admin','blood bank technician','lab technician'])">
         <button (click)="toggleSubMenu('bloodbank')" class="nav-button">

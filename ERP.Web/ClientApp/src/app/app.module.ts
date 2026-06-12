@@ -16,6 +16,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { HomeLayoutComponent } from './components/layout/home-layout.component';
@@ -1003,6 +1004,12 @@ import { AddAdvancePaymentComponent } from './components/opd/advancepayment/add-
 import { DeleteAdvancePaymentComponent } from './components/opd/advancepayment/delete-advancepayment/delete-advancepayment.component';
 import { AdvancePaymentService } from './components/opd/advancepayment/advancepayment.service';
 import { AdvancePaymentEndPoints } from './components/opd/advancepayment/advancepayment.endpoints';
+import { AppointmentPaymentListComponent } from './components/opd/appointment-payment/appointment-payment-list/appointment-payment-list.component';
+import { ManageAppointmentBillingComponent } from './components/opd/appointment-payment/manage-appointment-billing/manage-appointment-billing.component';
+import { EditAppointmentPaymentComponent } from './components/opd/appointment-payment/edit-appointment-payment/edit-appointment-payment.component';
+import { CollectAppointmentPaymentComponent } from './components/opd/appointment-payment/collect-appointment-payment/collect-appointment-payment.component';
+import { AppointmentPaymentService } from './components/opd/appointment-payment/appointment-payment.service';
+import { AppointmentPaymentEndPoints } from './components/opd/appointment-payment/appointment-payment.endpoints';
 const matFormFieldDefaults: MatFormFieldDefaultOptions = {
     appearance: 'outline'
     , subscriptSizing: 'dynamic'
@@ -1710,6 +1717,10 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         AdvancePaymentListComponent,
         AddAdvancePaymentComponent,
         DeleteAdvancePaymentComponent,
+        AppointmentPaymentListComponent,
+        ManageAppointmentBillingComponent,
+        EditAppointmentPaymentComponent,
+        CollectAppointmentPaymentComponent,
 
     ],
     bootstrap: [AppComponent], imports: [
@@ -1729,6 +1740,7 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         MatToolbarModule,
         MatSidenavModule,
         MatButtonModule,
+        MatButtonToggleModule,
         MatDividerModule,
         MatFormFieldModule,
         RouterModule,
@@ -2044,6 +2056,8 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         AdmissionServiceEndPoints,
         AdvancePaymentService,
         AdvancePaymentEndPoints,
+        AppointmentPaymentService,
+        AppointmentPaymentEndPoints,
         { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
         { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },
         AuthenticationService, {

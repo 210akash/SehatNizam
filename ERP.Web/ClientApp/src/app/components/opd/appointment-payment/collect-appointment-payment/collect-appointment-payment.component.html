@@ -1,0 +1,74 @@
+<div class="collect-shell" [class.loading]="isLoading">
+  <div class="collect-top">
+    <div>
+      <h2 class="title">{{ dialogTitle }}</h2>
+      <p class="meta">{{ patientName }} &bull; MRN {{ mrn }} &bull; Token {{ tokenNumber }}<span *ngIf="departmentName"> &bull; {{ departmentName }}</span></p>
+    </div>
+    <button mat-icon-button type="button" (click)="close()" aria-label="Close"><mat-icon>close</mat-icon></button>
+  </div>
+
+  <form [formGroup]="form" *ngIf="lines.length > 0; else noPending" class="collect-form">
+    <div class="ledger-wrap" formArrayName="lines">
+      <table class="ledger-table">
+        <thead>
+          <tr>
+            <th>Service</th>
+            <th class="num">Fee</th>
+            <th class="num">Discount</th>
+            <th class="num">Payable</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let line of lines.controls; let i = index" [formGroupName]="i">
+            <td>
+              <div class="svc-name">{{ line.get('serviceName')?.value }}</div>
+              <span class="status-chip">{{ getStatusLabel(line.get('paymentStatusId')?.value) }}</span>
+            </td>
+            <td class="num">{{ line.get('visitFee')?.value | number:'1.2-2' }}</td>
+            <td class="num">
+              <input class="discount-input" type="number" formControlName="discount" min="0"
+                [max]="line.get('visitFee')?.value" />
+            </td>
+            <td class="num payable">{{ getLinePayable(i) | number:'1.2-2' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="ledger-summary">
+      <div class="summary-row">
+        <span>Total Amount</span>
+        <span>{{ totalVisitFee | number:'1.2-2' }}</span>
+      </div>
+      <div class="summary-row discount-row">
+        <span>Total Discount</span>
+        <span>- {{ totalDiscount | number:'1.2-2' }}</span>
+      </div>
+      <div class="summary-row total-row">
+        <span>Total Payable</span>
+        <strong>{{ grandTotal | number:'1.2-2' }}</strong>
+      </div>
+    </div>
+
+    <div class="mode-block">
+      <span class="mode-label">Payment Mode</span>
+      <div class="mode-chips">
+        <button type="button" class="mode-chip" *ngFor="let mode of paymentModesList"
+          [class.active]="isPaymentModeSelected(mode.id)" (click)="selectPaymentMode(mode.id)">
+          {{ mode.name }}
+        </button>
+      </div>
+    </div>
+
+    <div class="footer-actions">
+      <button mat-stroked-button type="button" (click)="close()">Cancel</button>
+      <button mat-flat-button color="primary" type="button" [disabled]="isSaving" (click)="approvePayments()">
+        {{ isSaving ? 'Processing...' : (isSinglePayment ? 'Collect Payment' : 'Collect All') }}
+      </button>
+    </div>
+  </form>
+
+  <ng-template #noPending>
+    <div class="no-data">{{ isLoading ? 'Loading...' : 'No pending payment available.' }}</div>
+  </ng-template>
+</div>

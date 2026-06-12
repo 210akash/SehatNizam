@@ -1,0 +1,66 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Edit Payment</mat-card-title>
+    <mat-card-subtitle>{{ data.element?.service?.name }}</mat-card-subtitle>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+    <form [formGroup]="form" class="modern-form mt-3">
+      <div class="row">
+        <div class="col-md-12">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Service</mat-label>
+            <input matInput formControlName="serviceName" readonly />
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-4">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Visit Fee</mat-label>
+            <input matInput type="number" formControlName="visitFee" readonly />
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-4">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Discount</mat-label>
+            <input matInput type="number" formControlName="discount" min="0"
+              (keyup)="calculateTotalPayable()" />
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-4">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Total Payable</mat-label>
+            <input matInput type="number" formControlName="totalPayable" readonly />
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Payment Mode</mat-label>
+            <mat-select formControlName="paymentModeId">
+              <mat-option *ngFor="let mode of paymentModesList" [value]="mode.id">{{ mode.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Status</mat-label>
+            <input matInput formControlName="paymentStatusTitle" readonly />
+          </mat-form-field>
+        </div>
+      </div>
+    </form>
+
+    <div class="button-container">
+      <button mat-flat-button color="primary" type="button" [disabled]="isLoading" (click)="save()">
+        Update Payment
+      </button>
+      <button mat-flat-button color="warn" type="button" [mat-dialog-close]="false">
+        Close
+      </button>
+    </div>
+  </mat-card-content>
+</mat-card>

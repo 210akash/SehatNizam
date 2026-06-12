@@ -1,0 +1,122 @@
+<mat-card class="history-card">
+  <mat-card-header class="history-header">
+    <div>
+      <mat-card-title>Billing History</mat-card-title>
+      <mat-card-subtitle>
+        {{ patientName }} &bull; MRN {{ mrn }} &bull; Token {{ tokenNumber }}
+        <span *ngIf="departmentName"> &bull; {{ departmentName }}</span>
+      </mat-card-subtitle>
+    </div>
+    <div class="header-actions">
+      <button mat-stroked-button color="primary" *ngIf="pendingCount > 0" (click)="openCollectAll()">
+        <mat-icon>payments</mat-icon> Collect All
+      </button>
+      <button mat-icon-button (click)="close()" aria-label="Close">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </mat-card-header>
+
+  <mat-divider></mat-divider>
+
+  <div class="summary-grid" *ngIf="totalRows > 0">
+    <div class="stat-card primary">
+      <span class="stat-label">Total Amount</span>
+      <strong class="stat-value">{{ totalVisitFee | number:'1.2-2' }}</strong>
+      <small>{{ totalRows }} service(s)</small>
+    </div>
+    <div class="stat-card discount">
+      <span class="stat-label">Total Discount</span>
+      <strong class="stat-value">- {{ totalDiscount | number:'1.2-2' }}</strong>
+    </div>
+    <div class="stat-card payable">
+      <span class="stat-label">Total Payable</span>
+      <strong class="stat-value">{{ grandPayable | number:'1.2-2' }}</strong>
+    </div>
+    <div class="stat-card unpaid" *ngIf="pendingCount > 0">
+      <span class="stat-label">UnPaid</span>
+      <strong class="stat-value">{{ pendingPayable | number:'1.2-2' }}</strong>
+      <small>{{ pendingCount }} pending</small>
+    </div>
+    <div class="stat-card paid" *ngIf="approvedCount > 0">
+      <span class="stat-label">Paid</span>
+      <strong class="stat-value">{{ approvedPayable | number:'1.2-2' }}</strong>
+      <small>{{ approvedCount }} collected</small>
+    </div>
+  </div>
+
+  <mat-card-content [class.loading]="isLoading">
+    <div class="table-wrap">
+      <table mat-table [dataSource]="dataSource">
+        <ng-container matColumnDef="service">
+          <th mat-header-cell *matHeaderCellDef>Service</th>
+          <td mat-cell *matCellDef="let element">
+            <div class="service-cell">{{ element.service?.name }}</div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="visitFee">
+          <th mat-header-cell *matHeaderCellDef class="text-end">Visit Fee</th>
+          <td mat-cell *matCellDef="let element" class="text-end">{{ element.visitFee | number:'1.2-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="discount">
+          <th mat-header-cell *matHeaderCellDef class="text-end">Discount</th>
+          <td mat-cell *matCellDef="let element" class="text-end">{{ element.discount | number:'1.2-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="totalPayable">
+          <th mat-header-cell *matHeaderCellDef class="text-end">Payable</th>
+          <td mat-cell *matCellDef="let element" class="text-end amount-cell">{{ element.totalPayable | number:'1.2-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let element">
+            <div class="status-cell">
+              <span class="status-badge"
+                [class.pending]="canCollect(element)"
+                [class.approved]="isApproved(element)">
+                {{ getStatusLabel(element.paymentStatusId) }}
+              </span>
+              <ng-container *ngIf="isApproved(element)">
+                <span class="status-meta" *ngIf="getPaymentModeName(element)">{{ getPaymentModeName(element) }}</span>
+                <span class="status-meta" *ngIf="element.paymentDate">
+                  {{ element.paymentDate | date:'dd-MMM-yyyy h:mm a' }}
+                </span>
+              </ng-container>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef style="width: 80px;"></th>
+          <td mat-cell *matCellDef="let element">
+            <div class="action_btns" *ngIf="canCollect(element)">
+              <button mat-mini-fab color="success" matTooltip="Collect Payment" (click)="openCollect(element)">
+                <mat-icon>payments</mat-icon>
+              </button>
+            </div>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell no-data" [attr.colspan]="displayedColumns.length">
+            {{ isLoading ? 'Loading...' : 'No billing records found.' }}
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <mat-paginator #paginator
+      [length]="totalRows"
+      [pageIndex]="currentPage"
+      [pageSize]="take"
+      [pageSizeOptions]="pageSizeOptions"
+      (page)="pageChanged($event)"
+      showFirstLastButtons>
+    </mat-paginator>
+  </mat-card-content>
+</mat-card>

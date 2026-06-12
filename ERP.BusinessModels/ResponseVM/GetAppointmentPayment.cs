@@ -16,6 +16,7 @@ namespace ERP.BusinessModels.ResponseVM
         public long ServiceId { get; set; }
         public GetService Service { get; set; }
         public DateTime PaymentDate { get; set; }
+        public DateTime? CreatedDate { get; set; }
         public GetStatus PaymentStatus { get; set; }
         public long PaymentStatusId { get; set; }
     }

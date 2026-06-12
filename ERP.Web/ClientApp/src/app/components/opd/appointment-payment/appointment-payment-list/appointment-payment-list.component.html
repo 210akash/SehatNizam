@@ -1,0 +1,249 @@
+<div class="header-container">
+  <h2>Appointment Payments</h2>
+  <mat-button-toggle-group class="view-toggle" [value]="viewMode" (change)="onViewModeChange($event.value)">
+    <mat-button-toggle value="appointment">Appointment Wise</mat-button-toggle>
+    <mat-button-toggle value="records">All Records</mat-button-toggle>
+  </mat-button-toggle-group>
+</div>
+
+<div class="body-container">
+  <div class="filter-section" [formGroup]="filterForm">
+    <div class="row">
+      <div class="col-lg-2 col-md-4 col-sm-6 col-12">
+        <mat-form-field class="filter-field" appearance="outline">
+          <mat-label>From Date</mat-label>
+          <input matInput [matDatepicker]="fromPicker" formControlName="fDate" placeholder="dd-MMM-yyyy" (dateChange)="filterData()" />
+          <mat-datepicker-toggle matIconSuffix [for]="fromPicker"></mat-datepicker-toggle>
+          <mat-datepicker #fromPicker></mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <div class="col-lg-2 col-md-4 col-sm-6 col-12">
+        <mat-form-field class="filter-field" appearance="outline">
+          <mat-label>To Date</mat-label>
+          <input matInput [matDatepicker]="toPicker" formControlName="tDate" placeholder="dd-MMM-yyyy" (dateChange)="filterData()" />
+          <mat-datepicker-toggle matIconSuffix [for]="toPicker"></mat-datepicker-toggle>
+          <mat-datepicker #toPicker></mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <div class="col-lg-2 col-md-4 col-sm-6 col-12">
+        <mat-form-field class="filter-field" appearance="outline">
+          <mat-label>Token #</mat-label>
+          <input matInput formControlName="tokenNo" placeholder="Token number" />
+        </mat-form-field>
+      </div>
+
+      <div class="col-lg-2 col-md-4 col-sm-6 col-12">
+        <mat-form-field class="filter-field" appearance="outline">
+          <mat-label>MRN</mat-label>
+          <input matInput formControlName="mRN" placeholder="MRN" />
+        </mat-form-field>
+      </div>
+
+      <div class="col-lg-2 col-md-4 col-sm-6 col-12">
+        <mat-form-field class="filter-field" appearance="outline">
+          <mat-label>Patient Name</mat-label>
+          <input matInput formControlName="patientName" placeholder="Patient name" />
+        </mat-form-field>
+      </div>
+
+      <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+        <mat-form-field class="filter-field" appearance="outline">
+          <mat-label>Service</mat-label>
+          <mat-select formControlName="serviceIds" multiple (opened)="onServiceFilterOpened()" (closed)="onServiceFilterClosed()">
+            <mat-option disabled class="service-search-option">
+              <input class="service-search-input" type="text" [formControl]="serviceSearchControl"
+                placeholder="Search services..." (click)="$event.stopPropagation()"
+                (keydown)="$event.stopPropagation()" />
+            </mat-option>
+            <mat-option *ngFor="let item of filteredServices" [value]="item.id">{{ item.name }}</mat-option>
+            <mat-option *ngIf="filteredServices.length === 0" disabled>No service found</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-lg-2 col-md-4 col-sm-6 col-12">
+        <mat-form-field class="filter-field" appearance="outline">
+          <mat-label>Payment Status</mat-label>
+          <mat-select formControlName="paymentStatusId" (selectionChange)="filterData()">
+            <mat-option *ngFor="let item of paymentStatusOptions" [value]="item.value">{{ item.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-lg-2 col-md-4 col-sm-6 col-12 filter-actions">
+        <button mat-stroked-button color="primary" type="button" (click)="filterData()">
+          <mat-icon>search</mat-icon> Search
+        </button>
+        <button mat-stroked-button type="button" (click)="resetFilters()">
+          <mat-icon>refresh</mat-icon> Reset
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Appointment Wise Grid -->
+  <div class="mat-elevation-z8 table-responsive mt-2" [class.loading]="isLoading" *ngIf="viewMode === 'appointment'">
+    <table mat-table [dataSource]="appointmentDataSource" matSort>
+      <ng-container matColumnDef="tokenNumber">
+        <th mat-header-cell *matHeaderCellDef>Token #</th>
+        <td mat-cell *matCellDef="let element">{{ getTokenNumber(element) }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="mrn">
+        <th mat-header-cell *matHeaderCellDef>MRN</th>
+        <td mat-cell *matCellDef="let element">{{ getMrn(element) }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="patientName">
+        <th mat-header-cell *matHeaderCellDef>Patient</th>
+        <td mat-cell *matCellDef="let element">{{ getPatientName(element) }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="department">
+        <th mat-header-cell *matHeaderCellDef>Department</th>
+        <td mat-cell *matCellDef="let element">{{ getDepartmentName(element) }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="paymentCounts">
+        <th mat-header-cell *matHeaderCellDef>Payments</th>
+        <td mat-cell *matCellDef="let element">
+          <div class="count-cell">
+            <span class="count-pending" *ngIf="element.pendingPaymentCount > 0">
+              UnPaid: {{ element.pendingPaymentCount }}
+            </span>
+            <span class="count-approved" *ngIf="element.approvedPaymentCount > 0">
+              Paid: {{ element.approvedPaymentCount }}
+            </span>
+            <span *ngIf="!element.pendingPaymentCount && !element.approvedPaymentCount">—</span>
+          </div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="lastCreatedDate">
+        <th mat-header-cell *matHeaderCellDef>Last Created</th>
+        <td mat-cell *matCellDef="let element">{{ element.lastCreatedDate | date:'dd-MMM-yyyy h:mm a' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef style="width: 130px;">Actions</th>
+        <td mat-cell *matCellDef="let element">
+          <div class="action_btns">
+            <button mat-mini-fab color="success" matTooltip="Collect Payments"
+              [disabled]="!hasPendingPayments(element)" (click)="openCollectPayments(element)">
+              <mat-icon>payments</mat-icon>
+            </button>
+            <button mat-mini-fab color="accent" matTooltip="Billing History" (click)="openManageBilling(element)">
+              <mat-icon>history</mat-icon>
+            </button>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="appointmentColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: appointmentColumns;"></tr>
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell no-data" [attr.colspan]="appointmentColumns.length">
+          {{ isLoading ? 'Loading appointments...' : 'No appointment billing records found.' }}
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- All Records Grid -->
+  <div class="mat-elevation-z8 table-responsive mt-2" [class.loading]="isLoading" *ngIf="viewMode === 'records'">
+    <table mat-table [dataSource]="recordDataSource" matSort>
+      <ng-container matColumnDef="tokenNumber">
+        <th mat-header-cell *matHeaderCellDef>Token #</th>
+        <td mat-cell *matCellDef="let element">{{ getTokenNumber(element) }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="mrn">
+        <th mat-header-cell *matHeaderCellDef>MRN</th>
+        <td mat-cell *matCellDef="let element">{{ getMrn(element) }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="patientName">
+        <th mat-header-cell *matHeaderCellDef>Patient</th>
+        <td mat-cell *matCellDef="let element">{{ getPatientName(element) }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="department">
+        <th mat-header-cell *matHeaderCellDef>Department</th>
+        <td mat-cell *matCellDef="let element">{{ getDepartmentName(element) }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="service">
+        <th mat-header-cell *matHeaderCellDef>Service</th>
+        <td mat-cell *matCellDef="let element">{{ getServiceName(element) }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="visitFee">
+        <th mat-header-cell *matHeaderCellDef class="text-end">Visit Fee</th>
+        <td mat-cell *matCellDef="let element" class="text-end">{{ element.visitFee | number:'1.2-2' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="discount">
+        <th mat-header-cell *matHeaderCellDef class="text-end">Discount</th>
+        <td mat-cell *matCellDef="let element" class="text-end">{{ element.discount | number:'1.2-2' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="totalPayable">
+        <th mat-header-cell *matHeaderCellDef class="text-end">Total Payable</th>
+        <td mat-cell *matCellDef="let element" class="text-end amount-cell">{{ element.totalPayable | number:'1.2-2' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Status</th>
+        <td mat-cell *matCellDef="let element">
+          <div class="status-cell">
+            <span class="status-badge"
+              [class.pending]="!isPaid(element)"
+              [class.approved]="isPaid(element)">
+              {{ getPaymentStatus(element) }}
+            </span>
+            <ng-container *ngIf="isPaid(element)">
+              <span class="status-meta" *ngIf="getPaymentModeName(element)">{{ getPaymentModeName(element) }}</span>
+              <span class="status-meta" *ngIf="element.paymentDate">
+                {{ element.paymentDate | date:'dd-MMM-yyyy h:mm a' }}
+              </span>
+            </ng-container>
+          </div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef style="width: 130px;">Actions</th>
+        <td mat-cell *matCellDef="let element">
+          <div class="action_btns">
+            <button mat-mini-fab color="success" matTooltip="Collect Payment"
+              [disabled]="!canEdit(element)" (click)="openCollectPayments(element, element)">
+              <mat-icon>payments</mat-icon>
+            </button>
+            <button mat-mini-fab color="accent" matTooltip="Billing History" (click)="openManageBilling(element)">
+              <mat-icon>history</mat-icon>
+            </button>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="recordColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: recordColumns;"></tr>
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell no-data" [attr.colspan]="recordColumns.length">
+          {{ isLoading ? 'Loading payments...' : 'No payment records found.' }}
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <mat-paginator #paginator
+    [length]="totalRows"
+    [pageIndex]="currentPage"
+    [pageSize]="take"
+    [pageSizeOptions]="pageSizeOptions"
+    (page)="pageChanged($event)"
+    showFirstLastButtons>
+  </mat-paginator>
+</div>

@@ -398,12 +398,62 @@ export class AddAppointmentComponent implements OnInit {
     this.updateAge(patient.dateOfBirth);
   }
 
-  onInputCleared(event: Event): void {
+  onPatientSearchInput(event: Event): void {
     const value = (event.target as HTMLInputElement)?.value?.trim() ?? '';
-    if (value.length > 0) {
+    if (!value) {
+      this.clearPatientSearchFields();
       return;
     }
 
+    if (this.selectedPatientId !== null) {
+      this.selectedPatientId = null;
+      this.appointmentForm.patchValue({ patientId: null }, { emitEvent: false });
+    }
+
+    this.syncNewPatientFromSearch(value);
+  }
+
+  private syncNewPatientFromSearch(term: string): void {
+    const patientGroup = this.appointmentForm.get('patient') as FormGroup;
+    if (this.isPhoneSearchTerm(term)) {
+      patientGroup.patchValue({ phoneNo: this.toMaskedPhoneValue(term) }, { emitEvent: false });
+      return;
+    }
+
+    patientGroup.patchValue({ name: term }, { emitEvent: false });
+  }
+
+  private toMaskedPhoneValue(term: string): string {
+    let digits = term.replace(/\D/g, '');
+    if (!digits) {
+      return '';
+    }
+
+    if (digits.startsWith('92')) {
+      digits = '0' + digits.slice(2);
+    }
+
+    if (digits.startsWith('03')) {
+      return digits.slice(2);
+    }
+
+    return digits;
+  }
+
+  private isPhoneSearchTerm(term: string): boolean {
+    const trimmed = term.trim();
+    if (!trimmed) {
+      return false;
+    }
+
+    if (/[a-zA-Z\u0600-\u06FF]/.test(trimmed)) {
+      return false;
+    }
+
+    return /^[\d+\-\s().]+$/.test(trimmed) && /\d/.test(trimmed);
+  }
+
+  private clearPatientSearchFields(): void {
     this.patientSearchCtrl.setValue('', { emitEvent: false });
     this.selectedPatientId = null;
 

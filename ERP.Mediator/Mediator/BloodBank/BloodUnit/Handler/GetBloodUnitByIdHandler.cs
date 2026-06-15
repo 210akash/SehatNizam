@@ -54,7 +54,7 @@ namespace ERP.Mediator.Mediator.BloodBank.BloodUnit.Handler
 
                     null,
 
-                    "BloodComponentType,BloodGroupMaster,BloodFridge,BloodRack,CreatedBy");
+                    "BloodComponentType,BloodGroupMaster,BloodFridge,BloodRack,BloodDonation,CreatedBy");
 
 
 

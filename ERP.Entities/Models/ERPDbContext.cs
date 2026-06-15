@@ -1159,6 +1159,12 @@ namespace ERP.Entities.Models
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<BloodDonation>()
+                .HasOne(d => d.Appointment)
+                .WithMany(a => a.BloodDonations)
+                .HasForeignKey(d => d.AppointmentId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<BloodDonation>()
                 .HasOne(d => d.BloodDonor)
                 .WithMany()
                 .HasForeignKey(d => d.BloodDonorId)
@@ -1210,6 +1216,12 @@ namespace ERP.Entities.Models
                 .HasOne(r => r.Admission)
                 .WithMany()
                 .HasForeignKey(r => r.AdmissionId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<BloodRequest>()
+                .HasOne(r => r.Appointment)
+                .WithMany(a => a.BloodRequests)
+                .HasForeignKey(r => r.AppointmentId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<BloodRequest>()

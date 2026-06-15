@@ -28,7 +28,7 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                 .GetAsync(
                     filter: y => y.TokenNumber.Contains(request.Token) && (request.StatusId == 0 || y.AppointmentStatusId == request.StatusId),
                     orderBy: q => q.OrderBy(a => a.TokenNumber),  // ascending order
-                    includeProperties: "Patient,Doctor,Department,Project",
+                    includeProperties: "Patient,Patient.PatientMaster,Doctor,Department,Project",
                     take: 5
                 );
 

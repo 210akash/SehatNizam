@@ -26,7 +26,7 @@ namespace ERP.Mediator.Mediator.BloodBank.Request.Handler
                     x => x.Id == request.Id && x.IsActive == true,
                     null,
                     null,
-                    "Admission,BloodGroupMaster,BloodComponentType,CreatedBy");
+                    "Admission,Appointment,Appointment.Patient,Appointment.Patient.PatientMaster,Appointment.Doctor,Appointment.Department,BloodGroupMaster,BloodComponentType,CreatedBy");
 
             return mapper.Map<GetBloodRequest>(bloodRequest);
         }

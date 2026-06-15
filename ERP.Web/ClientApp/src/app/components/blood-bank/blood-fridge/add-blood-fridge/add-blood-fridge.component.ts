@@ -4,7 +4,6 @@ import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { NotificationsService } from '../../../../Service/notification.service';
 import { ConstantService } from '../../../../Service/constant.service';
 import { BloodFridgeService } from '../blood-fridge.service';
-import { bloodBankNameValidators } from '../../shared/blood-bank-input.utils';
 
 @Component({
     selector: 'app-add-blood-fridge',
@@ -31,7 +30,7 @@ export class AddBloodFridgeComponent {
         this.isViewMode = this.data.isViewMode === true;
         this.form = this.formBuilder.group({
             id: [0],
-            name: ['', bloodBankNameValidators()],
+            name: ['', [Validators.required, Validators.maxLength(50)]],
             description: ['']
         });
         this.loadData(this.data.element);

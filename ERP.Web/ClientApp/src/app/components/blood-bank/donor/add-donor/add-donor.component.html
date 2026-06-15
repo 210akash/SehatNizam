@@ -53,15 +53,6 @@
             </mat-select>
           </mat-form-field>
         </div>
-        <div class="col-md-6">
-          <mat-checkbox formControlName="isDeferred" [disabled]="isViewMode">Is Deferred</mat-checkbox>
-        </div>
-        <div class="col-md-12" *ngIf="form.get('isDeferred')?.value">
-          <mat-form-field style="width: 100%;">
-            <mat-label>Deferral Reason</mat-label>
-            <textarea matInput rows="2" formControlName="deferralReason" [readonly]="isViewMode"></textarea>
-          </mat-form-field>
-        </div>
       </div>
       <mat-divider></mat-divider>
       <div class="button-container">

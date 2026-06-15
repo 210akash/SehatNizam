@@ -3,7 +3,7 @@ export class AppointmentEndPoints {
     public readonly saveAppointmentLab = '/SaveAppointmentLab';
     public readonly getAllAppointments = '/GetAllAppointments';
     public readonly getAllAppointmentByDoctor = '/GetAllAppointmentByDoctor';
-    public readonly getAppointmentById = '/GetAppointmentById';
+    public readonly getAppointmentById = '/GetAppoinmentById';
     public readonly getAppointmentByName = '/GetAppointmentByName';
     public readonly getAppointmentByToken = '/getAppointmentByToken';
     public readonly deleteAppointment = '/DeleteAppointment';

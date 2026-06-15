@@ -1,0 +1,196 @@
+<mat-card class="transfusion-shell">
+  <mat-card-header>
+    <mat-card-title>{{ dialogTitle }}</mat-card-title>
+    <span class="status-chip" *ngIf="requestId">{{ statusText }}</span>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+
+  <mat-card-content *ngIf="!isLoading">
+    <form [formGroup]="form">
+      <!-- Request -->
+      <section class="form-section">
+        <h4><mat-icon>assignment</mat-icon> Blood Request</h4>
+        <div class="row">
+          <div class="col-md-12">
+            <mat-form-field class="full-width" appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Appointment (optional)</mat-label>
+              <input matInput [formControl]="appointmentSearchCtrl" [matAutocomplete]="appointmentAuto"
+                placeholder="Search by token number" (input)="onAppointmentInputCleared($event)">
+              <button *ngIf="selectedAppointment && canEditRequest" mat-icon-button matSuffix type="button"
+                matTooltip="Clear appointment" (click)="clearAppointment()">
+                <mat-icon>close</mat-icon>
+              </button>
+              <mat-autocomplete #appointmentAuto="matAutocomplete" [displayWith]="displayAppointment"
+                (optionSelected)="onAppointmentSelected($event.option.value)">
+                <mat-option *ngIf="appointmentLoading" disabled>Searching...</mat-option>
+                <mat-option *ngFor="let appointment of filteredAppointments$ | async" [value]="appointment">
+                  {{ displayAppointment(appointment) }}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
+          <div class="col-md-6">
+            <mat-form-field class="full-width" appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Patient Name</mat-label>
+              <input matInput appBloodBankTextOnly formControlName="patientName" maxlength="50">
+            </mat-form-field>
+          </div>
+          <div class="col-md-6">
+            <mat-form-field class="full-width" appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Patient CNIC</mat-label>
+              <input matInput appBloodBankCnic formControlName="patientCNIC" placeholder="32020-5555555-5">
+            </mat-form-field>
+          </div>
+          <div class="col-md-4">
+            <mat-form-field class="full-width" appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Blood Group</mat-label>
+              <mat-select formControlName="bloodGroupMasterId">
+                <mat-option *ngFor="let item of bloodGroupList" [value]="item.id">{{ item.code }} - {{ item.name }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-md-4">
+            <mat-form-field class="full-width" appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Component Type</mat-label>
+              <mat-select formControlName="bloodComponentTypeId">
+                <mat-option *ngFor="let item of componentTypeList" [value]="item.id">{{ item.code }} - {{ item.name }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-md-2">
+            <mat-form-field class="full-width" appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Quantity</mat-label>
+              <input matInput formControlName="quantity" type="number" min="1" (keypress)="blockInvalidQuantity($event)">
+            </mat-form-field>
+          </div>
+          <div class="col-md-2">
+            <mat-form-field class="full-width" appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Request Date</mat-label>
+              <input matInput [matDatepicker]="requestDatePicker" formControlName="requestDate" placeholder="DD/MM/YYYY">
+              <mat-datepicker-toggle matIconSuffix [for]="requestDatePicker"></mat-datepicker-toggle>
+              <mat-datepicker #requestDatePicker></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="col-md-12">
+            <mat-form-field class="full-width" appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Remarks</mat-label>
+              <textarea matInput rows="1" formControlName="requestRemarks"></textarea>
+            </mat-form-field>
+          </div>
+        </div>
+      </section>
+
+      <!-- Cross Match -->
+      <section class="form-section" *ngIf="showCrossMatchSection">
+        <h4><mat-icon>science</mat-icon> Cross Match</h4>
+        <div class="row">
+          <div class="col-md-12" *ngIf="canPickUnit && hasAppointmentMatchedUnits">
+            <div class="appointment-units-panel">
+              <div class="appointment-units-panel__header">
+                <mat-icon>link</mat-icon>
+                <span>Blood collected against this appointment ({{ appointmentMatchedUnits.length }})</span>
+              </div>
+              <div class="appointment-units-panel__chips">
+                <button type="button" mat-stroked-button color="primary"
+                  *ngFor="let unit of appointmentMatchedUnits"
+                  [class.appointment-unit-chip--selected]="selectedUnit?.id === unit.id"
+                  (click)="selectAppointmentUnit(unit); $event.preventDefault()">
+                  {{ getUnitLabel(unit) }}
+                </button>
+              </div>
+              <p class="appointment-units-panel__hint">You can pick one of these or search for a different unit below.</p>
+            </div>
+          </div>
+          <div class="col-md-12" *ngIf="canPickUnit">
+            <mat-form-field class="full-width" appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Blood Unit</mat-label>
+              <input matInput [formControl]="unitSearchCtrl" [matAutocomplete]="unitAuto" placeholder="Search by Unit No">
+              <mat-autocomplete #unitAuto="matAutocomplete" [displayWith]="displayUnit"
+                (optionSelected)="onUnitSelected($event.option.value)">
+                <mat-option *ngFor="let item of filteredUnits$ | async" [value]="item"
+                  [class.appointment-unit-option]="isUnitFromSameAppointment(item)">
+                  <span class="unit-option-label">{{ getUnitLabel(item) }}</span>
+                  <span class="appointment-unit-badge" *ngIf="isUnitFromSameAppointment(item)">Same appointment</span>
+                </mat-option>
+              </mat-autocomplete>
+              <mat-error *ngIf="unitSearchCtrl.touched && unitSearchCtrl.hasError('required')">Blood unit is required</mat-error>
+              <mat-hint *ngIf="noMatchingUnits">No available units match selected blood group and component.</mat-hint>
+            </mat-form-field>
+          </div>
+          <div class="col-md-12" *ngIf="!canPickUnit && selectedUnit">
+            <mat-form-field class="full-width" appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Blood Unit</mat-label>
+              <input matInput [value]="getUnitLabel(selectedUnit, isUnitFromSameAppointment(selectedUnit))" readonly>
+            </mat-form-field>
+            <p class="appointment-units-panel__hint" *ngIf="isUnitFromSameAppointment(selectedUnit)">
+              This unit was collected against the linked appointment.
+            </p>
+          </div>
+          <div class="col-md-4">
+            <mat-form-field class="full-width" appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Cross Match Date</mat-label>
+              <input matInput [matDatepicker]="crossMatchDatePicker" formControlName="crossMatchDate" placeholder="DD/MM/YYYY">
+              <mat-datepicker-toggle matIconSuffix [for]="crossMatchDatePicker" *ngIf="canEditCrossMatch || showCrossMatchResultFieldUpdate"></mat-datepicker-toggle>
+              <mat-datepicker #crossMatchDatePicker></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="col-md-4" *ngIf="showCrossMatchResultField">
+            <mat-form-field class="full-width" appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Result</mat-label>
+              <mat-select formControlName="crossMatchResult">
+                <mat-option *ngFor="let item of resultList" [value]="item.value">{{ item.name }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-md-4" *ngIf="!showCrossMatchResultField && crossMatchId">
+            <mat-form-field class="full-width" appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Result</mat-label>
+              <input matInput [value]="crossMatchResultText" readonly>
+            </mat-form-field>
+          </div>
+          <div class="col-md-12">
+            <mat-form-field class="full-width" appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Remarks</mat-label>
+              <textarea matInput rows="1" formControlName="crossMatchRemarks"></textarea>
+            </mat-form-field>
+          </div>
+        </div>
+      </section>
+
+      <!-- Issue -->
+      <section class="form-section" *ngIf="showIssueSection">
+        <h4><mat-icon>local_hospital</mat-icon> Blood Issue</h4>
+        <div class="row">
+          <div class="col-md-6">
+            <mat-form-field class="full-width" appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Issue Date</mat-label>
+              <input matInput [matDatepicker]="issueDatePicker" formControlName="issueDate" placeholder="DD/MM/YYYY">
+              <mat-datepicker-toggle matIconSuffix [for]="issueDatePicker" *ngIf="canEditIssue"></mat-datepicker-toggle>
+              <mat-datepicker #issueDatePicker></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="col-md-6">
+            <mat-form-field class="full-width" appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Issued To</mat-label>
+              <input matInput formControlName="issuedTo" maxlength="100">
+            </mat-form-field>
+          </div>
+          <div class="col-md-12">
+            <mat-form-field class="full-width" appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Remarks</mat-label>
+              <textarea matInput rows="1" formControlName="issueRemarks"></textarea>
+            </mat-form-field>
+          </div>
+        </div>
+      </section>
+    </form>
+  </mat-card-content>
+
+  <mat-divider></mat-divider>
+  <div class="transfusion-footer" *ngIf="!isLoading">
+    <button *ngIf="!isViewMode" mat-flat-button color="success" type="button" (click)="saveData()" [disabled]="isLoading">
+      Save Transfusion
+    </button>
+    <button mat-flat-button color="default" [mat-dialog-close]="true">Close</button>
+  </div>
+</mat-card>

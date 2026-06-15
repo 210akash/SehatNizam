@@ -2,10 +2,11 @@ import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
-import { debounceTime, distinctUntilChanged, map, startWith } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { debounceTime, distinctUntilChanged, finalize, map, startWith, switchMap } from 'rxjs/operators';
 import { ConstantService } from '../../../../Service/constant.service';
 import { NotificationsService } from '../../../../Service/notification.service';
+import { AppointmentService } from '../../../opd/appointment/appointment.service';
 import { ComponentTypeService } from '../../component-type/component-type.service';
 import { DonorService } from '../../donor/donor.service';
 import { DonationService } from '../donation.service';
@@ -22,8 +23,12 @@ import { DonationService } from '../donation.service';
 export class AddDonationComponent {
     form!: FormGroup;
     donorSearchCtrl = new FormControl<string | any>('');
+    appointmentSearchCtrl = new FormControl<string | any>('');
     filteredDonors$!: Observable<any[]>;
+    filteredAppointments$!: Observable<any[]>;
     selectedDonor: any = null;
+    selectedAppointment: any = null;
+    appointmentLoading = false;
     isLoading = false;
     isEditMode = false;
     isViewMode = false;
@@ -45,14 +50,16 @@ export class AddDonationComponent {
         private service: DonationService,
         private donorService: DonorService,
         private componentTypeService: ComponentTypeService,
+        private appointmentService: AppointmentService,
         private constantService: ConstantService,
-        @Inject(MAT_DIALOG_DATA) public data: { element: any; isViewMode?: boolean }
+        @Inject(MAT_DIALOG_DATA) public data: { element: any; isViewMode?: boolean; appointment?: any }
     ) { }
 
     ngOnInit(): void {
         this.isViewMode = this.data.isViewMode === true;
         this.form = this.formBuilder.group({
             id: [0],
+            appointmentId: [null],
             bloodDonorId: ['', Validators.required],
             bloodComponentTypeId: ['', Validators.required],
             bloodGroupMasterId: ['', Validators.required],
@@ -63,11 +70,16 @@ export class AddDonationComponent {
         });
 
         this.setupDonorAutocomplete();
+        this.setupAppointmentAutocomplete();
         this.loadComponentTypes();
-        this.loadDonors(() => this.loadData(this.data.element));
+        this.loadDonors(() => {
+            this.prefillAppointment(this.data?.appointment);
+            this.loadData(this.data.element);
+        });
 
         if (this.isViewMode) {
             this.donorSearchCtrl.disable();
+            this.appointmentSearchCtrl.disable();
         }
     }
 
@@ -98,11 +110,17 @@ export class AddDonationComponent {
                 });
 
                 this.syncDonorFromForm();
+                if (donation?.appointment) {
+                    this.onAppointmentSelected(donation.appointment);
+                } else {
+                    this.syncAppointmentFromForm();
+                }
                 this.isScreeningStatusLocked = this.hasStorageAssigned(donation?.bloodUnit);
 
                 if (this.isViewMode) {
                     this.form.disable();
                     this.donorSearchCtrl.disable();
+                    this.appointmentSearchCtrl.disable();
                 }
 
                 this.isLoading = false;
@@ -137,6 +155,89 @@ export class AddDonationComponent {
         });
     }
 
+    displayAppointment = (appointment: any): string => {
+        if (!appointment) {
+            return '';
+        }
+
+        if (typeof appointment === 'string') {
+            return appointment;
+        }
+
+        const token = appointment.tokenNumber ? `Token # ${appointment.tokenNumber}` : `Booking # ${appointment.id}`;
+        const patientName = this.getAppointmentPatientName(appointment);
+        return patientName ? `${token} - ${patientName}` : token;
+    };
+
+    onAppointmentSelected(appointment: any): void {
+        if (!appointment?.id) {
+            return;
+        }
+
+        this.selectedAppointment = appointment;
+        this.appointmentSearchCtrl.setValue(appointment, { emitEvent: false });
+        this.form.patchValue({ appointmentId: appointment.id });
+    }
+
+    onAppointmentInputCleared(event: Event): void {
+        const value = (event.target as HTMLInputElement)?.value?.trim() ?? '';
+        if (value.length > 0) {
+            return;
+        }
+
+        this.resetAppointmentSelection();
+    }
+
+    lookupAppointment(): void {
+        const value = this.appointmentSearchCtrl.value;
+
+        if (!value) {
+            return;
+        }
+
+        if (typeof value === 'object' && value?.id) {
+            this.onAppointmentSelected(value);
+            return;
+        }
+
+        const term = String(value).trim();
+        if (!term) {
+            return;
+        }
+
+        this.appointmentLoading = true;
+        this.appointmentService.getAppointmentByToken(term, 0)
+            .pipe(finalize(() => (this.appointmentLoading = false)))
+            .subscribe({
+                next: (data: any) => {
+                    const appointments = data?.item1 ?? data ?? [];
+                    const appointment = Array.isArray(appointments) ? appointments[0] : appointments;
+
+                    if (!appointment) {
+                        this.notificationsService.showNotification('No appointment found for the entered token.', 'snack-bar-danger');
+                        return;
+                    }
+
+                    this.onAppointmentSelected(appointment);
+                },
+                error: () => {
+                    this.notificationsService.showNotification('Failed to lookup appointment.', 'snack-bar-danger');
+                }
+            });
+    }
+
+    getAppointmentPatientName(appointment: any = this.selectedAppointment): string {
+        return appointment?.patient?.patientMaster?.name
+            || appointment?.patient?.name
+            || '';
+    }
+
+    getAppointmentPatientCnic(appointment: any = this.selectedAppointment): string {
+        return appointment?.patient?.patientMaster?.cnic
+            || appointment?.patient?.cnic
+            || '';
+    }
+
     getDonorBloodGroupName(donor: any): string {
         if (!donor) return '';
         return donor.bloodGroupMaster?.name || donor.bloodGroupMaster?.code || '';
@@ -157,6 +258,7 @@ export class AddDonationComponent {
         this.isLoading = true;
         const payload = {
             ...this.form.getRawValue(),
+            appointmentId: this.form.get('appointmentId')?.value || null,
             donationDate: this.formatDateForSave(this.form.get('donationDate')?.value)
         };
 
@@ -173,6 +275,79 @@ export class AddDonationComponent {
             error: (error: string) => {
                 this.notificationsService.showNotification(error, 'snack-bar-danger');
                 this.isLoading = false;
+            }
+        });
+    }
+
+    private syncAppointmentFromForm(): void {
+        const appointmentId = this.form.get('appointmentId')?.value;
+        const appointment = this.data?.element?.appointment;
+
+        if (appointment?.id) {
+            this.onAppointmentSelected(appointment);
+            return;
+        }
+
+        if (!appointmentId) {
+            this.resetAppointmentSelection(false);
+            return;
+        }
+
+        this.appointmentService.getAppointmentById(appointmentId).subscribe({
+            next: (response: any) => {
+                if (response?.id) {
+                    this.onAppointmentSelected(response);
+                }
+            }
+        });
+    }
+
+    private prefillAppointment(appointment: any): void {
+        if (!appointment?.id) {
+            return;
+        }
+
+        this.onAppointmentSelected(appointment);
+    }
+
+    clearAppointment(): void {
+        this.resetAppointmentSelection(true);
+    }
+
+    private resetAppointmentSelection(resetControl = true): void {
+        this.selectedAppointment = null;
+        this.form.patchValue({ appointmentId: null });
+
+        if (resetControl) {
+            this.appointmentSearchCtrl.setValue('', { emitEvent: false });
+        }
+    }
+
+    private setupAppointmentAutocomplete(): void {
+        this.filteredAppointments$ = this.appointmentSearchCtrl.valueChanges.pipe(
+            startWith(''),
+            debounceTime(300),
+            distinctUntilChanged(),
+            switchMap((value: string | any) => {
+                const term = typeof value === 'string'
+                    ? value.trim()
+                    : String(value?.tokenNumber ?? value?.id ?? '').trim();
+
+                if (!term) {
+                    return of([]);
+                }
+
+                this.appointmentLoading = true;
+                return this.appointmentService.getAppointmentByToken(term, 0).pipe(
+                    map((data: any) => data?.item1 ?? data ?? []),
+                    finalize(() => (this.appointmentLoading = false))
+                );
+            })
+        );
+
+        this.appointmentSearchCtrl.valueChanges.subscribe((value) => {
+            if (typeof value === 'string' && value.trim() === '') {
+                this.resetAppointmentSelection(false);
             }
         });
     }

@@ -27,6 +27,13 @@
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Code</th>
         <td mat-cell *matCellDef="let element">{{ element.donationCode }}</td>
       </ng-container>
+      <ng-container matColumnDef="patient">
+        <th mat-header-cell *matHeaderCellDef>Patient</th>
+        <td mat-cell *matCellDef="let element">
+          <div>{{ getPatientName(element) }}</div>
+          <small *ngIf="element.appointment">{{ getAppointmentToken(element) }}</small>
+        </td>
+      </ng-container>
       <ng-container matColumnDef="donor">
         <th mat-header-cell *matHeaderCellDef>Donor</th>
         <td mat-cell *matCellDef="let element">{{ getDonorName(element) }}</td>

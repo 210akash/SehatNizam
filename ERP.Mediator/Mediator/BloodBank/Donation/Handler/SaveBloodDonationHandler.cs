@@ -27,6 +27,29 @@ namespace ERP.Mediator.Mediator.BloodBank.Donation.Handler
 
         public async Task<long> Handle(SaveBloodDonationCommand request, CancellationToken cancellationToken)
         {
+            if (request.AppointmentId.HasValue && request.AppointmentId.Value > 0)
+            {
+                var appointment = await unitOfWork.Repository<Entities.Models.Appointment>()
+                    .GetFirstAsNoTrackingAsync(x => x.Id == request.AppointmentId.Value && x.IsActive == true);
+
+                if (appointment == null)
+                {
+                    return 404;
+                }
+
+                var duplicateDonation = await unitOfWork.Repository<BloodDonation>()
+                    .GetFirstAsNoTrackingAsync(x => x.IsActive == true
+                        && x.IsDelete == false
+                        && x.AppointmentId == request.AppointmentId.Value
+                        && x.BloodDonorId == request.BloodDonorId
+                        && x.Id != request.Id);
+
+                if (duplicateDonation != null)
+                {
+                    return 410;
+                }
+            }
+
             var existing = await unitOfWork.Repository<BloodDonation>()
                 .GetFirstAsNoTrackingAsync(x => x.IsActive == true && x.Id == request.Id);
 

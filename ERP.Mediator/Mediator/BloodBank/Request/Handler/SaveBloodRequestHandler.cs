@@ -28,6 +28,17 @@ namespace ERP.Mediator.Mediator.BloodBank.Request.Handler
         {
             if (request.Quantity < 1) return 400;
 
+            if (request.AppointmentId.HasValue && request.AppointmentId.Value > 0)
+            {
+                var appointment = await unitOfWork.Repository<Entities.Models.Appointment>()
+                    .GetFirstAsNoTrackingAsync(x => x.Id == request.AppointmentId.Value && x.IsActive == true);
+
+                if (appointment == null)
+                {
+                    return 404;
+                }
+            }
+
             var existing = await unitOfWork.Repository<Entities.Models.BloodRequest>()
                 .GetFirstAsNoTrackingAsync(x => x.IsActive == true && x.Id == request.Id);
 

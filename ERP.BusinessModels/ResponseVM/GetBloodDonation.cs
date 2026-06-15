@@ -6,6 +6,8 @@ namespace ERP.BusinessModels.ResponseVM
     {
         public long Id { get; set; }
         public string DonationCode { get; set; }
+        public long? AppointmentId { get; set; }
+        public GetAppointment Appointment { get; set; }
         public long BloodDonorId { get; set; }
         public GetBloodDonor BloodDonor { get; set; }
         public long BloodComponentTypeId { get; set; }

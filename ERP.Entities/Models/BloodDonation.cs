@@ -5,6 +5,8 @@ namespace ERP.Entities.Models
     public class BloodDonation : BaseEntity
     {
         public string DonationCode { get; set; }
+        public long? AppointmentId { get; set; }
+        public virtual Appointment Appointment { get; set; }
         public long BloodDonorId { get; set; }
         public virtual BloodDonor BloodDonor { get; set; }
         public long BloodComponentTypeId { get; set; }

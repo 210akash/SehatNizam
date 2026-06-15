@@ -80,7 +80,9 @@ namespace ERP.Mediator.Mediator.BloodBank.BloodUnit.Handler
 
                 x => x.BloodFridge,
 
-                x => x.BloodRack
+                x => x.BloodRack,
+
+                x => x.BloodDonation
 
             };
 

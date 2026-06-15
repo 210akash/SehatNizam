@@ -729,6 +729,7 @@ import { AddCommentsComponent } from './components/interview/add-comments/add-co
 import { MatChipsModule } from '@angular/material/chips';
 import { HasRoleDirective } from './components/Shared/has-role.directive';
 import { BloodBankTextOnlyDirective } from './components/blood-bank/shared/blood-bank-text-only.directive';
+import { BloodBankBloodGroupTextDirective } from './components/blood-bank/shared/blood-bank-blood-group-text.directive';
 import { BloodBankCnicDirective } from './components/blood-bank/shared/blood-bank-cnic.directive';
 import { ProcessPurchaseInvoiceComponent } from './components/purchaseinvoice/process-purchaseinvoice/process-purchaseinvoice.component';
 import { RetailOrderEndPoints } from './components/order/retail-orders/retail-order.endpoints';
@@ -971,6 +972,10 @@ import { DonationListComponent } from './components/blood-bank/donation/donation
 import { AddDonationComponent } from './components/blood-bank/donation/add-donation/add-donation.component';
 import { DonationService } from './components/blood-bank/donation/donation.service';
 import { DonationEndPoints } from './components/blood-bank/donation/donation.endpoints';
+import { TransfusionListComponent } from './components/blood-bank/transfusion/transfusion-list/transfusion-list.component';
+import { ProcessTransfusionComponent } from './components/blood-bank/transfusion/process-transfusion/process-transfusion.component';
+import { CollectionListComponent } from './components/blood-bank/collection/collection-list/collection-list.component';
+import { CollectBloodComponent } from './components/blood-bank/collection/collect-blood/collect-blood.component';
 import { BloodUnitListComponent } from './components/blood-bank/blood-unit/blood-unit-list/blood-unit-list.component';
 import { AddBloodUnitComponent } from './components/blood-bank/blood-unit/add-blood-unit/add-blood-unit.component';
 import { BloodUnitService } from './components/blood-bank/blood-unit/blood-unit.service';
@@ -1701,6 +1706,10 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         DonationListComponent,
         AddDonationComponent,
         DeleteDonationComponent,
+        CollectionListComponent,
+        TransfusionListComponent,
+        ProcessTransfusionComponent,
+        CollectBloodComponent,
         BloodUnitListComponent,
         AddBloodUnitComponent,
         DeleteBloodUnitComponent,
@@ -1716,6 +1725,7 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         AddIssueComponent,
         DeleteIssueComponent,
         BloodBankTextOnlyDirective,
+        BloodBankBloodGroupTextDirective,
         BloodBankCnicDirective,
         AdvancePaymentListComponent,
         AddAdvancePaymentComponent,

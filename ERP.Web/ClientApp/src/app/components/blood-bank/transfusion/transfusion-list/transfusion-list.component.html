@@ -1,0 +1,92 @@
+<div class="header-container">
+  <h2>Blood Transfusion</h2>
+  <div class="header-actions">
+    <button mat-flat-button color="primary" (click)="openTransfusion()">
+      <mat-icon>add</mat-icon> New Transfusion
+    </button>
+  </div>
+</div>
+
+<div class="body-container">
+  <form [formGroup]="filterForm">
+    <div class="row">
+      <div class="col-md-4">
+        <mat-form-field class="form-field" style="width:100%">
+          <mat-label>Patient CNIC</mat-label>
+          <input matInput appBloodBankCnic formControlName="patientCNIC" placeholder="32020-5555555-5" (keyup)="filterData()">
+        </mat-form-field>
+      </div>
+      <div class="col-md-4">
+        <mat-form-field class="form-field" style="width:100%">
+          <mat-label>Status</mat-label>
+          <mat-select formControlName="status" (selectionChange)="filterData()">
+            <mat-option *ngFor="let item of statusFilterOptions" [value]="item.value">{{ item.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+  </form>
+
+  <div class="mat-elevation-z8 table-responsive mt-2">
+    <table mat-table [dataSource]="dataSource" matSort>
+      <ng-container matColumnDef="code">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Code</th>
+        <td mat-cell *matCellDef="let element">{{ element.code }}</td>
+      </ng-container>
+      <ng-container matColumnDef="patientName">
+        <th mat-header-cell *matHeaderCellDef>Patient</th>
+        <td mat-cell *matCellDef="let element">{{ element.patientName }}</td>
+      </ng-container>
+      <ng-container matColumnDef="patientCNIC">
+        <th mat-header-cell *matHeaderCellDef>CNIC</th>
+        <td mat-cell *matCellDef="let element">{{ element.patientCNIC }}</td>
+      </ng-container>
+      <ng-container matColumnDef="bloodGroup">
+        <th mat-header-cell *matHeaderCellDef>Blood Group</th>
+        <td mat-cell *matCellDef="let element">{{ getBloodGroupName(element) }}</td>
+      </ng-container>
+      <ng-container matColumnDef="componentType">
+        <th mat-header-cell *matHeaderCellDef>Component</th>
+        <td mat-cell *matCellDef="let element">{{ getComponentTypeName(element) }}</td>
+      </ng-container>
+      <ng-container matColumnDef="quantity">
+        <th mat-header-cell *matHeaderCellDef>Qty</th>
+        <td mat-cell *matCellDef="let element">{{ element.quantity }}</td>
+      </ng-container>
+      <ng-container matColumnDef="requestDate">
+        <th mat-header-cell *matHeaderCellDef>Date</th>
+        <td mat-cell *matCellDef="let element">{{ element.requestDate | date:'dd-MMM-yy' }}</td>
+      </ng-container>
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Stage</th>
+        <td mat-cell *matCellDef="let element">
+          <span class="stage-badge" [attr.data-status]="element.status">{{ getStatusText(element.status) }}</span>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef style="width: 14%;">Actions</th>
+        <td mat-cell *matCellDef="let element">
+          <div class="action_btns">
+            <button mat-mini-fab matTooltip="Process" color="success" (click)="openTransfusion(element)"
+              *ngIf="element.status !== 3 && element.status !== 4">
+              <mat-icon>play_arrow</mat-icon>
+            </button>
+            <button mat-mini-fab matTooltip="View" color="dark" (click)="openTransfusion(element, true)">
+              <mat-icon>visibility</mat-icon>
+            </button>
+            <button mat-mini-fab matTooltip="View Log" color="accent" (click)="viewLog(element)">
+              <mat-icon>history</mat-icon>
+            </button>
+            <button mat-mini-fab matTooltip="Delete" color="warn" (click)="deleteRequest(element)" *ngIf="canDelete(element)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+    <mat-paginator [length]="totalRows" [pageIndex]="currentPage" [pageSize]="take"
+      [pageSizeOptions]="pageSizeOptions" (page)="pageChanged($event)"></mat-paginator>
+  </div>
+</div>

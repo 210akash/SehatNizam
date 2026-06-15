@@ -60,15 +60,6 @@
   overflow: hidden;
 }
 
-.loading-state {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  min-height: 180px;
-  color: #6b7280;
-}
-
 .summary-panel {
   display: flex;
   flex-direction: column;

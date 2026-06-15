@@ -74,7 +74,13 @@ namespace ERP.Mediator.Mediator.BloodBank.Donation.Handler
 
                 x => x.BloodComponentType,
 
-                x => x.BloodGroupMaster
+                x => x.BloodGroupMaster,
+
+                x => x.Appointment,
+
+                x => x.Appointment.Patient,
+
+                x => x.Appointment.Patient.PatientMaster
 
             };
 

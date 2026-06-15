@@ -27,7 +27,7 @@ namespace ERP.Mediator.Mediator.BloodBank.Donation.Handler
                     x => x.Id == request.Id && x.IsActive == true,
                     null,
                     null,
-                    "BloodDonor,BloodDonor.BloodGroupMaster,BloodComponentType,BloodGroupMaster,CreatedBy");
+                    "BloodDonor,BloodDonor.BloodGroupMaster,BloodComponentType,BloodGroupMaster,CreatedBy,Appointment,Appointment.Patient,Appointment.Patient.PatientMaster");
 
             var result = mapper.Map<GetBloodDonation>(donation);
 

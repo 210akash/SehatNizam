@@ -4,7 +4,7 @@ import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { NotificationsService } from '../../../../Service/notification.service';
 import { ConstantService } from '../../../../Service/constant.service';
 import { BloodGroupService } from '../blood-group.service';
-import { bloodBankNameValidators } from '../../shared/blood-bank-input.utils';
+import { bloodBankBloodGroupValidators } from '../../shared/blood-bank-input.utils';
 
 @Component({
     selector: 'app-add-blood-group',
@@ -31,7 +31,7 @@ export class AddBloodGroupComponent {
         this.isViewMode = this.data.isViewMode === true;
         this.form = this.formBuilder.group({
             id: [0],
-            name: ['', bloodBankNameValidators()],
+            name: ['', bloodBankBloodGroupValidators()],
             description: ['']
         });
         this.loadData(this.data.element);

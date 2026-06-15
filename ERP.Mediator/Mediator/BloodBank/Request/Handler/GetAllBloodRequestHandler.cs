@@ -68,6 +68,8 @@ namespace ERP.Mediator.Mediator.BloodBank.Request.Handler
 
                 x => x.Admission,
 
+                x => x.Appointment,
+
                 x => x.BloodGroupMaster,
 
                 x => x.BloodComponentType

@@ -38,7 +38,8 @@ namespace ERP.Mediator.Mediator.BloodBank.CrossMatch.Handler
                 x => x.BloodUnit.BloodGroupMaster,
                 x => x.BloodUnit.BloodComponentType,
                 x => x.BloodUnit.BloodFridge,
-                x => x.BloodUnit.BloodRack
+                x => x.BloodUnit.BloodRack,
+                x => x.BloodUnit.BloodDonation
             };
             Expression<Func<Entities.Models.BloodCrossMatch, object>> orderByDesc = x => x.Id;
             var entity = unitOfWork.Repository<Entities.Models.BloodCrossMatch>()

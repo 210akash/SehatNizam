@@ -146,6 +146,22 @@ namespace ERP.API.Controllers.BloodBank
 
                 }
 
+                else if (result == 404)
+
+                {
+
+                    return this.Result(ResponseStatus.Error, "Selected appointment was not found!", null);
+
+                }
+
+                else if (result == 410)
+
+                {
+
+                    return this.Result(ResponseStatus.Conflict, "This donor has already donated for the selected appointment!", null);
+
+                }
+
 
 
                 return this.Result(ResponseStatus.Error, "There is some error!", null);

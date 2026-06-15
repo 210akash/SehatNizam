@@ -21,6 +21,8 @@ export class AddDonorComponent {
     bloodGroups: any[] = [];
     genders = ['Male', 'Female', 'Other'];
     maxDate = new Date();
+    private loadedIsDeferred = false;
+    private loadedDeferralReason = '';
 
     constructor(
         private dialog: MatDialog,
@@ -43,20 +45,7 @@ export class AddDonorComponent {
             gender: ['', Validators.required],
             dateOfBirth: [null, Validators.required],
             bloodGroupMasterId: ['', Validators.required],
-            patientMasterId: [null],
-            isDeferred: [false],
-            deferralReason: ['']
-        });
-
-        this.form.get('isDeferred')?.valueChanges.subscribe((isDeferred) => {
-            const reasonCtrl = this.form.get('deferralReason');
-            if (isDeferred) {
-                reasonCtrl?.setValidators(Validators.required);
-            } else {
-                reasonCtrl?.clearValidators();
-                reasonCtrl?.setValue('');
-            }
-            reasonCtrl?.updateValueAndValidity();
+            patientMasterId: [null]
         });
 
         this.loadBloodGroups();
@@ -77,27 +66,37 @@ export class AddDonorComponent {
     loadData(element: any) {
         if (element == null) return;
 
-        this.isEditMode = !this.isViewMode;
-        this.isLoading = true;
+        if (element.id) {
+            this.isEditMode = !this.isViewMode;
+            this.isLoading = true;
 
-        this.service.getById(element.id).subscribe({
-            next: (response: any) => {
-                const donor = response || element;
-                this.form.patchValue({
-                    ...donor,
-                    dateOfBirth: donor?.dateOfBirth ? new Date(donor.dateOfBirth) : null
-                });
+            this.service.getById(element.id).subscribe({
+                next: (response: any) => {
+                    const donor = response || element;
+                    this.loadedIsDeferred = !!donor?.isDeferred;
+                    this.loadedDeferralReason = donor?.deferralReason || '';
+                    this.form.patchValue({
+                        ...donor,
+                        dateOfBirth: donor?.dateOfBirth ? new Date(donor.dateOfBirth) : null
+                    });
 
-                if (this.isViewMode) {
-                    this.form.disable();
+                    if (this.isViewMode) {
+                        this.form.disable();
+                    }
+
+                    this.isLoading = false;
+                },
+                error: () => {
+                    this.notificationsService.showNotification('Failed to load donor details', 'snack-bar-danger');
+                    this.isLoading = false;
                 }
+            });
+            return;
+        }
 
-                this.isLoading = false;
-            },
-            error: () => {
-                this.notificationsService.showNotification('Failed to load donor details', 'snack-bar-danger');
-                this.isLoading = false;
-            }
+        this.form.patchValue({
+            ...element,
+            dateOfBirth: element?.dateOfBirth ? new Date(element.dateOfBirth) : null
         });
     }
 
@@ -112,6 +111,8 @@ export class AddDonorComponent {
         this.isLoading = true;
         const payload = {
             ...this.form.getRawValue(),
+            isDeferred: this.isEditMode ? this.loadedIsDeferred : false,
+            deferralReason: this.isEditMode ? this.loadedDeferralReason : '',
             dateOfBirth: this.formatDateForSave(this.form.get('dateOfBirth')?.value)
         };
         this.service.save(payload).subscribe({

@@ -1,0 +1,242 @@
+<mat-card class="collect-shell">
+  <mat-card-header class="collect-header">
+    <mat-card-title>{{ dialogTitle }}</mat-card-title>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+
+  <mat-card-content *ngIf="!isLoading" class="collect-body">
+    <form [formGroup]="form" class="collect-form">
+      <div class="dual-panel">
+        <!-- Appointment -->
+        <section class="info-panel">
+          <div class="panel-head">
+            <mat-icon class="panel-icon panel-icon--appt">event_available</mat-icon>
+            <div>
+              <h4>Patient Appointment</h4>
+              <span class="panel-hint">Optional link</span>
+            </div>
+            <button *ngIf="selectedAppointment && !isViewMode" mat-icon-button type="button"
+              class="panel-clear" matTooltip="Clear appointment" (click)="clearAppointment()">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+
+          <div class="panel-search" *ngIf="!isViewMode">
+            <mat-form-field class="search-field" appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Token / Booking #</mat-label>
+              <input matInput [formControl]="appointmentSearchCtrl" [matAutocomplete]="appointmentAuto"
+                placeholder="Search" (input)="onAppointmentInputCleared($event)">
+              <mat-autocomplete #appointmentAuto="matAutocomplete" [displayWith]="displayAppointment"
+                (optionSelected)="onAppointmentSelected($event.option.value)">
+                <mat-option *ngFor="let appointment of filteredAppointments$ | async" [value]="appointment">
+                  {{ displayAppointment(appointment) }}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+            <span class="search-action-spacer" aria-hidden="true"></span>
+          </div>
+          <div class="panel-search panel-search--locked" *ngIf="isViewMode">
+            <mat-form-field class="search-field" appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Appointment</mat-label>
+              <input matInput [value]="selectedAppointment ? displayAppointment(selectedAppointment) : '—'" readonly>
+            </mat-form-field>
+            <span class="search-action-spacer" aria-hidden="true"></span>
+          </div>
+
+          <div class="panel-body" [class.panel-body--empty]="!selectedAppointment">
+            <ng-container *ngIf="selectedAppointment; else apptEmpty">
+              <div class="detail-summary">
+                <h3 class="detail-name">{{ getAppointmentPatientName() }}</h3>
+                <div class="detail-badges">
+                  <span class="detail-badge">{{ getAppointmentToken() }}</span>
+                  <span class="detail-badge detail-badge--muted">{{ getAppointmentDate() }}</span>
+                </div>
+                <div class="detail-meta" *ngIf="getAppointmentPatientCnic() !== '-' || getAppointmentPatientAgeGender() !== '-'">
+                  <span class="detail-meta-item" *ngIf="getAppointmentPatientCnic() !== '-'">
+                    <strong>CNIC</strong> {{ getAppointmentPatientCnic() }}
+                  </span>
+                  <span class="detail-meta-item" *ngIf="getAppointmentPatientAgeGender() !== '-'">
+                    <strong>Age / Gender</strong> {{ getAppointmentPatientAgeGender() }}
+                  </span>
+                </div>
+              </div>
+              <dl class="detail-grid">
+                <div class="detail-cell">
+                  <dt>MRN</dt>
+                  <dd>{{ getAppointmentPatientMrn() }}</dd>
+                </div>
+                <div class="detail-cell">
+                  <dt>Phone</dt>
+                  <dd>{{ getAppointmentPatientPhone() }}</dd>
+                </div>
+                <div class="detail-cell detail-cell--full">
+                  <dt>Doctor / Department</dt>
+                  <dd>{{ getAppointmentDoctorDepartment() }}</dd>
+                </div>
+              </dl>
+            </ng-container>
+            <ng-template #apptEmpty>
+              <mat-icon>person_search</mat-icon>
+              <span>No appointment linked</span>
+            </ng-template>
+          </div>
+        </section>
+
+        <!-- Donor -->
+        <section class="info-panel">
+          <div class="panel-head">
+            <mat-icon class="panel-icon panel-icon--donor">volunteer_activism</mat-icon>
+            <div>
+              <h4>Donor</h4>
+              <span class="panel-hint">Required</span>
+            </div>
+          </div>
+
+          <div class="panel-search" *ngIf="!donorLocked && !isViewMode">
+            <mat-form-field class="search-field" appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Name, CNIC or Blood Group</mat-label>
+              <input matInput [formControl]="donorSearchCtrl" [matAutocomplete]="donorAuto" placeholder="Search">
+              <mat-autocomplete #donorAuto="matAutocomplete" [displayWith]="displayDonor"
+                (optionSelected)="onDonorSelected($event.option.value)">
+                <mat-option *ngFor="let donor of filteredDonors$ | async" [value]="donor">
+                  {{ displayDonor(donor) }}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+            <button mat-stroked-button type="button" class="search-action-btn" (click)="openAddDonor()">
+              <mat-icon>add</mat-icon> Add
+            </button>
+          </div>
+          <div class="panel-search panel-search--locked" *ngIf="donorLocked || isViewMode">
+            <mat-form-field class="search-field" appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Donor</mat-label>
+              <input matInput [value]="selectedDonor ? displayDonor(selectedDonor) : ''" readonly>
+            </mat-form-field>
+            <span class="search-action-spacer" aria-hidden="true"></span>
+          </div>
+
+          <div class="panel-body" [class.panel-body--empty]="!selectedDonor">
+            <ng-container *ngIf="selectedDonor; else donorEmpty">
+              <div class="detail-summary">
+                <h3 class="detail-name">{{ selectedDonor.name || '-' }}</h3>
+                <div class="detail-badges">
+                  <span class="detail-badge">{{ getDonorCode() }}</span>
+                  <span class="detail-badge detail-badge--blood">{{ getDonorBloodGroupName(selectedDonor) || '-' }}</span>
+                </div>
+              </div>
+              <dl class="detail-grid">
+                <div class="detail-cell">
+                  <dt>CNIC</dt>
+                  <dd>{{ selectedDonor.cnic || '-' }}</dd>
+                </div>
+                <div class="detail-cell">
+                  <dt>Mobile</dt>
+                  <dd>{{ getDonorMobile() }}</dd>
+                </div>
+                <div class="detail-cell">
+                  <dt>Gender</dt>
+                  <dd>{{ getDonorGender() }}</dd>
+                </div>
+                <div class="detail-cell">
+                  <dt>Last Donation</dt>
+                  <dd>{{ getDonorLastDonationDate() }}</dd>
+                </div>
+              </dl>
+            </ng-container>
+            <ng-template #donorEmpty>
+              <mat-icon>person_outline</mat-icon>
+              <span>Search and select a donor</span>
+            </ng-template>
+          </div>
+        </section>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-head">
+          <mat-icon>bloodtype</mat-icon>
+          <h4>Donation Details</h4>
+        </div>
+        <div class="row compact-row">
+          <div class="col-md-4">
+            <mat-form-field class="full-width" appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Component Type</mat-label>
+              <mat-select formControlName="bloodComponentTypeId" [disabled]="isViewMode">
+                <mat-option *ngFor="let item of componentTypeList" [value]="item.id">{{ item.code }} - {{ item.name }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-md-4">
+            <mat-form-field class="full-width" appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Donation Date</mat-label>
+              <input matInput [matDatepicker]="donationDatePicker" formControlName="donationDate"
+                placeholder="DD/MM/YYYY" [max]="maxDate" [readonly]="isViewMode">
+              <mat-datepicker-toggle matIconSuffix [for]="donationDatePicker" *ngIf="!isViewMode"></mat-datepicker-toggle>
+              <mat-datepicker #donationDatePicker></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="col-md-2">
+            <mat-form-field class="full-width" appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Volume (ml)</mat-label>
+              <input matInput formControlName="volume" type="number" min="0" [readonly]="isViewMode">
+            </mat-form-field>
+          </div>
+          <div class="col-md-2">
+            <mat-form-field class="full-width" appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Screening</mat-label>
+              <mat-select formControlName="screeningStatus" [disabled]="isViewMode || isScreeningStatusLocked">
+                <mat-option *ngFor="let item of screeningStatusList" [value]="item.value">{{ item.name }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-md-12">
+            <mat-form-field class="full-width" appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Remarks</mat-label>
+              <textarea matInput rows="1" formControlName="remarks" [readonly]="isViewMode"></textarea>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section" *ngIf="showStorageSection">
+        <div class="form-section-head">
+          <mat-icon>kitchen</mat-icon>
+          <h4>Storage <small>(optional)</small></h4>
+        </div>
+        <div class="row compact-row">
+          <div class="col-md-4">
+            <mat-form-field class="full-width" appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Blood Fridge</mat-label>
+              <mat-select formControlName="bloodFridgeId" [disabled]="isViewMode">
+                <mat-option [value]="null">—</mat-option>
+                <mat-option *ngFor="let item of fridgeList" [value]="item.id">{{ item.code }} - {{ item.name }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-md-4">
+            <mat-form-field class="full-width" appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Blood Rack</mat-label>
+              <mat-select formControlName="bloodRackId" [disabled]="isViewMode">
+                <mat-option [value]="null">—</mat-option>
+                <mat-option *ngFor="let item of rackList" [value]="item.id">{{ item.code }} - {{ item.name }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-md-4">
+            <mat-form-field class="full-width" appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Slot No</mat-label>
+              <input matInput formControlName="slotNo" type="text" [readonly]="isViewMode">
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+    </form>
+  </mat-card-content>
+
+  <mat-divider></mat-divider>
+  <div class="collect-footer" *ngIf="!isLoading">
+    <button *ngIf="!isViewMode" mat-flat-button color="success" type="button" (click)="saveData()" [disabled]="isLoading">
+      Save Collection
+    </button>
+    <button mat-flat-button color="default" [mat-dialog-close]="true">Close</button>
+  </div>
+</mat-card>

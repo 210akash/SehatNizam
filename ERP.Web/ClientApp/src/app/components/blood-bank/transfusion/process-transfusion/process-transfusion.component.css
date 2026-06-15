@@ -1,0 +1,130 @@
+.transfusion-shell {
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+}
+
+mat-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px 0;
+}
+
+.status-chip {
+  margin-left: auto;
+  padding: 4px 10px;
+  border-radius: 12px;
+  background: #e8edf3;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+mat-card-content {
+  overflow-y: auto;
+  padding: 12px 16px !important;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.form-section {
+  border: 1px solid #d8dee6;
+  border-radius: 10px;
+  padding: 12px 14px 4px;
+  margin-bottom: 12px;
+  background: #fafbfc;
+}
+
+.form-section h4 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #000;
+}
+
+.form-section h4 mat-icon {
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+  color: #444;
+}
+
+.transfusion-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 10px 16px 14px;
+}
+
+.appointment-units-panel {
+  border: 1px solid #b8d4f0;
+  border-radius: 10px;
+  background: #f0f7ff;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+}
+
+.appointment-units-panel__header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a4d8f;
+  margin-bottom: 8px;
+}
+
+.appointment-units-panel__header mat-icon {
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+}
+
+.appointment-units-panel__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.appointment-units-panel__hint {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: #5a6a7a;
+}
+
+.appointment-unit-chip--selected {
+  background: #e3f2fd;
+  border-color: #1976d2;
+}
+
+.appointment-unit-option {
+  background: #f5faff;
+}
+
+.unit-option-label {
+  flex: 1;
+}
+
+::ng-deep .appointment-unit-option .mdc-list-item__primary-text {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+}
+
+.appointment-unit-badge {
+  flex-shrink: 0;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: #1976d2;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}

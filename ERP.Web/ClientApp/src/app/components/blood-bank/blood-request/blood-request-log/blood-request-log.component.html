@@ -10,12 +10,7 @@
   <mat-divider></mat-divider>
 
   <mat-card-content class="log-body">
-    <div *ngIf="isLoading" class="loading-state">
-      <mat-spinner diameter="36"></mat-spinner>
-      <span>Loading request history...</span>
-    </div>
-
-    <div class="log-content" *ngIf="!isLoading && log">
+    <div class="log-content" *ngIf="log">
       <section class="summary-panel">
         <div class="summary-grid">
           <div class="summary-item">

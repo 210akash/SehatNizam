@@ -148,12 +148,9 @@ import { ComponentTypeListComponent } from './components/blood-bank/component-ty
 import { BloodGroupListComponent } from './components/blood-bank/blood-group/blood-group-list/blood-group-list.component';
 import { BloodFridgeListComponent } from './components/blood-bank/blood-fridge/blood-fridge-list/blood-fridge-list.component';
 import { BloodRackListComponent } from './components/blood-bank/blood-rack/blood-rack-list/blood-rack-list.component';
-import { DonorListComponent } from './components/blood-bank/donor/donor-list/donor-list.component';
-import { DonationListComponent } from './components/blood-bank/donation/donation-list/donation-list.component';
+import { CollectionListComponent } from './components/blood-bank/collection/collection-list/collection-list.component';
 import { BloodUnitListComponent } from './components/blood-bank/blood-unit/blood-unit-list/blood-unit-list.component';
-import { BloodRequestListComponent } from './components/blood-bank/blood-request/blood-request-list/blood-request-list.component';
-import { CrossMatchListComponent } from './components/blood-bank/cross-match/cross-match-list/cross-match-list.component';
-import { IssueListComponent } from './components/blood-bank/issue/issue-list/issue-list.component';
+import { TransfusionListComponent } from './components/blood-bank/transfusion/transfusion-list/transfusion-list.component';
 import { AdvancePaymentListComponent } from './components/opd/advancepayment/advancepayment-list/advancepayment-list.component';
 import { AppointmentPaymentListComponent } from './components/opd/appointment-payment/appointment-payment-list/appointment-payment-list.component';
 
@@ -308,12 +305,15 @@ const routes: Routes = [
       { path: 'bloodgroup', component: BloodGroupListComponent, canActivate: [AuthGuard] },
       { path: 'bloodfridge', component: BloodFridgeListComponent, canActivate: [AuthGuard] },
       { path: 'bloodrack', component: BloodRackListComponent, canActivate: [AuthGuard] },
-      { path: 'blooddonor', component: DonorListComponent, canActivate: [AuthGuard] },
-      { path: 'blooddonation', component: DonationListComponent, canActivate: [AuthGuard] },
-      { path: 'bloodunit', component: BloodUnitListComponent, canActivate: [AuthGuard] },
-      { path: 'bloodrequest', component: BloodRequestListComponent, canActivate: [AuthGuard] },
-      { path: 'bloodcrossmatch', component: CrossMatchListComponent, canActivate: [AuthGuard] },
-      { path: 'bloodissue', component: IssueListComponent, canActivate: [AuthGuard] },
+      { path: 'bloodcollection', component: CollectionListComponent, canActivate: [AuthGuard] },
+      { path: 'bloodstock', component: BloodUnitListComponent, canActivate: [AuthGuard] },
+      { path: 'blooddonor', redirectTo: 'bloodcollection', pathMatch: 'full' },
+      { path: 'blooddonation', redirectTo: 'bloodcollection', pathMatch: 'full' },
+      { path: 'bloodunit', redirectTo: 'bloodstock', pathMatch: 'full' },
+      { path: 'bloodtransfusion', component: TransfusionListComponent, canActivate: [AuthGuard] },
+      { path: 'bloodrequest', redirectTo: 'bloodtransfusion', pathMatch: 'full' },
+      { path: 'bloodcrossmatch', redirectTo: 'bloodtransfusion', pathMatch: 'full' },
+      { path: 'bloodissue', redirectTo: 'bloodtransfusion', pathMatch: 'full' },
       { path: 'advancepayment', component: AdvancePaymentListComponent, canActivate: [AuthGuard] },
       { path: 'appointmentpayment', component: AppointmentPaymentListComponent, canActivate: [AuthGuard] },
     ]

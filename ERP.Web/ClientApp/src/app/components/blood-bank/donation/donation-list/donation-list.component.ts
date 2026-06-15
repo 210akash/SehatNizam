@@ -19,7 +19,7 @@ export class DonationListComponent {
     isLoading = false;
     currentPage = 0;
     pageSizeOptions: number[] = [5, 10, 25, 100];
-    displayedColumns: string[] = ['code', 'donor', 'cnic', 'componentType', 'bloodGroup', 'donationDate', 'volume', 'screeningStatus', 'actions'];
+    displayedColumns: string[] = ['code', 'patient', 'donor', 'cnic', 'componentType', 'bloodGroup', 'donationDate', 'volume', 'screeningStatus', 'actions'];
     dataSource: any;
     take = 10;
     totalRows = 0;
@@ -113,6 +113,22 @@ export class DonationListComponent {
 
     getDonorName(element: any): string {
         return element?.bloodDonor?.name || '';
+    }
+
+    getPatientName(element: any): string {
+        return element?.appointment?.patient?.patientMaster?.name
+            || element?.appointment?.patient?.name
+            || '-';
+    }
+
+    getAppointmentToken(element: any): string {
+        if (!element?.appointment) {
+            return '';
+        }
+
+        return element.appointment.tokenNumber
+            ? `Token # ${element.appointment.tokenNumber}`
+            : `Booking # ${element.appointment.id}`;
     }
 
     getDonorCnic(element: any): string {

@@ -1,12 +1,14 @@
 import { Component, Inject } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
+import { Observable, of } from 'rxjs';
+import { debounceTime, distinctUntilChanged, finalize, map, startWith, switchMap } from 'rxjs/operators';
 import { ConstantService } from '../../../../Service/constant.service';
 import { NotificationsService } from '../../../../Service/notification.service';
+import { AppointmentService } from '../../../opd/appointment/appointment.service';
 import { BloodGroupService } from '../../blood-group/blood-group.service';
 import { ComponentTypeService } from '../../component-type/component-type.service';
-import { AdmissionService } from '../../../IPD/admission/admission.service';
 import { BloodRequestService } from '../blood-request.service';
 import { bloodBankCnicValidators, bloodBankNameValidators } from '../../shared/blood-bank-input.utils';
 
@@ -21,12 +23,15 @@ import { bloodBankCnicValidators, bloodBankNameValidators } from '../../shared/b
 })
 export class AddBloodRequestComponent {
     form!: FormGroup;
+    appointmentSearchCtrl = new FormControl<string | any>('');
+    filteredAppointments$!: Observable<any[]>;
+    selectedAppointment: any = null;
+    appointmentLoading = false;
     isLoading = false;
     isEditMode = false;
     isViewMode = false;
     bloodGroupList: any[] = [];
     componentTypeList: any[] = [];
-    admissionList: any[] = [];
     currentStatus = 1;
     statusMap: { [key: number]: string } = {
         1: 'Pending',
@@ -42,7 +47,7 @@ export class AddBloodRequestComponent {
         private service: BloodRequestService,
         private bloodGroupService: BloodGroupService,
         private componentTypeService: ComponentTypeService,
-        private admissionService: AdmissionService,
+        private appointmentService: AppointmentService,
         private constantService: ConstantService,
         @Inject(MAT_DIALOG_DATA) public data: { element: any; isViewMode?: boolean }
     ) { }
@@ -51,7 +56,7 @@ export class AddBloodRequestComponent {
         this.isViewMode = this.data.isViewMode === true;
         this.form = this.formBuilder.group({
             id: [0],
-            admissionId: [null],
+            appointmentId: [null],
             patientName: ['', bloodBankNameValidators()],
             patientCNIC: ['', bloodBankCnicValidators()],
             bloodGroupMasterId: ['', Validators.required],
@@ -62,10 +67,14 @@ export class AddBloodRequestComponent {
             remarks: ['']
         });
 
+        this.setupAppointmentAutocomplete();
         this.loadBloodGroups();
         this.loadComponentTypes();
-        this.loadAdmissions();
         this.loadData(this.data.element);
+
+        if (this.isViewMode) {
+            this.appointmentSearchCtrl.disable();
+        }
     }
 
     get dialogTitle(): string {
@@ -87,6 +96,14 @@ export class AddBloodRequestComponent {
         return this.currentStatus === 1;
     }
 
+    displayAppointment = (appointment: any): string => {
+        if (!appointment) return '';
+        if (typeof appointment === 'string') return appointment;
+        const token = appointment.tokenNumber ? `Token # ${appointment.tokenNumber}` : `Booking # ${appointment.id}`;
+        const patientName = appointment?.patient?.patientMaster?.name || appointment?.patient?.name || '';
+        return patientName ? `${token} - ${patientName}` : token;
+    };
+
     loadBloodGroups() {
         this.bloodGroupService.getAll({ PagingData: { currentPage: 0, take: 1000 } }).subscribe((data: any) => {
             this.bloodGroupList = data.item1 || [];
@@ -99,20 +116,24 @@ export class AddBloodRequestComponent {
         });
     }
 
-    loadAdmissions() {
-        this.admissionService.getAllAdmissions({ PagingData: { currentPage: 0, take: 200 } }).subscribe((data: any) => {
-            this.admissionList = data.item1 || [];
+    onAppointmentSelected(appointment: any) {
+        if (!appointment?.id) return;
+        this.applySelectedAppointment(appointment);
+        const master = appointment?.patient?.patientMaster;
+        this.form.patchValue({
+            patientName: master?.name || appointment?.patient?.name || '',
+            patientCNIC: master?.cnic || appointment?.patient?.cnic || ''
         });
     }
 
-    onAdmissionSelected(admissionId: number) {
-        const admission = this.admissionList.find(a => a.id === admissionId);
-        if (!admission) return;
-        const master = admission?.appointment?.patient?.patientMaster;
-        this.form.patchValue({
-            patientName: master?.name || admission?.appointment?.patient?.name || '',
-            patientCNIC: master?.cnic || ''
-        });
+    onAppointmentInputCleared(event: Event): void {
+        const value = (event.target as HTMLInputElement)?.value?.trim() ?? '';
+        if (value.length > 0) return;
+        this.resetAppointmentSelection();
+    }
+
+    clearAppointment(): void {
+        this.resetAppointmentSelection(true);
     }
 
     loadData(element: any) {
@@ -131,8 +152,11 @@ export class AddBloodRequestComponent {
                     requestDate: request?.requestDate ? new Date(request.requestDate) : new Date()
                 });
 
+                this.syncAppointmentFromRequest(request);
+
                 if (this.isViewMode || !this.isRequestEditable) {
                     this.form.disable();
+                    this.appointmentSearchCtrl.disable();
                 }
 
                 this.isLoading = false;
@@ -191,10 +215,70 @@ export class AddBloodRequestComponent {
         }
     }
 
+    private applySelectedAppointment(appointment: any): void {
+        this.selectedAppointment = appointment;
+        this.appointmentSearchCtrl.setValue(appointment, { emitEvent: false });
+        this.form.patchValue({ appointmentId: appointment.id });
+    }
+
+    private resetAppointmentSelection(resetControl = true): void {
+        this.selectedAppointment = null;
+        this.form.patchValue({ appointmentId: null });
+        if (resetControl) {
+            this.appointmentSearchCtrl.setValue('', { emitEvent: false });
+        }
+    }
+
+    private syncAppointmentFromRequest(request: any): void {
+        const appointmentId = request?.appointmentId;
+        if (!appointmentId) {
+            this.resetAppointmentSelection(false);
+            return;
+        }
+
+        if (request?.appointment?.id) {
+            this.applySelectedAppointment(request.appointment);
+            return;
+        }
+
+        this.appointmentService.getAppointmentById(appointmentId).subscribe({
+            next: (response: any) => {
+                if (response?.id) {
+                    this.applySelectedAppointment(response);
+                }
+            }
+        });
+    }
+
+    private setupAppointmentAutocomplete(): void {
+        this.filteredAppointments$ = this.appointmentSearchCtrl.valueChanges.pipe(
+            startWith(''),
+            debounceTime(300),
+            distinctUntilChanged(),
+            switchMap((value: string | any) => {
+                const term = typeof value === 'string'
+                    ? value.trim()
+                    : String(value?.tokenNumber ?? value?.id ?? '').trim();
+                if (!term) return of([]);
+                this.appointmentLoading = true;
+                return this.appointmentService.getAppointmentByToken(term, 0).pipe(
+                    map((data: any) => data?.item1 ?? data ?? []),
+                    finalize(() => (this.appointmentLoading = false))
+                );
+            })
+        );
+
+        this.appointmentSearchCtrl.valueChanges.subscribe((value) => {
+            if (typeof value === 'string' && value.trim() === '') {
+                this.resetAppointmentSelection(false);
+            }
+        });
+    }
+
     private formatDateForSave(value: any): string | null {
         if (!value) return null;
         const date = value instanceof Date ? value : new Date(value);
         if (isNaN(date.getTime())) return null;
-        return date.toISOString();
+        return date.toISOString().split('T')[0];
     }
 }

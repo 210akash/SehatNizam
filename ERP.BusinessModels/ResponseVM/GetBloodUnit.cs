@@ -8,6 +8,7 @@ namespace ERP.BusinessModels.ResponseVM
         public string UnitNo { get; set; }
         public string Barcode { get; set; }
         public long? BloodDonationId { get; set; }
+        public long? DonationAppointmentId { get; set; }
         public long BloodComponentTypeId { get; set; }
         public GetBloodComponentType BloodComponentType { get; set; }
         public long BloodGroupMasterId { get; set; }

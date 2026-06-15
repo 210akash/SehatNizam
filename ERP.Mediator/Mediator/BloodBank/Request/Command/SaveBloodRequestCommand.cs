@@ -8,6 +8,7 @@ namespace ERP.Mediator.Mediator.BloodBank.Request.Command
         public long Id { get; set; }
         public string Code { get; set; }
         public long? AdmissionId { get; set; }
+        public long? AppointmentId { get; set; }
         public string PatientName { get; set; }
         public string PatientCNIC { get; set; }
         public long BloodGroupMasterId { get; set; }

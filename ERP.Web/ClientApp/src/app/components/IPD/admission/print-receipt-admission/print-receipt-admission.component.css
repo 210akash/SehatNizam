@@ -149,6 +149,17 @@ body {
   gap: 3px;
 }
 
+.discharge-summary {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.discharge-summary p {
+  margin-top: 8px;
+  line-height: 1.6;
+}
+
 .summary-head {
   font-size: 0.62rem;
   font-weight: 700;

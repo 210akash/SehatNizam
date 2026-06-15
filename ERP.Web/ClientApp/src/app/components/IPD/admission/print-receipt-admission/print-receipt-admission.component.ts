@@ -437,11 +437,11 @@ export class PrintReceiptAdmissionComponent {
 
   
   getHospitalName(): string {
-    return this.data?.element?.department?.company?.name;
+    return this.data?.element?.appointment?.department?.company?.name;
   }
 
   getHospitalSubtitle(): string {
-    const company = this.data?.element?.department?.company;
+    const company = this.data?.element?.appointment?.department?.company;
     const parts = [
       company?.address,
       company?.phoneNo || company?.phone || company?.mobileNo,
@@ -496,7 +496,7 @@ export class PrintReceiptAdmissionComponent {
   }
 
   getPatientAgeGender(): string {
-    const patient = this.data?.element?.patient;
+    const patient = this.data?.element?.patient?.patientMaster;
     if (!patient) {
       return '-';
     }
@@ -507,7 +507,7 @@ export class PrintReceiptAdmissionComponent {
   }
 
   getDoctorName(): string {
-    const doctor = this.data?.element?.doctor;
+    const doctor = this.data?.element?.appointment?.doctor;
     if (!doctor) {
       return '-';
     }

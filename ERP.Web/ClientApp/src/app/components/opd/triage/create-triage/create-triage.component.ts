@@ -82,7 +82,7 @@ export class CreateTriageComponent implements OnInit {
       bmi: [{ value: null, disabled: true }],
       bloodSugar: [null],
       sugarTypeId: [1 || null, Validators.required],
-      triagePriorityId: [null, Validators.required],
+      triagePriorityId: [1, Validators.required],
       chiefComplaint: [''],
       allergies: [''],
       medications: [''],
@@ -292,8 +292,8 @@ export class CreateTriageComponent implements OnInit {
       heightCm: null,
       bmi: null,
       bloodSugar: null,
-      sugarTypeId: null,
-      triagePriorityId: null,
+      sugarTypeId: 1,
+      triagePriorityId: 1,
       chiefComplaint: '',
       allergies: '',
       medications: '',
@@ -439,15 +439,15 @@ export class CreateTriageComponent implements OnInit {
   }
 
   getPatientName(): string {
-    return this.selectedAppointment?.patient?.name || 'Unknown Patient';
+    return this.selectedAppointment?.patient?.patientMaster?.name || 'Unknown Patient';
   }
 
   getPatientMrn(): string {
-    return this.selectedAppointment?.patient?.mrn || `MRN-${this.selectedAppointment?.patientId || '-'}`;
+    return this.selectedAppointment?.patient?.patientMaster?.mrn || `MRN-${this.selectedAppointment?.patientId || '-'}`;
   }
 
   getPatientAgeGender(): string {
-    const patient = this.selectedAppointment?.patient;
+    const patient = this.selectedAppointment?.patient?.patientMaster;
     if (!patient) {
       return '-';
     }
@@ -458,7 +458,7 @@ export class CreateTriageComponent implements OnInit {
   }
 
   getPatientPhone(): string {
-    return this.selectedAppointment?.patient?.phoneNo || '-';
+    return this.selectedAppointment?.patient?.patientMaster?.phoneNo || '-';
   }
 
   getDoctorName(): string {

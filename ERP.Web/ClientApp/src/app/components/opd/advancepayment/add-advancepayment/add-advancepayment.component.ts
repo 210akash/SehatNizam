@@ -37,7 +37,7 @@ export class AddAdvancePaymentComponent {
 
   ngOnInit(): void {
     const element = this.data?.element ?? null;
-    const elementId = element?.id ?? null;
+    const elementId = element?.id ?? 0;
     const appointmentId = element?.appointmentId ?? null;
     
     this.admissionServiceForm = this.formBuilder.group({
@@ -108,7 +108,7 @@ export class AddAdvancePaymentComponent {
         }
 
         this.appointmentLoading = true;
-        return this.appointmentService.getAppointmentsByBookingNo(term).pipe(
+        return this.appointmentService.getAppointmentByToken(term,0).pipe(
           map((data: any) => data?.item1 ?? data ?? []),
           finalize(() => (this.appointmentLoading = false))
         );
@@ -125,8 +125,8 @@ export class AddAdvancePaymentComponent {
       return appointment;
     }
 
-    const token = `Booking # ${appointment.id}`;
-    const patientName = appointment.patient?.name ? ` - ${appointment.patient.name}` : '';
+    const token = `Token # ${appointment.tokenNumber}`;
+    const patientName = appointment.patient?.patientMaster?.name ? ` - ${appointment.patient?.patientMaster?.name}` : '';
     return `${token}${patientName}`;
   };
 

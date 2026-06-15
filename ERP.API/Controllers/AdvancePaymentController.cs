@@ -25,7 +25,7 @@ namespace ERP.API.Controllers
 
         [HttpPost]
         [Route("GetAllAdvancePayments")]
-        public async Task<ActionResult<Tuple<IEnumerable<GetAppointmentPayment>, long>>> GetAll(GetAllAdvancePaymentsQuery getAllAdvancePaymentsQuery)
+        public async Task<ActionResult<Tuple<IEnumerable<GetAdvancePayment>, long>>> GetAll(GetAllAdvancePaymentsQuery getAllAdvancePaymentsQuery)
         {
             try
             {
@@ -77,6 +77,20 @@ namespace ERP.API.Controllers
             try
             {
                 return await this.mediator.Send(new DeleteAdvancePaymentsQuery(id));
+            }
+            catch (Exception ex)
+            {
+                return this.Result(ResponseStatus.Error, null, ex.Message);
+            }
+        }
+
+        [HttpDelete]
+        [Route("ConfirmAdvancePayment")]
+        public async Task<ActionResult<bool>> ConfirmAdvancePayments(long id)
+        {
+            try
+            {
+                return await this.mediator.Send(new ConfirmAdvancePaymentCommand(id));
             }
             catch (Exception ex)
             {

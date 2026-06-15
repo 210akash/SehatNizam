@@ -10,7 +10,7 @@ import { AdvancePaymentEndPoints } from './advancepayment.endpoints';
 })
 export class AdvancePaymentService extends BaseService<any>{
 
-    endPointControllerName = "AdvancePayment";
+    endPointControllerName = "AdvancePayments";
     constructor(httpClient: HttpClient, private http: HttpClient, private admissionServiceEndPoints: AdvancePaymentEndPoints) {
         super(
             httpClient,
@@ -30,6 +30,11 @@ export class AdvancePaymentService extends BaseService<any>{
 
     deleteAdvancePayment(id: number) {
       return this.delete(id, this.endPointControllerName + this.admissionServiceEndPoints.deleteAdvancePayment)
+          .pipe();
+    }
+
+     confirmAdvancePayment(id: number) {
+      return this.delete(id, this.endPointControllerName + this.admissionServiceEndPoints.confirmAdvancePayment)
           .pipe();
     }
 }

@@ -80,4 +80,9 @@ export class AdmissionService extends BaseService<any> {
             .pipe(map((data: any) => data));
     }
 
+      saveDischarge(saveAdmissionCommand: any) {
+        return this.post(saveAdmissionCommand, this.endPointControllerName + this.AdmissionEndPoints.saveDischarge)
+            .pipe(map((data: any) => data));
+    }
+
 }

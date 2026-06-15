@@ -151,6 +151,7 @@
           <div class="prob-item" *ngFor="let problem of localProblems; let i = index">
             <div class="prob-name">
               {{ problem.problem }}
+              | {{ problem.onset | date:'short' }}
               <span class="status-badge" [class.active]="problem.status.title === 'Active'">{{ problem.status.title
                 }}</span>
             </div>

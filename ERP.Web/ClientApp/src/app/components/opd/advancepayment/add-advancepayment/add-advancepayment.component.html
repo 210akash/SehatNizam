@@ -21,15 +21,11 @@
                 [displayWith]="displayAppointment"
                 (optionSelected)="onAppointmentSelected($event.option.value)">
                 <mat-option *ngFor="let appointment of filteredAppointments$ | async" [value]="appointment">
-                  Booking # {{ appointment.id || '-' }}
-                  <span *ngIf="appointment.patient?.name"> - {{ appointment.patient?.name }}</span>
+                  Token # {{ appointment.tokenNumber || '-' }}
+                  <span *ngIf="appointment.patient?.patientMaster?.name"> - {{ appointment.patient?.patientMaster?.name }}</span>
                 </mat-option>
               </mat-autocomplete>
             </mat-form-field>
-
-            <button mat-flat-button color="primary" type="button" class="lookup-button" (click)="lookupAppointment()">
-              Lookup
-            </button>
           </div>
         </div>
 

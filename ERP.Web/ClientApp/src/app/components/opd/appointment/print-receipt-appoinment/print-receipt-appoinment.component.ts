@@ -497,7 +497,7 @@ export class PrintReceiptAppoinmentComponent {
   }
 
   getPatientAgeGender(): string {
-    const patient = this.data?.element?.patient;
+    const patient = this.data?.element?.patient?.patientMaster;
     if (!patient) {
       return '-';
     }

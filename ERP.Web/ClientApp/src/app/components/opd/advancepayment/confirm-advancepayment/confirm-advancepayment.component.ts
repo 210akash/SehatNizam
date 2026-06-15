@@ -6,12 +6,12 @@ import { ConstantService } from '../../../../Service/constant.service';
 import { AdvancePaymentService } from '../advancepayment.service';
 
 @Component({
-  selector: 'app-delete-advancepayment',
-  templateUrl: './delete-advancepayment.component.html',
-  styleUrl: './delete-advancepayment.component.css',
+  selector: 'app-confirm-advancepayment',
+  templateUrl: './confirm-advancepayment.component.html',
+  styleUrl: './confirm-advancepayment.component.css',
     standalone: false
 })
-export class DeleteAdvancePaymentComponent {
+export class ConfirmAdvancePaymentComponent {
   serviceForm!: FormGroup;
   isLoading = false;
   isEditMode: boolean = false;
@@ -30,11 +30,11 @@ export class DeleteAdvancePaymentComponent {
     this.constantService.LoadData(element, this.serviceForm);
   }
 
-  async delete(){
+  async confirm(){
     const elementId = this.data?.element?.id;
     if (!elementId) return;
     
-    (await this.advancePaymentService.deleteAdvancePayment(elementId)).subscribe({
+    (await this.advancePaymentService.confirmAdvancePayment(elementId)).subscribe({
       next: (data) => {
         if(data == true){
           this.isLoading = false;

@@ -35,26 +35,26 @@
       
       <!-- Left Column: Patient Info -->
       <div class="patient-info" style="line-height: 1.6;">
-        <div><strong>Patient Name:</strong> {{ data.element?.patient?.name || '-' }}</div>
-        <div><strong>MRN:</strong> {{ data.element?.patient?.mrn || '-' }}</div>
+        <div><strong>Patient Name:</strong> {{ data.element?.appointment?.patient?.patientMaster?.name || '-' }}</div>
+        <div><strong>MRN:</strong> {{ data.element?.appointment?.patient?.mrn || '-' }}</div>
         <div><strong>Age / Gender:</strong> {{ getPatientAgeGender() }}</div>
       </div>
 
       <!-- Right Column: Appointment Info -->
       <div class="appointment-info" style="text-align: right; line-height: 1.6;">
-        <div><strong>Date:</strong> {{ formatAppointmentDateLong() }}</div>
-        <div><strong>Time:</strong> {{ formatAppointmentTime() }}</div>
-        <div><strong>Token:</strong> {{ data.element?.tokenNumber || '-' }}</div>
-        <div><strong>Department:</strong> {{ data.element?.department?.name || '-' }}</div>
+        <div><strong>Appinment/Token #:</strong> {{ data.element?.appointment?.tokenNumber || '-' }}</div>
+        <div><strong>Department:</strong> {{ data.element?.appointment?.department?.name || '-' }}</div>
         <div><strong>Doctor:</strong> {{ getDoctorName() }}</div>
-        <div><strong>Booked By:</strong> {{ data.element?.createdBy?.firstName + ' ' + data.element?.createdBy?.lastName }}</div>
       </div>
     </div>
 
+<div class="summary-card discharge-summary">
+  <strong style="text-align: center; line-height: 1.6;">Discharge Summary</strong>
+  <p>{{ data.element?.dischargeSummary }}</p>
+</div>
     <!-- Payment Info -->
     <div class="payment-section" style="border-top: 1px solid #ccc; padding-top: 10px; margin-bottom: 15px; font-size: 14px;">
-      <div><strong>Payment Mode:</strong> {{ data.element?.appointmentPayments[0]?.paymentMode?.name || '-' }}</div>
-      <div><strong>Amount Paid:</strong> {{ data.element?.appointmentPayments[0]?.totalPayable | currency:'PKR':'symbol':'1.2-2' }}</div>
+      <div><strong>Discharge Date:</strong> {{ data.element?.dischargeDate | date:'shortDate'}}</div>
     </div>
 
     <!-- Footer -->

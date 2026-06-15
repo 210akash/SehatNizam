@@ -438,6 +438,11 @@ export class PrintTriageComponent {
     return this.getAppointment()?.patient || this.data?.element?.patient || {};
   }
 
+   getPatientMaster(): any {
+    return this.getAppointment()?.patient?.patientMaster || this.data?.element?.patient?.patientMaster || {};
+  }
+
+
   getDepartment(): any {
     return this.getAppointment()?.department || this.data?.element?.department || {};
   }
@@ -502,7 +507,7 @@ export class PrintTriageComponent {
   }
 
   getPatientAgeGender(): string {
-    const patient = this.getPatient();
+    const patient = this.getPatientMaster();
     if (!patient) {
       return '-';
     }

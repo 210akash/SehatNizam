@@ -11,4 +11,5 @@ export class AdmissionEndPoints {
     public readonly confirmAdmission = '/ConfirmAdmission';
     public readonly cancelAppoinment = '/CancelAppoinment';
     public readonly getAdmissionsByBookingNo = '/GetAdmissionsByBookingNo';
+    public readonly saveDischarge = '/SaveDischarge';
 }

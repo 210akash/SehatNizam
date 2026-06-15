@@ -9,6 +9,8 @@ import { MatSort } from '@angular/material/sort';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { AdvancePaymentService } from '../advancepayment.service';
 import { ServiceService } from '../../service/service.service';
+import { ConfirmAdvancePaymentComponent } from '../confirm-advancepayment/confirm-advancepayment.component';
+import { ViewAdvancePaymentComponent } from '../view-advancepayment/view-advancepayment.component';
 
 @Component({
   selector: 'app-advancepayment-list',
@@ -22,8 +24,7 @@ export class AdvancePaymentListComponent {
   isLoading = false;
   currentPage = 0;
   pageSizeOptions: number[] = [5, 10, 25, 100];
-  //displayedColumns: string[] = ['appoinmentno','mrnno','patientname','paymentMode','amount', 'paymentDate', 'status',  'actions'];
-  displayedColumns: string[] = [];
+  displayedColumns: string[] = ['appoinmentno','mrnno','patientname','paymentMode','amount', 'paymentDate', 'status',  'actions'];
   dataSource: any;
   take = 50;
   totalRows = 0;
@@ -34,7 +35,12 @@ export class AdvancePaymentListComponent {
 
   async ngOnInit(): Promise<void> {
     this.ServiceFilterForm = this.formBuilder.group({
-      appointmentId: [this.data?.element.appointmentId]
+      appointmentno: [''],
+      mRN: [''],
+      patientName: [''],
+      fDate: [new Date()],
+      tDate: [new Date()],
+      statusId : [null]
     });
     await this.bindData();
   }
@@ -83,6 +89,11 @@ export class AdvancePaymentListComponent {
     this.bindData();
   }
 
+  filterData() {
+    this.bindData();
+  }
+
+
   openServiceDialog(element: any) {
     const dialogRef = this.dialog.open(AddAdvancePaymentComponent, {
       id: 'message-tracker-dialog',
@@ -99,6 +110,39 @@ export class AdvancePaymentListComponent {
 
   deleteServiceDialog(element: any) {
     const dialogRef = this.dialog.open(DeleteAdvancePaymentComponent, {
+      id: 'message-delete-tracker',
+      width: '40%',
+      height: 'auto',
+      data: {
+        element: element,
+      },
+      disableClose: true
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.bindData();
+    });
+  }
+
+    confirmServiceDialog(element: any) {
+    const dialogRef = this.dialog.open(ConfirmAdvancePaymentComponent, {
+      id: 'message-delete-tracker',
+      width: '40%',
+      height: 'auto',
+      data: {
+        element: element,
+      },
+      disableClose: true
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.bindData();
+    });
+  }
+
+  
+    viewServiceDialog(element: any) {
+    const dialogRef = this.dialog.open(ViewAdvancePaymentComponent, {
       id: 'message-delete-tracker',
       width: '40%',
       height: 'auto',

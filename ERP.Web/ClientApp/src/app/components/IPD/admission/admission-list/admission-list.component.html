@@ -175,18 +175,20 @@
             <mat-icon aria-label="Print">print</mat-icon>
           </button> -->
          
-                <button mat-mini-fab matTooltip="Receipt" color="primary"
+                <button *ngIf="element.statusId  == 32" mat-mini-fab matTooltip="Discharge Slip" color="primary"
             (click)="printrecreiptAdmissionDialog(element)">
-            <mat-icon aria-label="Receipt">receipt</mat-icon>
+            <mat-icon aria-label="Discharge Slip">receipt</mat-icon>
           </button>
-             <button mat-mini-fab matTooltip="Assign Bed" (click)="openAddAdmissionBedDialog(element)">
+             <button *ngIf="element.statusId  !== 32 " mat-mini-fab matTooltip="Assign Bed" (click)="openAddAdmissionBedDialog(element)">
               <i class="fa-solid fa-bed-pulse"></i>
             </button>
 
-             <button mat-mini-fab matTooltip="Services" (click)="openAddAdmissionServiceDialog(element)">
-       <i class="fa-solid fa-notes-medical"></i>
+             <button *ngIf="element.statusId  !== 32 " mat-mini-fab matTooltip="Services" (click)="openAddAdmissionServiceDialog(element)">
+              <i class="fa-solid fa-notes-medical"></i>
             </button>
-
+               <button *ngIf="element.statusId   !== 32 " mat-mini-fab matTooltip="Discharge" (click)="openAddDischargeServiceDialog(element)">
+              <i class="fa-solid fa-notes-medical"></i>
+            </button>
         </div>
       </td>
     </ng-container>

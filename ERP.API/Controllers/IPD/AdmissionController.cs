@@ -38,48 +38,6 @@ namespace ERP.API.Controllers
             }
         }
 
-        //[HttpPost]
-        //[Route("GetAllAdmissionByDoctor")]
-        //public async Task<ActionResult<Tuple<IEnumerable<GetAdmission>, long>>> GetAllAdmissionByDoctor(GetAllAdmissionByDoctorQuery command)
-        //{
-        //    try
-        //    {
-        //        return await this.mediator.Send(command);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return this.Result(ResponseStatus.Error, null, ex.Message);
-        //    }
-        //}
-
-        //[HttpGet]
-        //[Route("GetAllAdmissionStatus")]
-        //public async Task<ActionResult<List<GetAdmissionStatus>>> GetAllAdmissionStatus()
-        //{
-        //    try
-        //    {
-        //        return await this.mediator.Send(new GetAllAdmissionStatusQuery());
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return this.Result(ResponseStatus.Error, null, ex.Message);
-        //    }
-        //}
-
-        //[HttpGet]
-        //[Route("GetAdmissionByToken")]
-        //public async Task<ActionResult<List<GetAdmission>>> GetAdmissionByToken(string Token, long StatusId)
-        //{
-        //    try
-        //    {
-        //        return await this.mediator.Send(new GetAdmissionByTokenQuery(Token, StatusId));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return this.Result(ResponseStatus.Error, null, ex.Message);
-        //    }
-        //}
-
         [HttpPost]
         [Route("SaveAdmission")]
         public async Task<IActionResult> Save(SaveAdmissionCommand command)
@@ -113,19 +71,37 @@ namespace ERP.API.Controllers
             }
         }
 
-
-        //[HttpPost]
-        //[Route("ConfirmAdmission")]
-        //public async Task<ActionResult<Tuple<long, string>>> ConfirmAdmission(ConfirmAppoinmentQuery confirmAppoinmentQuery)
-        //{
-        //    try
-        //    {
-        //        return await this.mediator.Send(confirmAppoinmentQuery);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return this.Result(ResponseStatus.Error, null, ex.Message);
-        //    }
-        //}
+        [HttpPost]
+        [Route("SaveDischarge")]
+        public async Task<IActionResult> SaveDischarge(SaveDischargeCommand command)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return this.Result(ResponseStatus.Error, null, this.GetModelValidationErrors(this.ModelState));
+                }
+                else
+                {
+                    var result = await this.mediator.Send(command);
+                    if (result == 200)
+                    {
+                        return this.Result(ResponseStatus.OK, "Discharge Saved!", null);
+                    }
+                    else if (result == 404)
+                    {
+                        return this.Result(ResponseStatus.RecordNotFound, "Not Found!", null);
+                    }
+                    else
+                    {
+                        return this.Result(ResponseStatus.Error, "There is some error!", null);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return this.Result(ResponseStatus.Error, null, ex.Message);
+            }
+        }
     }
 }

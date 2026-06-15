@@ -31,7 +31,7 @@ namespace ERP.Mediator.Mediator.AdvancePayments.Handler
 
         async Task<long> IRequestHandler<SaveAdvancePaymentsCommand, long>.Handle(SaveAdvancePaymentsCommand request, CancellationToken cancellationToken)
         {
-            var AppointmentId = await unitOfWork.Repository<Entities.Models.Appointment>().GetFirstAsNoTrackingAsync(x => x.Id == request.AppointmentId && x.IsActive == true, null, null, "ServiceType");
+            var AppointmentId = await unitOfWork.Repository<Entities.Models.Appointment>().GetFirstAsNoTrackingAsync(x => x.Id == request.AppointmentId && x.IsActive == true, null, null, null);
 
             if (AppointmentId == null)
             {
@@ -41,6 +41,7 @@ namespace ERP.Mediator.Mediator.AdvancePayments.Handler
             var payment = mapper.Map<AdvancePayment>(request);
             payment.CreatedById = sessionProvider.Session.LoggedInUserId;
             payment.CreatedDate = DateTime.Now;
+            payment.PaymentDate = DateTime.Now;
             await unitOfWork.Repository<AdvancePayment>().AddAsync(payment);
             SaveChanges();
             return 200;

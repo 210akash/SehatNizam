@@ -733,7 +733,12 @@
              *ngIf="hasRequiredRole(['admin','blood bank technician','lab technician'])"
              class="submenu-link"
              [class.active-link]="isActive('/appointmentpayment')">Appointment Payment</a>
+             <a routerLink="/advancepayment"
+             *ngIf="hasRequiredRole(['admin','blood bank technician','lab technician'])"
+             class="submenu-link"
+             [class.active-link]="isActive('/advancepayment')">Advance Payment</a>
         </div>
+     
       </div>
 
       <!-- Manage Blood Bank -->

@@ -21,12 +21,14 @@ namespace ERP.Mediator.Mediator.AdvancePayments.Handler
 
         public async Task<bool> Handle(DeleteAdvancePaymentsQuery request, CancellationToken cancellationToken)
         {
-            var AdvancePayments = await unitOfWork.Repository<Entities.Models.AppointmentPayment>().GetFirstAsNoTrackingAsync(y => y.Id == request.Id);
+            var AdvancePayments = await unitOfWork.Repository<Entities.Models.AdvancePayment>().GetFirstAsNoTrackingAsync(y => y.Id == request.Id);
             AdvancePayments.IsDelete = true;
             AdvancePayments.IsActive = false;
+            AdvancePayments.DeleteDate = DateTime.Now;
             AdvancePayments.ModifiedDate = DateTime.Now;
             AdvancePayments.ModifiedById = sessionProvider.Session.LoggedInUserId;
-            unitOfWork.Repository<Entities.Models.AppointmentPayment>().Update(AdvancePayments);
+            unitOfWork.Repository<Entities.Models.AdvancePayment>().Update(AdvancePayments);
+            await unitOfWork.SaveChangesAsync();
             return true;
         }
     }

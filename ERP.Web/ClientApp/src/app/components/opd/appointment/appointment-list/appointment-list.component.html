@@ -106,8 +106,8 @@
     <ng-container matColumnDef="patient">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Patient</th>
       <td mat-cell *matCellDef="let element">
-        {{ element.patient?.name }}
-        <div class="muted">{{ element.patient?.phoneNo }}</div>
+        {{ element.patient?.patientMaster?.name }}
+        <div class="muted">{{ element.patient?.patientMaster?.phoneNo }}</div>
       </td>
     </ng-container>
 
@@ -191,10 +191,10 @@
             (click)="printrecreiptAppoinmnetDialog(element)">
             <mat-icon aria-label="Receipt">receipt</mat-icon>
           </button>
-            <button mat-mini-fab matTooltip="Print" *ngIf="element.appointmentStatusId > 1" color="pink"
+            <!-- <button mat-mini-fab matTooltip="Print" *ngIf="element.appointmentStatusId > 1" color="pink"
             (click)="printAppoinmnetDialog(element)">
             <mat-icon aria-label="Print">print</mat-icon>
-          </button>
+          </button> -->
          
         </div>
       </td>

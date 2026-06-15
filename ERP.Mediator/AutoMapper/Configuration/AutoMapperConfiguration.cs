@@ -12,6 +12,7 @@ namespace ERP.Mediator.AutoMapper.Configuration
     using ERP.Mediator.Mediator.AccountHead.Command;
     using ERP.Mediator.Mediator.AccountSubCategory.Command;
     using ERP.Mediator.Mediator.AccountType.Command;
+    using ERP.Mediator.Mediator.AdvancePayments.Command;
     using ERP.Mediator.Mediator.Appointment.Command;
     using ERP.Mediator.Mediator.Area.Command;
     using ERP.Mediator.Mediator.Auth.Command;
@@ -60,9 +61,9 @@ namespace ERP.Mediator.AutoMapper.Configuration
     using ERP.Mediator.Mediator.Inspection.Command;
     using ERP.Mediator.Mediator.Interview.Command;
     using ERP.Mediator.Mediator.IPD.AdmissionBed.Command;
+    using ERP.Mediator.Mediator.IPD.AdmissionPackage.Command;
     using ERP.Mediator.Mediator.IPD.Bed.Command;
     using ERP.Mediator.Mediator.IPD.Room.Command;
-    using ERP.Mediator.Mediator.IPD.AdmissionPackage.Command;
     using ERP.Mediator.Mediator.IPD.Ward.Command;
     using ERP.Mediator.Mediator.Issuance.Command;
     using ERP.Mediator.Mediator.Item.Command;
@@ -757,6 +758,8 @@ namespace ERP.Mediator.AutoMapper.Configuration
             CreateMap<BloodCrossMatch, GetBloodCrossMatch>().ReverseMap();
             CreateMap<BloodIssue, SaveBloodIssueCommand>().ReverseMap();
             CreateMap<BloodIssue, GetBloodIssue>().ReverseMap();
+            CreateMap<AdvancePayment, SaveAdvancePaymentsCommand>().ReverseMap();
+            CreateMap<AdvancePayment, GetAdvancePayment>().ReverseMap();
 
         }
     }

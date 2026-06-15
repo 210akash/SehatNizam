@@ -52,7 +52,7 @@
     </div>
 
     <!-- Payment Info -->
-    <div class="payment-section" style="border-top: 1px solid #ccc; padding-top: 10px; margin-bottom: 15px; font-size: 14px;">
+    <div class="payment-section" style=" text-align: left; line-height: 1.6; border-top: 1px solid #ccc; padding-top: 10px; margin-bottom: 15px; font-size: 14px;">
       <div><strong>Payment Mode:</strong> {{ data.element?.appointmentPayments[0]?.paymentMode?.name || '-' }}</div>
       <div><strong>Amount Paid:</strong> {{ data.element?.appointmentPayments[0]?.totalPayable | currency:'PKR':'symbol':'1.2-2' }}</div>
     </div>

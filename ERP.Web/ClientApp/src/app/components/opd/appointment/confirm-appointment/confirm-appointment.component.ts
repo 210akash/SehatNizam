@@ -143,15 +143,15 @@ export class ConfirmAppointmentComponent {
   }
 
   getPatientName(): string {
-    return this.data?.element?.patient?.name || '-';
+    return this.data?.element?.patient?.patientMaster?.name || '-';
   }
 
   getPatientPhone(): string {
-    return this.data?.element?.patient?.phoneNo || '-';
+    return this.data?.element?.patient?.patientMaster?.phoneNo || '-';
   }
 
   getAgeGender(): string {
-    const patient = this.data?.element?.patient;
+    const patient = this.data?.element?.patient?.patientMaster;
     if (!patient) return '-';
     const age = patient.age ?? '-';
     const gender = patient.gender || '-';

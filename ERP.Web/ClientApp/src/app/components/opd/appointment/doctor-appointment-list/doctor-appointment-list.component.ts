@@ -551,7 +551,7 @@ finishConsultation(): void {
   }
 
   getPatientName(): string {
-    return this.selectedAppointment?.patient?.name || 'Unknown';
+    return this.selectedAppointment?.patient?.patientMaster?.name || 'Unknown';
   }
 
   getPatientMRN(): string {
@@ -559,7 +559,7 @@ finishConsultation(): void {
   }
 
   getPatientAgeGender(): string {
-    const p = this.selectedAppointment?.patient;
+    const p = this.selectedAppointment?.patient?.patientMaster;
     if (!p) return '';
     return `${p.age || '?'} ${p.gender === 'male' ? 'M' : 'F'}`;
   }

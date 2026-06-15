@@ -13,6 +13,7 @@ import { PrintReceiptAdmissionComponent } from '../print-receipt-admission/print
 import { AddAdmissionBedComponent } from '../../admissionbed/add-admissionbed/add-admissionbed.component';
 import { AdmissionBedListComponent } from '../../admissionbed/admissionbed-list/admissionbed-list.component';
 import { AdmissionServiceListComponent } from '../../admissionservice/admissionservice-list/admissionservice-list.component';
+import { AddDischargeComponent } from '../../discharge/discharge.component';
 
 @Component({
   selector: 'app-admission-list',
@@ -169,6 +170,23 @@ export class AdmissionListComponent {
         element: element,
       },
       disableClose: true
+    });
+  }
+
+
+ openAddDischargeServiceDialog(element: any) {
+    const dialogRef = this.dialog.open(AddDischargeComponent, {
+      id: 'message-Insurance',
+      width: '50%',
+      maxHeight: '800px',
+      height: 'auto',
+      data: {
+        element: element
+      },
+      disableClose: true
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      this.bindData();
     });
   }
 

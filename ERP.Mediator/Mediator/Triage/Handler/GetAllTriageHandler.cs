@@ -36,6 +36,7 @@ namespace ERP.Mediator.Mediator.Triage.Handler
             Expression<Func<Entities.Models.Triage, object>>[] includes =
             {
                 x => x.Appointment,
+                x => x.Appointment.Patient.PatientMaster,
                 x => x.Appointment.Doctor,
                 x => x.Appointment.Department,
                 x => x.Appointment.Department.Company,

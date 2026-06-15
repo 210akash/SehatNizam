@@ -106,7 +106,6 @@ export class AddAppointmentComponent implements OnInit {
     this.setupCalculations();
     this.setupPatientAutocomplete();
     this.setupAppointmentStatusWatcher();
-    console.log(this.initialNavigationState.appointmentStatusId);
   }
 
   private buildForm(): void {
@@ -284,6 +283,7 @@ export class AddAppointmentComponent implements OnInit {
   }
 
   public getOPDServiceByDepartment(): void {
+    debugger;
     const departmentId = this.appointmentForm.get('departmentId')?.value;
     if (departmentId > 0) {
       const _filterForm = { departmentId: departmentId };
@@ -294,7 +294,7 @@ export class AddAppointmentComponent implements OnInit {
 
           // Check if an OPD service exists
           const opdService = this.services.find(
-            (s: any) => s.serviceType?.name === 'OPD' && s.name === 'OPD'
+            (s: any) => s.serviceType?.name === 'OPD'
           );
 
           if (opdService) {

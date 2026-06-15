@@ -1004,12 +1004,15 @@ import { AddAdvancePaymentComponent } from './components/opd/advancepayment/add-
 import { DeleteAdvancePaymentComponent } from './components/opd/advancepayment/delete-advancepayment/delete-advancepayment.component';
 import { AdvancePaymentService } from './components/opd/advancepayment/advancepayment.service';
 import { AdvancePaymentEndPoints } from './components/opd/advancepayment/advancepayment.endpoints';
-import { AppointmentPaymentListComponent } from './components/opd/appointment-payment/appointment-payment-list/appointment-payment-list.component';
 import { ManageAppointmentBillingComponent } from './components/opd/appointment-payment/manage-appointment-billing/manage-appointment-billing.component';
 import { EditAppointmentPaymentComponent } from './components/opd/appointment-payment/edit-appointment-payment/edit-appointment-payment.component';
 import { CollectAppointmentPaymentComponent } from './components/opd/appointment-payment/collect-appointment-payment/collect-appointment-payment.component';
 import { AppointmentPaymentService } from './components/opd/appointment-payment/appointment-payment.service';
 import { AppointmentPaymentEndPoints } from './components/opd/appointment-payment/appointment-payment.endpoints';
+import { ConfirmAdvancePaymentComponent } from './components/opd/advancepayment/confirm-advancepayment/confirm-advancepayment.component';
+import { ViewAdvancePaymentComponent } from './components/opd/advancepayment/view-advancepayment/view-advancepayment.component';
+import { AppointmentPaymentListComponent } from './components/opd/appointment-payment/appointment-payment-list/appointment-payment-list.component';
+import { AddDischargeComponent } from './components/IPD/discharge/discharge.component';
 const matFormFieldDefaults: MatFormFieldDefaultOptions = {
     appearance: 'outline'
     , subscriptSizing: 'dynamic'
@@ -1717,10 +1720,13 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         AdvancePaymentListComponent,
         AddAdvancePaymentComponent,
         DeleteAdvancePaymentComponent,
+        ConfirmAdvancePaymentComponent,
+        ViewAdvancePaymentComponent,
         AppointmentPaymentListComponent,
         ManageAppointmentBillingComponent,
         EditAppointmentPaymentComponent,
         CollectAppointmentPaymentComponent,
+        AddDischargeComponent
 
     ],
     bootstrap: [AppComponent], imports: [

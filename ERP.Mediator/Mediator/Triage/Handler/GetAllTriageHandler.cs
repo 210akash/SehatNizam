@@ -27,6 +27,7 @@ namespace ERP.Mediator.Mediator.Triage.Handler
         {
             Expression<Func<Entities.Models.Triage, bool>> predicate = x =>
                 x.IsActive == true
+                    && (request.AppointmentId == null || x.AppointmentId == request.AppointmentId.Value)
                   && x.Appointment.AppointmentDate >= request.FDate.Date
                   && x.Appointment.AppointmentDate <= request.TDate.Date.AddDays(1).AddTicks(-1)
                   && (string.IsNullOrEmpty(request.BookingNo) || x.Appointment.Id.ToString().Contains(request.BookingNo))

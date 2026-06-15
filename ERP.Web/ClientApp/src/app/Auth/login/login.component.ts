@@ -12,6 +12,7 @@ import { environment } from '../../../environments/environment';
     standalone: false
 })
 export class LoginComponent implements OnInit {
+    title = environment.production ? 'Sign In (Live Server)' : 'Sign In (Testing Server)';
     loginForm!: FormGroup;
     loading = false;
     submitted = false;

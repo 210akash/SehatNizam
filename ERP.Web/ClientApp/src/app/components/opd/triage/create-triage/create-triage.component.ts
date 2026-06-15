@@ -11,6 +11,7 @@ import { TriageCategoryService } from '../../triage-category/triage-category.ser
 import { PriorityLevelService } from '../../prioritylevel/prioritylevel.service';
 import { SugarTypeService } from '../../sugar-type/sugar-type.service';
 import { AppointmentService } from '../../appointment/appointment.service';
+import { PrintTriageComponent } from '../print-triage/print-triage.component';
 
 @Component({
   selector: 'app-create-triage',
@@ -28,6 +29,7 @@ export class CreateTriageComponent implements OnInit {
   hasUnsavedChanges = false;
   suppressDirtyTracking = false;
   appointments: any[] = [];
+  printAppointments: any;
   selectedAppointment: any = null;
   selectedIndex = 0;
   queueCount = 0;
@@ -53,7 +55,7 @@ export class CreateTriageComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.initialElement = this.data?.element ?? history.state?.element ?? null;
-    await  this.loadDropdowns();
+    await this.loadDropdowns();
     this.buildForm();
     this.registerBmiCalculation();
     this.setupDirtyTracking();
@@ -97,7 +99,7 @@ export class CreateTriageComponent implements OnInit {
     await this.loadSugarTypes();
   }
 
-  
+
   private setupDirtyTracking() {
     this.createTriageForm.valueChanges.subscribe(() => {
       if (!this.suppressDirtyTracking) {
@@ -121,7 +123,7 @@ export class CreateTriageComponent implements OnInit {
         }
 
         this.appointmentLoading = true;
-        return this.appointmentService.getAppointmentByToken(term,5).pipe(
+        return this.appointmentService.getAppointmentByToken(term, 5).pipe(
           map((data: any) => data?.item1 ?? data ?? []),
           finalize(() => (this.appointmentLoading = false))
         );
@@ -164,14 +166,54 @@ export class CreateTriageComponent implements OnInit {
     });
   }
 
+  private async getAppointmentToPrint(appointmentId: number) {
+    this.suppressDirtyTracking = true;
+    this.isLoading = true;
+
+    this.resetFormForAppointment(appointmentId);
+    const today = new Date();
+    // start of day (12:00:00 AM)
+    const fdate = new Date(today);
+    fdate.setHours(0, 0, 0, 0);
+    // end of day (11:59:59 PM)
+    const tdate = new Date(today);
+    tdate.setHours(23, 59, 59, 999);
+
+    const filter = {
+      appointmentId,
+      fdate: fdate,
+      tdate: tdate,
+      PagingData: { currentPage: 0, take: 1 }
+    };
+
+    (await this.triageService.getAllTriage(filter)).subscribe({
+      next: (data: any) => {
+        const triage = data?.item1?.[0];
+        if (triage) {
+          this.printAppointments = triage;
+          this.printAppoinmnetDialog(this.printAppointments);
+        } else {
+          this.isEditMode = false;
+        }
+        this.isLoading = false;
+      },
+      error: (error: any) => {
+        console.log(error);
+        this.isLoading = false;
+      }
+    });
+  }
+
+
+
   async loadAppointmentQueue() {
     this.isQueueLoading = true;
 
     const today = new Date().toLocaleDateString();
     const filter = {
       code: '',
-      statusId : 5,
-      bookingFormType : 5,
+      statusId: 5,
+      bookingFormType: 5,
       fdate: today,
       tdate: today,
       PagingData: { currentPage: 0, take: 10 }
@@ -232,6 +274,9 @@ export class CreateTriageComponent implements OnInit {
   nextAppointment(): void {
     this.selectAppointment(this.selectedIndex + 1);
   }
+
+
+
 
   private async loadTriageForAppointment(appointmentId: number) {
     this.suppressDirtyTracking = true;
@@ -305,9 +350,9 @@ export class CreateTriageComponent implements OnInit {
   async saveTriage(moveNext = false) {
     this.isLoading = true;
     this.createTriageForm.get('appointmentId')?.setValue(this.selectedAppointment?.id ?? null);
-   if(this.selectedAppointment?.id ==  null){
-          this.notificationsService.showNotification('Please Select Booking', 'snack-bar-danger');
-   }
+    if (this.selectedAppointment?.id == null) {
+      this.notificationsService.showNotification('Please Select Booking', 'snack-bar-danger');
+    }
     if (this.createTriageForm.invalid) {
       this.constantService.markFormGroupTouched(this.createTriageForm);
       this.isLoading = false;
@@ -322,13 +367,12 @@ export class CreateTriageComponent implements OnInit {
           this.notificationsService.showNotification(data.Message || 'Triage Saved Successfully!', 'snack-bar-success');
           this.hasUnsavedChanges = false;
           this.isEditMode = true;
-          this.loadTriageForAppointment(this.selectedAppointment.id);
-
+          this.getAppointmentToPrint(this.selectedAppointment?.id);
+           this.loadTriageForAppointment(this.selectedAppointment.id);
           if (moveNext && this.selectedIndex < this.appointments.length - 1) {
             this.selectAppointment(this.selectedIndex + 1, false);
           }
-          else
-            this.closeDialog();
+   
         } else if (data.Status == 409) {
           this.notificationsService.showNotification(data.Message || 'Record already exists!', 'snack-bar-danger');
         } else {
@@ -353,8 +397,8 @@ export class CreateTriageComponent implements OnInit {
       return appointment;
     }
 
-    const token = `Booking # ${appointment.id}`;
-    const patientName = appointment.patient?.name ? ` - ${appointment.patient.name}` : '';
+    const token = `Booking # ${appointment.tokenNumber}`;
+    const patientName = appointment.patient?.patientMaster?.name ? ` - ${appointment.patient?.patientMaster?.name}` : '';
     return `${token}${patientName}`;
   };
 
@@ -403,7 +447,7 @@ export class CreateTriageComponent implements OnInit {
     }
 
     this.appointmentLoading = true;
-    this.appointmentService.getAppointmentByToken(term,5)
+    this.appointmentService.getAppointmentByToken(term, 5)
       .pipe(finalize(() => (this.appointmentLoading = false)))
       .subscribe({
         next: (data: any) => {
@@ -425,17 +469,7 @@ export class CreateTriageComponent implements OnInit {
   }
 
   closeDialog(): void {
-    if (this.data) {
-      this.dialog.closeAll();
-      return;
-    }
-
-    const canGoBack = window.history.length > 1;
-    if (canGoBack) {
-      window.history.back();
-    } else {
-      this.router.navigate(['/triage']);
-    }
+   this.router.navigate(['/triagelist']);
   }
 
   getPatientName(): string {
@@ -487,8 +521,19 @@ export class CreateTriageComponent implements OnInit {
     return Math.abs(ageDate.getUTCFullYear() - 1970);
   }
 
-    onCancel(): void {
-      this.router.navigate(['/triagelist']);
-      return;
-    }
+  onCancel(): void {
+    this.router.navigate(['/triagelist']);
+    return;
+  }
+
+  printAppoinmnetDialog(element: any) {
+    const dialogRef = this.dialog.open(PrintTriageComponent, {
+      panelClass: 'cstm_width_1100',
+      maxHeight: '90vh',
+      data: {
+        element: element,
+      },
+      disableClose: true
+    });
+  }
 }

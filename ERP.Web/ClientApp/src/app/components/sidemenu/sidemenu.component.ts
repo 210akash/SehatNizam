@@ -20,6 +20,7 @@ import { ShowUserAttendanceComponent } from '../order/user-attendance/show-user-
   standalone: false
 })
 export class SidemenuComponent implements OnDestroy {
+   title = environment.production ? '(Live Server)' : '(Testing Server)';
   isEstimator = false;
   isLoading = false;
   ticketData: any;

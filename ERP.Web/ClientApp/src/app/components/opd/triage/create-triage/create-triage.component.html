@@ -11,7 +11,7 @@
           <section class="panel identification-panel">
             <div class="panel-head">
               <h3>Patient Identification</h3>
-              <p>Scan bracelet or search Booking #</p>
+              <p>Scan bracelet or search Token #</p>
             </div>
 
             <div class="lookup-row">
@@ -28,8 +28,8 @@
                   [displayWith]="displayAppointment"
                   (optionSelected)="onAppointmentSelected($event.option.value)">
                   <mat-option *ngFor="let appointment of filteredAppointments$ | async" [value]="appointment">
-                       Booking # {{ appointment.id || '-' }}
-                    <span *ngIf="appointment.patient?.name"> - {{ appointment.patient?.name }}</span>
+                       Token # {{ appointment.tokenNumber || '-' }}
+                    <span *ngIf="appointment.patient?.patientMaster?.name"> - {{ appointment.patient?.patientMaster?.name }}</span>
                   </mat-option>
                 </mat-autocomplete>
               </mat-form-field>
@@ -280,7 +280,7 @@
   <div class="empty-state" *ngIf="!isQueueLoading; else loadingState">
     <h3>No appointments available</h3>
     <p>No appointment queue was found for today.</p>
-    <button mat-stroked-button type="button" (click)="closeDialog()">Close</button>
+    <button mat-stroked-button type="button" (click)="closeDialog()">Back To List</button>
   </div>
 </ng-template>
 

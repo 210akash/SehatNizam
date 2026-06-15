@@ -1,4 +1,5 @@
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using ERP.BusinessModels.ResponseVM;
 using ERP.Core.Provider;
 using ERP.Entities.Migrations;
@@ -648,27 +649,28 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
         {
             var projectId = sessionProvider.Session.SelectedWarehouseId;
 
-            Func<IQueryable<Entities.Models.Appointment>,
-                IOrderedQueryable<Entities.Models.Appointment>> orderBy =
-                    q => q.OrderByDescending(x => x.Id);
+            var repository = unitOfWork.Repository<Entities.Models.Appointment>();
 
-            var lastAppointment =
-                await unitOfWork.Repository<Entities.Models.Appointment>()
-                .GetOneAsync(
-                    x => x.IsActive
-                         && x.DoctorId == doctorId
-                         && x.ProjectId == projectId
-                         && x.AppointmentDate.Date == appointmentDate.Date
-                         && !string.IsNullOrEmpty(x.TokenNumber),
-                    orderBy);
+            var appointmentsForDay = await repository.FindAllAsync(
+                x => x.IsActive
+                     && x.DoctorId == doctorId
+                     && x.ProjectId == projectId
+                     && x.AppointmentDate.Date == appointmentDate.Date
+                     && !string.IsNullOrEmpty(x.TokenNumber)
+            );
 
             int nextNumber = 1;
 
-            if (lastAppointment != null &&
-                int.TryParse(lastAppointment.TokenNumber, out int lastNumber))
-            {
-                nextNumber = lastNumber + 1;
-            }
+            var maxNumber = appointmentsForDay
+                .Select(x =>
+                {
+                    int.TryParse(x.TokenNumber, out int num);
+                    return num;
+                })
+                .DefaultIfEmpty(0)
+                .Max();
+
+            nextNumber = maxNumber + 1;
 
             return nextNumber.ToString("D7");
         }

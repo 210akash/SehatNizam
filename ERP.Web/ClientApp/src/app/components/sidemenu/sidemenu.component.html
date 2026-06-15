@@ -12,7 +12,7 @@
           </div>
         </div>
         <div class="logo-text">
-          <h1>HMS System</h1>
+          <h1>HMS System {{this.title}}</h1>
           <p>{{this.currentUser.department?.company?.name}}</p>
         </div>
       </div>
@@ -225,11 +225,11 @@
           <div class="nested-submenu" *ngIf="isSubMenuVisible('glreports')">
             <button (click)="redirectTochartofaccount()" class="submenu-button">Chart Of Accounts</button>
             <button (click)="redirectTotrailbalance()" class="submenu-button">Trial Balance</button>
-            <a routerLink="/accountledgerRpt" class="nested-link"
-              [class.active-link]="isActive('/accountledgerRpt')">Account Ledger</a>
+            <!-- <a routerLink="/accountledgerRpt" class="nested-link"
+              [class.active-link]="isActive('/accountledgerRpt')">Account Ledger</a> -->
             <button (click)="redirectTobanksummary()" class="submenu-button">Bank And Cash Summary</button>
-            <button (click)="redirectTostockbalancebyvalue()" class="submenu-button">Stock Balance By Value</button>
-            <button (click)="redirectToaccounttypeledger()" class="submenu-button">Account Type Ledger</button>
+            <!-- <button (click)="redirectTostockbalancebyvalue()" class="submenu-button">Stock Balance By Value</button> -->
+            <!-- <button (click)="redirectToaccounttypeledger()" class="submenu-button">Account Type Ledger</button> -->
             <button (click)="redirectToJournal()" class="submenu-button">Journal</button>
           </div>
         </div>

@@ -8,6 +8,7 @@ namespace ERP.Mediator.Mediator.Triage.Query
 {
     public class GetAllTriageQuery : IRequest<Tuple<IEnumerable<GetTriage>, long>>
     {
+        public long? AppointmentId { get; set; }
         public DateTime FDate { get; set; }
         public DateTime TDate { get; set; }
         public string BookingNo { get; set; }

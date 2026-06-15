@@ -38,6 +38,7 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                 updateAppointment.AppointmentStatusId = 5;
                 updateAppointment.ModifiedById = sessionProvider.Session.LoggedInUserId;
                 updateAppointment.ModifiedDate = DateTime.Now;
+                updateAppointment.TokenNumber = await GenerateAppointmentCodeAsync(updateAppointment.DoctorId.Value, updateAppointment.AppointmentDate);
                 unitOfWork.Repository<Entities.Models.Appointment>().Update(updateAppointment);
 
                 // Update related AppointmentPayments
@@ -95,6 +96,35 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
             }
 
             return next.ToString("D6");
+        }
+
+        private async Task<string> GenerateAppointmentCodeAsync(Guid doctorId,DateTime appointmentDate)
+        {
+            var projectId = sessionProvider.Session.SelectedWarehouseId;
+
+            Func<IQueryable<Entities.Models.Appointment>,
+                IOrderedQueryable<Entities.Models.Appointment>> orderBy =
+                    q => q.OrderByDescending(x => x.Id);
+
+            var lastAppointment =
+                await unitOfWork.Repository<Entities.Models.Appointment>()
+                .GetOneAsync(
+                    x => x.IsActive
+                         && x.DoctorId == doctorId
+                         && x.ProjectId == projectId
+                         && x.AppointmentDate.Date == appointmentDate.Date
+                         && !string.IsNullOrEmpty(x.TokenNumber),
+                    orderBy);
+
+            int nextNumber = 1;
+
+            if (lastAppointment != null &&
+                int.TryParse(lastAppointment.TokenNumber, out int lastNumber))
+            {
+                nextNumber = lastNumber + 1;
+            }
+
+            return nextNumber.ToString("D7");
         }
     }
 }

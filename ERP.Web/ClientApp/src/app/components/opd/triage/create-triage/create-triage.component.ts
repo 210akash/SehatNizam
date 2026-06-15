@@ -121,7 +121,7 @@ export class CreateTriageComponent implements OnInit {
         }
 
         this.appointmentLoading = true;
-        return this.appointmentService.getAppointmentsByBookingNo(term).pipe(
+        return this.appointmentService.getAppointmentByToken(term,5).pipe(
           map((data: any) => data?.item1 ?? data ?? []),
           finalize(() => (this.appointmentLoading = false))
         );
@@ -174,7 +174,7 @@ export class CreateTriageComponent implements OnInit {
       bookingFormType : 5,
       fdate: today,
       tdate: today,
-      PagingData: { currentPage: 0, take: 100 }
+      PagingData: { currentPage: 0, take: 10 }
     };
 
     this.appointmentService.getAllAppointments(filter).subscribe({

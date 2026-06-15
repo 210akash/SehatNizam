@@ -35,7 +35,6 @@ export class BookAppointmentListComponent {
     'priority',
     'appointmentType',
     'visitType',
-    'reason',
     'referrer',
     'status',
     'actions'

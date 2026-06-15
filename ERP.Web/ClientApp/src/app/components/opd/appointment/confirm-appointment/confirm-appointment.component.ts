@@ -1,11 +1,12 @@
 import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AppointmentService } from '../appointment.service';
 import { ConstantService } from '../../../../Service/constant.service';
 import { AuthenticationService } from '../../../../Auth/authentication.service';
 import { NotificationsService } from '../../../../Service/notification.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PaymentModeService } from '../../../paymentmode/paymentmode.service';
+import { PrintReceiptAppoinmentComponent } from '../print-receipt-appoinment/print-receipt-appoinment.component';
 
 @Component({
   selector: 'app-confirm-appointment',
@@ -26,6 +27,7 @@ export class ConfirmAppointmentComponent {
     private notifications: NotificationsService,
     private paymentModeService: PaymentModeService,
     private dialogRef: MatDialogRef<ConfirmAppointmentComponent>,
+    private dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public data: { element: any }
   ) { }
 
@@ -76,15 +78,17 @@ export class ConfirmAppointmentComponent {
     (await this.appointmentService.confirmAppointment(command)).subscribe({
       next: (data: any) => {
         this.isSubmitting = false;
-        if (data.item1 === 200) {
+        if (data.Status === 200) {
           this.notifications.showNotification(
-            data.item2 || 'appoinment confirmed successfully!',
+            data.Message || 'appoinment confirmed successfully!',
             'snack-bar-success'
           );
           this.dialogRef.close(true);
+    const camelCaseData = this.toCamelCaseObject(data.Data);
+            this.printrecreiptAppoinmnetDialog(camelCaseData);
         } else {
           this.notifications.showNotification(
-            data.item2 || data.Data || 'Failed to confirm appoinment.',
+             data.Message || 'Failed to confirm appoinment.',
             'snack-bar-danger'
           );
         }
@@ -184,4 +188,33 @@ export class ConfirmAppointmentComponent {
   getReason(): string {
     return this.data?.element?.reason || '-';
   }
+
+     printrecreiptAppoinmnetDialog(element: any) {
+      const dialogRef = this.dialog.open(PrintReceiptAppoinmentComponent, {
+        panelClass: 'cstm_width_400',
+        maxHeight: '90vh',
+        data: {
+          element: element,
+        },
+        disableClose: true
+      });
+    }
+
+      private toCamelCaseObject(obj: any): any {
+        if (Array.isArray(obj)) {
+          return obj.map(item => this.toCamelCaseObject(item));
+        }
+    
+        if (obj !== null && typeof obj === 'object') {
+          return Object.keys(obj).reduce((result: any, key) => {
+            const camelKey = key.charAt(0).toLowerCase() + key.slice(1);
+    
+            result[camelKey] = this.toCamelCaseObject(obj[key]);
+    
+            return result;
+          }, {});
+        }
+    
+        return obj;
+      }
 }

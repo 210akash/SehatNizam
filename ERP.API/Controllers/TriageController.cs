@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using ERP.BusinessModels.ResponseVM;
 using ERP.Mediator.Mediator.Triage.Query;
 using System.Collections.Generic;
+using ERP.Mediator.Mediator.Appointment.Query;
 
 namespace ERP.API.Controllers
 {
@@ -53,7 +54,8 @@ namespace ERP.API.Controllers
                     var result = await this.mediator.Send(command);
                     if (result == 200)
                     {
-                        return this.Result(ResponseStatus.OK, "Triage Saved!", null);
+                        var appoinment = await this.mediator.Send(new GetAppoinmentByIdQuery(command.AppointmentId));
+                        return this.Result(ResponseStatus.OK, appoinment, "Triage Saved!");
                     }
                     else if (result == 409)
                     {

@@ -37,6 +37,7 @@ namespace ERP.Mediator.Mediator.Patient.Handler
                          && x.PatientMaster != null
                          && (EF.Functions.Like(x.PatientMaster.Name, $"%{search}%")
                              || EF.Functions.Like(x.PatientMaster.PhoneNo, $"%{search}%")
+                             || EF.Functions.Like(x.PatientMaster.CNIC, $"%{search}%")
                              || EF.Functions.Like(x.MRN, $"%{search}%")),
                     includeProperties: "PatientMaster,PatientMaster.City,Project");
 

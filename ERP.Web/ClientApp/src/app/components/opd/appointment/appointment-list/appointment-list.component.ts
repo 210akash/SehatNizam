@@ -36,7 +36,6 @@ export class AppointmentListComponent {
     'priority',
     'appointmentType',
     'visitType',
-    'reason',
     'referrer',
     'status',
     'actions'

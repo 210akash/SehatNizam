@@ -29,9 +29,9 @@ namespace ERP.Mediator.Mediator.Triage.Handler
                 x.IsActive == true
                   && x.Appointment.AppointmentDate >= request.FDate.Date
                   && x.Appointment.AppointmentDate <= request.TDate.Date.AddDays(1).AddTicks(-1)
-                  && (request.BookingNo == "" || x.Appointment.Id.ToString().Contains(request.BookingNo))
-                  && (request.TokenNo == "" || x.Appointment.TokenNumber.Contains(request.TokenNo))
-                  && (request.Name == "" || x.Appointment.Patient.PatientMaster.Name.ToLower().Contains(request.Name.ToLower()));
+                  && (string.IsNullOrEmpty(request.BookingNo) || x.Appointment.Id.ToString().Contains(request.BookingNo))
+                  && (string.IsNullOrEmpty(request.TokenNo) || x.Appointment.TokenNumber.Contains(request.TokenNo))
+                  && (string.IsNullOrEmpty(request.Name) || x.Appointment.Patient.PatientMaster.Name.ToLower().Contains(request.Name.ToLower()));
 
             Expression<Func<Entities.Models.Triage, object>>[] includes =
             {

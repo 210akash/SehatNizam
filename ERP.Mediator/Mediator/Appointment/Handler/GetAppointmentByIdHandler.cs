@@ -22,7 +22,12 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
         public async Task<GetAppointment> Handle(GetAppoinmentByIdQuery request, CancellationToken cancellationToken)
         {
             var appointment = await unitOfWork.Repository<Entities.Models.Appointment>().GetFirstAsNoTrackingAsync(y => y.Id == request.Id,
-                null,null, "Project,Patient,Doctor,Department,PriorityLevel,AppointmentType,Attachments,Triages");
+                null,null, "Project,Patient,Patient.PatientMaster,Doctor,AppointmentPayments,AppointmentPayments.PaymentMode,AppointmentPayments.PaymentStatus,Department,Department.Company,PriorityLevel,AppointmentType,Attachments,Triages");
+            appointment.Patient.PatientAppointments = null;
+            foreach (var item in appointment.AppointmentPayments)
+            {
+                item.Appointment = null;
+            }
             var _appointment = mapper.Map<GetAppointment>(appointment);
             return _appointment;
         }

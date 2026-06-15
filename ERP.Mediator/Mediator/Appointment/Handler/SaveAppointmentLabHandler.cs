@@ -1,27 +1,24 @@
 using AutoMapper;
-using ERP.BusinessModels.ResponseVM;
 using ERP.Core.Provider;
-using ERP.Entities.Migrations;
 using ERP.Entities.Models;
 using ERP.Mediator.Mediator.Appointment.Command;
 using ERP.Repositories.UnitOfWork;
 using MediatR;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace ERP.Mediator.Mediator.Appointment.Handler
 {
-    public class SaveAppointmentHandler : IRequestHandler<SaveAppointmentCommand, Tuple<long,long?>>
+    public class SaveAppointmentLabHandler : IRequestHandler<SaveAppointmentLabCommand, long>
     {
         private const long FamilyMemberAppointmentTypeId = 2;
 
         private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
         private readonly SessionProvider sessionProvider;
-        public SaveAppointmentHandler(IMapper mapper, IUnitOfWork unitOfWork, SessionProvider sessionProvider)
+        public SaveAppointmentLabHandler(IMapper mapper, IUnitOfWork unitOfWork, SessionProvider sessionProvider)
         {
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
@@ -33,14 +30,14 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
             return unitOfWork.SaveChanges();
         }
 
-        public async Task<Tuple<long, long?>> Handle(SaveAppointmentCommand request, CancellationToken cancellationToken)
+        public async Task<long> Handle(SaveAppointmentLabCommand request, CancellationToken cancellationToken)
         {
             using var transaction =
                 await unitOfWork.BeginTransactionAsync();
 
             try
             {
-                Tuple<long, long?> result;
+                long result;
 
                 if (request.Id > 0)
                 {
@@ -56,17 +53,17 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                 }
 
                 await transaction.CommitAsync(cancellationToken);
-                return result;
+                return 200;
             }
             catch
             {
                 await transaction.RollbackAsync(cancellationToken);
-                return new Tuple<long, long?>(504, null);
+                return 500;
                 throw;
             }
         }
 
-        private async Task<Tuple<long,long?>> CreateAppointmentAsync(SaveAppointmentCommand request, CancellationToken cancellationToken)
+        private async Task<long> CreateAppointmentAsync(SaveAppointmentLabCommand request, CancellationToken cancellationToken)
         {
 
             try
@@ -80,7 +77,10 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                 // =====================================================
                 // 2️⃣ CREATE APPOINTMENT
                 // =====================================================
-                var TokenNumber = await GenerateAppointmentCodeAsync(request.DoctorId.Value, request.AppointmentDate);
+                var TokenNumber = "";
+                if (request.DoctorId == null)
+                    TokenNumber = await GenerateAppointmentCodeAsync(request.DepartmentId);
+
                 var appointment = new Entities.Models.Appointment
                 {
                     AppointmentDate = request.AppointmentDate,
@@ -192,17 +192,17 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                 // =====================================================
 
                 await unitOfWork.SaveChangesAsync(cancellationToken);
-                return new Tuple<long, long?>(200, appointment.Id);
 
+                return 200;
             }
             catch
             {
-                return new Tuple<long, long?>(200, null);
+                return 500;
                 throw;
             }
         }
 
-        private async Task<long> GetOrCreatePatientAsync(SaveAppointmentCommand request)
+        private async Task<long> GetOrCreatePatientAsync(SaveAppointmentLabCommand request)
         {
             var projectId = sessionProvider.Session.SelectedWarehouseId;
 
@@ -439,30 +439,7 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
             return next.ToString("D6");
         }
 
-        private async Task<string> GenerateAppointmentCodeAsync()
-        {
-            Func<IQueryable<Entities.Models.Appointment>,
-                IOrderedQueryable<Entities.Models.Appointment>> orderBy =
-                    q => q.OrderByDescending(x => x.Id);
-
-            var lastAppointment =
-                await unitOfWork.Repository<Entities.Models.Appointment>()
-                .GetOneAsync(x => x.IsActive && x.ProjectId == sessionProvider.Session.SelectedWarehouseId, orderBy);
-
-            int nextNumber = 1;
-
-            if (lastAppointment != null &&
-                !string.IsNullOrWhiteSpace(lastAppointment.TokenNumber))
-            {
-                int.TryParse(lastAppointment.TokenNumber, out nextNumber);
-
-                nextNumber++;
-            }
-
-            return nextNumber.ToString("D7");
-        }
-
-        private async Task<Tuple<long, long?>> UpdateAppointmentAsync(SaveAppointmentCommand request, CancellationToken cancellationToken)
+        private async Task<long> UpdateAppointmentAsync(SaveAppointmentLabCommand request, CancellationToken cancellationToken)
         {
             if (request.AppointmentStatusId == 1)
             {
@@ -472,7 +449,7 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
 
                 if (patient == null)
                 {
-                    return new Tuple<long, long?>(404, null);
+                    return 404;
                 }
 
                 // =========================================
@@ -492,7 +469,7 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
 
             if (appointment == null)
             {
-                return new Tuple<long, long?>(404, null);
+                return 404;
             }
 
             // =========================================
@@ -641,10 +618,11 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
             }
 
             await unitOfWork.SaveChangesAsync(cancellationToken);
-            return new Tuple<long, long?>(200, appointment.Id);
+
+            return 200;
         }
 
-        private async Task<string> GenerateAppointmentCodeAsync(Guid doctorId, DateTime appointmentDate)
+        private async Task<string> GenerateAppointmentCodeAsync(long DepartmentId)
         {
             var projectId = sessionProvider.Session.SelectedWarehouseId;
 
@@ -656,9 +634,8 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                 await unitOfWork.Repository<Entities.Models.Appointment>()
                 .GetOneAsync(
                     x => x.IsActive
-                         && x.DoctorId == doctorId
+                         && x.DepartmentId == DepartmentId
                          && x.ProjectId == projectId
-                         && x.AppointmentDate.Date == appointmentDate.Date
                          && !string.IsNullOrEmpty(x.TokenNumber),
                     orderBy);
 

@@ -1,9 +1,9 @@
 ﻿using ERP.API.Extensions;
 using ERP.BusinessModels.Enums;
 using ERP.BusinessModels.ResponseVM;
+using ERP.Entities.Models;
 using ERP.Mediator.Mediator.Appointment.Command;
 using ERP.Mediator.Mediator.Appointment.Query;
-using ERP.Mediator.Mediator.GRN.Query;
 using ERP.Mediator.Mediator.PrimaryOrder.Query;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -95,13 +95,18 @@ namespace ERP.API.Controllers
                 else
                 {
                     var result = await this.mediator.Send(command);
-                    if (result == 200)
+                    if (result.Item1 == 200)
                     {
-                        return this.Result(ResponseStatus.OK, "Appointment Saved!", null);
+                        var appoinment = await this.mediator.Send(new GetAppoinmentByIdQuery(result.Item2.Value));
+                        return this.Result(ResponseStatus.OK, appoinment, "Appointment Saved!");
                     }
-                    else if (result == 409)
+                    else if (result.Item1 == 409)
                     {
-                        return this.Result(ResponseStatus.Conflict, "Name Already Exists!", null);
+                        return this.Result(ResponseStatus.Conflict, null, "Name Already Exists!");
+                    }
+                    else if (result.Item1 == 404)
+                    {
+                        return this.Result(ResponseStatus.RecordNotFound, null, "Record Not Found!");
                     }
                     else
                     {
@@ -155,7 +160,20 @@ namespace ERP.API.Controllers
         {
             try
             {
-                return await this.mediator.Send(confirmAppoinmentQuery);
+                var result = await this.mediator.Send(confirmAppoinmentQuery);
+                if (result.Item1 == 200)
+                {
+                    var appoinment =  await this.mediator.Send(new GetAppoinmentByIdQuery(confirmAppoinmentQuery.Id));
+                    return this.Result(ResponseStatus.OK, appoinment, "Consultation Saved!" );
+                }
+                else if (result.Item1 == 409)
+                {
+                    return this.Result(ResponseStatus.Conflict, null, "Name Already Exists!");
+                }
+                else
+                {
+                    return this.Result(ResponseStatus.Error, null, "\"There is some error!");
+                }
             }
             catch (Exception ex)
             {

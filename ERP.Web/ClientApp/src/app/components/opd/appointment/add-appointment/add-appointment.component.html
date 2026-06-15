@@ -24,11 +24,11 @@
           <mat-form-field appearance="outline" class="span-2">
             <mat-label>Search Patient</mat-label>
             <input matInput [formControl]="patientSearchCtrl" [matAutocomplete]="patientAuto"
-              (input)="onPatientSearchInput($event)" type="search" placeholder="Type name or phone number" />
+              (input)="onPatientSearchInput($event)" type="search" placeholder="Type name , phone number or Cnic" />
             <mat-autocomplete #patientAuto="matAutocomplete" [displayWith]="displayPatient"
               (optionSelected)="onPatientSelected($event.option.value)">
               <mat-option *ngFor="let patient of filteredPatients$ | async" [value]="patient">
-                {{ patient.patientMaster?.name }} - {{ patient.patientMaster?.phoneNo }}
+                {{ patient.patientMaster?.name }} - {{ patient.patientMaster?.phoneNo }}  - {{ patient.patientMaster.cnic }}
               </mat-option>
             </mat-autocomplete>
           </mat-form-field>

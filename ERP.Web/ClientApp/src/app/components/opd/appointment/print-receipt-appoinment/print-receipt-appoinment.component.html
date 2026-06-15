@@ -37,6 +37,7 @@
       <div class="patient-info" style="line-height: 1.6;">
         <div><strong>Patient Name:</strong> {{ data.element?.patient?.name || '-' }}</div>
         <div><strong>MRN:</strong> {{ data.element?.patient?.mrn || '-' }}</div>
+        <div><strong>Token #:</strong> {{ data.element?.tokenNumber || '-' }}</div>
         <div><strong>Age / Gender:</strong> {{ getPatientAgeGender() }}</div>
       </div>
 
@@ -44,7 +45,6 @@
       <div class="appointment-info" style="text-align: right; line-height: 1.6;">
         <div><strong>Date:</strong> {{ formatAppointmentDateLong() }}</div>
         <div><strong>Time:</strong> {{ formatAppointmentTime() }}</div>
-        <div><strong>Token:</strong> {{ data.element?.tokenNumber || '-' }}</div>
         <div><strong>Department:</strong> {{ data.element?.department?.name || '-' }}</div>
         <div><strong>Doctor:</strong> {{ getDoctorName() }}</div>
         <div><strong>Booked By:</strong> {{ data.element?.createdBy?.firstName + ' ' + data.element?.createdBy?.lastName }}</div>

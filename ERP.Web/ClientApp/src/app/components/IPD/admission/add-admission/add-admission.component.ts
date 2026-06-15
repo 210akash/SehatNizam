@@ -439,7 +439,7 @@ getPackageList(): void {
   }
 
   displayPatient = (patient: any): string =>
-    patient ? `${patient.name}${patient.phoneNo ? ' - ' + patient.phoneNo : ''}` : '';
+    patient ? `${patient.name}${patient.phoneNo ? ' - ' + patient.phoneNo : ''}${patient.cnic ? ' - ' + patient.cnic : ''}` : '';
 
   onPatientSelected(patient: any): void {
     if (!patient) {

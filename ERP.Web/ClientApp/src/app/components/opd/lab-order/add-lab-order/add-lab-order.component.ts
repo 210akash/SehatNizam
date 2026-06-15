@@ -168,11 +168,20 @@ export class AddLabOrderComponent implements OnInit, OnDestroy {
     );
   }
 
-  getCityList(): void {
-    this.cityService.getAllCities({}).subscribe(data => {
-      this.cityList = data?.item1 ?? [];
-    });
-  }
+
+getCityList(): void {
+  this.cityService.getAllCities({}).subscribe(data => {
+    this.cityList = data.item1;
+
+    const lahoreCity = this.cityList.find(
+      (city: any) => city.name?.toLowerCase() === 'lahore'
+    );
+
+    if (lahoreCity) {
+      this.form.get('patient.cityId')?.setValue(lahoreCity.id);
+    }
+  });
+}
 
   private setupCalculations(): void {
     const patientGroup = this.form.get('patient') as FormGroup;
@@ -338,7 +347,7 @@ export class AddLabOrderComponent implements OnInit, OnDestroy {
     this.isSubmitting = true;
     const command = this.buildCommand();
 
-    this.appointmentService.saveAppointment(command).subscribe({
+    this.appointmentService.saveAppointmentLab(command).subscribe({
       next: (res: any) => {
         this.isSubmitting = false;
         if (res?.Status === 200) {

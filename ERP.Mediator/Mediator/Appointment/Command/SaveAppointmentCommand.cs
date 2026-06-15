@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace ERP.Mediator.Mediator.Appointment.Command
 {
-    public class SaveAppointmentCommand : IRequest<long>
+    public class SaveAppointmentCommand : IRequest<Tuple<long,long?>>
     {
         public long Id { get; set; }
 

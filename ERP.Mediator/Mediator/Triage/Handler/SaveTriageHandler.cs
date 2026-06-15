@@ -58,7 +58,6 @@ namespace ERP.Mediator.Mediator.Triage.Handler
 
                 }
                 appointment.AppointmentStatusId = 10;
-                appointment.TokenNumber = await GenerateAppointmentCodeAsync();
                 unitOfWork.Repository<Entities.Models.Appointment>().Update(appointment);
                 int check = await unitOfWork.SaveChangesAsync(cancellationToken);
                 return 200;
@@ -127,27 +126,6 @@ namespace ERP.Mediator.Mediator.Triage.Handler
             triage.ModifiedDate = DateTime.Now;
         }
 
-        private async Task<string> GenerateAppointmentCodeAsync()
-        {
-            Func<IQueryable<Entities.Models.Appointment>,
-                IOrderedQueryable<Entities.Models.Appointment>> orderBy =
-                    q => q.OrderByDescending(x => x.Id);
-
-            var lastAppointment =
-                await unitOfWork.Repository<Entities.Models.Appointment>()
-                .GetOneAsync(x => x.IsActive && !string.IsNullOrEmpty(x.TokenNumber), orderBy);
-
-            int nextNumber = 1;
-
-            if (lastAppointment != null &&
-                !string.IsNullOrWhiteSpace(lastAppointment.TokenNumber))
-            {
-                int.TryParse(lastAppointment.TokenNumber, out nextNumber);
-
-                nextNumber++;
-            }
-
-            return nextNumber.ToString("D7");
-        }
+    
     }
 }

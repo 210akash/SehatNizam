@@ -1,106 +1,143 @@
-<mat-card>
-    <mat-card-header>
-<div mat-dialog-title class="dialog-title">
-  <mat-icon fontIcon="event_note" class="title-icon"></mat-icon>
-  Confirm Appointment
-</div>
-</mat-card-header>
+<mat-card class="confirm-dialog-card">
 
-<mat-dialog-content>
-  <div class="info-card">
-      <!-- Token Section -->
-      <div class="token-section">
-        <div class="token-box">
-          <span class="token-label">Booking Number</span>
-          <span class="token-number">{{ data.element.id || '-' }}</span>
-        </div>
+  <!-- HEADER -->
+  <mat-card-header class="dialog-header">
+    <mat-icon class="title-icon">event_note</mat-icon>
+    <div class="title-text">Confirm / Cancel Appointment</div>
+  </mat-card-header>
+
+  <mat-divider></mat-divider>
+
+  <mat-dialog-content class="dialog-content">
+
+    <!-- TOKEN -->
+      <!-- ✅ BOOKING NUMBER BOX (HIGHLIGHTED) -->
+    <div class="token-wrapper">
+      <div class="token-box">
+        <div class="token-label">Booking Number</div>
+        <div class="token-number">{{ data.element.id || '-' }}</div>
       </div>
+    </div>
+
+    <!-- SUMMARY -->
     <div class="appointment-summary">
-      <div class="summary-field">
-        <span class="summary-label">Patient Name</span>
-        <span class="summary-value">{{ getPatientName() }}</span>
-      </div>
-      <div class="summary-field">
-        <span class="summary-label">Phone Number</span>
-        <span class="summary-value">{{ getPatientPhone() }}</span>
-      </div>
-      <div class="summary-field">
-        <span class="summary-label">Age / Gender</span>
-        <span class="summary-value">{{ getAgeGender() }}</span>
-      </div>
-      <div class="summary-field">
-        <span class="summary-label">Doctor</span>
-        <span class="summary-value">{{ getDoctorName() }}</span>
-      </div>
-      <div class="summary-field">
-        <span class="summary-label">Department</span>
-        <span class="summary-value">{{ getDepartmentName() }}</span>
-      </div>
-      <div class="summary-field">
-        <span class="summary-label">Date &amp; Time</span>
-        <span class="summary-value">{{ getAppointmentDateTime() }}</span>
-      </div>
-      <div class="summary-field">
-        <span class="summary-label">Visit Type</span>
-        <span class="summary-value">{{ getVisitType() }}</span>
-      </div>
-      <div class="summary-field">
-        <span class="summary-label">Reason</span>
-        <span class="summary-value">{{ getReason() }}</span>
-      </div>
-    </div>
-  </div>
-    <form [formGroup]="form" class="modern-form mt-3">
-    <div class="row">
-       <div class="col-md-4">
-    <mat-form-field appearance="outline">
-      <mat-label>Payment Mode</mat-label>
-      <mat-select formControlName="paymentModeId">
-        <mat-option *ngFor="let p of paymentModesList" [value]="p.id">{{ p.name }}</mat-option>
-      </mat-select>
-    </mat-form-field>
-    </div>
-    <div class="col-md-3">
-      <mat-form-field appearance="outline">
-      <mat-label>Rate</mat-label>
-          <input type="number" matInput class="form-control" formControlName="basePrice" readonly />
-    </mat-form-field>
-    </div>
-    <div class="col-md-2">
-     <mat-form-field appearance="outline">
-      <mat-label>Discount</mat-label>
-          <input type="number" matInput class="form-control" formControlName="discount" min="0" [max]="this.form.get('basePrice')?.value" (keyup)="calculateTotalPayable()" />
-    </mat-form-field>
-    </div>
-     <div class="col-md-3">
-     <mat-form-field appearance="outline">
-      <mat-label>Payable Amount</mat-label>
-          <input type="number" matInput class="form-control" formControlName="payable" />
-    </mat-form-field>
-    </div>
-    </div>
-  </form>
-</mat-dialog-content>
 
-<div class="button-container mb-2">
-  <button mat-flat-button color="default" mat-dialog-close>
-    <span>Close</span>
-  </button>
-  <button
-    mat-flat-button
-    color="success"
-    (click)="onConfirm()"
-    [disabled]="isSubmitting">
-    <span *ngIf="!isSubmitting">Confirm</span>
-    <span *ngIf="isSubmitting">Confirming...</span>
-  </button>
-  <button
-    mat-flat-button
-    color="danger"
-    (click)="onCancel()"
-    [disabled]="isSubmitting">
-    <span *ngIf="!isSubmitting">Cancel</span>
-    <span *ngIf="isSubmitting">Canceling...</span>
-  </button>
-</div>
+      <div class="summary-grid">
+
+        <div class="summary-field">
+          <label>Patient Name</label>
+          <div>{{ getPatientName() }}</div>
+        </div>
+
+        <div class="summary-field">
+          <label>Phone Number</label>
+          <div>{{ getPatientPhone() }}</div>
+        </div>
+
+        <div class="summary-field">
+          <label>Age / Gender</label>
+          <div>{{ getAgeGender() }}</div>
+        </div>
+
+        <div class="summary-field">
+          <label>Doctor</label>
+          <div>{{ getDoctorName() }}</div>
+        </div>
+
+        <div class="summary-field">
+          <label>Department</label>
+          <div>{{ getDepartmentName() }}</div>
+        </div>
+
+        <div class="summary-field">
+          <label>Date & Time</label>
+          <div>{{ getAppointmentDateTime() }}</div>
+        </div>
+
+        <div class="summary-field">
+          <label>Visit Type</label>
+          <div>{{ getVisitType() }}</div>
+        </div>
+
+        <div class="summary-field">
+          <label>Reason</label>
+          <div>{{ getReason() }}</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PAYMENT FORM -->
+    <form [formGroup]="form" class="payment-form">
+
+      <div class="row g-3">
+
+        <div class="col-md-4">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Payment Mode</mat-label>
+            <mat-select formControlName="paymentModeId">
+              <mat-option *ngFor="let p of paymentModesList" [value]="p.id">
+                {{ p.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Rate</mat-label>
+            <input matInput type="number" formControlName="basePrice" readonly />
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-2">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Discount</mat-label>
+            <input matInput type="number"
+                   formControlName="discount"
+                   (keyup)="calculateTotalPayable()" />
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Payable</mat-label>
+            <input matInput type="number" formControlName="payable" />
+          </mat-form-field>
+        </div>
+
+      </div>
+
+    </form>
+
+  </mat-dialog-content>
+
+  <mat-divider></mat-divider>
+
+  <!-- ACTION BAR -->
+  <mat-dialog-actions class="dialog-actions">
+
+    <!-- LEFT SIDE -->
+    <div class="left-actions">
+     
+        <button mat-stroked-button color="warn" (click)="onCancel()" [disabled]="isSubmitting">
+        Cancel Appointment
+      </button>
+
+      <button mat-flat-button color="primary" (click)="onConfirm()" [disabled]="isSubmitting">
+        Confirm Appointment
+      </button>
+
+   
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="right-actions">
+      <button color="primary" mat-button mat-dialog-close>
+        Close Window
+      </button>
+    </div>
+
+  </mat-dialog-actions>
+
 </mat-card>

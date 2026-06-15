@@ -21,6 +21,7 @@ import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { DoctorService } from '../../doctor/doctor.service';
 import { ServiceService } from '../../service/service.service';
 import { ReferrerService } from '../../referrer/referrer.service';
+import { PrintReceiptAppoinmentComponent } from '../print-receipt-appoinment/print-receipt-appoinment.component';
 
 type Option<T = any> = { id: T; label: string };
 
@@ -125,7 +126,7 @@ export class AddAppointmentComponent implements OnInit {
       doctor: [''],
       doctorId: [null, Validators.required],
       visitTypeId: [1],
-      reason: ['', Validators.required],
+      reason: [''],
       confirmationNotes: [''],
       confirmedDate: [null],
       appointmentStatusId: [this.initialNavigationState.appointmentStatusId ?? 1, Validators.required],
@@ -316,12 +317,18 @@ export class AddAppointmentComponent implements OnInit {
   }
 
   getCityList(): void {
-    let _filterForm = {};
-    this.cityService.getAllCities(_filterForm).subscribe(data => {
+    this.cityService.getAllCities({}).subscribe(data => {
       this.cityList = data.item1;
+
+      const lahoreCity = this.cityList.find(
+        (city: any) => city.name?.toLowerCase() === 'lahore'
+      );
+
+      if (lahoreCity) {
+        this.appointmentForm.get('patient.cityId')?.setValue(lahoreCity.id);
+      }
     });
   }
-
   async getAppointmentTypeList(): Promise<void> {
     let _filterForm = {};
     (await this.appointmentTypeService.getAllAppointmentType(_filterForm)).subscribe(data => {
@@ -365,7 +372,7 @@ export class AddAppointmentComponent implements OnInit {
   }
 
   displayPatient = (patient: any): string =>
-    patient ? `${patient.name}${patient.phoneNo ? ' - ' + patient.phoneNo : ''}` : '';
+    patient ? `${patient.name}${patient.phoneNo ? ' - ' + patient.phoneNo : ''}${patient.cnic ? ' - ' + patient.cnic : ''}` : '';
 
   onPatientSelected(patient: any): void {
     if (!patient) {
@@ -395,7 +402,7 @@ export class AddAppointmentComponent implements OnInit {
       patientId: patient.id
     });
 
-    this.updateAge(patient.dateOfBirth);
+    // this.updateAge(patient.dateOfBirth);
   }
 
   onPatientSearchInput(event: Event): void {
@@ -552,23 +559,24 @@ export class AddAppointmentComponent implements OnInit {
     this.appointmentService.saveAppointment(payload).subscribe({
       next: (data: { Status: number; Data: string; Message: string }) => {
         if (data.Status === 200) {
-          this.successMessage = data.Data || 'Appointment Saved!';
-          this.notifications.showNotification(this.successMessage, 'snack-bar-success');
-
           // Navigate back to the list whether opened in dialog or page.
           if (this.initialNavigationState.appointmentStatusId == 1) {
             this.router.navigate(['/bookappointment']);
+            this.notifications.showNotification('Booking saved successfully!', 'snack-bar-success');
             return;
           }
           else {
             this.router.navigate(['/appointment']);
+    const camelCaseData = this.toCamelCaseObject(data.Data);
+            this.printrecreiptAppoinmnetDialog(camelCaseData);
+            this.notifications.showNotification('Appointment saved successfully!', 'snack-bar-success');
             return;
           }
         } else if (data.Status === 409) {
-          this.errorMessage = data.Data || 'Name Already Exists!';
+          this.errorMessage = data.Message || 'Name Already Exists!';
           this.notifications.showNotification(this.errorMessage, 'snack-bar-danger');
         } else {
-          this.errorMessage = data.Message || data.Data || 'There is some error!';
+          this.errorMessage = data.Message || 'There is some error!';
           this.notifications.showNotification(this.errorMessage, 'snack-bar-danger');
         }
         this.isSubmitting = false;
@@ -759,5 +767,32 @@ export class AddAppointmentComponent implements OnInit {
     }
   }
 
+  printrecreiptAppoinmnetDialog(element: any) {
+    const dialogRef = this.dialog.open(PrintReceiptAppoinmentComponent, {
+      panelClass: 'cstm_width_400',
+      maxHeight: '90vh',
+      data: {
+        element: element,
+      },
+      disableClose: true
+    });
+  }
 
+  private toCamelCaseObject(obj: any): any {
+    if (Array.isArray(obj)) {
+      return obj.map(item => this.toCamelCaseObject(item));
+    }
+
+    if (obj !== null && typeof obj === 'object') {
+      return Object.keys(obj).reduce((result: any, key) => {
+        const camelKey = key.charAt(0).toLowerCase() + key.slice(1);
+
+        result[camelKey] = this.toCamelCaseObject(obj[key]);
+
+        return result;
+      }, {});
+    }
+
+    return obj;
+  }
 }

@@ -48,7 +48,7 @@ export class ConfirmRadiologyOrderComponent {
       .subscribe((d: any) => this.paymentModesList = d?.item1 ?? []);
   }
 
-  async onConfirm(): Promise<void> {
+  onConfirm(): void {
     if (this.isSubmitting) return;
     this.isSubmitting = true;
 
@@ -58,7 +58,7 @@ export class ConfirmRadiologyOrderComponent {
       return;
     }
     const command = this.form.value;
-    (await this.radiologyOrderService.confirmRadiologyOrder(command)).subscribe({
+    this.radiologyOrderService.confirmRadiologyOrder(command).subscribe({
       next: (data: any) => {
         this.isSubmitting = false;
         if (data.Status === 200) {

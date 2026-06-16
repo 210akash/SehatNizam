@@ -153,6 +153,7 @@ import { BloodUnitListComponent } from './components/blood-bank/blood-unit/blood
 import { TransfusionListComponent } from './components/blood-bank/transfusion/transfusion-list/transfusion-list.component';
 import { AdvancePaymentListComponent } from './components/opd/advancepayment/advancepayment-list/advancepayment-list.component';
 import { AppointmentPaymentListComponent } from './components/opd/appointment-payment/appointment-payment-list/appointment-payment-list.component';
+import { RadiologyOrderListComponent } from './components/opd/radiologyorder/radiology-order-list/radiology-order-list.component';
 
 const routes: Routes = [
   {
@@ -316,6 +317,7 @@ const routes: Routes = [
       { path: 'bloodissue', redirectTo: 'bloodtransfusion', pathMatch: 'full' },
       { path: 'advancepayment', component: AdvancePaymentListComponent, canActivate: [AuthGuard] },
       { path: 'appointmentpayment', component: AppointmentPaymentListComponent, canActivate: [AuthGuard] },
+      { path: 'radiologyorders', component: RadiologyOrderListComponent, canActivate: [AuthGuard] },
     ]
   },
   {

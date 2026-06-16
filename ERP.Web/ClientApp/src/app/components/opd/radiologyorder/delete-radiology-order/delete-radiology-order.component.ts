@@ -1,5 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { NotificationsService } from '../../../../Service/notification.service';
 import { RadiologyOrderService } from '../radiologyorder.service';
 
@@ -11,16 +11,17 @@ import { RadiologyOrderService } from '../radiologyorder.service';
 })
 export class DeleteRadiologyOrderComponent {
   constructor(
-    private dialog: MatDialog,
+    private dialogRef: MatDialogRef<DeleteRadiologyOrderComponent>,
     private service: RadiologyOrderService,
     private notifications: NotificationsService,
-    @Inject(MAT_DIALOG_DATA) public data: { element: any }
+    @Inject(MAT_DIALOG_DATA) public data: { radiologyOrderId: number, variables: any }
   ) { }
-  async delete(): Promise<void> {
-    (await this.service.deleteRadiologyOrder(this.data.element.id)).subscribe((res: any) => {
+
+  delete(): void {
+    this.service.deleteRadiologyOrder(this.data.radiologyOrderId).subscribe((res: any) => {
       if (res?.Status === 200 || res === true) {
         this.notifications.showNotification('Radiology Order Deleted Successfully!', 'snack-bar-success');
-        this.dialog.closeAll();
+        this.dialogRef.close();
       }
     });
   }

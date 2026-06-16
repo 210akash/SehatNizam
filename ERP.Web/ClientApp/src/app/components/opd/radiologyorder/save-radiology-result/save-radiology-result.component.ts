@@ -106,39 +106,40 @@ createResultRow(item: any, gender: string): FormGroup {
     return `${item.maleMin}-${item.maleMax}`;
   }
 
-  async save(): Promise<void> {
-   if (this.form.invalid) {
-  console.log('Form invalid', this.form);
+save(): void {
+    if (this.form.invalid) {
+      console.log('Form invalid', this.form);
 
-  Object.keys(this.form.controls).forEach(key => {
-    const control = this.form.get(key);
+      Object.keys(this.form.controls).forEach(key => {
+        const control = this.form.get(key);
 
-    // Type guard to ensure control exists
-    if (control && control.invalid) {
-      console.log(`${key} is invalid`, control.errors);
-    }
-  });
+        // Type guard to ensure control exists
+        if (control && control.invalid) {
+          console.log(`${key} is invalid`, control.errors);
+        }
+      });
 
-  // Handle FormArray separately
-  if (this.resultsFormArray && this.resultsFormArray.controls) {
-    this.resultsFormArray.controls.forEach((group, i) => {
-      // Check that it's a FormGroup
-      if (group instanceof FormGroup && group.invalid) {
-        console.log(`results[${i}] is invalid`, group.errors, group.value);
+      // Handle FormArray separately
+      if (this.resultsFormArray && this.resultsFormArray.controls) {
+        this.resultsFormArray.controls.forEach((group, i) => {
+          // Check that it's a FormGroup
+          if (group instanceof FormGroup && group.invalid) {
+            console.log(`results[${i}] is invalid`, group.errors, group.value);
 
-        Object.keys(group.controls).forEach(key => {
-          const childControl = group.get(key);
-          if (childControl && childControl.invalid) {
-            console.log(` - ${key} invalid`, childControl.errors);
+            Object.keys(group.controls).forEach(key => {
+              const childControl = group.get(key);
+              if (childControl && childControl.invalid) {
+                console.log(` - ${key} invalid`, childControl.errors);
+              }
+            });
           }
         });
       }
-    });
-  }
 
-  this.form.markAllAsTouched();
-  return;
-}
+      this.form.markAllAsTouched();
+      this.notifications.showNotification('Please complete all required fields.', 'snack-bar-danger');
+      return;
+    }
 
     this.isSaving = true;
 
@@ -150,12 +151,12 @@ createResultRow(item: any, gender: string): FormGroup {
       }))
     };
 
- (await this.radiologyOrderService.saveRadiologyResult(payload)).subscribe({
+    this.radiologyOrderService.saveRadiologyResult(payload).subscribe({
       next: (res: any) => {
         this.isSaving = false;
         if (res?.Status === 200) {
           this.notifications.showNotification('Radiology Result Saved Successfully!', 'snack-bar-success');
-        this.dialogRef.close(true);
+          this.dialogRef.close(true);
         } else {
           this.notifications.showNotification(res?.Message || 'Unable to save radiology order.', 'snack-bar-danger');
         }

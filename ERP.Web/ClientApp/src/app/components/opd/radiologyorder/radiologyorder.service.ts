@@ -39,13 +39,13 @@ export class RadiologyOrderService extends BaseService<any> {
         return this.get('?id=' + id, this.endPointControllerName + this.RadiologyOrderEndPoints.getRadiologyOrderById).pipe(map((data: any) => data));
     }
     
-    async saveRadiologyResult(payload: any) {
-        return await this.post(payload, this.endPointControllerName + this.RadiologyOrderEndPoints.saveRadiologyResult)
-            .pipe(map((data: any) => data));
-    }
-       
-    async confirmRadiologyOrder(payload: any) {
-        return await this.post(payload, this.endPointControllerName + this.RadiologyOrderEndPoints.confirmRadiologyOrder)
-            .pipe(map((data: any) => data));
-    }
+saveRadiologyResult(payload: any) {
+    return this.post(payload, this.endPointControllerName + this.RadiologyOrderEndPoints.saveRadiologyResult)
+      .pipe(map((data: any) => data));
+  }
+
+  confirmRadiologyOrder(payload: any) {
+    return this.post(payload, this.endPointControllerName + this.RadiologyOrderEndPoints.confirmRadiologyOrder)
+      .pipe(map((data: any) => data));
+  }
 }

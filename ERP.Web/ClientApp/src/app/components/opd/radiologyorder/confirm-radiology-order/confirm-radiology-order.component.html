@@ -37,7 +37,7 @@
     <div class="row">
        <div class="col-md-4">
     <mat-form-field appearance="outline">
-      <mat-radiologyel>Payment Mode</mat-radiologyel>
+      <mat-label>Payment Mode</mat-label>
       <mat-select formControlName="paymentModeId">
         <mat-option *ngFor="let p of paymentModesList" [value]="p.id">{{ p.name }}</mat-option>
       </mat-select>
@@ -45,19 +45,19 @@
     </div>
     <div class="col-md-3">
       <mat-form-field appearance="outline">
-      <mat-radiologyel>Rate</mat-radiologyel>
+      <mat-label>Rate</mat-label>
           <input type="number" matInput class="form-control" formControlName="basePrice" readonly />
     </mat-form-field>
     </div>
     <div class="col-md-2">
      <mat-form-field appearance="outline">
-      <mat-radiologyel>Discount</mat-radiologyel>
+      <mat-label>Discount</mat-label>
           <input type="number" matInput class="form-control" formControlName="discount" min="0" [max]="this.form.get('basePrice')?.value" (keyup)="calculateTotalPayable()" />
     </mat-form-field>
     </div>
      <div class="col-md-3">
      <mat-form-field appearance="outline">
-      <mat-radiologyel>Payable Amount</mat-radiologyel>
+      <mat-label>Payable Amount</mat-label>
           <input type="number" matInput class="form-control" formControlName="payable" />
     </mat-form-field>
     </div>

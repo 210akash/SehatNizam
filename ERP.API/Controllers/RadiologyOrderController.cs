@@ -9,6 +9,7 @@ using ERP.BusinessModels.ResponseVM;
 using ERP.Mediator.Mediator.RadiologyOrder.Command;
 using ERP.Mediator.Mediator.RadiologyOrder.Query;
 using MediatR;
+using ERP.Mediator.Mediator.RadiologyOrder.Query;
 
 namespace ERP.API.Controllers
 {
@@ -42,6 +43,10 @@ namespace ERP.API.Controllers
                 return this.Result(ResponseStatus.Error, null, ex.Message);
             }
         }
+
+        [HttpPost]
+        [Route("GetAllRadiologyOrders")]
+        public async Task<ActionResult<Tuple<IEnumerable<GetRadiologyOrder>, long>>> GetAll(GetAllRadiologyOrderQuery query) => await mediator.Send(query);
 
         [HttpPost]
         [Route("SaveRadiologyOrder")]

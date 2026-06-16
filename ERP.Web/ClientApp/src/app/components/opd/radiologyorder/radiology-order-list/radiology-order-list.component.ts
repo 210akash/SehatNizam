@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
@@ -22,7 +22,7 @@ import { DeleteRadiologyOrderComponent } from '../delete-radiology-order/delete-
   styleUrls: ['./radiology-order-list.component.css'],
   standalone: false
 })
-export class RadiologyOrderListComponent implements OnInit {
+export class RadiologyOrderListComponent implements OnInit, AfterViewInit {
   dataSource = new MatTableDataSource<any>([]);
   form!: FormGroup;
   displayedColumns: string[] = ['appointmentDate','tokenNumber', 'patientName', 'testName', 'clinicalNotes','reference', 'status',  'actions'];
@@ -55,6 +55,10 @@ export class RadiologyOrderListComponent implements OnInit {
     this.bindData();
   }
 
+  ngAfterViewInit(): void {
+    this.dataSource.paginator = this.paginator;
+  }
+
   buildForm(): void {
     this.form = this.fb.group({
       tokenNo: [''],
@@ -65,6 +69,7 @@ export class RadiologyOrderListComponent implements OnInit {
       fDate: [new Date()],
       tDate: [new Date()]
     });
+    console.log(this.form.value);
 
 
     //  const currentYear = new Date().getFullYear();
@@ -82,7 +87,7 @@ export class RadiologyOrderListComponent implements OnInit {
 
   setupFilters(): void {
     // Debounce search filters
-    this.form.get('tokenNumber')?.valueChanges.pipe(
+    this.form.get('tokenNo')?.valueChanges.pipe(
       debounceTime(500),
       distinctUntilChanged()
     ).subscribe(() => {
@@ -90,7 +95,7 @@ export class RadiologyOrderListComponent implements OnInit {
       this.filterData();
     });
 
-    this.form.get('patientName')?.valueChanges.pipe(
+    this.form.get('name')?.valueChanges.pipe(
       debounceTime(500),
       distinctUntilChanged()
     ).subscribe(() => {
@@ -123,12 +128,12 @@ export class RadiologyOrderListComponent implements OnInit {
 
   clearFilters(): void {
     this.form.reset({
-      tokenNumber: '',
-      patientName: '',
+      tokenNo: '',
+      name: '',
       radiologyOrderTypeId: null,
       statusId: null,
-      fromDate: null,
-      toDate: null
+      fDate: null,
+      tDate: null
     });
     this.currentPage = 0;
     this.bindData();

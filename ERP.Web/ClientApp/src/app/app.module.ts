@@ -1018,9 +1018,23 @@ import { ConfirmAdvancePaymentComponent } from './components/opd/advancepayment/
 import { ViewAdvancePaymentComponent } from './components/opd/advancepayment/view-advancepayment/view-advancepayment.component';
 import { AppointmentPaymentListComponent } from './components/opd/appointment-payment/appointment-payment-list/appointment-payment-list.component';
 import { AddDischargeComponent } from './components/IPD/discharge/discharge.component';
+import { MAT_DATE_FORMATS } from '@angular/material/core';
 const matFormFieldDefaults: MatFormFieldDefaultOptions = {
     appearance: 'outline'
     , subscriptSizing: 'dynamic'
+};
+
+
+export const APP_DATE_FORMATS = {
+  parse: {
+    dateInput: 'DD/MM/YYYY',
+  },
+  display: {
+    dateInput: 'dd/MM/yyyy',
+    monthYearLabel: 'MMM yyyy',
+    dateA11yLabel: 'dd/MM/yyyy',
+    monthYearA11yLabel: 'MMMM yyyy',
+  },
 };
 
 @NgModule({
@@ -2081,6 +2095,7 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
             useClass: AuthInterceptor,
             multi: true
         },
+        { provide: MAT_DATE_FORMATS, useValue: APP_DATE_FORMATS},
         { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: matFormFieldDefaults },
         LoaderService,
         DatePipe,

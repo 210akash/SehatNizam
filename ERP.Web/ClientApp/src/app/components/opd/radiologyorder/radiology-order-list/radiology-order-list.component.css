@@ -96,9 +96,12 @@ table {
   text-align: center;
 }
 
-.action-buttons {
-  display: flex;
-  gap: 8px;
+.action_btns {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  row-gap: 5px;
 }
 
 .no-data {
@@ -131,19 +134,4 @@ table {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .radiology-order-container {
-    padding: 12px;
-  }
-  
-  .filters-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .action-buttons {
-    flex-direction: column;
-  }
 }

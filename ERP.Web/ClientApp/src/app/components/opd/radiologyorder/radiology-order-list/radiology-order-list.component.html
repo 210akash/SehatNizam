@@ -1,6 +1,6 @@
 <div class="header-container">
   <h2>Radiology Orders</h2>
-  <button mat-mini-fab aria-radiologyel="Add" color="success" (click)="openAdd()" matTooltip="New Radiology Order">
+  <button mat-mini-fab aria-label="Add" color="success" (click)="openAdd()" matTooltip="New Radiology Order">
     <mat-icon>add</mat-icon>
   </button>
 </div>
@@ -11,7 +11,7 @@
   <div class="row">
      <div class="col-lg-3 col-md-4 col-sm-6 col-12">
       <mat-form-field class="filter-field" appearance="outline">
-        <mat-radiologyel>From Date</mat-radiologyel>
+        <mat-label>From Date</mat-label>
         <input matInput [matDatepicker]="fromPicker" formControlName="fDate" placeholder="Start date" (dateChange)="filterData()" />
         <mat-datepicker-toggle matIconSuffix [for]="fromPicker"></mat-datepicker-toggle>
         <mat-datepicker #fromPicker></mat-datepicker>
@@ -21,7 +21,7 @@
 
     <div class="col-lg-3 col-md-4 col-sm-6 col-12">
       <mat-form-field class="filter-field" appearance="outline">
-        <mat-radiologyel>To Date</mat-radiologyel>
+        <mat-label>To Date</mat-label>
         <input matInput [matDatepicker]="toPicker" formControlName="tDate" placeholder="End date" (dateChange)="filterData()" />
         <mat-datepicker-toggle matIconSuffix [for]="toPicker"></mat-datepicker-toggle>
         <mat-datepicker #toPicker></mat-datepicker>
@@ -30,7 +30,7 @@
     </div>
     <div class="col-lg-2 col-md-3 col-sm-6 col-12">
       <mat-form-field class="filter-field" appearance="outline">
-        <mat-radiologyel>Token #</mat-radiologyel>
+        <mat-label>Token #</mat-label>
         <input matInput formControlName="tokenNo" placeholder="Search by token number" (keyup)="filterData()" />
         <mat-icon matSuffix>confirmation_number</mat-icon>
       </mat-form-field>
@@ -38,14 +38,14 @@
     
     <div class="col-lg-4 col-md-3 col-sm-7 col-12">
       <mat-form-field class="filter-field" appearance="outline">
-        <mat-radiologyel>Patient Name</mat-radiologyel>
+        <mat-label>Patient Name</mat-label>
         <input matInput formControlName="name" placeholder="Search by patient name" (keyup)="filterData()" />
         <mat-icon matSuffix>person</mat-icon>
       </mat-form-field>
     </div>
         <div class="col-lg-2 col-md-3 col-sm-6 col-12">
       <mat-form-field class="filter-field" appearance="outline">
-        <mat-radiologyel>MRN #</mat-radiologyel>
+        <mat-label>MRN #</mat-label>
         <input matInput formControlName="mRN" placeholder="Search by MRN" (keyup)="filterData()" />
         <mat-icon matSuffix>person</mat-icon>
       </mat-form-field>
@@ -53,7 +53,7 @@
     
     <div class="col-lg-2 col-md-3 col-sm-6 col-12">
       <mat-form-field class="filter-field" appearance="outline">
-        <mat-radiologyel>Test Type</mat-radiologyel>
+        <mat-label>Test Type</mat-label>
         <mat-select formControlName="radiologyOrderTypeId" (selectionChange)="filterData()">
           <mat-option [value]="null">All Tests</mat-option>
             <mat-option *ngFor="let test of radiologyOrderTypes" [value]="test.id">
@@ -66,7 +66,7 @@
     
     <div class="col-lg-2 col-md-3 col-sm-6 col-12">
       <mat-form-field class="filter-field" appearance="outline">
-        <mat-radiologyel>Status</mat-radiologyel>
+        <mat-label>Status</mat-label>
         <mat-select formControlName="statusId" (selectionChange)="filterData()">
           <mat-option [value]="null">All</mat-option>
           <mat-option [value]="2">Prescribed</mat-option>

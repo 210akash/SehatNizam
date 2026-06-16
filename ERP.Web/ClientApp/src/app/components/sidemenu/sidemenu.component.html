@@ -84,26 +84,18 @@
           <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('ipd')"></i>
         </button>
         <div class="submenu" *ngIf="isSubMenuVisible('ipd')">
-          <div class="nav-group" *ngIf="hasRequiredRole(['admin','doctor','receptionist'])">
-            <button (click)="toggleSubMenu('ipdsetup')" class="submenu-button">
-              <i class="fas fa-cog submenu-item-icon"></i>
-              <span>IPD Setup</span>
-              <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('ipdsetup')"></i>
-            </button>
-           <div class="submenu" *ngIf="isSubMenuVisible('ipdsetup')">
-            <div class="submenu" >
-              <a routerLink="/ward" *ngIf="hasRequiredRole(['admin','receptionist'])"
-                class="nested-link" [class.active-link]="isActive('/ward')"><i class="fas submenu-item-icon" [ngClass]="getSubmenuIcon('/ward')"></i><span>Ward</span></a>
-            </div>
-             <div class="submenu" >
-              <a routerLink="/room" *ngIf="hasRequiredRole(['admin','receptionist'])"
-                class="nested-link" [class.active-link]="isActive('/room')"><i class="fas submenu-item-icon" [ngClass]="getSubmenuIcon('/room')"></i><span>Room</span></a>
-            </div>
-              <div class="submenu" >
-              <a routerLink="/bed" *ngIf="hasRequiredRole(['admin','receptionist'])"
-                class="nested-link" [class.active-link]="isActive('/bed')"><i class="fas submenu-item-icon" [ngClass]="getSubmenuIcon('/bed')"></i><span>Bed</span></a>
-            </div>
-            </div>
+          <button (click)="toggleSubMenu('ipdsetup')" class="submenu-button">
+            <i class="fas fa-cog submenu-item-icon"></i>
+            <span>IPD Setup</span>
+            <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('ipdsetup')"></i>
+          </button>
+          <div class="nested-submenu" *ngIf="isSubMenuVisible('ipdsetup')">
+            <a routerLink="/ward" *ngIf="hasRequiredRole(['admin','receptionist'])"
+              class="nested-link" [class.active-link]="isActive('/ward')"><i class="fas submenu-item-icon" [ngClass]="getSubmenuIcon('/ward')"></i><span>Ward</span></a>
+            <a routerLink="/room" *ngIf="hasRequiredRole(['admin','receptionist'])"
+              class="nested-link" [class.active-link]="isActive('/room')"><i class="fas submenu-item-icon" [ngClass]="getSubmenuIcon('/room')"></i><span>Room</span></a>
+            <a routerLink="/bed" *ngIf="hasRequiredRole(['admin','receptionist'])"
+              class="nested-link" [class.active-link]="isActive('/bed')"><i class="fas submenu-item-icon" [ngClass]="getSubmenuIcon('/bed')"></i><span>Bed</span></a>
           </div>
           <a routerLink="/admission" *ngIf="hasRequiredRole(['admin','receptionist'])" class="submenu-link" [class.active-link]="isActive('/admission')"><i class="fas submenu-item-icon" [ngClass]="getSubmenuIcon('/admission')"></i><span>Admission</span></a>
         </div>
@@ -644,14 +636,12 @@
           <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('employee')"></i>
         </button>
         <div class="submenu" *ngIf="isSubMenuVisible('employee')">
-          <!-- HR Setup -->
-          <div class="nav-group" *ngIf="hasRequiredRole(['hr executive','hr manager','admin'])">
-            <button (click)="toggleSubMenu('hr')" class="nav-button">
-              <i class="fas fa-user-cog"></i>
-              <span>HR Setup</span>
-              <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('hr')"></i>
-            </button>
-            <div class="submenu" *ngIf="isSubMenuVisible('hr')">
+          <button (click)="toggleSubMenu('hr')" class="submenu-button">
+            <i class="fas fa-user-cog submenu-item-icon"></i>
+            <span>HR Setup</span>
+            <i class="fas fa-chevron-right chevron-icon" [class.rotated]="isSubMenuVisible('hr')"></i>
+          </button>
+          <div class="nested-submenu" *ngIf="isSubMenuVisible('hr')">
               <a routerLink="/project" *ngIf="hasRequiredRole(['admin','hr manager','hr executive'])"
                 class="nested-link" [class.active-link]="isActive('/project')"><i class="fas submenu-item-icon" [ngClass]="getSubmenuIcon('/project')"></i><span>Site/Building</span></a>
               <a routerLink="/departments" class="submenu-link"
@@ -693,7 +683,6 @@
                 <a routerLink="/employeeleavegroup" class="nested-link"
                   [class.active-link]="isActive('/employeeleavegroup')"><i class="fas submenu-item-icon" [ngClass]="getSubmenuIcon('/employeeleavegroup')"></i><span>Employee Leave Group</span></a>
               </div>
-            </div>
           </div>
           <a routerLink="/employee" class="submenu-link" [class.active-link]="isActive('/employee')"><i class="fas submenu-item-icon" [ngClass]="getSubmenuIcon('/employee')"></i><span>Manage
             Employees</span></a>

@@ -1,10 +1,259 @@
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.dashboard-cards {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.stat-card-wrap {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 72px;
+  height: 100%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid #e8edf3;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+}
+
+.stat-card__content {
+  min-width: 0;
+  flex: 1;
+}
+
+.stat-card__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.stat-card__icon mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.stat-card__value {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.stat-card__title {
+  margin-top: 2px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #455a64;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stat-card__subtitle {
+  margin-top: 2px;
+  font-size: 10px;
+  line-height: 1.2;
+  color: #607d8b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stat-card--primary {
+  border-color: #c8e6c9;
+  background: linear-gradient(135deg, #f1f8f4 0%, #ffffff 100%);
+}
+
+.stat-card--primary .stat-card__icon {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.stat-card--primary .stat-card__value {
+  color: #2e7d32;
+}
+
+.stat-card--warning {
+  border-color: #ffe0b2;
+  background: linear-gradient(135deg, #fff8f0 0%, #ffffff 100%);
+}
+
+.stat-card--warning .stat-card__icon {
+  background: #fff3e0;
+  color: #ef6c00;
+}
+
+.stat-card--warning .stat-card__value {
+  color: #ef6c00;
+}
+
+.stat-card--danger {
+  border-color: #ffcdd2;
+  background: linear-gradient(135deg, #fff5f5 0%, #ffffff 100%);
+}
+
+.stat-card--danger .stat-card__icon {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.stat-card--danger .stat-card__value {
+  color: #c62828;
+}
+
+.stat-card--muted {
+  border-color: #e0e0e0;
+  background: linear-gradient(135deg, #fafafa 0%, #ffffff 100%);
+}
+
+.stat-card--muted .stat-card__icon {
+  background: #f5f5f5;
+  color: #616161;
+}
+
+.stat-card--muted .stat-card__value {
+  color: #424242;
+}
+
+.stat-card--accent {
+  border-color: #d1c4e9;
+  background: linear-gradient(135deg, #f8f5ff 0%, #ffffff 100%);
+}
+
+.stat-card--accent .stat-card__icon {
+  background: #ede7f6;
+  color: #6a1b9a;
+}
+
+.stat-card--accent .stat-card__value {
+  color: #6a1b9a;
+}
+
+.filter-panel {
+  border-radius: 12px;
+  padding: 14px 16px 4px;
+  margin-bottom: 16px;
+  border: 1px solid #e8edf3;
+}
+
+.filter-panel--stock {
+  background: linear-gradient(135deg, #fff5f5 0%, #ffffff 100%);
+  border-color: #ffd6d6;
+  border-top: 3px solid #c62828;
+}
+
+.filter-panel-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #455a64;
+}
+
+.filter-panel-head mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  color: #c62828;
+}
+
+.filter-field-icon {
+  color: #78909c;
+  margin-right: 4px;
+}
+
+.filter-row {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.filter-field-wrap {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.table-panel {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
 .storage-empty {
-    color: #9e9e9e;
-    font-size: 1.1rem;
-    font-weight: 500;
+  color: #9e9e9e;
+  font-size: 1.1rem;
+  font-weight: 500;
 }
 
 .storage-assigned {
-    font-size: 0.85rem;
-    line-height: 1.3;
+  font-size: 0.85rem;
+  line-height: 1.3;
+}
+
+.status-chip {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  background: #eceff1;
+  color: #546e7a;
+}
+
+.status-chip[data-status="1"] {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.status-chip[data-status="2"] {
+  background: #fff8e1;
+  color: #f57f17;
+}
+
+.status-chip[data-status="3"] {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+.status-chip[data-status="4"],
+.status-chip[data-status="5"] {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.expiry-chip {
+  display: inline-block;
+  margin-top: 2px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #2e7d32;
+}
+
+.expiry-chip--warning {
+  color: #ef6c00;
+}
+
+.expiry-chip--expired {
+  color: #c62828;
 }

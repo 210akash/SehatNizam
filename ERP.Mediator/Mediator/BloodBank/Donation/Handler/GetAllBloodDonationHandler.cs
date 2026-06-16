@@ -58,7 +58,11 @@ namespace ERP.Mediator.Mediator.BloodBank.Donation.Handler
 
                 && (request.DonorName == null || request.DonorName == "" || x.BloodDonor.Name.ToLower().Contains(request.DonorName.ToLower().Trim()))
 
-                && (request.DonorCNIC == null || request.DonorCNIC == "" || x.BloodDonor.CNIC.ToLower().Contains(request.DonorCNIC.ToLower().Trim()));
+                && (request.DonorCNIC == null || request.DonorCNIC == "" || x.BloodDonor.CNIC.ToLower().Contains(request.DonorCNIC.ToLower().Trim()))
+
+                && (!request.ScreeningStatus.HasValue || request.ScreeningStatus == 0 || x.ScreeningStatus == request.ScreeningStatus)
+
+                && (!request.AppointmentId.HasValue || request.AppointmentId == 0 || x.AppointmentId == request.AppointmentId);
 
 
 

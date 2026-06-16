@@ -24,6 +24,10 @@ namespace ERP.Mediator.Mediator.BloodBank.Donation.Query
 
         public string DonorCNIC { get; set; }
 
+        public int? ScreeningStatus { get; set; }
+
+        public long? AppointmentId { get; set; }
+
         public PagingData PagingData { get; set; }
 
     }

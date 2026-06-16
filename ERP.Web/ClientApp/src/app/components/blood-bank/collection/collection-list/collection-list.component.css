@@ -15,3 +15,154 @@
 .header-actions button mat-icon {
   margin-right: 4px;
 }
+
+.collection-tab-group {
+  margin-top: 4px;
+}
+
+.collection-tab-group ::ng-deep .mat-mdc-tab-header {
+  border-bottom: 1px solid #e8edf3;
+  margin-bottom: 0;
+}
+
+.collection-tab-group ::ng-deep .mat-mdc-tab .mdc-tab__text-label {
+  opacity: 1;
+}
+
+.tab-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.tab-label mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.tab-label--history mat-icon {
+  color: #1565c0;
+}
+
+.tab-label--donors mat-icon {
+  color: #c62828;
+}
+
+.collection-tab-group ::ng-deep .mat-mdc-tab.mdc-tab--active .tab-label--history {
+  color: #1565c0;
+}
+
+.collection-tab-group ::ng-deep .mat-mdc-tab.mdc-tab--active .tab-label--donors {
+  color: #c62828;
+}
+
+.collection-tab-group ::ng-deep .mat-mdc-tab-body-content {
+  overflow: visible;
+}
+
+.tab-panel {
+  padding-top: 16px;
+}
+
+.tab-panel--history {
+  border-top: 3px solid #1565c0;
+  padding-top: 18px;
+}
+
+.tab-panel--donors {
+  border-top: 3px solid #c62828;
+  padding-top: 18px;
+}
+
+.filter-panel {
+  border-radius: 12px;
+  padding: 14px 16px 4px;
+  margin-bottom: 16px;
+  border: 1px solid #e8edf3;
+}
+
+.filter-panel--history {
+  background: linear-gradient(135deg, #f5f9ff 0%, #ffffff 100%);
+  border-color: #d6e4ff;
+}
+
+.filter-panel--donors {
+  background: linear-gradient(135deg, #fff5f5 0%, #ffffff 100%);
+  border-color: #ffd6d6;
+}
+
+.filter-panel-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #455a64;
+}
+
+.filter-panel-head mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  color: #607d8b;
+}
+
+.filter-field-icon {
+  color: #78909c;
+  margin-right: 4px;
+}
+
+.filter-field--appointment {
+  position: relative;
+}
+
+.table-panel {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.status-chip {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.status-chip--1 {
+  background: #fff8e1;
+  color: #f57f17;
+}
+
+.status-chip--2 {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.status-chip--3 {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.status-chip--4 {
+  background: #eceff1;
+  color: #546e7a;
+}
+
+.defer-chip {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.defer-chip--yes {
+  background: #ffebee;
+  color: #c62828;
+}

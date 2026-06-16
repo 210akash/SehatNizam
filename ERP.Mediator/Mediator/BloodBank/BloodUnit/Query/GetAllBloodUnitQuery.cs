@@ -10,10 +10,13 @@ namespace ERP.Mediator.Mediator.BloodBank.BloodUnit.Query
     {
         public string UnitNo { get; set; }
         public string ComponentTypeName { get; set; }
+        public long? BloodGroupMasterId { get; set; }
         public int? Status { get; set; }
 
         /// <summary>0 = all, 1 = assigned, 2 = not assigned</summary>
         public int? StorageAssigned { get; set; }
+
+        public bool? ExcludeIssued { get; set; }
 
         public PagingData PagingData { get; set; }
     }

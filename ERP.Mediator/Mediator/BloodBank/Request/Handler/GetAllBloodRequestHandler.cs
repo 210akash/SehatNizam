@@ -56,6 +56,14 @@ namespace ERP.Mediator.Mediator.BloodBank.Request.Handler
 
                 && (request.PatientCNIC == null || request.PatientCNIC == "" || (x.PatientCNIC ?? "").ToLower().Contains(request.PatientCNIC.ToLower().Trim()))
 
+                && (request.PatientName == null || request.PatientName == "" || (x.PatientName ?? "").ToLower().Contains(request.PatientName.ToLower().Trim()))
+
+                && (!request.BloodGroupMasterId.HasValue || request.BloodGroupMasterId == 0 || x.BloodGroupMasterId == request.BloodGroupMasterId)
+
+                && (!request.BloodComponentTypeId.HasValue || request.BloodComponentTypeId == 0 || x.BloodComponentTypeId == request.BloodComponentTypeId)
+
+                && (!request.AppointmentId.HasValue || request.AppointmentId == 0 || x.AppointmentId == request.AppointmentId)
+
                 && (!request.Status.HasValue || request.Status == 0 || x.Status == request.Status);
 
 

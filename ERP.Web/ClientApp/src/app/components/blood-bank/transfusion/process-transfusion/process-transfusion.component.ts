@@ -179,6 +179,10 @@ export class ProcessTransfusionComponent {
         return !!this.requestAppointmentId && this.appointmentMatchedUnits.length > 0;
     }
 
+    get patientFieldsLocked(): boolean {
+        return !!this.selectedAppointment?.id && this.canEditRequest;
+    }
+
     displayUnit = (unit: any): string => {
         if (!unit || typeof unit === 'string') return typeof unit === 'string' ? unit : '';
         return this.getUnitLabel(unit, this.isUnitFromSameAppointment(unit));
@@ -286,6 +290,7 @@ export class ProcessTransfusionComponent {
         this.selectedAppointment = appointment;
         this.appointmentSearchCtrl.setValue(appointment, { emitEvent: false });
         this.form.patchValue({ appointmentId: appointment.id });
+        this.updatePatientFieldLock();
     }
 
     private resetAppointmentSelection(resetControl = true): void {
@@ -294,6 +299,7 @@ export class ProcessTransfusionComponent {
         if (resetControl) {
             this.appointmentSearchCtrl.setValue('', { emitEvent: false });
         }
+        this.updatePatientFieldLock();
         if (this.unitList.length) {
             this.refreshUnitListOrder();
         }
@@ -368,6 +374,7 @@ export class ProcessTransfusionComponent {
         this.unitSearchCtrl.setValue(unit, { emitEvent: false });
         this.unitSearchCtrl.setErrors(null);
         this.unitSearchCtrl.updateValueAndValidity({ emitEvent: false });
+        this.updateCrossMatchResultValidators();
     }
 
     saveData(): void {
@@ -378,10 +385,7 @@ export class ProcessTransfusionComponent {
 
         if (this.canEditRequest && !this.validateRequest()) return;
         if (this.canPickUnit && this.selectedUnit?.id && !this.validateUnitPick()) return;
-        if (this.showCrossMatchResultField && !this.form.get('crossMatchResult')?.value) {
-            this.form.get('crossMatchResult')?.markAsTouched();
-            return;
-        }
+        if (!this.validateCrossMatchResult()) return;
         if (wantsIssue && !this.validateIssue()) return;
 
         this.isLoading = true;
@@ -550,6 +554,35 @@ export class ProcessTransfusionComponent {
         return true;
     }
 
+    private validateCrossMatchResult(): boolean {
+        if (!this.showCrossMatchResultField) return true;
+
+        this.updateCrossMatchResultValidators();
+        const ctrl = this.form.get('crossMatchResult');
+        if (!ctrl) return true;
+
+        if (!ctrl.value) {
+            ctrl.setErrors({ required: true });
+            ctrl.markAsTouched();
+            this.notificationsService.showNotification('Cross match result is required when a blood unit is selected', 'snack-bar-danger');
+            return false;
+        }
+
+        return true;
+    }
+
+    private updateCrossMatchResultValidators(): void {
+        const ctrl = this.form.get('crossMatchResult');
+        if (!ctrl || this.isViewMode) return;
+
+        if (this.showCrossMatchResultField) {
+            ctrl.setValidators(Validators.required);
+        } else {
+            ctrl.clearValidators();
+        }
+        ctrl.updateValueAndValidity({ emitEvent: false });
+    }
+
     private validateIssue(): boolean {
         const issuedTo = this.form.get('issuedTo');
         const issueDate = this.form.get('issueDate');
@@ -587,6 +620,23 @@ export class ProcessTransfusionComponent {
             this.form.get('issuedTo')?.setValidators(Validators.required);
             this.form.get('issueDate')?.setValidators(Validators.required);
         }
+        this.updatePatientFieldLock();
+        this.updateCrossMatchResultValidators();
+    }
+
+    private updatePatientFieldLock(): void {
+        if (this.isViewMode) return;
+
+        const lock = this.patientFieldsLocked;
+        ['patientName', 'patientCNIC'].forEach((field) => {
+            const control = this.form.get(field);
+            if (!control) return;
+            if (lock) {
+                control.disable({ emitEvent: false });
+            } else if (this.canEditRequest) {
+                control.enable({ emitEvent: false });
+            }
+        });
     }
 
     private loadUnits(): void {
@@ -618,8 +668,10 @@ export class ProcessTransfusionComponent {
             if (typeof value === 'string') {
                 if (value.trim() === '') {
                     this.selectedUnit = null;
+                    this.form.patchValue({ crossMatchResult: null });
                 } else if (!this.selectedUnit?.unitNo || !value.includes(this.selectedUnit.unitNo)) {
                     this.selectedUnit = null;
+                    this.form.patchValue({ crossMatchResult: null });
                 }
                 this.unitSearchCtrl.updateValueAndValidity({ emitEvent: false });
             } else if (value && typeof value === 'object' && (value as any).id) {
@@ -627,6 +679,7 @@ export class ProcessTransfusionComponent {
                 this.unitSearchCtrl.setErrors(null);
                 this.unitSearchCtrl.updateValueAndValidity({ emitEvent: false });
             }
+            this.updateCrossMatchResultValidators();
         });
 
         this.form.get('bloodGroupMasterId')?.valueChanges.subscribe(() => this.loadUnits());
@@ -677,8 +730,8 @@ export class ProcessTransfusionComponent {
     }
 
     private isUnitExpired(unit: any): boolean {
-        if (!unit?.expiryDate) return false;
-        const expiry = new Date(unit.expiryDate);
+        const expiry = this.resolveUnitExpiryDate(unit);
+        if (!expiry) return false;
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         expiry.setHours(0, 0, 0, 0);
@@ -695,6 +748,39 @@ export class ProcessTransfusionComponent {
             return `${label} (Same appointment)`;
         }
         return label;
+    }
+
+    getExpiryDays(unit: any): number {
+        const expiry = this.resolveUnitExpiryDate(unit);
+        if (!expiry) return 0;
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        expiry.setHours(0, 0, 0, 0);
+        return Math.ceil((expiry.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+    }
+
+    getExpiryDaysText(unit: any): string {
+        const days = this.getExpiryDays(unit);
+        if (days < 0) return `Expired ${Math.abs(days)}d ago`;
+        if (days === 0) return 'Expires today';
+        return `${days} days left`;
+    }
+
+    private resolveUnitExpiryDate(unit: any): Date | null {
+        if (unit?.expiryDate) {
+            const date = new Date(unit.expiryDate);
+            return isNaN(date.getTime()) ? null : date;
+        }
+
+        const collectionDate = unit?.collectionDate;
+        const shelfLifeDays = unit?.bloodComponentType?.shelfLifeDays;
+        if (!collectionDate || shelfLifeDays == null) return null;
+
+        const base = new Date(collectionDate);
+        if (isNaN(base.getTime())) return null;
+        base.setHours(0, 0, 0, 0);
+        base.setDate(base.getDate() + Number(shelfLifeDays));
+        return base;
     }
 
     blockInvalidQuantity(event: KeyboardEvent): boolean {

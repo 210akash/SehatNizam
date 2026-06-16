@@ -4,10 +4,21 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { forkJoin } from 'rxjs';
+import { BloodGroupService } from '../../blood-group/blood-group.service';
 import { ComponentTypeService } from '../../component-type/component-type.service';
 import { AddBloodUnitComponent } from '../add-blood-unit/add-blood-unit.component';
-import { DeleteBloodUnitComponent } from '../delete-blood-unit/delete-blood-unit.component';
 import { BloodUnitService } from '../blood-unit.service';
+
+interface StockDashboardStats {
+    availableUnits: number;
+    nearExpiryUnits: number;
+    expiredUnits: number;
+    noStorageUnits: number;
+    reservedUnits: number;
+    missingGroupCount: number;
+    missingGroupNames: string;
+}
 
 @Component({
     selector: 'app-blood-unit-list',
@@ -25,6 +36,16 @@ export class BloodUnitListComponent {
     take = 10;
     totalRows = 0;
     componentTypeList: any[] = [];
+    bloodGroupList: any[] = [];
+    dashboardStats: StockDashboardStats = {
+        availableUnits: 0,
+        nearExpiryUnits: 0,
+        expiredUnits: 0,
+        noStorageUnits: 0,
+        reservedUnits: 0,
+        missingGroupCount: 0,
+        missingGroupNames: ''
+    };
     statusMap: { [key: number]: string } = {
         1: 'Available',
         2: 'Reserved',
@@ -52,6 +73,7 @@ export class BloodUnitListComponent {
     constructor(
         private service: BloodUnitService,
         private componentTypeService: ComponentTypeService,
+        private bloodGroupService: BloodGroupService,
         private dialog: MatDialog,
         private formBuilder: FormBuilder
     ) { }
@@ -60,33 +82,122 @@ export class BloodUnitListComponent {
         this.filterForm = this.formBuilder.group({
             unitNo: [''],
             componentTypeName: [''],
+            bloodGroupMasterId: [null],
             status: [0],
             storageAssigned: [0]
         });
-        this.loadComponentTypes();
+        this.loadLookups();
+        this.loadDashboardStats();
         this.bindData();
     }
 
-    loadComponentTypes() {
+    get dashboardCards(): Array<{ title: string; value: number | string; subtitle?: string; icon: string; tone: string }> {
+        return [
+            {
+                title: 'Available Stock',
+                value: this.dashboardStats.availableUnits,
+                icon: 'inventory_2',
+                tone: 'primary'
+            },
+            {
+                title: 'Near Expiry (7 days)',
+                value: this.dashboardStats.nearExpiryUnits,
+                icon: 'schedule',
+                tone: 'warning'
+            },
+            {
+                title: 'Expired Units',
+                value: this.dashboardStats.expiredUnits,
+                icon: 'dangerous',
+                tone: 'danger'
+            },
+            {
+                title: 'No Storage',
+                value: this.dashboardStats.noStorageUnits,
+                icon: 'kitchen',
+                tone: 'muted'
+            },
+            {
+                title: 'Missing Groups',
+                value: this.dashboardStats.missingGroupCount,
+                subtitle: this.dashboardStats.missingGroupNames || 'All groups in stock',
+                icon: 'bloodtype',
+                tone: 'accent'
+            }
+        ];
+    }
+
+    loadLookups(): void {
         this.componentTypeService.getAll({ PagingData: { currentPage: 0, take: 1000 } }).subscribe((data: any) => {
             this.componentTypeList = data.item1 || [];
+        });
+        this.bloodGroupService.getAll({ PagingData: { currentPage: 0, take: 1000 } }).subscribe((data: any) => {
+            this.bloodGroupList = data.item1 || [];
+        });
+    }
+
+    private readonly issuedStatus = 3;
+
+    loadDashboardStats(): void {
+        forkJoin({
+            units: this.service.getAll({
+                ExcludeIssued: true,
+                PagingData: { currentPage: 0, take: 10000 }
+            }),
+            groups: this.bloodGroupService.getAll({ PagingData: { currentPage: 0, take: 1000 } })
+        }).subscribe({
+            next: ({ units, groups }: any) => {
+                const inStockUnits = this.filterInStockUnits(units?.item1 || []);
+                const available = inStockUnits.filter((unit: any) => unit.status === 1);
+                const groupList = groups?.item1 || [];
+                const stockedGroupIds = new Set(available.map((unit: any) => unit.bloodGroupMasterId));
+                const missingGroups = groupList.filter((group: any) => !stockedGroupIds.has(group.id));
+
+                this.dashboardStats = {
+                    availableUnits: available.length,
+                    nearExpiryUnits: available.filter((unit: any) => {
+                        const days = this.getExpiryDays(unit);
+                        return days >= 0 && days <= 7;
+                    }).length,
+                    expiredUnits: inStockUnits.filter((unit: any) => {
+                        if (unit.status === 5) return true;
+                        return unit.status === 1 && this.getExpiryDays(unit) < 0;
+                    }).length,
+                    noStorageUnits: available.filter((unit: any) => !this.isStorageAssigned(unit)).length,
+                    reservedUnits: inStockUnits.filter((unit: any) => unit.status === 2).length,
+                    missingGroupCount: missingGroups.length,
+                    missingGroupNames: missingGroups
+                        .map((group: any) => group.name || group.code)
+                        .filter(Boolean)
+                        .join(', ')
+                };
+            }
         });
     }
 
     bindData(): void {
         this.isLoading = true;
-        const request = {
-            ...this.filterForm.value,
+        const raw = this.filterForm.value;
+        const request: any = {
+            UnitNo: raw.unitNo,
+            ComponentTypeName: raw.componentTypeName,
+            Status: raw.status,
+            StorageAssigned: raw.storageAssigned,
             PagingData: { currentPage: this.currentPage, take: this.take }
         };
 
+        if (raw.bloodGroupMasterId) {
+            request.BloodGroupMasterId = raw.bloodGroupMasterId;
+        }
+
         this.service.getAll(request).subscribe({
             next: (data: any) => {
-                this.dataSource = new MatTableDataSource(data.item1);
+                const items = data.item1 || [];
+                this.dataSource = new MatTableDataSource(items);
                 this.totalRows = data.item2;
                 this.dataSource.sort = this.sort;
 
-                if (data.item1.length > 0) {
+                if (items.length > 0) {
                     setTimeout(() => {
                         this.paginator.pageIndex = this.currentPage;
                         this.paginator.length = this.totalRows;
@@ -99,6 +210,14 @@ export class BloodUnitListComponent {
         });
     }
 
+    private filterInStockUnits(units: any[]): any[] {
+        return (units || []).filter((unit) => unit?.status !== this.issuedStatus);
+    }
+
+    isIssuedUnit(unit: any): boolean {
+        return unit?.status === this.issuedStatus;
+    }
+
     pageChanged(event: PageEvent): void {
         this.take = event.pageSize;
         this.currentPage = event.pageIndex;
@@ -108,15 +227,6 @@ export class BloodUnitListComponent {
     filterData() {
         this.currentPage = 0;
         this.bindData();
-    }
-
-    openDialog(element: any) {
-        this.dialog.open(AddBloodUnitComponent, {
-            panelClass: 'cstm_width_700',
-            height: 'auto',
-            data: { element },
-            disableClose: true
-        }).afterClosed().subscribe(() => this.bindData());
     }
 
     viewDialog(element: any): void {
@@ -155,12 +265,21 @@ export class BloodUnitListComponent {
         return [fridge, rack, slot].filter(Boolean).join(' | ');
     }
 
-    deleteDialog(element: any) {
-        this.dialog.open(DeleteBloodUnitComponent, {
-            panelClass: 'cstm_width_500',
-            height: 'auto',
-            data: { element },
-            disableClose: true
-        }).afterClosed().subscribe(() => this.bindData());
+    getExpiryDays(unit: any): number {
+        if (this.isIssuedUnit(unit)) return 0;
+        if (!unit?.expiryDate) return 0;
+        const expiry = new Date(unit.expiryDate);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        expiry.setHours(0, 0, 0, 0);
+        return Math.ceil((expiry.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+    }
+
+    getExpiryDaysText(unit: any): string {
+        if (this.isIssuedUnit(unit)) return '';
+        const days = this.getExpiryDays(unit);
+        if (days < 0) return `Expired ${Math.abs(days)}d ago`;
+        if (days === 0) return 'Expires today';
+        return `${days} days left`;
     }
 }

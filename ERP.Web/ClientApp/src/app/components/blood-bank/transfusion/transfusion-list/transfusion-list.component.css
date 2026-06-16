@@ -6,8 +6,53 @@
   gap: 12px;
 }
 
+.header-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 .header-actions button mat-icon {
   margin-right: 4px;
+}
+
+.filter-panel {
+  border-radius: 12px;
+  padding: 14px 16px 4px;
+  margin-bottom: 16px;
+  border: 1px solid #e8edf3;
+}
+
+.filter-panel--transfusion {
+  background: linear-gradient(135deg, #f3f8ff 0%, #ffffff 100%);
+  border-color: #c5d9f5;
+  border-top: 3px solid #1565c0;
+}
+
+.filter-panel-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #455a64;
+}
+
+.filter-panel-head mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  color: #1565c0;
+}
+
+.filter-field-icon {
+  color: #78909c;
+  margin-right: 4px;
+}
+
+.table-panel {
+  border-radius: 12px;
+  overflow: hidden;
 }
 
 .stage-badge {

@@ -32,13 +32,15 @@
           <div class="col-md-6">
             <mat-form-field class="full-width" appearance="outline" subscriptSizing="dynamic">
               <mat-label>Patient Name</mat-label>
-              <input matInput appBloodBankTextOnly formControlName="patientName" maxlength="50">
+              <input matInput appBloodBankTextOnly formControlName="patientName" maxlength="50" [readonly]="patientFieldsLocked">
+              <mat-hint *ngIf="patientFieldsLocked">From linked appointment</mat-hint>
             </mat-form-field>
           </div>
           <div class="col-md-6">
             <mat-form-field class="full-width" appearance="outline" subscriptSizing="dynamic">
               <mat-label>Patient CNIC</mat-label>
-              <input matInput appBloodBankCnic formControlName="patientCNIC" placeholder="32020-5555555-5">
+              <input matInput appBloodBankCnic formControlName="patientCNIC" placeholder="32020-5555555-5" [readonly]="patientFieldsLocked">
+              <mat-hint *ngIf="patientFieldsLocked">From linked appointment</mat-hint>
             </mat-form-field>
           </div>
           <div class="col-md-4">
@@ -59,8 +61,10 @@
           </div>
           <div class="col-md-2">
             <mat-form-field class="full-width" appearance="outline" subscriptSizing="dynamic">
-              <mat-label>Quantity</mat-label>
+              <mat-label>Quantity (ml)</mat-label>
               <input matInput formControlName="quantity" type="number" min="1" (keypress)="blockInvalidQuantity($event)">
+              <mat-error *ngIf="form.get('quantity')?.touched && form.get('quantity')?.hasError('required')">Quantity is required</mat-error>
+              <mat-error *ngIf="form.get('quantity')?.touched && form.get('quantity')?.hasError('min')">Minimum 1 ml</mat-error>
             </mat-form-field>
           </div>
           <div class="col-md-2">
@@ -93,9 +97,14 @@
               <div class="appointment-units-panel__chips">
                 <button type="button" mat-stroked-button color="primary"
                   *ngFor="let unit of appointmentMatchedUnits"
+                  class="appointment-unit-chip"
                   [class.appointment-unit-chip--selected]="selectedUnit?.id === unit.id"
                   (click)="selectAppointmentUnit(unit); $event.preventDefault()">
-                  {{ getUnitLabel(unit) }}
+                  <span class="unit-chip-label">{{ getUnitLabel(unit) }}</span>
+                  <span class="unit-chip-expiry" [class.unit-chip-expiry--warning]="getExpiryDays(unit) <= 3"
+                    [class.unit-chip-expiry--expired]="getExpiryDays(unit) < 0">
+                    {{ getExpiryDaysText(unit) }}
+                  </span>
                 </button>
               </div>
               <p class="appointment-units-panel__hint">You can pick one of these or search for a different unit below.</p>
@@ -110,6 +119,10 @@
                 <mat-option *ngFor="let item of filteredUnits$ | async" [value]="item"
                   [class.appointment-unit-option]="isUnitFromSameAppointment(item)">
                   <span class="unit-option-label">{{ getUnitLabel(item) }}</span>
+                  <span class="unit-option-expiry" [class.unit-option-expiry--warning]="getExpiryDays(item) <= 3"
+                    [class.unit-option-expiry--expired]="getExpiryDays(item) < 0">
+                    {{ getExpiryDaysText(item) }}
+                  </span>
                   <span class="appointment-unit-badge" *ngIf="isUnitFromSameAppointment(item)">Same appointment</span>
                 </mat-option>
               </mat-autocomplete>
@@ -137,9 +150,13 @@
           <div class="col-md-4" *ngIf="showCrossMatchResultField">
             <mat-form-field class="full-width" appearance="outline" subscriptSizing="dynamic">
               <mat-label>Result</mat-label>
-              <mat-select formControlName="crossMatchResult">
+              <mat-select formControlName="crossMatchResult" required>
+                <mat-option [value]="null" disabled>Select result</mat-option>
                 <mat-option *ngFor="let item of resultList" [value]="item.value">{{ item.name }}</mat-option>
               </mat-select>
+              <mat-error *ngIf="form.get('crossMatchResult')?.touched && form.get('crossMatchResult')?.hasError('required')">
+                Result is required when a blood unit is selected
+              </mat-error>
             </mat-form-field>
           </div>
           <div class="col-md-4" *ngIf="!showCrossMatchResultField && crossMatchId">

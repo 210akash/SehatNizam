@@ -12,6 +12,8 @@ using System.Threading.Tasks;
 
 using AutoMapper;
 
+using ERP.BusinessModels.Enums;
+
 using ERP.BusinessModels.ResponseVM;
 
 using ERP.Mediator.Mediator.BloodBank.BloodUnit.Query;
@@ -58,13 +60,17 @@ namespace ERP.Mediator.Mediator.BloodBank.BloodUnit.Handler
 
                 && (request.ComponentTypeName == null || request.ComponentTypeName == "" || x.BloodComponentType.Name.ToLower().Contains(request.ComponentTypeName.ToLower().Trim()))
 
+                && (!request.BloodGroupMasterId.HasValue || request.BloodGroupMasterId == 0 || x.BloodGroupMasterId == request.BloodGroupMasterId)
+
                 && (!request.Status.HasValue || request.Status == 0 || x.Status == request.Status)
 
                 && (!request.StorageAssigned.HasValue || request.StorageAssigned == 0
 
                     || (request.StorageAssigned == 1 && x.BloodFridgeId.HasValue && x.BloodRackId.HasValue)
 
-                    || (request.StorageAssigned == 2 && (!x.BloodFridgeId.HasValue || !x.BloodRackId.HasValue)));
+                    || (request.StorageAssigned == 2 && (!x.BloodFridgeId.HasValue || !x.BloodRackId.HasValue)))
+
+                && (!request.ExcludeIssued.HasValue || !request.ExcludeIssued.Value || x.Status != (int)BloodUnitStatus.Issued);
 
 
 

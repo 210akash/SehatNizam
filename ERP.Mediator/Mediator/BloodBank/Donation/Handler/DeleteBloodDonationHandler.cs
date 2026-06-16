@@ -4,6 +4,8 @@ using System.Threading;
 
 using System.Threading.Tasks;
 
+using ERP.BusinessModels.Enums;
+
 using ERP.Core.Provider;
 
 using ERP.Mediator.Mediator.BloodBank.Donation.Query;
@@ -49,6 +51,8 @@ namespace ERP.Mediator.Mediator.BloodBank.Donation.Handler
                 .GetFirstAsNoTrackingAsync(y => y.Id == request.Id);
 
             if (entity == null) return false;
+
+            if (entity.ScreeningStatus != (int)BloodScreeningStatus.Pending) return false;
 
 
 

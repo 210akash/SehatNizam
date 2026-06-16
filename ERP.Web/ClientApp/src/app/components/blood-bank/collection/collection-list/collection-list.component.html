@@ -8,148 +8,221 @@
 </div>
 
 <div class="body-container">
-  <mat-tab-group [(selectedIndex)]="selectedTabIndex" (selectedIndexChange)="onTabChange($event)">
-    <mat-tab label="Donors">
-      <form [formGroup]="donorFilterForm" class="mt-3">
-        <div class="row">
-          <div class="col-md-4">
-            <mat-form-field class="form-field" style="width:100%">
-              <mat-label>Name</mat-label>
-              <input matInput appBloodBankTextOnly formControlName="name" maxlength="50" (keyup)="filterDonors()">
-            </mat-form-field>
-          </div>
-          <div class="col-md-4">
-            <mat-form-field class="form-field" style="width:100%">
-              <mat-label>CNIC</mat-label>
-              <input matInput appBloodBankCnic formControlName="cnic" placeholder="32020-5555555-5" (keyup)="filterDonors()">
-            </mat-form-field>
-          </div>
-        </div>
-      </form>
+  <mat-tab-group class="collection-tab-group" [(selectedIndex)]="selectedTabIndex" (selectedIndexChange)="onTabChange($event)">
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <span class="tab-label tab-label--history">
+          <mat-icon>history</mat-icon>
+          Collection History
+        </span>
+      </ng-template>
 
-      <div class="mat-elevation-z8 table-responsive mt-2">
-        <table mat-table [dataSource]="donorDataSource" matSort #donorSort="matSort">
-          <ng-container matColumnDef="code">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Code</th>
-            <td mat-cell *matCellDef="let element">{{ element.donorCode }}</td>
-          </ng-container>
-          <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
-            <td mat-cell *matCellDef="let element">{{ element.name }}</td>
-          </ng-container>
-          <ng-container matColumnDef="cnic">
-            <th mat-header-cell *matHeaderCellDef>CNIC</th>
-            <td mat-cell *matCellDef="let element">{{ element.cnic }}</td>
-          </ng-container>
-          <ng-container matColumnDef="mobile">
-            <th mat-header-cell *matHeaderCellDef>Mobile</th>
-            <td mat-cell *matCellDef="let element">{{ element.mobile }}</td>
-          </ng-container>
-          <ng-container matColumnDef="bloodGroup">
-            <th mat-header-cell *matHeaderCellDef>Blood Group</th>
-            <td mat-cell *matCellDef="let element">{{ getBloodGroupName(element) }}</td>
-          </ng-container>
-          <ng-container matColumnDef="isDeferred">
-            <th mat-header-cell *matHeaderCellDef>Deferred</th>
-            <td mat-cell *matCellDef="let element">{{ element.isDeferred ? 'Yes' : 'No' }}</td>
-          </ng-container>
-          <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef style="width: 16%;">Actions</th>
-            <td mat-cell *matCellDef="let element">
-              <div class="action_btns">
-                <button mat-mini-fab matTooltip="Collect Blood" color="success"
-                  [disabled]="element.isDeferred" (click)="openCollectBlood(element)">
-                  <mat-icon>bloodtype</mat-icon>
-                </button>
-                <button mat-mini-fab matTooltip="Edit Donor" color="primary" (click)="openAddDonor(element)">
-                  <mat-icon>edit</mat-icon>
-                </button>
-                <button mat-mini-fab matTooltip="View Donor" color="dark" (click)="viewDonor(element)">
-                  <mat-icon>visibility</mat-icon>
-                </button>
-                <button mat-mini-fab matTooltip="Delete" color="warn" (click)="deleteDonor(element)">
-                  <mat-icon>delete</mat-icon>
-                </button>
+      <div class="tab-panel tab-panel--history">
+        <div class="filter-panel filter-panel--history">
+          <div class="filter-panel-head">
+            <mat-icon>filter_list</mat-icon>
+            <span>Search Collections</span>
+          </div>
+          <form [formGroup]="collectionFilterForm">
+            <div class="row">
+              <div class="col-md-3">
+                <mat-form-field class="form-field filter-field" appearance="outline" style="width:100%">
+                  <mat-label>Donor Name</mat-label>
+                  <mat-icon matPrefix class="filter-field-icon">person</mat-icon>
+                  <input matInput appBloodBankTextOnly formControlName="donorName" maxlength="50" (keyup)="filterCollections()">
+                </mat-form-field>
               </div>
-            </td>
-          </ng-container>
-          <tr mat-header-row *matHeaderRowDef="donorDisplayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: donorDisplayedColumns;"></tr>
-        </table>
-        <mat-paginator #donorPaginator [length]="donorTotalRows" [pageIndex]="donorCurrentPage" [pageSize]="donorTake"
-          [pageSizeOptions]="pageSizeOptions" (page)="donorPageChanged($event)"></mat-paginator>
+              <div class="col-md-3">
+                <mat-form-field class="form-field filter-field" appearance="outline" style="width:100%">
+                  <mat-label>Donor CNIC</mat-label>
+                  <mat-icon matPrefix class="filter-field-icon">badge</mat-icon>
+                  <input matInput appBloodBankCnic formControlName="donorCNIC" placeholder="32020-5555555-5" (keyup)="filterCollections()">
+                </mat-form-field>
+              </div>
+              <div class="col-md-3">
+                <mat-form-field class="form-field filter-field" appearance="outline" style="width:100%">
+                  <mat-label>Status</mat-label>
+                  <mat-icon matPrefix class="filter-field-icon">fact_check</mat-icon>
+                  <mat-select formControlName="screeningStatus" (selectionChange)="filterCollections()">
+                    <mat-option [value]="null">All</mat-option>
+                    <mat-option *ngFor="let status of screeningStatusOptions" [value]="status.value">
+                      {{ status.name }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-md-3">
+                <mat-form-field class="form-field filter-field filter-field--appointment" appearance="outline" style="width:100%">
+                  <mat-label>Appointment</mat-label>
+                  <mat-icon matPrefix class="filter-field-icon">event_available</mat-icon>
+                  <input matInput [formControl]="appointmentSearchCtrl" [matAutocomplete]="appointmentAuto"
+                    placeholder="Token / Booking #" (input)="onAppointmentInputCleared($event)">
+                  <button *ngIf="selectedAppointment" mat-icon-button matSuffix type="button"
+                    matTooltip="Clear appointment" (click)="clearAppointmentFilter()">
+                    <mat-icon>close</mat-icon>
+                  </button>
+                  <mat-autocomplete #appointmentAuto="matAutocomplete" [displayWith]="displayAppointment"
+                    (optionSelected)="onAppointmentSelected($event.option.value)">
+                    <mat-option *ngIf="appointmentLoading" disabled>Searching...</mat-option>
+                    <mat-option *ngFor="let appointment of filteredAppointments$ | async" [value]="appointment">
+                      {{ displayAppointment(appointment) }}
+                    </mat-option>
+                  </mat-autocomplete>
+                </mat-form-field>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="mat-elevation-z8 table-responsive table-panel">
+          <table mat-table [dataSource]="collectionDataSource" matSort #collectionSort="matSort">
+            <ng-container matColumnDef="code">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Code</th>
+              <td mat-cell *matCellDef="let element">{{ element.donationCode }}</td>
+            </ng-container>
+            <ng-container matColumnDef="patient">
+              <th mat-header-cell *matHeaderCellDef>Patient / Type</th>
+              <td mat-cell *matCellDef="let element">
+                <div>{{ getPatientName(element) }}</div>
+                <small *ngIf="element.appointment">{{ getAppointmentToken(element) }}</small>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="donor">
+              <th mat-header-cell *matHeaderCellDef>Donor</th>
+              <td mat-cell *matCellDef="let element">{{ getDonorName(element) }}</td>
+            </ng-container>
+            <ng-container matColumnDef="componentType">
+              <th mat-header-cell *matHeaderCellDef>Component</th>
+              <td mat-cell *matCellDef="let element">{{ getComponentTypeName(element) }}</td>
+            </ng-container>
+            <ng-container matColumnDef="donationDate">
+              <th mat-header-cell *matHeaderCellDef>Date</th>
+              <td mat-cell *matCellDef="let element">{{ element.donationDate | date:'dd-MMM-yyyy' }}</td>
+            </ng-container>
+            <ng-container matColumnDef="screeningStatus">
+              <th mat-header-cell *matHeaderCellDef>Status</th>
+              <td mat-cell *matCellDef="let element">
+                <span class="status-chip" [ngClass]="'status-chip--' + element.screeningStatus">
+                  {{ getScreeningStatusText(element.screeningStatus) }}
+                </span>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef style="width: 11%;">Actions</th>
+              <td mat-cell *matCellDef="let element">
+                <div class="action_btns">
+                  <button mat-mini-fab matTooltip="Update Screening Status" color="primary" (click)="editCollection(element)">
+                    <mat-icon>published_with_changes</mat-icon>
+                  </button>
+                  <button mat-mini-fab matTooltip="View" color="dark" (click)="viewCollection(element)">
+                    <mat-icon>visibility</mat-icon>
+                  </button>
+                  <button *ngIf="canDeleteCollection(element)" mat-mini-fab matTooltip="Delete" color="warn" (click)="deleteCollection(element)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="collectionDisplayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: collectionDisplayedColumns;"></tr>
+          </table>
+          <mat-paginator #collectionPaginator [length]="collectionTotalRows" [pageIndex]="collectionCurrentPage"
+            [pageSize]="collectionTake" [pageSizeOptions]="pageSizeOptions" (page)="collectionPageChanged($event)">
+          </mat-paginator>
+        </div>
       </div>
     </mat-tab>
 
-    <mat-tab label="Collection History">
-      <form [formGroup]="collectionFilterForm" class="mt-3">
-        <div class="row">
-          <div class="col-md-4">
-            <mat-form-field class="form-field" style="width:100%">
-              <mat-label>Donor Name</mat-label>
-              <input matInput appBloodBankTextOnly formControlName="donorName" maxlength="50" (keyup)="filterCollections()">
-            </mat-form-field>
-          </div>
-          <div class="col-md-4">
-            <mat-form-field class="form-field" style="width:100%">
-              <mat-label>Donor CNIC</mat-label>
-              <input matInput appBloodBankCnic formControlName="donorCNIC" placeholder="32020-5555555-5" (keyup)="filterCollections()">
-            </mat-form-field>
-          </div>
-        </div>
-      </form>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <span class="tab-label tab-label--donors">
+          <mat-icon>volunteer_activism</mat-icon>
+          Donors
+        </span>
+      </ng-template>
 
-      <div class="mat-elevation-z8 table-responsive mt-2">
-        <table mat-table [dataSource]="collectionDataSource" matSort #collectionSort="matSort">
-          <ng-container matColumnDef="code">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Code</th>
-            <td mat-cell *matCellDef="let element">{{ element.donationCode }}</td>
-          </ng-container>
-          <ng-container matColumnDef="patient">
-            <th mat-header-cell *matHeaderCellDef>Patient / Type</th>
-            <td mat-cell *matCellDef="let element">
-              <div>{{ getPatientName(element) }}</div>
-              <small *ngIf="element.appointment">{{ getAppointmentToken(element) }}</small>
-            </td>
-          </ng-container>
-          <ng-container matColumnDef="donor">
-            <th mat-header-cell *matHeaderCellDef>Donor</th>
-            <td mat-cell *matCellDef="let element">{{ getDonorName(element) }}</td>
-          </ng-container>
-          <ng-container matColumnDef="componentType">
-            <th mat-header-cell *matHeaderCellDef>Component</th>
-            <td mat-cell *matCellDef="let element">{{ getComponentTypeName(element) }}</td>
-          </ng-container>
-          <ng-container matColumnDef="donationDate">
-            <th mat-header-cell *matHeaderCellDef>Date</th>
-            <td mat-cell *matCellDef="let element">{{ element.donationDate | date:'dd-MMM-yyyy' }}</td>
-          </ng-container>
-          <ng-container matColumnDef="screeningStatus">
-            <th mat-header-cell *matHeaderCellDef>Status</th>
-            <td mat-cell *matCellDef="let element">{{ getScreeningStatusText(element.screeningStatus) }}</td>
-          </ng-container>
-          <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef style="width: 11%;">Actions</th>
-            <td mat-cell *matCellDef="let element">
-              <div class="action_btns">
-                <button mat-mini-fab matTooltip="Edit" color="primary" (click)="editCollection(element)">
-                  <mat-icon>edit</mat-icon>
-                </button>
-                <button mat-mini-fab matTooltip="View" color="dark" (click)="viewCollection(element)">
-                  <mat-icon>visibility</mat-icon>
-                </button>
-                <button mat-mini-fab matTooltip="Delete" color="warn" (click)="deleteCollection(element)">
-                  <mat-icon>delete</mat-icon>
-                </button>
+      <div class="tab-panel tab-panel--donors">
+        <div class="filter-panel filter-panel--donors">
+          <div class="filter-panel-head">
+            <mat-icon>filter_list</mat-icon>
+            <span>Search Donors</span>
+          </div>
+          <form [formGroup]="donorFilterForm">
+            <div class="row">
+              <div class="col-md-4">
+                <mat-form-field class="form-field filter-field" appearance="outline" style="width:100%">
+                  <mat-label>Name</mat-label>
+                  <mat-icon matPrefix class="filter-field-icon">person</mat-icon>
+                  <input matInput appBloodBankTextOnly formControlName="name" maxlength="50" (keyup)="filterDonors()">
+                </mat-form-field>
               </div>
-            </td>
-          </ng-container>
-          <tr mat-header-row *matHeaderRowDef="collectionDisplayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: collectionDisplayedColumns;"></tr>
-        </table>
-        <mat-paginator #collectionPaginator [length]="collectionTotalRows" [pageIndex]="collectionCurrentPage"
-          [pageSize]="collectionTake" [pageSizeOptions]="pageSizeOptions" (page)="collectionPageChanged($event)">
-        </mat-paginator>
+              <div class="col-md-4">
+                <mat-form-field class="form-field filter-field" appearance="outline" style="width:100%">
+                  <mat-label>CNIC</mat-label>
+                  <mat-icon matPrefix class="filter-field-icon">badge</mat-icon>
+                  <input matInput appBloodBankCnic formControlName="cnic" placeholder="32020-5555555-5" (keyup)="filterDonors()">
+                </mat-form-field>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="mat-elevation-z8 table-responsive table-panel">
+          <table mat-table [dataSource]="donorDataSource" matSort #donorSort="matSort">
+            <ng-container matColumnDef="code">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Code</th>
+              <td mat-cell *matCellDef="let element">{{ element.donorCode }}</td>
+            </ng-container>
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+              <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+            </ng-container>
+            <ng-container matColumnDef="cnic">
+              <th mat-header-cell *matHeaderCellDef>CNIC</th>
+              <td mat-cell *matCellDef="let element">{{ element.cnic }}</td>
+            </ng-container>
+            <ng-container matColumnDef="mobile">
+              <th mat-header-cell *matHeaderCellDef>Mobile</th>
+              <td mat-cell *matCellDef="let element">{{ element.mobile }}</td>
+            </ng-container>
+            <ng-container matColumnDef="bloodGroup">
+              <th mat-header-cell *matHeaderCellDef>Blood Group</th>
+              <td mat-cell *matCellDef="let element">{{ getBloodGroupName(element) }}</td>
+            </ng-container>
+            <ng-container matColumnDef="isDeferred">
+              <th mat-header-cell *matHeaderCellDef>Deferred</th>
+              <td mat-cell *matCellDef="let element">
+                <span class="defer-chip" [class.defer-chip--yes]="element.isDeferred">
+                  {{ element.isDeferred ? 'Yes' : 'No' }}
+                </span>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef style="width: 16%;">Actions</th>
+              <td mat-cell *matCellDef="let element">
+                <div class="action_btns">
+                  <button mat-mini-fab matTooltip="Collect Blood" color="success"
+                    [disabled]="element.isDeferred" (click)="openCollectBlood(element)">
+                    <mat-icon>bloodtype</mat-icon>
+                  </button>
+                  <button mat-mini-fab matTooltip="Edit Donor" color="primary" (click)="openAddDonor(element)">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button mat-mini-fab matTooltip="View Donor" color="dark" (click)="viewDonor(element)">
+                    <mat-icon>visibility</mat-icon>
+                  </button>
+                  <button *ngIf="!isDonorUsedInCollection(element)" mat-mini-fab matTooltip="Delete" color="warn" (click)="deleteDonor(element)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="donorDisplayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: donorDisplayedColumns;"></tr>
+          </table>
+          <mat-paginator #donorPaginator [length]="donorTotalRows" [pageIndex]="donorCurrentPage" [pageSize]="donorTake"
+            [pageSizeOptions]="pageSizeOptions" (page)="donorPageChanged($event)"></mat-paginator>
+        </div>
       </div>
     </mat-tab>
   </mat-tab-group>

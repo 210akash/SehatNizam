@@ -51,7 +51,9 @@ export class AddAdmissionComponent implements OnInit {
   paymentStatusList: any;
   departments: any[] = [];
   services: any[] = [];
+  filteredServices: any[] = [];
   patientSearchCtrl = new FormControl<string | any>('');
+  serviceSearchCtrl = new FormControl('');
   filteredPatients$!: Observable<any[]>;
   patientLoading = false;
   doctorList: any;
@@ -59,7 +61,7 @@ export class AddAdmissionComponent implements OnInit {
   packageList: any[] = [];
   selectedPackageDetails: any[] = [];
   packageTotal: number = 0;
-  selectedServiceId: number | null = null;
+  selectedServiceId: any = null;
 
   constructor(
     private fb: FormBuilder,
@@ -98,6 +100,7 @@ export class AddAdmissionComponent implements OnInit {
     //this.patchEditData();
     this.setupCalculations();
     this.setupPatientAutocomplete();
+    this.setupServiceAutocomplete();
     this.setupAppointmentStatusWatcher();
   }
 
@@ -114,7 +117,7 @@ export class AddAdmissionComponent implements OnInit {
       referrerName: [''],
       referrer: [''],
       patientId: [null],
-      doctorName: [''],
+      doctorName: ['', Validators.required],
       doctor: [''],
       doctorId: [null, Validators.required],
       visitTypeId: [3],
@@ -159,7 +162,7 @@ export class AddAdmissionComponent implements OnInit {
       serviceId: [null, Validators.required],
       paymentDate: [this.minDate, Validators.required],
       paymentStatusId: [this.initialNavigationState.appointmentStatusId == 1 ? 1 : this.initialNavigationState.appointmentStatusId == 5 ? 3 : 1, Validators.required]
-    });
+    }, { validators: this.discountValidator });
   }
 
   private setupCalculations(): void {
@@ -178,16 +181,22 @@ export class AddAdmissionComponent implements OnInit {
   }
 
   addServiceToPayment(): void {
-    if (!this.selectedServiceId) {
+    let selectedService: any = null;
+
+    // Handle both autocomplete object (service) and select (serviceId)
+    if (typeof this.selectedServiceId === 'object' && this.selectedServiceId?.id) {
+      selectedService = this.services.find(s => s.id === this.selectedServiceId.id);
+    } else if (typeof this.selectedServiceId === 'number') {
+      selectedService = this.services.find(s => s.id === this.selectedServiceId);
+    }
+
+    if (!selectedService) {
       this.notifications.showNotification('Please select a service first', 'snack-bar-danger');
       return;
     }
 
-    const selectedService = this.services.find(s => s.id === this.selectedServiceId);
-    if (!selectedService) return;
-
     const paymentExists = this.appointmentPayments.controls.some(
-      (ctrl: any) => ctrl.get('serviceId')?.value === this.selectedServiceId
+      (ctrl: any) => ctrl.get('serviceId')?.value === selectedService.id
     );
 
     if (paymentExists) {
@@ -202,12 +211,13 @@ export class AddAdmissionComponent implements OnInit {
       discount: [0, Validators.min(0)],
       totalPayable: [0],
       paymentModeId: [5, Validators.required],
-      serviceId: [this.selectedServiceId, Validators.required],
+      serviceId: [selectedService.id, Validators.required],
       paymentDate: [this.minDate, Validators.required],
       paymentStatusId: [1, Validators.required]
     }));
 
     this.selectedServiceId = null;
+    this.serviceSearchCtrl.setValue('');
     this.updateTotalPayable();
   }
 
@@ -336,30 +346,51 @@ export class AddAdmissionComponent implements OnInit {
     });
   }
 public getIPDService(): void {
-  const departmentId = this.admissionForm.get('departmentId')?.value;
-  const _filterForm = { departmentId: departmentId };
-
-  this.serviceService.getAllServices(_filterForm).subscribe({
-    next: (res: any) => {
-      // Assign services from response
-      const allServices = res?.item1 ?? res ?? [];
-
-      // Get all IPD services
-      this.services = allServices.filter(
-        (s: any) => s.serviceType?.name === 'IPD'
-      );
-
-      // Optional: if you want to handle the case when no IPD services exist
-      if (this.services.length === 0) {
-        this.notifications.showNotification('No IPD Service Found Against Department', 'snack-bar-danger');
-      }
-    },
-    error: () => {
-      // Fallback: keep an empty list; UI will show required validation
+    const departmentId = this.admissionForm.get('departmentId')?.value;
+    if (!departmentId) {
       this.services = [];
+      this.filteredServices = [];
+      return;
     }
-  });
-}
+    const _filterForm = { departmentId: departmentId };
+
+    this.serviceService.getAllServices(_filterForm).subscribe({
+      next: (res: any) => {
+        // Assign services from response
+        const allServices = res?.item1 ?? res ?? [];
+
+        // Get all IPD services
+        this.services = allServices.filter(
+          (s: any) => s.serviceType?.name === 'IPD'
+        );
+        this.filteredServices = [...this.services];
+
+        // Optional: if you want to handle the case when no IPD services exist
+        if (this.services.length === 0) {
+          this.notifications.showNotification('No IPD Service Found Against Department', 'snack-bar-danger');
+        }
+      },
+      error: () => {
+        // Fallback: keep an empty list; UI will show required validation
+        this.services = [];
+        this.filteredServices = [];
+      }
+    });
+  }
+
+  setupServiceAutocomplete(): void {
+    this.serviceSearchCtrl.valueChanges.subscribe((value: string | any) => {
+      const term = (value ?? '').toString().toLowerCase().trim();
+      if (!term) {
+        this.filteredServices = [...this.services];
+        return;
+      }
+      this.filteredServices = this.services.filter((s: any) =>
+        (s?.name ?? '').toString().toLowerCase().includes(term) ||
+        (s?.code ?? '').toString().toLowerCase().includes(term)
+      );
+    });
+  }
 
   getCityList(): void {
     let _filterForm = {};
@@ -441,6 +472,9 @@ getPackageList(): void {
   displayPatient = (patient: any): string =>
     patient ? `${patient.name}${patient.phoneNo ? ' - ' + patient.phoneNo : ''}${patient.cnic ? ' - ' + patient.cnic : ''}` : '';
 
+  displayService = (service: any): string =>
+    service ? `${service.code} - ${service.name}` : '';
+
   onPatientSelected(patient: any): void {
     if (!patient) {
       return;
@@ -509,6 +543,8 @@ onSubmit(): void {
 
     if (this.admissionForm.invalid) {
       this.admissionForm.markAllAsTouched();
+      // Log invalid fields for debugging
+      console.log('Invalid fields:', this.getInvalidFields());
       this.errorMessage = 'Please fill all required fields.';
       this.notifications.showNotification(this.errorMessage, 'snack-bar-danger');
       return;
@@ -606,7 +642,7 @@ onSubmit(): void {
     });
   }
 
-  private calculateTotalPayable(): number {
+   calculateTotalPayable(): number {
     const payments = this.appointmentPayments.controls;
     let total = 0;
     payments.forEach((payment: any) => {
@@ -642,12 +678,6 @@ onSubmit(): void {
   async getDoctorList(event: any) {
     var filter = event.currentTarget.value;
     var departmentId = this.admissionForm.get('departmentId')?.value;
-    // if (departmentId == 0 || departmentId == null) {
-    //   this.admissionForm.get('doctorId')?.patchValue(0);
-    //   this.admissionForm.get('doctorName')?.patchValue('');
-    //   this.admissionForm.get('doctor')?.patchValue('');
-    //   this.notifications.showNotification('Please Select Department', 'snack-bar-danger');
-    // }
     var getDoctorFilter = {
       name: filter,
       departmentId: departmentId
@@ -676,12 +706,6 @@ onSubmit(): void {
     this.admissionForm.get('doctorId')?.patchValue(selectedValue.id);
     this.admissionForm.get('doctorName')?.patchValue(this.formatDoctorDisplay(selectedValue));
     this.admissionForm.get('doctor')?.patchValue(selectedValue);
-
-    const consultationFee = Number(selectedValue?.doctorProfile?.consultationFee ?? 0);
-    const firstPayment = this.appointmentPayments.at(0);
-    firstPayment?.get('visitFee')?.setValue(consultationFee, { emitEvent: true });
-    firstPayment?.get('visitFee')?.disable({ emitEvent: false });
-    this.getIPDService();
   }
 
   getdoctor(itemId: string) {
@@ -695,9 +719,6 @@ onSubmit(): void {
       this.admissionForm.get('doctorId')?.patchValue(0);
       this.admissionForm.get('doctorName')?.patchValue('');
       this.admissionForm.get('doctor')?.patchValue('');
-      const firstPayment = this.appointmentPayments.at(0);
-      firstPayment?.get('visitFee')?.enable({ emitEvent: false });
-      firstPayment?.get('visitFee')?.setValue(0, { emitEvent: true });
     }
   }
 
@@ -762,5 +783,47 @@ onSubmit(): void {
     }
   }
 
+  private discountValidator = (group: FormGroup): { [key: string]: any } | null => {
+    const visitFee = group.get('visitFee')?.value || 0;
+    const discount = group.get('discount')?.value || 0;
+    
+    if (discount > visitFee) {
+      group.get('discount')?.setErrors({ 'discountExceedsVisitFee': true });
+      return { 'discountExceedsVisitFee': true };
+    } else {
+      const errors = group.get('discount')?.errors;
+      if (errors && 'discountExceedsVisitFee' in errors) {
+        delete errors['discountExceedsVisitFee'];
+        group.get('discount')?.setErrors(Object.keys(errors).length > 0 ? errors : null);
+      }
+    }
+    return null;
+  };
+
+  private getInvalidFields(): string[] {
+    const invalidFields: string[] = [];
+    
+    const checkControl = (control: any, path: string) => {
+      if (control.invalid) {
+        if (control instanceof FormGroup) {
+          Object.keys(control.controls).forEach(key => {
+            checkControl(control.get(key), `${path}.${key}`);
+          });
+        } else if (control instanceof FormArray) {
+          control.controls.forEach((ctrl, index) => {
+            checkControl(ctrl, `${path}[${index}]`);
+          });
+        } else {
+          invalidFields.push(path);
+        }
+      }
+    };
+
+    Object.keys(this.admissionForm.controls).forEach(key => {
+      checkControl(this.admissionForm.get(key), key);
+    });
+
+    return invalidFields;
+  }
 
 }

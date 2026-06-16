@@ -94,7 +94,6 @@ namespace ERP.API.Controllers
             }
         }
 
-
         [HttpGet]
         [Route("GetCodeService")]
         public async Task<ActionResult<string>> GetCodeService()
@@ -103,6 +102,20 @@ namespace ERP.API.Controllers
             {
                 string code = await mediator.Send(new GetServiceCodeQuery());
                 return Ok(new { code = code });
+            }
+            catch (Exception ex)
+            {
+                return this.Result(ResponseStatus.Error, null, ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("GetServiceName")]
+        public async Task<ActionResult<List<GetService>>> GetServiceByName(string Name, long? DepartmentId)
+        {
+            try
+            {
+                return await mediator.Send(new GetServiceByNameQuery(Name, DepartmentId));
             }
             catch (Exception ex)
             {

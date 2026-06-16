@@ -186,14 +186,12 @@
 
         </div>
 
-        <div class="grid-4">
+        <div class="grid-2">
           <mat-form-field appearance="outline">
-            <mat-label>Reason for Visit / Complaint</mat-label>
+            <mat-label>Reason for Admission</mat-label>
             <input matInput formControlName="reason" placeholder="e.g. Fever, Headache, Checkup" />
           </mat-form-field>
-        </div>
- 
-        <div class="grid-4">
+
           <mat-form-field appearance="outline">
             <mat-label>Admission Diagnosis</mat-label>
             <input matInput formControlName="admissionDiagnosis" placeholder="e.g. Pneumonia, Hypertension" />
@@ -263,12 +261,14 @@
 
             <div class="row-actions">
               <mat-form-field appearance="outline" class="flex-grow">
-                <mat-label>Select Service</mat-label>
-                <mat-select [(ngModel)]="selectedServiceId" [ngModelOptions]="{standalone: true}">
-                  <mat-option *ngFor="let service of services" [value]="service.id">
-                    {{ service.name }} - {{ service.basePrice | number }}
+                <mat-label>Search Service</mat-label>
+                <input matInput [formControl]="serviceSearchCtrl" [matAutocomplete]="serviceAuto"
+                  placeholder="Type service name or code..." />
+                <mat-autocomplete #serviceAuto="matAutocomplete" [displayWith]="displayService" (optionSelected)="selectedServiceId = $event.option.value">
+                  <mat-option *ngFor="let service of filteredServices" [value]="service">
+                    {{ service?.code }} - {{ service?.name }} ({{ service?.basePrice | number }})
                   </mat-option>
-                </mat-select>
+                </mat-autocomplete>
               </mat-form-field>
               <button mat-flat-button color="primary" type="button" (click)="addServiceToPayment()">Add Service</button>
             </div>
@@ -289,7 +289,11 @@
                     <td>{{ getServiceName(row.get('serviceId')?.value) }}</td>
                     <td>{{ row.get('visitFee')?.value | number }}</td>
                     <td>
-                      <input type="number" class="form-control" formControlName="discount" min="0" />
+                      <input type="number" class="form-control" formControlName="discount" min="0" 
+                        [class.is-invalid]="row.get('discount')?.hasError('discountExceedsVisitFee') && row.get('discount')?.touched" />
+                      <small class="text-danger" *ngIf="row.get('discount')?.hasError('discountExceedsVisitFee') && row.get('discount')?.touched">
+                        Discount cannot exceed {{ row.get('visitFee')?.value | number }}
+                      </small>
                     </td>
                     <td>{{ calculateRowAmount(row) | number }}</td>
                     <td class="text-center">
@@ -303,6 +307,12 @@
                     <td colspan="5" class="text-center text-muted">No services added yet.</td>
                   </tr>
                 </tbody>
+                <tfoot *ngIf="hasServicesAdded()">
+                  <tr>
+                    <td colspan="3"><strong>Total</strong></td>
+                    <td colspan="2"><strong>{{ calculateTotalPayable() | number }}</strong></td>
+                  </tr>
+                </tfoot>
               </table>
             </div>
           </div>

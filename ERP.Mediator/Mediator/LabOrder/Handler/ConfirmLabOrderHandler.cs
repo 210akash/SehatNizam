@@ -29,7 +29,7 @@ namespace ERP.Mediator.Mediator.LabOrder.Handler
             unitOfWork.Repository<Entities.Models.LabOrder>().Update(LabOrder);
             var payment = new AppointmentPayment
             {
-                AppointmentId = LabOrder.Id,
+                AppointmentId = LabOrder.AppointmentId.Value,
                 VisitFee = LabOrder.LabOrderType.Service.BasePrice,
                 Discount = request.Discount,
                 TotalPayable = LabOrder.LabOrderType.Service.BasePrice - request.Discount,

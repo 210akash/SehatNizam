@@ -44,6 +44,7 @@ export class CollectBloodComponent {
     allRacks: any[] = [];
     maxDate = new Date();
     isScreeningStatusLocked = false;
+    screeningUpdateOnly = false;
     screeningStatusList = [
         { value: 1, name: 'Pending' },
         { value: 2, name: 'Pass' },
@@ -68,12 +69,21 @@ export class CollectBloodComponent {
             element?: any;
             isViewMode?: boolean;
             appointment?: any;
+            screeningUpdateOnly?: boolean;
         }
     ) { }
 
     ngOnInit(): void {
         this.isViewMode = this.data.isViewMode === true;
+        this.screeningUpdateOnly = this.data.screeningUpdateOnly === true;
         this.donorLocked = !!this.data?.donor && !this.data?.element;
+
+        if (this.screeningUpdateOnly) {
+            this.screeningStatusList = [
+                { value: 3, name: 'Fail' },
+                { value: 4, name: 'Deferred' }
+            ];
+        }
 
         this.form = this.formBuilder.group({
             id: [0],
@@ -124,6 +134,7 @@ export class CollectBloodComponent {
     }
 
     get dialogTitle(): string {
+        if (this.screeningUpdateOnly) return 'Update Screening Status';
         if (this.isViewMode) return 'View Blood Collection';
         if (this.isEditMode) return 'Edit Blood Collection';
         return this.donorLocked && this.selectedDonor
@@ -176,13 +187,20 @@ export class CollectBloodComponent {
                 }
 
                 this.filterRacksByFridge(this.form.get('bloodFridgeId')?.value);
-                this.isScreeningStatusLocked = this.hasStorageAssigned(donation?.bloodUnit);
+                this.isScreeningStatusLocked = this.screeningUpdateOnly
+                    ? false
+                    : this.hasStorageAssigned(donation?.bloodUnit);
                 this.updateStorageValidators();
 
-                if (this.isViewMode) {
+                if (this.isViewMode || this.screeningUpdateOnly) {
                     this.form.disable();
                     this.donorSearchCtrl.disable();
                     this.appointmentSearchCtrl.disable();
+                    if (this.screeningUpdateOnly) {
+                        this.form.patchValue({ screeningStatus: null });
+                        this.form.get('screeningStatus')?.enable();
+                        this.form.get('remarks')?.enable();
+                    }
                 }
 
                 this.isLoading = false;
@@ -383,6 +401,14 @@ export class CollectBloodComponent {
     saveData() {
         if (this.isViewMode) return;
 
+        if (this.screeningUpdateOnly) {
+            const screeningStatus = this.form.get('screeningStatus')?.value;
+            if (!screeningStatus || (screeningStatus !== 3 && screeningStatus !== 4)) {
+                this.notificationsService.showNotification('Select Fail or Deferred screening status', 'snack-bar-danger');
+                return;
+            }
+        }
+
         this.updateStorageValidators();
         if (this.form.invalid) {
             this.constantService.markFormGroupTouched(this.form);
@@ -406,7 +432,10 @@ export class CollectBloodComponent {
         this.donationService.save(donationPayload).subscribe({
             next: (data: { Status: number; Data: string }) => {
                 if (data.Status !== 200) {
-                    this.notificationsService.showNotification(data.Data, 'snack-bar-danger');
+                    const message = data.Status === 409
+                        ? 'Cannot update screening status for this unit.'
+                        : data.Data;
+                    this.notificationsService.showNotification(message, 'snack-bar-danger');
                     this.isLoading = false;
                     return;
                 }
@@ -416,7 +445,10 @@ export class CollectBloodComponent {
                     return;
                 }
 
-                this.notificationsService.showNotification(data.Data || 'Blood collection saved!', 'snack-bar-success');
+                const successMessage = this.screeningUpdateOnly
+                    ? 'Screening status updated. Unit removed from available stock.'
+                    : (data.Data || 'Blood collection saved!');
+                this.notificationsService.showNotification(successMessage, 'snack-bar-success');
                 this.dialog.closeAll();
                 this.isLoading = false;
             },

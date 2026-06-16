@@ -22,6 +22,7 @@ namespace ERP.BusinessModels.ResponseVM
         public GetBloodRack BloodRack { get; set; }
         public string SlotNo { get; set; }
         public int Status { get; set; }
+        public GetBloodDonation BloodDonation { get; set; }
         public GetUser CreatedBy { get; set; }
     }
 }

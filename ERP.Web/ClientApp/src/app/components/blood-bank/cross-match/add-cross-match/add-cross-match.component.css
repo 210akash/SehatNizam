@@ -1,5 +1,25 @@
-::ng-deep .cross-match-option .mdc-list-item__primary-text {
-    white-space: normal;
-    line-height: 1.35;
-}
+::ng-deep .cross-match-option .mdc-list-item__primary-text {
+    white-space: normal;
+    line-height: 1.35;
+    width: 100%;
+}
+
+.unit-option-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    width: 100%;
+}
+
+.unit-option-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.unit-option-detail {
+    font-size: 11px;
+    color: #64748b;
+    line-height: 1.35;
+}
 

@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
     selector: 'app-login-layout',
@@ -6,6 +7,7 @@ import { Component, OnInit } from '@angular/core';
     <router-outlet></router-outlet>
   `,
     styles: [],
-    standalone: false
+    standalone: true,
+    imports: [RouterOutlet],
 })
-export class LoginLayoutComponent {}
+export class LoginLayoutComponent { }

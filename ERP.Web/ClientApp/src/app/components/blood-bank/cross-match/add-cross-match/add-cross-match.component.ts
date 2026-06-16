@@ -298,19 +298,43 @@ export class AddCrossMatchComponent {
 
     getUnitLabel(unit: any): string {
 
+        return this.getUnitPrimaryLabel(unit);
+
+    }
+
+    getUnitPrimaryLabel(unit: any): string {
+
         if (!unit) return '';
 
         const unitNo = unit.unitNo || '';
 
         const component = unit.bloodComponentType?.name || unit.bloodComponentType?.code || '';
 
-        const storage = this.getStorageText(unit);
+        const bloodGroup = unit.bloodGroupMaster?.name || unit.bloodGroupMaster?.code || '';
+
+        return `${unitNo} — ${bloodGroup} | ${component}`;
+
+    }
+
+    getUnitDetailLabel(unit: any): string {
+
+        if (!unit) return '';
+
+        const storage = this.getStorageText(unit) || 'No storage assigned';
+
+        const donor = unit.bloodDonation?.bloodDonor;
+
+        const donorName = donor?.name ? `Donor: ${donor.name}` : 'Donor: —';
+
+        const donorCnic = donor?.cnic ? `CNIC ${donor.cnic}` : '';
+
+        const donorMobile = donor?.mobile ? `Ph ${donor.mobile}` : '';
 
         const expiryDays = this.getExpiryDays(unit);
 
-        const storagePart = storage ? storage : 'No storage';
+        const expiry = `Exp: ${expiryDays} days`;
 
-        return `${unitNo} — ${component} | ${storagePart} | Exp: ${expiryDays} days`;
+        return [storage, donorName, donorCnic, donorMobile, expiry].filter(Boolean).join(' · ');
 
     }
 

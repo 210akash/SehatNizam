@@ -111,7 +111,7 @@
               <th mat-header-cell *matHeaderCellDef style="width: 11%;">Actions</th>
               <td mat-cell *matCellDef="let element">
                 <div class="action_btns">
-                  <button mat-mini-fab matTooltip="Update Screening Status" color="primary" (click)="editCollection(element)">
+                  <button *ngIf="canUpdateScreeningStatus(element)" mat-mini-fab matTooltip="Update Screening Status" color="primary" (click)="editCollection(element)">
                     <mat-icon>published_with_changes</mat-icon>
                   </button>
                   <button mat-mini-fab matTooltip="View" color="dark" (click)="viewCollection(element)">

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { SidemenuModule } from '../sidemenu/sidemenu.module';
 
 @Component({
     selector: 'app-home-layout',
@@ -6,6 +7,7 @@ import { Component } from '@angular/core';
     <app-sidemenu></app-sidemenu>
   `,
     styles: [],
-    standalone: false
+    standalone: true,
+    imports: [SidemenuModule],
 })
-export class HomeLayoutComponent {}
+export class HomeLayoutComponent { }

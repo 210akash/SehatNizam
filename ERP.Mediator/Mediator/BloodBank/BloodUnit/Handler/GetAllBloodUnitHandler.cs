@@ -88,7 +88,7 @@ namespace ERP.Mediator.Mediator.BloodBank.BloodUnit.Handler
 
                 x => x.BloodRack,
 
-                x => x.BloodDonation
+                x => x.BloodDonation.BloodDonor
 
             };
 

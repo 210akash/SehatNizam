@@ -3,10 +3,9 @@
 @include mat.core();
 
 $my-theme: mat.define-theme((
-  density:(
-    scale : -4
+  density: (
+    scale: 0
   ),
-  
 ));
 
 html {

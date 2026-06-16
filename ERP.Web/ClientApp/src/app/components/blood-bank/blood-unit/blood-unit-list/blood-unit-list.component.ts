@@ -9,6 +9,8 @@ import { BloodGroupService } from '../../blood-group/blood-group.service';
 import { ComponentTypeService } from '../../component-type/component-type.service';
 import { AddBloodUnitComponent } from '../add-blood-unit/add-blood-unit.component';
 import { BloodUnitService } from '../blood-unit.service';
+import { DonationService } from '../../donation/donation.service';
+import { CollectBloodComponent } from '../../collection/collect-blood/collect-blood.component';
 
 interface StockDashboardStats {
     availableUnits: number;
@@ -53,6 +55,12 @@ export class BloodUnitListComponent {
         4: 'Discarded',
         5: 'Expired'
     };
+    screeningStatusMap: { [key: number]: string } = {
+        1: 'Pending',
+        2: 'Pass',
+        3: 'Fail',
+        4: 'Deferred'
+    };
     statusFilterOptions = [
         { value: 0, name: 'All' },
         { value: 1, name: 'Available' },
@@ -72,6 +80,7 @@ export class BloodUnitListComponent {
 
     constructor(
         private service: BloodUnitService,
+        private donationService: DonationService,
         private componentTypeService: ComponentTypeService,
         private bloodGroupService: BloodGroupService,
         private dialog: MatDialog,
@@ -235,6 +244,40 @@ export class BloodUnitListComponent {
             panelClass: 'cstm_width_700',
             height: 'auto',
             disableClose: true
+        });
+    }
+
+    canUpdateScreeningStatus(element: any): boolean {
+        const screeningStatus = element?.bloodDonation?.screeningStatus;
+        return element?.status === 1
+            && element?.bloodDonationId > 0
+            && screeningStatus === 2;
+    }
+
+    getDonationScreeningText(element: any): string {
+        const status = element?.bloodDonation?.screeningStatus;
+        return status ? (this.screeningStatusMap[status] || '') : '';
+    }
+
+    updateScreeningStatus(element: any): void {
+        const donationId = element?.bloodDonationId || element?.bloodDonation?.id;
+        if (!donationId) {
+            return;
+        }
+
+        this.donationService.getById(donationId).subscribe({
+            next: (donation: any) => {
+                this.dialog.open(CollectBloodComponent, {
+                    panelClass: 'cstm_width_950',
+                    maxHeight: '95vh',
+                    height: 'auto',
+                    data: { element: donation, screeningUpdateOnly: true },
+                    disableClose: true
+                }).afterClosed().subscribe(() => {
+                    this.bindData();
+                    this.loadDashboardStats();
+                });
+            }
         });
     }
 

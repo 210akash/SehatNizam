@@ -22,7 +22,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { HomeLayoutComponent } from './components/layout/home-layout.component';
 import { LoginLayoutComponent } from './components/layout/login-layout.component';
 import { MatCardModule } from '@angular/material/card';
-import { SidemenuComponent } from './components/sidemenu/sidemenu.component';
+import { SidemenuModule } from './components/sidemenu/sidemenu.module';
 import { LoginComponent } from './Auth/login/login.component';
 import { RouterModule } from '@angular/router';
 import { MatTableModule } from '@angular/material/table';
@@ -1027,10 +1027,7 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
     schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
     declarations: [
         ChartitemsComponent,
-        LoginLayoutComponent,
         ReportViewerComponent,
-        HomeLayoutComponent,
-        SidemenuComponent,
         ModernSidebarComponent,
         HeaderComponent,
         LoginComponent,
@@ -1786,6 +1783,9 @@ const matFormFieldDefaults: MatFormFieldDefaultOptions = {
         MatDatepickerModule,
         MatChipsModule,
         HasRoleDirective,
+        HomeLayoutComponent,
+        LoginLayoutComponent,
+        SidemenuModule,
         MatExpansionModule
 
     ],

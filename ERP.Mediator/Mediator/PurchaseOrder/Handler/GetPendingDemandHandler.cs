@@ -8,6 +8,7 @@ using AutoMapper;
 using ERP.BusinessModels.ResponseVM;
 using ERP.Core.Provider;
 using ERP.Entities.Models;
+using ERP.Mediator.Mediator.ComparativeStatement.Query;
 using ERP.Mediator.Mediator.PurchaseOrder.Query;
 using ERP.Repositories.UnitOfWork;
 using MediatR;
@@ -58,7 +59,7 @@ namespace ERP.Mediator.Mediator.PurchaseOrder.Handler
             // Iterate through each PurchaseDemand
             foreach (var item in PurchaseDemands)
             {
-                if (!request.PurchaseDemandId.Contains(item.Id))
+                if (request.PurchaseDemandId != item.Id)
                 {
                     bool hasPendingDetail = false; // Flag to track if any detail has a pending quantity
 

@@ -116,6 +116,10 @@ export class CollectionListComponent {
         return element?.screeningStatus === 1;
     }
 
+    canUpdateScreeningStatus(element: any): boolean {
+        return element?.screeningStatus === 1;
+    }
+
     bindDonors(): void {
         this.isDonorLoading = true;
         const request = {

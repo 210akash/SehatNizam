@@ -77,7 +77,13 @@ namespace ERP.Mediator.Mediator.BloodBank.Donation.Handler
                     && linkedUnit.BloodRackId.HasValue
                     && request.ScreeningStatus != existing.ScreeningStatus)
                 {
-                    return 409;
+                    var isFailOrDeferred = request.ScreeningStatus == (int)BloodScreeningStatus.Fail
+                        || request.ScreeningStatus == (int)BloodScreeningStatus.Deferred;
+                    var wasPass = existing.ScreeningStatus == (int)BloodScreeningStatus.Pass;
+                    if (!(isFailOrDeferred && wasPass))
+                    {
+                        return 409;
+                    }
                 }
 
                 entity = mapper.Map<BloodDonation>(request);
@@ -88,6 +94,21 @@ namespace ERP.Mediator.Mediator.BloodBank.Donation.Handler
                 entity.ModifiedDate = DateTime.Now;
                 unitOfWork.Repository<BloodDonation>().Update(entity);
                 unitOfWork.SaveChanges();
+
+                if (linkedUnit != null
+                    && (request.ScreeningStatus == (int)BloodScreeningStatus.Fail
+                        || request.ScreeningStatus == (int)BloodScreeningStatus.Deferred))
+                {
+                    var unitToDiscard = await unitOfWork.Repository<Entities.Models.BloodUnit>()
+                        .GetFirstAsync(x => x.Id == linkedUnit.Id && x.IsActive == true);
+                    if (unitToDiscard != null)
+                    {
+                        unitToDiscard.Status = (int)BloodUnitStatus.Discarded;
+                        unitToDiscard.ModifiedById = sessionProvider.Session.LoggedInUserId;
+                        unitToDiscard.ModifiedDate = DateTime.Now;
+                        unitOfWork.Repository<Entities.Models.BloodUnit>().Update(unitToDiscard);
+                    }
+                }
             }
 
             if (request.ScreeningStatus == (int)BloodScreeningStatus.Pass)

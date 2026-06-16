@@ -118,11 +118,10 @@
                 (optionSelected)="onUnitSelected($event.option.value)">
                 <mat-option *ngFor="let item of filteredUnits$ | async" [value]="item"
                   [class.appointment-unit-option]="isUnitFromSameAppointment(item)">
-                  <span class="unit-option-label">{{ getUnitLabel(item) }}</span>
-                  <span class="unit-option-expiry" [class.unit-option-expiry--warning]="getExpiryDays(item) <= 3"
-                    [class.unit-option-expiry--expired]="getExpiryDays(item) < 0">
-                    {{ getExpiryDaysText(item) }}
-                  </span>
+                  <div class="unit-option-wrap">
+                    <span class="unit-option-label">{{ getUnitPrimaryLabel(item) }}</span>
+                    <span class="unit-option-detail">{{ getUnitDetailLabel(item) }}</span>
+                  </div>
                   <span class="appointment-unit-badge" *ngIf="isUnitFromSameAppointment(item)">Same appointment</span>
                 </mat-option>
               </mat-autocomplete>

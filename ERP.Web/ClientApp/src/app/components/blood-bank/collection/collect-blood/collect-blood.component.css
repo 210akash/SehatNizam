@@ -348,3 +348,13 @@
     border-right: none;
   }
 }
+
+.screening-update-hint {
+  margin: 0 0 12px;
+  font-size: 14px;
+  color: #475569;
+}
+
+.screening-update-panel {
+  max-width: 720px;
+}

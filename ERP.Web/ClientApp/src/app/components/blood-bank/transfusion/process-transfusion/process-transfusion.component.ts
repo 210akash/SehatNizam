@@ -739,6 +739,10 @@ export class ProcessTransfusionComponent {
     }
 
     getUnitLabel(unit: any, includeAppointmentBadge = false): string {
+        return this.getUnitPrimaryLabel(unit, includeAppointmentBadge);
+    }
+
+    getUnitPrimaryLabel(unit: any, includeAppointmentBadge = false): string {
         if (!unit) return '';
         const unitNo = unit.unitNo || '';
         const component = unit.bloodComponentType?.name || unit.bloodComponentType?.code || '';
@@ -748,6 +752,25 @@ export class ProcessTransfusionComponent {
             return `${label} (Same appointment)`;
         }
         return label;
+    }
+
+    getUnitDetailLabel(unit: any): string {
+        if (!unit) return '';
+        const storage = this.getStorageText(unit) || 'No storage assigned';
+        const donor = unit.bloodDonation?.bloodDonor;
+        const donorName = donor?.name ? `Donor: ${donor.name}` : 'Donor: —';
+        const donorCnic = donor?.cnic ? `CNIC ${donor.cnic}` : '';
+        const donorMobile = donor?.mobile ? `Ph ${donor.mobile}` : '';
+        const expiry = this.getExpiryDaysText(unit);
+        return [storage, donorName, donorCnic, donorMobile, expiry].filter(Boolean).join(' · ');
+    }
+
+    private getStorageText(unit: any): string {
+        if (!unit?.bloodFridgeId || !unit?.bloodRackId) return '';
+        const fridge = unit.bloodFridge?.name || unit.bloodFridge?.code || 'Fridge';
+        const rack = unit.bloodRack?.name || unit.bloodRack?.code || 'Rack';
+        const slot = unit.slotNo ? `Slot ${unit.slotNo}` : '';
+        return [fridge, rack, slot].filter(Boolean).join(' | ');
     }
 
     getExpiryDays(unit: any): number {

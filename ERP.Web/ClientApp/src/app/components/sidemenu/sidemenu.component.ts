@@ -153,9 +153,17 @@ export class SidemenuComponent implements OnDestroy {
   
   toggleSidebar() {
     this.isSidebarOpen = !this.isSidebarOpen;
+    if (!this.isSidebarOpen) {
+      this.openSubMenus.clear();
+    }
   }
 
   toggleSubMenu(menuKey: string): void {
+    if (!this.isSidebarOpen) {
+      this.isSidebarOpen = true;
+      this.openSubMenus.add(menuKey);
+      return;
+    }
     if (this.openSubMenus.has(menuKey)) {
       this.openSubMenus.delete(menuKey);
     } else {
@@ -178,6 +186,20 @@ export class SidemenuComponent implements OnDestroy {
    get selectedWarehouseName(): string {
      const warehouse = this.warehouseList.find((w: { id: any; }) => w.id === this.selectedWarehouseId);
      return warehouse?.name || 'Building/Site';
+   }
+
+   get companyTooltip(): string {
+     const company = this.currentUser?.department?.company?.name;
+     return company ? `HMS — ${company}` : 'HMS System';
+   }
+
+   get userTooltip(): string {
+     if (!this.currentUser) {
+       return '';
+     }
+     const name = `${this.currentUser.firstName || ''} ${this.currentUser.lastName || ''}`.trim();
+     const dept = this.currentUser.department?.name;
+     return dept ? `${name} · ${dept}` : name;
    }
 
   hasRequiredRole(requiredRoles: string[]): boolean {
@@ -396,6 +418,140 @@ export class SidemenuComponent implements OnDestroy {
     redirectToJournal() {
     const url = '' + this.reportsUrl + 'ReportServer/Pages/ReportViewer.aspx?%2FSehatNizam%2FJournal&rs%3AClearSession=true&rc%3AView=af7578f5-cebd-4b18-ac9f-43c11e11f867&CompanyId=' + this.currentUser.department.companyId;
     window.open(url, '_blank');  // Opens the URL in a new tab
+  }
+
+  private readonly submenuIconMap: Record<string, string> = {
+    '/doctorappointment': 'fa-calendar-check',
+    '/bookappointment': 'fa-calendar-plus',
+    '/appointment': 'fa-user-plus',
+    '/patient': 'fa-user-injured',
+    '/referrer': 'fa-user-md',
+    '/triage': 'fa-heartbeat',
+    '/servicetype': 'fa-list-alt',
+    '/services': 'fa-notes-medical',
+    '/admissionpackage': 'fa-box-open',
+    '/ward': 'fa-hospital',
+    '/room': 'fa-door-open',
+    '/bed': 'fa-bed',
+    '/admission': 'fa-procedures',
+    '/appointmentpayment': 'fa-money-bill-wave',
+    '/advancepayment': 'fa-hand-holding-usd',
+    '/bloodcomponenttype': 'fa-vial',
+    '/bloodgroup': 'fa-tint',
+    '/bloodfridge': 'fa-snowflake',
+    '/bloodrack': 'fa-th',
+    '/bloodcollection': 'fa-syringe',
+    '/bloodstock': 'fa-warehouse',
+    '/bloodtransfusion': 'fa-exchange-alt',
+    '/labordertype': 'fa-flask',
+    '/laborder': 'fa-vials',
+    '/radiologytype': 'fa-x-ray',
+    '/radiologyorder': 'fa-file-medical-alt',
+    '/indentrequest': 'fa-file-alt',
+    '/issuance': 'fa-dolly',
+    '/inspection': 'fa-clipboard-check',
+    '/rejectreason': 'fa-ban',
+    '/roles': 'fa-user-shield',
+    '/users': 'fa-users',
+    '/companies': 'fa-building',
+    '/location': 'fa-map-marker-alt',
+    '/store': 'fa-store',
+    '/uoms': 'fa-balance-scale',
+    '/indenttype': 'fa-tags',
+    '/priority': 'fa-flag',
+    '/category': 'fa-folder',
+    '/subcategory': 'fa-folder-open',
+    '/itemtype': 'fa-cubes',
+    '/items': 'fa-box',
+    '/chartitems': 'fa-chart-bar',
+    '/currency': 'fa-dollar-sign',
+    '/shipmentmode': 'fa-shipping-fast',
+    '/paymentmode': 'fa-credit-card',
+    '/deliveryterms': 'fa-truck-loading',
+    '/gst': 'fa-percent',
+    '/vendors': 'fa-truck',
+    '/accountflow': 'fa-project-diagram',
+    '/accountcategory': 'fa-sitemap',
+    '/accountsubcategory': 'fa-stream',
+    '/accounttype': 'fa-layer-group',
+    '/account': 'fa-book',
+    '/accountgroup': 'fa-object-group',
+    '/accountchart': 'fa-chart-pie',
+    '/crv': 'fa-receipt',
+    '/brv': 'fa-university',
+    '/cpv': 'fa-money-check-alt',
+    '/bpv': 'fa-landmark',
+    '/jv': 'fa-journal-whills',
+    '/pjv': 'fa-file-invoice',
+    '/purchaseinvoice': 'fa-file-invoice-dollar',
+    '/vehicle': 'fa-car',
+    '/customer': 'fa-user-tie',
+    '/rack': 'fa-archive',
+    '/row': 'fa-grip-lines',
+    '/section': 'fa-th-large',
+    '/purchasedemand': 'fa-shopping-basket',
+    '/dispatch': 'fa-shipping-fast',
+    '/canceldispatch': 'fa-times-circle',
+    '/salematerial': 'fa-cash-register',
+    '/salereturn': 'fa-undo',
+    '/purchasereturn': 'fa-undo-alt',
+    '/salematerialreturn': 'fa-reply',
+    '/warehousetransfer': 'fa-exchange-alt',
+    '/grn': 'fa-clipboard-list',
+    '/costsheet': 'fa-calculator',
+    '/comparativestatement': 'fa-balance-scale-right',
+    '/purchaseorder': 'fa-file-signature',
+    '/userattendance': 'fa-fingerprint',
+    '/saleuser': 'fa-user-tag',
+    '/userterritory': 'fa-map',
+    '/region': 'fa-globe-asia',
+    '/area': 'fa-map-marked',
+    '/zone': 'fa-map-pin',
+    '/territory': 'fa-draw-polygon',
+    '/distributor': 'fa-people-carry',
+    '/route': 'fa-route',
+    '/shop': 'fa-store-alt',
+    '/shoptype': 'fa-tags',
+    '/pricinggroup': 'fa-tags',
+    '/primarysales': 'fa-chart-line',
+    '/shoporders': 'fa-shopping-bag',
+    '/fieldmap': 'fa-map-marked-alt',
+    '/salestarget': 'fa-bullseye',
+    '/project': 'fa-building',
+    '/departments': 'fa-sitemap',
+    '/employeedesignation': 'fa-id-badge',
+    '/employeeeducation': 'fa-graduation-cap',
+    '/employeegrade': 'fa-star',
+    '/employeeshift': 'fa-clock',
+    '/employeetype': 'fa-users-cog',
+    '/employeebank': 'fa-university',
+    '/employeedocumenttype': 'fa-file-alt',
+    '/employeeovertimerate': 'fa-business-time',
+    '/employeeworksitetype': 'fa-hard-hat',
+    '/device': 'fa-microchip',
+    '/cities': 'fa-city',
+    '/hryear': 'fa-calendar',
+    '/holiday': 'fa-umbrella-beach',
+    '/employeeleavetype': 'fa-plane-departure',
+    '/employeeleavegroup': 'fa-users',
+    '/employee': 'fa-id-card',
+    '/doctor': 'fa-stethoscope',
+    '/roster': 'fa-calendar-week',
+    '/manageemployeeleave': 'fa-calendar-minus',
+    '/notification': 'fa-bell',
+    '/candidateevaluationcategory': 'fa-clipboard-list',
+    '/interview': 'fa-user-graduate',
+    '/conductinterview': 'fa-comments',
+    '/salaryhead': 'fa-coins',
+    '/salarytaxslab': 'fa-percentage',
+    '/approveemployeeleave': 'fa-check-circle',
+    '/attendanceHr': 'fa-user-clock',
+    '/rosterdepartment': 'fa-calendar-alt',
+    '/igp': 'fa-truck',
+  };
+
+  getSubmenuIcon(route: string): string {
+    return this.submenuIconMap[route] ?? 'fa-angle-right';
   }
 
 }

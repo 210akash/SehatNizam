@@ -752,7 +752,8 @@ namespace ERP.Mediator.AutoMapper.Configuration
             CreateMap<BloodDonation, GetBloodDonation>().ReverseMap();
             CreateMap<BloodUnit, SaveBloodUnitCommand>().ReverseMap();
             CreateMap<BloodUnit, GetBloodUnit>()
-                .ForMember(d => d.DonationAppointmentId, opt => opt.MapFrom(s => s.BloodDonation != null ? s.BloodDonation.AppointmentId : null));
+                .ForMember(d => d.DonationAppointmentId, opt => opt.MapFrom(s => s.BloodDonation != null ? s.BloodDonation.AppointmentId : null))
+                .ForMember(d => d.BloodDonation, opt => opt.MapFrom(s => s.BloodDonation));
             CreateMap<BloodRequest, SaveBloodRequestCommand>().ReverseMap();
             CreateMap<BloodRequest, GetBloodRequest>().ReverseMap();
             CreateMap<BloodCrossMatch, SaveBloodCrossMatchCommand>().ReverseMap();

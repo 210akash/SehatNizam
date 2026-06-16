@@ -6,6 +6,33 @@
 
   <mat-card-content *ngIf="!isLoading" class="collect-body">
     <form [formGroup]="form" class="collect-form">
+      <ng-container *ngIf="screeningUpdateOnly; else fullCollectForm">
+        <div class="form-section screening-update-panel">
+          <div class="form-section-head">
+            <mat-icon>fact_check</mat-icon>
+            <h4>Screening Status</h4>
+          </div>
+          <p class="screening-update-hint">Select Fail or Deferred. The blood unit will be removed from available stock.</p>
+          <div class="row compact-row">
+            <div class="col-md-4">
+              <mat-form-field class="full-width" appearance="outline" subscriptSizing="dynamic">
+                <mat-label>Screening</mat-label>
+                <mat-select formControlName="screeningStatus">
+                  <mat-option *ngFor="let item of screeningStatusList" [value]="item.value">{{ item.name }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-md-8">
+              <mat-form-field class="full-width" appearance="outline" subscriptSizing="dynamic">
+                <mat-label>Remarks</mat-label>
+                <textarea matInput rows="2" formControlName="remarks"></textarea>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-template #fullCollectForm>
       <div class="dual-panel">
         <!-- Appointment -->
         <section class="info-panel">
@@ -183,7 +210,7 @@
           <div class="col-md-2">
             <mat-form-field class="full-width" appearance="outline" subscriptSizing="dynamic">
               <mat-label>Screening</mat-label>
-              <mat-select formControlName="screeningStatus" [disabled]="isViewMode || isScreeningStatusLocked">
+              <mat-select formControlName="screeningStatus" [disabled]="isViewMode || (isScreeningStatusLocked && !screeningUpdateOnly)">
                 <mat-option *ngFor="let item of screeningStatusList" [value]="item.value">{{ item.name }}</mat-option>
               </mat-select>
             </mat-form-field>
@@ -229,13 +256,14 @@
           </div>
         </div>
       </div>
+      </ng-template>
     </form>
   </mat-card-content>
 
   <mat-divider></mat-divider>
   <div class="collect-footer" *ngIf="!isLoading">
     <button *ngIf="!isViewMode" mat-flat-button color="success" type="button" (click)="saveData()" [disabled]="isLoading">
-      Save Collection
+      {{ screeningUpdateOnly ? 'Update Screening' : 'Save Collection' }}
     </button>
     <button mat-flat-button color="default" [mat-dialog-close]="true">Close</button>
   </div>

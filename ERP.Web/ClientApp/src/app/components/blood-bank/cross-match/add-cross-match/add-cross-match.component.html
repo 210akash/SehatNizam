@@ -50,7 +50,10 @@
 
               <mat-option *ngFor="let item of filteredUnits$ | async" [value]="item" class="cross-match-option">
 
-                {{ getUnitLabel(item) }}
+                <div class="unit-option-wrap">
+                  <span class="unit-option-label">{{ getUnitPrimaryLabel(item) }}</span>
+                  <span class="unit-option-detail">{{ getUnitDetailLabel(item) }}</span>
+                </div>
 
               </mat-option>
 

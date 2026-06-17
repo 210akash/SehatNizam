@@ -100,5 +100,43 @@ namespace ERP.API.Controllers
                 return this.Result(ResponseStatus.Error, null, ex.Message);
             }
         }
+
+        [HttpPost]
+        [Route("SaveRadiologyResult")]
+        public async Task<IActionResult> SaveRadiologyResult([FromBody] SaveRadiologyStudyResultCommand command)
+        {
+            try
+            {
+                var result = await this.mediator.Send(command);
+
+                if (result > 0)
+                    return this.Result(ResponseStatus.OK, result, "Radiology Result Saved!");
+
+                return this.Result(ResponseStatus.Error, null, "Unable to save radiology result!");
+            }
+            catch (Exception ex)
+            {
+                return this.Result(ResponseStatus.Error, null, ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [Route("ConfirmRadiologyOrder")]
+        public async Task<IActionResult> ConfirmRadiologyOrder([FromBody] ConfirmRadiologyOrderCommand command)
+        {
+            try
+            {
+                var result = await this.mediator.Send(command);
+
+                if (result)
+                    return this.Result(ResponseStatus.OK, result, "Radiology Order Confirmed!");
+
+                return this.Result(ResponseStatus.Error, null, "Unable to confirm radiology order!");
+            }
+            catch (Exception ex)
+            {
+                return this.Result(ResponseStatus.Error, null, ex.Message);
+            }
+        }
     }
 }

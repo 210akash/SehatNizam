@@ -1,34 +1,45 @@
 <div class="card print-dialog">
   <div class="card-header no-print">
     <div class="header-container">
-      <div class="card-title">Radiologyoratory Report</div>
+      <div class="header-text">
+        <div class="card-title">Radiology Report</div>
+        <div class="card-subtitle">{{ getRadiologyOrderTitle() }} · Order #{{ getOrderId() }}</div>
+      </div>
       <div class="header-actions">
-        <button mat-flat-button color="primary" type="button" class="print-button mr-2" (click)="printDocument()">
-          <span class="mat-button-wrapper">Print</span>
+        <button mat-flat-button color="primary" type="button" class="print-button mr-2" (click)="printDocument()" [disabled]="isLoading">
+          <mat-icon>print</mat-icon>
+          <span>Print</span>
         </button>
         <button mat-flat-button color="default" type="button" (click)="closeDialog()">
-          <span class="mat-button-wrapper">Close</span>
+          <span>Close</span>
         </button>
       </div>
     </div>
   </div>
 
-  <div class="card-body" id="printDoc">
+  <div class="loading-state no-print" *ngIf="isLoading">
+    <mat-spinner diameter="36"></mat-spinner>
+    <span>Loading report...</span>
+  </div>
+
+  <div class="card-body" id="printDoc" *ngIf="!isLoading">
     <div class="slip-sheet">
-      <div class="slip-top">
-        <div class="hospital-mark" aria-hidden="true">
-          <div class="mark-cross"></div>
+      <header class="report-header">
+        <div class="slip-top">
+          <div class="hospital-mark" aria-hidden="true">
+            <div class="mark-cross"></div>
+          </div>
+          <div class="hospital-copy">
+            <h1>{{ getHospitalName() }}</h1>
+            <p>{{ getHospitalSubtitle() }}</p>
+          </div>
         </div>
-        <div class="hospital-copy">
-          <h1>{{ getHospitalName() }}</h1>
-          <p>{{ getHospitalSubtitle() }}</p>
-        </div>
-      </div>
+        <div class="report-pill">Radiology Study Report</div>
+      </header>
 
       <div class="top-rule"></div>
 
-      <!-- Patient Summary -->
-      <div class="summary-card">
+      <section class="summary-card">
         <div class="patient-summary-grid">
           <div class="summary-pair">
             <span class="summary-head">Patient Name</span>
@@ -43,8 +54,16 @@
             <strong>{{ getPatientAgeGender() }}</strong>
           </div>
           <div class="summary-pair">
-            <span class="summary-head">Date</span>
-            <strong>{{ formatAppointmentDateLong() }} {{ formatAppointmentTime() }}</strong>
+            <span class="summary-head">Phone</span>
+            <strong>{{ getPatientPhone() }}</strong>
+          </div>
+          <div class="summary-pair">
+            <span class="summary-head">Order Date</span>
+            <strong>{{ formatAppointmentDateLong() }}</strong>
+          </div>
+          <div class="summary-pair">
+            <span class="summary-head">Performed Date</span>
+            <strong>{{ formatPerformedDate() }}</strong>
           </div>
           <div class="summary-pair">
             <span class="summary-head">Consultant</span>
@@ -54,55 +73,90 @@
             <span class="summary-head">Department</span>
             <strong>{{ getDepartmentName() }}</strong>
           </div>
+          <div class="summary-pair">
+            <span class="summary-head">Study</span>
+            <strong>{{ getRadiologyOrderTitle() }}</strong>
+          </div>
         </div>
 
         <div class="summary-side">
           <div class="token-circle">
-            <span class="token-radiologyel">Token</span>
+            <span class="token-label">Token</span>
             <span class="token-value">{{ getTokenNumber() }}</span>
           </div>
         </div>
-      </div>
+      </section>
 
-      <!-- Radiology Results Section -->
-      <div class="section-title">Radiology Orders & Results ( {{ radiologyOrderTitle }})</div>
+      <section class="study-banner">
+        <div>
+          <h2>{{ getRadiologyOrderTitle() }}</h2>
+          <p>Order #{{ getOrderId() }} · {{ getOrderStatus() }}</p>
+        </div>
+      </section>
+
       <div class="section-rule"></div>
-      <div class="radiology-results-board">
-        <div >
-          <table class="table table-bordered radiology-results-table">
-            <thead>
-              <tr>
-                <th>Test</th>
-                <th>Result</th>
-                <th>Unit</th>
-                <th>Reference Range</th>
-              </tr>
-            </thead>
-           <tbody >
- @for (result of radiologyResults; track result.id) {
-  <tr>
-    <td>{{ result.variableName }}</td>
-    <td>{{ result.resultValue }}</td>
-    <td>{{ result.unit }}</td>
-    <td>{{ result.referenceRange }}</td>
-  </tr>
-}
-</tbody>
-          </table>
+
+      <section class="report-section" *ngIf="hasReportContent(); else noReport">
+        <div class="report-block" *ngIf="studyResult?.clinicalHistory">
+          <h4>Clinical History</h4>
+          <p>{{ studyResult.clinicalHistory }}</p>
         </div>
 
-        <ng-template #noResults>
-          <div class="empty-state">No radiology results avairadiologyle for this order.</div>
-        </ng-template>
+        <div class="report-block" *ngIf="studyResult?.findings">
+          <h4>Findings</h4>
+          <p>{{ studyResult.findings }}</p>
+        </div>
+
+        <div class="report-block" *ngIf="studyResult?.impression">
+          <h4>Impression</h4>
+          <p>{{ studyResult.impression }}</p>
+        </div>
+
+        <div class="report-block" *ngIf="studyResult?.conclusion">
+          <h4>Conclusion</h4>
+          <p>{{ studyResult.conclusion }}</p>
+        </div>
+
+        <div class="report-block" *ngIf="clinicalNotesText && clinicalNotesText !== '-'">
+          <h4>Order Notes</h4>
+          <p>{{ clinicalNotesText }}</p>
+        </div>
+
+        <div class="report-block images-block" *ngIf="reportImages.length > 0">
+          <h4>Study Images ({{ reportImages.length }})</h4>
+          <div class="image-grid">
+            <figure class="image-item" *ngFor="let image of reportImages">
+              <img *ngIf="image.isImage" [src]="image.url" [alt]="image.fileName" />
+              <div class="file-chip" *ngIf="!image.isImage">{{ image.fileName }}</div>
+              <figcaption class="image-caption">
+                <span>#{{ image.sequenceNo }}</span>
+                <span *ngIf="image.remarks">{{ image.remarks }}</span>
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <ng-template #noReport>
+        <div class="empty-state">
+          <mat-icon>description</mat-icon>
+          <p>No radiology report or images available for this order.</p>
+        </div>
+      </ng-template>
+
+      <div class="signature-area" *ngIf="hasReportContent()">
+        <div class="signature-line"></div>
+        <strong>Radiology Department</strong>
+        <span>Authorized Signatory</span>
       </div>
 
       <div class="footer-rule"></div>
-      <div class="slip-footer">
+      <footer class="slip-footer">
         <div class="footer-warning">Not valid for medico-legal purposes</div>
         <div class="footer-meta">
           Printed on {{ currentDate }}, {{ currentTime }} · {{ getHospitalName() }} · Medical Record
         </div>
-      </div>
+      </footer>
     </div>
   </div>
 </div>

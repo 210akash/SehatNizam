@@ -2,6 +2,15 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AuthenticationService } from '../../../../Auth/authentication.service';
 import { ConstantService } from '../../../../Service/constant.service';
+import { RadiologyOrderService } from '../radiologyorder.service';
+
+interface ReportImage {
+  url: string;
+  fileName: string;
+  sequenceNo: number;
+  remarks: string;
+  isImage: boolean;
+}
 
 @Component({
   selector: 'app-print-radiology-order-result',
@@ -13,410 +22,60 @@ export class PrintRadiologyOrderResultComponent implements OnInit {
   currentUser: any;
   currentDate: any;
   currentTime: any;
-  radiologyResults: any[] = [];
-  radiologyOrderTitle: string = 'Radiology Order';
-  orderStatus: string = 'Pending';
-  clinicalNotesText: string = '-';
+  order: any;
+  studyResult: any = null;
+  reportImages: ReportImage[] = [];
+  radiologyOrderTitle = 'Radiology Order';
+  clinicalNotesText = '-';
+  isLoading = true;
 
   private readonly printStyles = `
     <style>
-      body {
-        margin: 0;
-        font-family: Arial, Helvetica, sans-serif;
-        color: #232323;
-        background: #ffffff;
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
-      }
-
-      *,
-      ::before,
-      ::after {
-        box-sizing: border-box;
-      }
-
-      .report-sheet,
-      .card,
-      .print-dialog {
-        width: 100%;
-        max-width: 210mm;
-        margin: 0 auto;
-        padding: 18mm;
-        background: #ffffff;
-        color: #232323;
-      }
-
-      .report-header,
-      .card-body {
-        display: flex;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 18px;
-        align-items: flex-start;
-      }
-
-      .report-title-group,
-      .slip-top {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-      }
-
-      .hospital-copy {
-        text-align: center;
-      }
-
-      .slip-sheet {
-        width: 100%;
-        min-height: auto;
-        margin: 0;
-        padding: 12mm;
-        background: #fff;
-        color: #404040;
-      }
-
-      .summary-card {
-        display: flex;
-        justify-content: space-between;
-        gap: 18px;
-        padding: 10px 12px;
-        border: 1px solid #d4d4d4;
-        border-radius: 8px;
-      }
-
-      .patient-summary-grid {
-        flex: 1;
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 12px 26px;
-      }
-
-      .summary-pair {
-        display: flex;
-        flex-direction: column;
-        gap: 3px;
-      }
-
-      .summary-head {
-        font-size: 0.62rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        color: #7b7b7b;
-      }
-
-      .summary-side {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-
-      .token-circle {
-        width: 58px;
-        height: 58px;
-        border: 2px solid #202020;
-        border-radius: 50%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-      }
-
-      .token-radiologyel {
-        font-size: 0.44rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        line-height: 1;
-      }
-
-      .token-value {
-        font-size: 0.5rem;
-        font-weight: 500;
-        line-height: 1;
-        margin-top: 2px;
-      }
-
-      .section-title {
-        margin: 18px 0 8px;
-        font-size: 0.96rem;
-        font-weight: 700;
-      }
-
-      .top-rule,
-      .section-rule,
-      .footer-rule {
-        border-top: 2px solid #202020;
-      }
-
-      .top-rule {
-        margin: 12px 0 18px;
-      }
-
-      .section-rule {
-        margin-bottom: 16px;
-        border-top-width: 1px;
-        border-top-color: #d9d9d9;
-      }
-
-      .slip-footer {
-        padding-top: 6px;
-        text-align: center;
-      }
-
-      .footer-warning {
-        font-size: 0.58rem;
-        font-weight: 700;
-        color: #333;
-      }
-
-      .footer-meta {
-        margin-top: 6px;
-        font-size: 0.54rem;
-        color: #666;
-      }
-
-      .report-footer,
-      .slip-footer {
-        display: flex;
-        justify-content: space-between;
-        gap: 12px;
-        align-items: center;
-        margin-top: 12px;
-        font-size: 0.82rem;
-        color: #6b7280;
-      }
-
-      .hospital-mark {
-        position: relative;
-        width: 46px;
-        height: 46px;
-        border: 2px solid #1f2937;
-        border-radius: 12px;
-        flex-shrink: 0;
-      }
-
-      .hospital-mark::before,
-      .hospital-mark::after,
-      .mark-cross::before,
-      .mark-cross::after {
-        content: "";
-        position: absolute;
-        background: #1f2937;
-      }
-
-      .hospital-mark::before {
-        width: 22px;
-        height: 3px;
-        top: 21px;
-        left: 11px;
-      }
-
-      .hospital-mark::after {
-        width: 3px;
-        height: 22px;
-        top: 11px;
-        left: 21px;
-      }
-
-      .mark-cross::before {
-        width: 7px;
-        height: 2px;
-        top: -6px;
-        right: -4px;
-      }
-
-      .mark-cross::after {
-        width: 2px;
-        height: 7px;
-        top: -8px;
-        right: -2px;
-      }
-
-      .report-pill {
-        display: inline-block;
-        padding: 6px 12px;
-        margin-bottom: 8px;
-        border-radius: 999px;
-        background: #e5e7eb;
-        color: #111827;
-        font-size: 0.72rem;
-        font-weight: 700;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-      }
-
-      .hospital-copy h1,
-      .report-title-group h1 {
-        margin: 0;
-        font-size: 1.25rem;
-        font-weight: 800;
-        letter-spacing: 0.01em;
-      }
-
-      .hospital-copy p,
-      .report-title-group p {
-        margin: 8px 0 0;
-        font-size: 0.86rem;
-        color: #4b5563;
-        line-height: 1.5;
-      }
-
-      .report-meta {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(120px, 1fr));
-        gap: 10px;
-        width: 100%;
-      }
-
-      .meta-item {
-        padding: 10px 12px;
-        border: 1px solid #e5e7eb;
-        border-radius: 10px;
-        background: #fafafa;
-      }
-
-      .meta-radiologyel {
-        display: block;
-        font-size: 0.68rem;
-        color: #6b7280;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-      }
-
-      .meta-value {
-        display: block;
-        margin-top: 6px;
-        font-size: 0.95rem;
-        font-weight: 700;
-        color: #111827;
-      }
-
-      .section-title {
-        margin: 24px 0 8px;
-        font-size: 1rem;
-        font-weight: 700;
-        border-bottom: 1px solid #d1d5db;
-        padding-bottom: 8px;
-      }
-
-      .details-grid {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 14px;
-      }
-
-      .detail-card {
-        padding: 14px 16px;
-        border: 1px solid #e5e7eb;
-        border-radius: 10px;
-        background: #fafafa;
-      }
-
-      .detail-radiologyel {
-        display: block;
-        font-size: 0.7rem;
-        color: #6b7280;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        margin-bottom: 6px;
-      }
-
-      .detail-value {
-        display: block;
-        font-size: 0.95rem;
-        font-weight: 700;
-        color: #111827;
-      }
-
-      .result-table,
-      .radiology-results-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 12px;
-        font-size: 0.92rem;
-      }
-
-      .result-table th,
-      .result-table td,
-      .radiology-results-table th,
-      .radiology-results-table td {
-        padding: 12px 14px;
-        border: 1px solid #e5e7eb;
-        text-align: left;
-        vertical-align: middle;
-      }
-
-      .result-table th,
-      .radiology-results-table th {
-        background: #f3f4f6;
-        color: #374151;
-        font-size: 0.78rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-      }
-
-      .result-table tbody tr:nth-child(even),
-      .radiology-results-table tbody tr:nth-child(even) {
-        background: #f9fafb;
-      }
-
-      .table {
-        width: 100%;
-        border-collapse: collapse;
-      }
-
-      .table-bordered {
-        border: 1px solid #e5e7eb;
-      }
-
-      .table-bordered th,
-      .table-bordered td {
-        border: 1px solid #e5e7eb;
-        padding: 8px 12px;
-      }
-
-      .empty-state {
-        padding: 18px 0;
-        color: #6b7280;
-        font-size: 0.96rem;
-      }
-
-      .footer-rule {
-        margin: 20px 0 0;
-        border-top: 1px solid #d1d5db;
-      }
-
-      .report-footer {
-        display: flex;
-        justify-content: space-between;
-        gap: 12px;
-        align-items: center;
-        margin-top: 12px;
-        font-size: 0.82rem;
-        color: #6b7280;
-      }
-
-      @page {
-        size: A4;
-        margin: 12mm;
-      }
-
-      @media print {
-        body {
-          background: #ffffff;
-        }
-
-        .no-print {
-          display: none !important;
-        }
-      }
+      body { margin: 0; font-family: Arial, Helvetica, sans-serif; color: #232323; background: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      *, ::before, ::after { box-sizing: border-box; }
+      .slip-sheet { width: 100%; margin: 0; padding: 10mm; background: #fff; }
+      .report-header { text-align: center; margin-bottom: 8px; }
+      .slip-top { display: flex; align-items: center; justify-content: center; gap: 14px; }
+      .hospital-copy h1 { margin: 0; font-size: 1.15rem; font-weight: 800; }
+      .hospital-copy p { margin: 4px 0 0; font-size: 0.68rem; color: #666; }
+      .report-pill { display: inline-block; margin-top: 10px; padding: 5px 14px; border-radius: 999px; background: #eef2f7; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+      .top-rule, .footer-rule { border-top: 2px solid #202020; margin: 12px 0; }
+      .section-rule { border-top: 1px solid #d9d9d9; margin-bottom: 14px; }
+      .summary-card { display: flex; justify-content: space-between; gap: 16px; padding: 12px; border: 1px solid #d4d4d4; border-radius: 8px; }
+      .patient-summary-grid { flex: 1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px 20px; }
+      .summary-head { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; color: #7b7b7b; }
+      .summary-pair strong { font-size: 0.86rem; color: #2f2f2f; }
+      .token-circle { width: 58px; height: 58px; border: 2px solid #202020; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+      .token-label { font-size: 0.44rem; font-weight: 700; text-transform: uppercase; }
+      .token-value { font-size: 0.5rem; margin-top: 2px; }
+      .study-banner { margin: 14px 0 8px; padding: 10px 12px; border-left: 4px solid #1e88e5; background: #f8fafc; }
+      .study-banner h2 { margin: 0; font-size: 1rem; }
+      .study-banner p { margin: 4px 0 0; font-size: 0.75rem; color: #64748b; }
+      .report-block { margin-bottom: 14px; page-break-inside: avoid; }
+      .report-block h4 { margin: 0 0 6px; font-size: 0.76rem; text-transform: uppercase; color: #555; letter-spacing: 0.04em; }
+      .report-block p { margin: 0; white-space: pre-wrap; line-height: 1.55; font-size: 0.88rem; }
+      .image-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+      .image-item { margin: 0; page-break-inside: avoid; }
+      .image-item img { width: 100%; max-height: 220px; object-fit: contain; border: 1px solid #d4d4d4; border-radius: 6px; background: #f8fafc; }
+      .file-chip { min-height: 100px; padding: 16px; border: 1px solid #d4d4d4; border-radius: 6px; text-align: center; font-size: 0.75rem; }
+      .image-caption { margin-top: 4px; font-size: 0.68rem; color: #666; display: flex; justify-content: space-between; gap: 8px; }
+      .signature-area { margin-top: 24px; width: 200px; margin-left: auto; text-align: center; }
+      .signature-line { border-top: 1px solid #202020; margin-bottom: 6px; }
+      .signature-area strong { display: block; font-size: 0.84rem; }
+      .signature-area span { font-size: 0.62rem; text-transform: uppercase; color: #666; }
+      .empty-state { padding: 24px; text-align: center; color: #7a7a7a; }
+      .slip-footer { text-align: center; padding-top: 8px; }
+      .footer-warning { font-size: 0.58rem; font-weight: 700; }
+      .footer-meta { margin-top: 6px; font-size: 0.54rem; color: #666; }
+      @page { size: A4; margin: 10mm; }
+      @media print { .no-print { display: none !important; } }
     </style>
   `;
 
   constructor(
     private constantService: ConstantService,
     private authenticationService: AuthenticationService,
+    private radiologyOrderService: RadiologyOrderService,
     private dialogRef: MatDialogRef<PrintRadiologyOrderResultComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
@@ -425,41 +84,64 @@ export class PrintRadiologyOrderResultComponent implements OnInit {
     this.currentUser = this.authenticationService.currentUserValue;
     this.currentDate = this.constantService.convertDate(new Date());
     this.currentTime = this.constantService.convertTime(new Date().getTime());
-    this.initializeReport();
-    console.log('Received data for printing:', this.data);
-    console.log('Resolved radiology results:', this.radiologyResults);
+
+    const element = this.data?.element ?? this.data;
+    this.radiologyOrderService.getRadiologyOrderById(element.id).subscribe({
+      next: (res: any) => {
+        this.order = this.normalizeOrder(res?.Data ?? res?.data ?? res, element);
+        this.initializeReport();
+        this.isLoading = false;
+      },
+      error: () => {
+        this.order = this.normalizeOrder(element);
+        this.initializeReport();
+        this.isLoading = false;
+      }
+    });
   }
 
   private initializeReport(): void {
-    this.radiologyResults = this.getRadiologyResults();
+    this.studyResult = this.getSource()?.radiologyStudyResult ?? null;
     this.radiologyOrderTitle = this.getRadiologyOrderTitle();
-    this.orderStatus = this.getOrderStatus();
-    this.clinicalNotesText = this.getClinicalNotes();
+    this.clinicalNotesText = this.getSource()?.clinicalNotes || '-';
+    this.reportImages = (this.studyResult?.images ?? [])
+      .slice()
+      .sort((a: any, b: any) => (a.sequenceNo ?? 0) - (b.sequenceNo ?? 0))
+      .map((image: any) => ({
+        url: this.resolveImageUrl(image.imageUrl, true),
+        fileName: this.getFileNameFromUrl(image.imageUrl),
+        sequenceNo: image.sequenceNo ?? 0,
+        remarks: image.remarks ?? '',
+        isImage: this.isImageUrl(image.imageUrl)
+      }));
+  }
+
+  hasReportContent(): boolean {
+    return !!(
+      this.studyResult?.clinicalHistory ||
+      this.studyResult?.findings ||
+      this.studyResult?.impression ||
+      this.studyResult?.conclusion ||
+      this.reportImages.length > 0
+    );
   }
 
   printDocument(): void {
     const printContent = document.getElementById('printDoc');
-
-    if (!printContent) {
-      return;
-    }
+    if (!printContent) return;
 
     const printWindow = window.open('', '', 'left=0,top=0,width=1100,height=1100,toolbar=0,scrollbars=1,status=0');
-    if (!printWindow) {
-      return;
-    }
+    if (!printWindow) return;
 
     printWindow.document.open();
     printWindow.document.write(`
       <!doctype html>
       <html>
         <head>
-          <title>Radiologyoratory Report</title>
+          <title>Radiology Report - ${this.getPatientName()}</title>
           ${this.printStyles}
         </head>
-        <body>
-          ${printContent.innerHTML}
-        </body>
+        <body>${printContent.innerHTML}</body>
       </html>
     `);
     printWindow.document.close();
@@ -468,290 +150,160 @@ export class PrintRadiologyOrderResultComponent implements OnInit {
       printWindow.focus();
       printWindow.print();
       printWindow.close();
-    }, 150);
+    }, 300);
   }
 
   closeDialog(): void {
     this.dialogRef.close(true);
   }
 
+  getOrderId(): string {
+    return String(this.getSource()?.id ?? '-');
+  }
+
+  getOrderStatus(): string {
+    return this.getSource()?.status?.title
+      || this.getSource()?.status?.name
+      || 'Completed';
+  }
+
   private getSource(): any {
-    // Support both direct radiology order or wrapped in element property
-    return this.data?.element || this.data || {};
+    return this.order ?? this.data?.element ?? this.data ?? {};
   }
 
   private getAppointment(): any {
-    const source = this.getSource();
-    return source?.appointment || source?.patient?.patientAppointments?.[0] || {};
+    return this.getSource()?.appointment ?? {};
   }
 
   private getPatient(): any {
-    const source = this.getSource();
-    return source?.patient || this.getAppointment()?.patient || source || {};
+    const patient = this.getAppointment()?.patient ?? {};
+    const master = patient.patientMaster ?? {};
+    return {
+      name: master.name ?? patient.name ?? '',
+      mrn: patient.mrn ?? '',
+      gender: master.gender ?? patient.gender ?? '',
+      age: master.age ?? patient.age ?? '',
+      phoneNo: master.phoneNo ?? patient.phoneNo ?? '',
+      dateOfBirth: master.dateOfBirth ?? patient.dateOfBirth
+    };
   }
 
   getHospitalName(): string {
-    const source = this.getSource();
-    return source?.appointment?.department?.company?.name
-      || this.getAppointment()?.department?.company?.name
-      || 'Sehat Nizam Diagnostic Center';
+    return this.getAppointment()?.department?.company?.name || 'Sehat Nizam Diagnostic Center';
   }
 
   getHospitalSubtitle(): string {
-    const company = this.getSource()?.department?.company
-      || this.getAppointment()?.department?.company
-      || {};
-    const parts = [
-      company?.address,
-      company?.phoneNo || company?.phone || company?.mobileNo,
-      company?.email
-    ].filter(Boolean);
-
-    return parts.length
-      ? parts.join(' · ')
-      : '123 Medical Center Drive, Health City · +1 (555) 123-4567 · contact@xyzgroup.com';
+    const company = this.getAppointment()?.department?.company ?? {};
+    const parts = [company?.address, company?.phoneNo || company?.phone, company?.email].filter(Boolean);
+    return parts.length ? parts.join(' · ') : '';
   }
 
-  formatAppointmentDate(): string {
-    return this.formatDate(this.getAppointment()?.appointmentDate, {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric'
-    });
-  }
-
-  formatAppointmentTime(): string {
-    return this.formatDate(this.getAppointment()?.appointmentDate, {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true
-    });
-  }
-
-  formatAppointmentDateTime(): string {
-    return this.formatDate(this.getAppointment()?.appointmentDate, {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true
-    });
+  formatPerformedDate(): string {
+    const date = this.studyResult?.performedDate || this.getAppointment()?.appointmentDate;
+    return this.formatDate(date, { day: '2-digit', month: 'short', year: 'numeric' });
   }
 
   formatAppointmentDateLong(): string {
     return this.formatDate(this.getAppointment()?.appointmentDate, {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric'
+      day: '2-digit', month: 'short', year: 'numeric'
     });
   }
 
   getPatientAgeGender(): string {
     const patient = this.getPatient();
-    if (!patient || Object.keys(patient).length === 0) {
-      return '-';
-    }
-
     const age = patient.age ?? this.calculateAge(patient.dateOfBirth) ?? '-';
-    const gender = patient.gender || '-';
-    return `${age} / ${gender}`;
-  }
-
-  getPatientDob(): string {
-    return this.formatDate(this.getPatient()?.dateOfBirth, {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric'
-    });
+    return `${age} / ${patient.gender || '-'}`;
   }
 
   getPatientPhone(): string {
-    const patient = this.getPatient();
-    return patient?.phoneNo || patient?.secondaryPhoneNo || '-';
-  }
-
-  getPatientAddress(): string {
-    return this.getPatient()?.address || '-';
+    return this.getPatient().phoneNo || '-';
   }
 
   getDoctorName(): string {
-    const doctor = this.getSource()?.doctor || this.getAppointment()?.doctor;
-    if (!doctor) {
-      return '-';
-    }
-
-    const fullName = `${doctor.firstName || ''} ${doctor.lastName || ''}`.trim();
-    return fullName || doctor.name || doctor.doctorName || '-';
-  }
-
-  getOrderStatus(): string {
-    const source = this.getSource();
-    return source?.status?.title
-      || source?.status?.name
-      || source?.appointmentStatus?.name
-      || this.getAppointment()?.appointmentStatus?.name
-      || source?.status
-      || 'Pending';
-  }
-
-  getOrderDate(): string {
-    return this.formatDate(this.getAppointment()?.appointmentDate, {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric'
-    });
-  }
-
-  getOrderTime(): string {
-    return this.formatDate(this.getAppointment()?.appointmentDate, {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true
-    });
+    const doctor = this.getAppointment()?.doctor;
+    if (!doctor) return '-';
+    return doctor.fullName || doctor.name || `${doctor.firstName || ''} ${doctor.lastName || ''}`.trim() || '-';
   }
 
   getTokenNumber(): string {
-    const source = this.getSource();
-    return source?.tokenNumber
-      || this.getAppointment()?.tokenNumber
-      || '-';
+    return this.getAppointment()?.tokenNumber || '-';
   }
 
   getRadiologyOrderTitle(): string {
     const source = this.getSource();
-    return source?.radiologyOrderType?.name || 'Radiology Order';
-  }
-
-  getRadiologyResults(): any[] {
-    const source = this.getSource();
-    // CRITICAL FIX: Use 'radiologyResult' (singular) not 'radiologyResults' (plural)
-    return source?.radiologyResult || [];
-  }
-
-  getClinicalNotes(): string {
-    const source = this.getSource();
-    return source?.clinicalNotes || '-';
+    return source?.radiologyType?.name || source?.radiologyOrderType?.name || 'Radiology Order';
   }
 
   getPatientName(): string {
-    return this.getPatient()?.name || '-';
+    return this.getPatient().name || '-';
   }
 
   getPatientMrn(): string {
-    return this.getPatient()?.mrn || '-';
+    return this.getPatient().mrn || '-';
   }
 
   getDepartmentName(): string {
-    const source = this.getSource();
-    return source?.department?.name
-      || this.getAppointment()?.department?.name
-      || '-';
+    return this.getAppointment()?.department?.name || '-';
   }
 
-  getPaymentStatus(): string {
-    const payment = this.getPayment();
-    return payment?.paymentStatus?.name || payment?.paymentStatusName || payment?.status || '-';
-  }
+  resolveImageUrl(url: string, forPrint = false): string {
+    if (!url) return '';
+    if (url.startsWith('data:') || url.startsWith('http')) return url;
 
-  getVisitFee(): number {
-    const payment = this.getPayment();
-    return Number(payment?.visitFee ?? payment?.amount ?? 0);
-  }
-
-  getDiscount(): number {
-    const payment = this.getPayment();
-    return Number(payment?.discount ?? 0);
-  }
-
-  getTotalPayable(): number {
-    const payment = this.getPayment();
-    const explicitTotal = payment?.totalPayable;
-
-    if (explicitTotal != null) {
-      return Number(explicitTotal);
+    if (url.startsWith('/assets/')) {
+      return forPrint ? `${window.location.origin}${url}` : url;
     }
 
-    return this.getVisitFee() - this.getDiscount();
+    const absolute = url.startsWith('/') ? url : `/${url}`;
+    return forPrint ? `${window.location.origin}${absolute}` : absolute;
   }
 
-  getClinicalNarrative(): string {
-    const element = this.getSource();
-    const parts = [
-      element?.chiefComplaint,
-      element?.assessment,
-      element?.notes,
-      element?.diagnosis,
-      element?.plan,
-      element?.reason
-    ].filter((value: any, index: number, array: any[]) => !!value && array.indexOf(value) === index);
-
-    return parts.join('\n\n');
+  isImageUrl(url: string): boolean {
+    if (!url) return false;
+    if (url.startsWith('data:image')) return true;
+    return /\.(png|jpe?g|gif|webp|bmp|svg)$/i.test(url);
   }
 
-  getVitalValue(key: string): string {
-    const source = this.getSource();
-    const triage = source?.triage
-      || source?.latestTriage
-      || source?.triageDetail
-      || {};
-
-    switch (key) {
-      case 'bp': {
-        const systolic = triage?.systolicBp ?? triage?.systolicBP;
-        const diastolic = triage?.diastolicBp ?? triage?.diastolicBP;
-        return systolic || diastolic ? `${systolic ?? '-'} / ${diastolic ?? '-'}` : '';
-      }
-      case 'pulse':
-        return this.toDisplayValue(triage?.pulse);
-      case 'temperature':
-        return this.toDisplayValue(triage?.temperature);
-      case 'spo2':
-        return this.toDisplayValue(triage?.spo2);
-      case 'weight':
-        return this.toDisplayValue(triage?.weight);
-      case 'heightCm':
-        return this.toDisplayValue(triage?.heightCm ?? triage?.heightCM);
-      case 'rbs':
-        return this.toDisplayValue(triage?.bloodSugar ?? triage?.rbs);
-      default:
-        return '';
-    }
+  private getFileNameFromUrl(url: string): string {
+    if (!url || url.startsWith('data:')) return 'image';
+    const parts = url.split('/');
+    return parts[parts.length - 1] || 'image';
   }
 
-  private getPayment(): any {
-    const element = this.getSource();
-    return element?.appointmentPayments?.find((item: any) => item.appointmentId === element?.id)
-      || element?.appointmentPayments?.[0]
-      || element?.appointmentPayment
-      || {};
+  private normalizeOrder(primary: any, fallback?: any): any {
+    const order = primary ?? fallback ?? {};
+    const appointment = order.appointment ?? fallback?.appointment ?? {};
+    const patient = appointment.patient ?? fallback?.appointment?.patient ?? {};
+
+    return {
+      ...fallback,
+      ...order,
+      appointment: {
+        ...fallback?.appointment,
+        ...appointment,
+        patient: {
+          ...patient,
+          patientMaster: patient.patientMaster ?? fallback?.appointment?.patient?.patientMaster
+        },
+        doctor: appointment.doctor ?? fallback?.appointment?.doctor
+      },
+      radiologyType: order.radiologyType ?? fallback?.radiologyType ?? order.radiologyOrderType,
+      radiologyStudyResult: order.radiologyStudyResult ?? fallback?.radiologyStudyResult,
+      status: order.status ?? fallback?.status
+    };
   }
 
   private calculateAge(dob: string | Date | null): number | null {
-    if (!dob) {
-      return null;
-    }
-
+    if (!dob) return null;
     const birthDate = new Date(dob);
     const diff = Date.now() - birthDate.getTime();
-    const ageDate = new Date(diff);
-    return Math.abs(ageDate.getUTCFullYear() - 1970);
+    return Math.abs(new Date(diff).getUTCFullYear() - 1970);
   }
 
   private formatDate(value: string | Date | null | undefined, options: Intl.DateTimeFormatOptions): string {
-    if (!value) {
-      return '-';
-    }
-
+    if (!value) return '-';
     const date = new Date(value);
-    if (Number.isNaN(date.getTime())) {
-      return '-';
-    }
-
+    if (Number.isNaN(date.getTime())) return '-';
     return new Intl.DateTimeFormat('en-US', options).format(date);
-  }
-
-  private toDisplayValue(value: any): string {
-    return value == null || value === '' ? '' : String(value);
   }
 }

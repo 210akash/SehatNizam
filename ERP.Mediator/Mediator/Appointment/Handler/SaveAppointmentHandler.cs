@@ -81,11 +81,20 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                 // =====================================================
                 // 2️⃣ CREATE APPOINTMENT
                 // =====================================================
-                var TokenNumber = await GenerateAppointmentCodeAsync(request.DoctorId.Value, request.AppointmentDate);
+                string tokenNumber;
+                if (request.DoctorId.HasValue)
+                {
+                    tokenNumber = await GenerateAppointmentCodeAsync(request.DoctorId.Value, request.AppointmentDate);
+                }
+                else
+                {
+                    tokenNumber = await GenerateDepartmentAppointmentCodeAsync(request.DepartmentId);
+                }
+
                 var appointment = new Entities.Models.Appointment
                 {
                     AppointmentDate = request.AppointmentDate,
-                    TokenNumber = TokenNumber,
+                    TokenNumber = tokenNumber,
                     ProjectId = sessionProvider.Session.SelectedWarehouseId,
                     DepartmentId = request.DepartmentId,
                     AppointmentTypeId = request.AppointmentTypeId,
@@ -671,6 +680,34 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                 .Max();
 
             nextNumber = maxNumber + 1;
+
+            return nextNumber.ToString("D7");
+        }
+
+        private async Task<string> GenerateDepartmentAppointmentCodeAsync(long departmentId)
+        {
+            var projectId = sessionProvider.Session.SelectedWarehouseId;
+
+            Func<IQueryable<Entities.Models.Appointment>,
+                IOrderedQueryable<Entities.Models.Appointment>> orderBy =
+                    q => q.OrderByDescending(x => x.Id);
+
+            var lastAppointment =
+                await unitOfWork.Repository<Entities.Models.Appointment>()
+                .GetOneAsync(
+                    x => x.IsActive
+                         && x.DepartmentId == departmentId
+                         && x.ProjectId == projectId
+                         && !string.IsNullOrEmpty(x.TokenNumber),
+                    orderBy);
+
+            int nextNumber = 1;
+
+            if (lastAppointment != null &&
+                int.TryParse(lastAppointment.TokenNumber, out int lastNumber))
+            {
+                nextNumber = lastNumber + 1;
+            }
 
             return nextNumber.ToString("D7");
         }

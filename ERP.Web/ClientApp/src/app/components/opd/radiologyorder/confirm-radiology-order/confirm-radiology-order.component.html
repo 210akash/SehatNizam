@@ -11,20 +11,19 @@
     <div class="appointment-summary">
       <div class="summary-field">
         <span class="summary-radiologyel">Patient Name</span>
-        <span class="summary-value">{{ data.element.appointment?.patient.name }} MRN : {{
-          data.element.appointment?.patient.mrn }}</span>
+        <span class="summary-value">{{ patient.name || '-' }} · MRN: {{ data.element.appointment?.patient?.mrn || '-' }}</span>
       </div>
       <div class="summary-field">
         <span class="summary-radiologyel">Phone Number</span>
-        <span class="summary-value">{{ data.element.appointment?.patient.phoneNo }}</span>
+        <span class="summary-value">{{ patient.phoneNo || '-' }}</span>
       </div>
       <div class="summary-field">
         <span class="summary-radiologyel">Age / Gender</span>
-        <span class="summary-value">{{ data.element.appointment?.patient.gender }}</span>
+        <span class="summary-value">{{ patient.age || '-' }} / {{ patient.gender || '-' }}</span>
       </div>
       <div class="summary-field">
         <span class="summary-radiologyel">Radiology Order</span>
-        <span class="summary-value">{{ data.element.radiologyOrderType?.name }} </span>
+        <span class="summary-value">{{ radiologyTypeName }}</span>
       </div>
 
        <div class="summary-field">
@@ -52,7 +51,7 @@
     <div class="col-md-2">
      <mat-form-field appearance="outline">
       <mat-label>Discount</mat-label>
-          <input type="number" matInput class="form-control" formControlName="discount" min="0" [max]="this.form.get('basePrice')?.value" (keyup)="calculateTotalPayable()" />
+          <input type="number" matInput class="form-control" formControlName="discount" min="0" [max]="form.get('basePrice')?.value" (keyup)="calculateTotalPayable()" />
     </mat-form-field>
     </div>
      <div class="col-md-3">

@@ -99,8 +99,19 @@ export class AddRadiologyOrderComponent implements OnInit, OnDestroy {
     return this.form.get('radiologyOrders') as FormArray<FormGroup>;
   }
 
-  displayPatient = (patient: any): string =>
-    patient ? `${patient.name}${patient.phoneNo ? ' - ' + patient.phoneNo : ''}` : '';
+  displayPatient = (patient: any): string => {
+    if (!patient) {
+      return '';
+    }
+
+    const master = patient.patientMaster ?? patient;
+    const parts = [patient.mrn, master.name, master.phoneNo].filter(Boolean);
+    return parts.join(' - ');
+  };
+
+  private getPatientMaster(patient: any): any {
+    return patient?.patientMaster ?? patient ?? {};
+  }
 
   private buildForm(): void {
     this.form = this.fb.group({
@@ -160,7 +171,9 @@ export class AddRadiologyOrderComponent implements OnInit, OnDestroy {
       switchMap((value: string | any) => {
         const term = typeof value === 'string'
           ? value.trim()
-          : (typeof value?.name === 'string' ? value.name.trim() : '');
+          : (typeof value?.name === 'string'
+            ? value.name.trim()
+            : (typeof value?.patientMaster?.name === 'string' ? value.patientMaster.name.trim() : ''));
         if (term.length < 2) return of([]);
         this.patientLoading = true;
         return this.patientService.getPatientByName(term).pipe(
@@ -305,23 +318,25 @@ getCityList(): void {
 
   onPatientSelected(patient: any): void {
     if (!patient) return;
-    this.patientSearchCtrl.setValue(patient, { emitEvent: false });
+
+    const master = this.getPatientMaster(patient);
+    this.patientSearchCtrl.setValue(master, { emitEvent: false });
     this.form.patchValue({ patientId: patient.id });
 
     const patientGroup = this.form.get('patient') as FormGroup;
     patientGroup.patchValue({
-      name: patient.name,
-      phoneNo: patient.phoneNo,
-      secondaryPhoneNo: patient.secondaryPhoneNo,
-      gender: patient.gender || 'male',
-      dateOfBirth: patient.dateOfBirth ? this.toInputDate(patient.dateOfBirth) : null,
-      age: patient.age,
-      cnic: patient.cnic,
-      address: patient.address,
-      cityId: patient.cityId ?? 1,
-      email: patient.email
+      name: master.name,
+      phoneNo: master.phoneNo,
+      secondaryPhoneNo: master.secondaryPhoneNo,
+      gender: master.gender || 'male',
+      dateOfBirth: master.dateOfBirth ? this.toInputDate(master.dateOfBirth) : null,
+      age: master.age,
+      cnic: master.cnic,
+      address: master.address,
+      cityId: master.cityId ?? 1,
+      email: master.email
     });
-    this.updateAge(patient.dateOfBirth);
+    this.updateAge(master.dateOfBirth);
   }
 
   calculateTotals(): void {
@@ -394,8 +409,8 @@ getCityList(): void {
       confirmationNotes: raw.confirmationNotes,
       confirmedDate: raw.confirmedDate || new Date().toISOString(),
       appointmentStatusId: raw.appointmentStatusId,
-      patientId: raw.patientId,
-      patient: raw.patientId ? null : {
+      patientId: raw.patientId || null,
+      patient: {
         name: raw.patient.name,
         phoneNo: raw.patient.phoneNo,
         secondaryPhoneNo: raw.patient.secondaryPhoneNo,
@@ -408,8 +423,9 @@ getCityList(): void {
       },
       appointmentPayment: payments,
       radiologyOrders: raw.radiologyOrders.map((x: any) => ({
-        radiologyOrderTypeId: x.radiologyOrderTypeId,
+        radiologyTypeId: x.radiologyOrderTypeId,
         clinicalNotes: x.clinicalNotes || '',
+        statusId: x.statusId || 5,
       })),
     };
   }
@@ -452,6 +468,7 @@ getCityList(): void {
 
     const appointment = element.appointment || {};
     const patient = appointment.patient || element.patient || {};
+    const master = this.getPatientMaster(patient);
 
     this.form.patchValue({
       appointmentDate: appointment.appointmentDate ? this.toInputDate(appointment.appointmentDate) : this.minDate,
@@ -474,20 +491,20 @@ getCityList(): void {
 
     const patientGroup = this.form.get('patient') as FormGroup;
     patientGroup.patchValue({
-      name: patient.name || '',
-      phoneNo: patient.phoneNo || '',
-      secondaryPhoneNo: patient.secondaryPhoneNo || '',
-      gender: patient.gender || 'male',
-      age: patient.age || null,
-      dateOfBirth: patient.dateOfBirth ? this.toInputDate(patient.dateOfBirth) : null,
-      cnic: patient.cnic || '',
-      address: patient.address || '',
-      cityId: patient.cityId ?? 1,
-      email: patient.email || ''
+      name: master.name || patient.name || '',
+      phoneNo: master.phoneNo || patient.phoneNo || '',
+      secondaryPhoneNo: master.secondaryPhoneNo || patient.secondaryPhoneNo || '',
+      gender: master.gender || patient.gender || 'male',
+      age: master.age ?? patient.age ?? null,
+      dateOfBirth: (master.dateOfBirth || patient.dateOfBirth) ? this.toInputDate(master.dateOfBirth || patient.dateOfBirth) : null,
+      cnic: master.cnic || patient.cnic || '',
+      address: master.address || patient.address || '',
+      cityId: master.cityId ?? patient.cityId ?? 1,
+      email: master.email || patient.email || ''
     });
 
     if (patient.id) {
-      this.patientSearchCtrl.setValue(patient, { emitEvent: false });
+      this.patientSearchCtrl.setValue(master.name ? master : patient, { emitEvent: false });
     }
 
     const payments = element.appointmentPayments || appointment.appointmentPayments || [];

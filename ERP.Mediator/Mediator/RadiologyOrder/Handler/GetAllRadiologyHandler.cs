@@ -36,7 +36,7 @@ namespace ERP.Mediator.Mediator.RadiologyOrder.Handler
                 && (!request.RadiologyTypeId.HasValue || x.RadiologyTypeId == request.RadiologyTypeId.Value)
                 && (!request.StatusId.HasValue || x.StatusId == request.StatusId.Value);
 
-            Expression<Func<Entities.Models.RadiologyOrder, object>>[] includes = { x => x.Status, x => x.RadiologyType , x => x.Appointment, x => x.Appointment.Patient, x => x.Appointment.Department, x => x.Appointment.Department.Company, x => x.Appointment.Referrer, x => x.RadiologyType.Service, x => x.RadiologyStudyResult ,x => x.RadiologyStudyResult.Images };
+            Expression<Func<Entities.Models.RadiologyOrder, object>>[] includes = { x => x.Status, x => x.RadiologyType , x => x.Appointment, x => x.Appointment.Patient, x => x.Appointment.Patient.PatientMaster, x => x.Appointment.Department, x => x.Appointment.Department.Company, x => x.Appointment.Referrer, x => x.RadiologyType.Service, x => x.RadiologyStudyResult ,x => x.RadiologyStudyResult.Images };
             var result = unitOfWork.Repository<Entities.Models.RadiologyOrder>().GetPagingWhereAsNoTrackingAsync(predicate, request.PagingData, null, x => x.Id, null, includes);
             return new Tuple<IEnumerable<GetRadiologyOrder>, long>(mapper.Map<IEnumerable<GetRadiologyOrder>>(result.Item1), result.Item2);
         }

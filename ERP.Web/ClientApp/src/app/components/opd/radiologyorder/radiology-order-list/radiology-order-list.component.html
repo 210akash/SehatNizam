@@ -95,7 +95,7 @@
         <th mat-header-cell *matHeaderCellDef>Patient Name</th>
         <td mat-cell *matCellDef="let e">
           <div class="patient-info">
-            <strong>{{ e.appointment?.patient?.name || '-' }}</strong>
+            <strong>{{ e.appointment?.patient?.patientMaster?.name || e.appointment?.patient?.name || '-' }}</strong>
             <small>MRN: {{ e.appointment?.patient?.mrn || '-' }}</small>
           </div>
         </td>
@@ -104,7 +104,7 @@
       <!-- Test Name Column -->
       <ng-container matColumnDef="testName">
         <th mat-header-cell *matHeaderCellDef>Test Name</th>
-        <td mat-cell *matCellDef="let e">{{ e.radiologyOrderType?.name || '-' }}</td>
+        <td mat-cell *matCellDef="let e">{{ e.radiologyType?.name || e.radiologyOrderType?.name || '-' }}</td>
       </ng-container>
 
       <!-- Clinical Notes Column -->
@@ -152,8 +152,8 @@
             <button mat-mini-fab matTooltip="Print Report" color="accent" *ngIf="e.statusId == 15" (click)="openprintResult(e)">
               <mat-icon>print</mat-icon>
             </button>
-             <button mat-mini-fab matTooltip="Save Result" color="accent" *ngIf="e.statusId == 5"  (click)="saveResult(e)">
-              <i class="fa-solid fa-vial"></i>
+             <button mat-mini-fab matTooltip="Enter Report" color="accent" *ngIf="e.statusId == 5" (click)="saveResult(e)">
+              <mat-icon>assignment</mat-icon>
             </button>
               <button mat-mini-fab matTooltip="Confirm" color="accent" *ngIf="e.statusId == 1 || e.statusId == 2"  (click)="confirmRadiologyOrder(e)">
              <i class="fa-regular fa-circle-check"></i>

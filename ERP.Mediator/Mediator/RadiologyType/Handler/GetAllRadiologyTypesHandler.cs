@@ -28,17 +28,13 @@ namespace ERP.Mediator.Mediator.RadiologyType.Handler
 
         public async Task<Tuple<IEnumerable<GetRadiologyType>, long>> Handle(GetAllRadiologyTypesQuery request, CancellationToken cancellationToken)
         {
+            var companyId = this.sessionProvider.Session.CompanyId;
             Expression<Func<ERP.Entities.Models.RadiologyType, bool>> predicate = x =>
-                x.IsActive == true &&
-                x.IsDelete == false;
-
-            if (request.ServiceId.HasValue && request.ServiceId.Value > 0)
-            {
-                predicate = x => x.IsActive == true &&
-                    x.IsDelete == false &&
-                    x.CompanyId == this.sessionProvider.Session.CompanyId &&
-                    x.ServiceId == request.ServiceId.Value;
-            }
+                x.IsDelete == false &&
+                x.CompanyId == companyId &&
+                (request.IsActive == null || x.IsActive == request.IsActive) &&
+                (string.IsNullOrEmpty(request.Name) || x.Name.ToLower().Contains(request.Name.ToLower())) &&
+                (!request.ServiceId.HasValue || request.ServiceId.Value <= 0 || x.ServiceId == request.ServiceId.Value);
 
             Expression<Func<Entities.Models.RadiologyType, object>> OrderBy = null;
             Expression<Func<Entities.Models.RadiologyType, object>> OrderByDesc = x => x.Id;

@@ -1,51 +1,134 @@
 <mat-card class="result-shell">
   <mat-card-header>
     <div class="title-wrap">
-      <mat-card-title>Radiology Result Entry</mat-card-title>
-      <mat-card-subtitle>{{ data.order.radiologyOrderType?.name }}</mat-card-subtitle>
+      <mat-card-title>Radiology Report &amp; Images</mat-card-title>
+      <mat-card-subtitle>{{ getTestName() }}</mat-card-subtitle>
     </div>
-    <span class="status-chip">Order #{{ data.order?.id }}</span>
+    <span class="status-chip">Order #{{ order?.id || data.order?.id }}</span>
   </mat-card-header>
 
   <mat-divider></mat-divider>
 
   <mat-card-content>
-    <form [formGroup]="form">
+    <div class="loading-state" *ngIf="isLoading">
+      <mat-spinner diameter="36"></mat-spinner>
+      <span>Loading order details...</span>
+    </div>
+
+    <form [formGroup]="form" *ngIf="!isLoading">
+      <input type="hidden" formControlName="id" />
       <input type="hidden" formControlName="radiologyOrderId" />
 
       <section class="patient-panel">
-        <div class="meta-item"><span class="k">Patient</span><span class="v">{{ data.order.appointment?.patient?.name || '-' }}</span></div>
-        <div class="meta-item"><span class="k">MRN</span><span class="v">{{ data.order.appointment?.patient?.mrn || '-' }}</span></div>
-        <div class="meta-item"><span class="k">Gender</span><span class="v">{{ data.order.appointment?.patient?.gender || '-' }}</span></div>
-        <div class="meta-item"><span class="k">Age</span><span class="v">{{ data.order.appointment?.patient?.age || '-' }}</span></div>
-        <div class="meta-item"><span class="k">Doctor</span><span class="v">{{ data.order.appointment?.doctor?.fullName || '-' }}</span></div>
+        <div class="meta-item">
+          <span class="k">Patient</span>
+          <span class="v">{{ patient.name || '-' }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="k">MRN</span>
+          <span class="v">{{ patient.mrn || '-' }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="k">Gender</span>
+          <span class="v">{{ patient.gender || '-' }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="k">Age</span>
+          <span class="v">{{ patient.age || '-' }}</span>
+        </div>
       </section>
 
-      <section class="result-list" formArrayName="results">
-        <div class="result-row head">
-          <div>Variable</div>
-          <div>Reference Range</div>
-          <div>Unit</div>
-          <div>Result</div>
-        </div>
+      <div class="content-grid">
+        <section class="report-panel">
+          <h3 class="section-title">Study Report</h3>
 
-        <div class="result-row" *ngFor="let item of resultsFormArray.controls; let i = index" [formGroupName]="i">
-          <div class="var">{{ item.get('variableName')?.value }}</div>
-          <div class="range">{{ item.get('referenceRange')?.value || '-' }}</div>
-          <div class="unit">{{ item.get('unit')?.value || '-' }}</div>
-          <div>
-            <mat-form-field appearance="outline" class="result-field">
-              <mat-label>Enter Result</mat-label>
-              <input matInput formControlName="resultValue" />
-            </mat-form-field>
+          <mat-form-field appearance="outline" class="full-field">
+            <mat-label>Performed Date</mat-label>
+            <input matInput [matDatepicker]="performedPicker" formControlName="performedDate" />
+            <mat-datepicker-toggle matIconSuffix [for]="performedPicker"></mat-datepicker-toggle>
+            <mat-datepicker #performedPicker></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-field">
+            <mat-label>Clinical History</mat-label>
+            <textarea matInput rows="3" formControlName="clinicalHistory"></textarea>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-field">
+            <mat-label>Findings</mat-label>
+            <textarea matInput rows="4" formControlName="findings"></textarea>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-field">
+            <mat-label>Impression</mat-label>
+            <textarea matInput rows="3" formControlName="impression"></textarea>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-field">
+            <mat-label>Conclusion</mat-label>
+            <textarea matInput rows="3" formControlName="conclusion"></textarea>
+          </mat-form-field>
+        </section>
+
+        <section class="images-panel">
+          <div class="images-header">
+            <div>
+              <h3 class="section-title">Study Images</h3>
+              <p class="section-hint">Upload X-ray, CT, MRI or scan images against this order.</p>
+            </div>
+            <label class="upload-btn">
+              <mat-icon>cloud_upload</mat-icon>
+              <span>Add Images</span>
+              <input type="file" accept="image/*,.pdf,.dcm" multiple (change)="onFileBrowse($event)" />
+            </label>
           </div>
-        </div>
-      </section>
+
+          <div class="empty-images" *ngIf="imagesFormArray.length === 0">
+            <mat-icon>image_not_supported</mat-icon>
+            <p>No images uploaded yet.</p>
+            <small>Supported: JPG, PNG, WEBP, PDF</small>
+          </div>
+
+          <div class="image-grid" formArrayName="images" *ngIf="imagesFormArray.length > 0">
+            <div class="image-card" *ngFor="let item of imagesFormArray.controls; let i = index" [formGroupName]="i">
+              <div class="image-preview">
+                <img *ngIf="imagePreviews[i].isImage" [src]="imagePreviews[i].url" [alt]="imagePreviews[i].fileName" />
+                <div class="file-fallback" *ngIf="!imagePreviews[i].isImage">
+                  <mat-icon>description</mat-icon>
+                  <span>{{ imagePreviews[i].fileName }}</span>
+                </div>
+                <span class="sequence-badge">#{{ item.get('sequenceNo')?.value }}</span>
+              </div>
+
+              <div class="image-meta">
+                <div class="file-name" [title]="imagePreviews[i].fileName">{{ imagePreviews[i].fileName }}</div>
+
+                <mat-form-field appearance="outline" class="remarks-field">
+                  <mat-label>Remarks</mat-label>
+                  <input matInput formControlName="remarks" placeholder="Optional note" />
+                </mat-form-field>
+
+                <div class="image-actions">
+                  <button mat-icon-button type="button" matTooltip="Move up" [disabled]="i === 0" (click)="moveImage(i, -1)">
+                    <mat-icon>arrow_upward</mat-icon>
+                  </button>
+                  <button mat-icon-button type="button" matTooltip="Move down" [disabled]="i === imagesFormArray.length - 1" (click)="moveImage(i, 1)">
+                    <mat-icon>arrow_downward</mat-icon>
+                  </button>
+                  <button mat-icon-button type="button" color="warn" matTooltip="Remove" (click)="removeImage(i)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
 
       <div class="actions">
-        <button mat-stroked-button type="button" mat-dialog-close>Close</button>
+        <button mat-stroked-button type="button" mat-dialog-close [disabled]="isSaving">Close</button>
         <button mat-flat-button color="primary" type="button" (click)="save()" [disabled]="isSaving">
-          {{ isSaving ? 'Saving...' : 'Save Results' }}
+          {{ isSaving ? 'Saving...' : (form.value.id ? 'Update Report' : 'Save Report') }}
         </button>
       </div>
     </form>

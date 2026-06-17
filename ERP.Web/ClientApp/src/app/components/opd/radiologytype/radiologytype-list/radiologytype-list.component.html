@@ -1,51 +1,84 @@
-<mat-card>
-  <mat-card-header>
-    <mat-card-title>Radiology Types</mat-card-title>
-    <span style="flex:1 1 auto"></span>
-    <button mat-flat-button color="primary" (click)="openAdd()">Add</button>
-  </mat-card-header>
-  <mat-card-content>
-    <div class="filter-section">
-      <mat-form-field class="filter-field">
-        <mat-label>Search</mat-label>
-        <input matInput formControlName="searchText" placeholder="Search by name" />
-      </mat-form-field>
-      <mat-form-field class="filter-field">
-        <mat-label>Service</mat-label>
-        <mat-select formControlName="serviceId">
-          <mat-option value="">All Services</mat-option>
-          <mat-option *ngFor="let svc of services" [value]="svc.id">{{ svc.name }}</mat-option>
-        </mat-select>
-      </mat-form-field>
-      <button mat-flat-button (click)="filterData()">Filter</button>
-    </div>
+<div class="header-container">
+  <h2>Radiology Types</h2>
+  <button mat-mini-fab aria-label="Add" color="success" (click)="openAdd()" matTooltip="Add Radiology Type">
+    <mat-icon>add</mat-icon>
+  </button>
+</div>
 
-    <table mat-table [dataSource]="dataSource" class="mat-elevation-z2">
+<div class="body-container">
+  <div class="filter-section" [formGroup]="form">
+    <div class="row align-items-end">
+      <div class="col-lg-4 col-md-6 col-sm-12">
+        <mat-form-field class="filter-field" appearance="outline">
+          <mat-label>Search by Name</mat-label>
+          <input matInput formControlName="name" placeholder="Type to search..." />
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+      </div>
+
+      <div class="col-lg-3 col-md-6 col-sm-12">
+        <mat-form-field class="filter-field" appearance="outline">
+          <mat-label>Service</mat-label>
+          <mat-select formControlName="serviceId" (selectionChange)="filterData()">
+            <mat-option [value]="null">All Services</mat-option>
+            <mat-option *ngFor="let svc of services" [value]="svc.id">{{ svc.name }}</mat-option>
+          </mat-select>
+          <mat-icon matSuffix>medical_services</mat-icon>
+        </mat-form-field>
+      </div>
+
+      <div class="col-lg-5 col-md-12 col-sm-12 filter-actions">
+        <button mat-stroked-button type="button" (click)="clearFilters()">
+          <mat-icon>clear</mat-icon>
+          Clear
+        </button>
+        <button mat-flat-button color="primary" type="button" (click)="filterData()">
+          <mat-icon>filter_alt</mat-icon>
+          Apply
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="mat-elevation-z8 table-responsive table-wrapper">
+    <table mat-table [dataSource]="dataSource">
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef>Name</th>
-        <td mat-cell *matCellDef="let e">{{ e.name }}</td>
+        <td mat-cell *matCellDef="let e">
+          <span class="type-name">{{ e.name }}</span>
+        </td>
       </ng-container>
 
       <ng-container matColumnDef="serviceName">
         <th mat-header-cell *matHeaderCellDef>Service</th>
-        <td mat-cell *matCellDef="let e">{{ e.serviceName || '-' }}</td>
+        <td mat-cell *matCellDef="let e">
+          <span class="service-chip">{{ getServiceName(e) }}</span>
+        </td>
       </ng-container>
 
       <ng-container matColumnDef="isActive">
-        <th mat-header-cell *matHeaderCellDef>Active</th>
+        <th mat-header-cell *matHeaderCellDef>Status</th>
         <td mat-cell *matCellDef="let e">
-          <span [class]="e.isActive ? 'badge badge-success' : 'badge badge-danger'">
+          <span class="status-badge" [class.active]="e.isActive" [class.inactive]="!e.isActive">
             {{ e.isActive ? 'Active' : 'Inactive' }}
           </span>
         </td>
       </ng-container>
 
       <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <th mat-header-cell *matHeaderCellDef style="width: 14%;">Actions</th>
         <td mat-cell *matCellDef="let e">
-          <button mat-button (click)="openView(e)">View</button>
-          <button mat-button (click)="openEdit(e)">Edit</button>
-          <button mat-button color="warn" (click)="openDelete(e)">Delete</button>
+          <div class="action_btns">
+            <button mat-mini-fab matTooltip="View" color="dark" (click)="openView(e)">
+              <mat-icon>visibility</mat-icon>
+            </button>
+            <button mat-mini-fab matTooltip="Edit" color="primary" (click)="openEdit(e)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-mini-fab matTooltip="Delete" color="warn" (click)="openDelete(e)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
         </td>
       </ng-container>
 
@@ -53,8 +86,16 @@
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
 
-    <div *ngIf="dataSource.length === 0" class="text-center py-4">
+    <div *ngIf="dataSource.data.length === 0" class="no-data">
+      <mat-icon>inbox</mat-icon>
       <p>No radiology types found.</p>
     </div>
-  </mat-card-content>
-</mat-card>
+
+    <mat-paginator
+      [length]="totalRecords"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="[5, 10, 25, 50, 100]"
+      (page)="pageChanged($event)">
+    </mat-paginator>
+  </div>
+</div>

@@ -1,4 +1,4 @@
-﻿using ERP.API.Extensions;
+using ERP.API.Extensions;
 using ERP.BusinessModels.Enums;
 using ERP.BusinessModels.ResponseVM;
 using ERP.Entities.Models;
@@ -95,10 +95,14 @@ namespace ERP.API.Controllers
                 else
                 {
                     var result = await this.mediator.Send(command);
-                    if (result.Item1 == 200)
+                    if (result.Item1 == 200 && result.Item2.HasValue)
                     {
                         var appoinment = await this.mediator.Send(new GetAppoinmentByIdQuery(result.Item2.Value));
                         return this.Result(ResponseStatus.OK, appoinment, "Appointment Saved!");
+                    }
+                    else if (result.Item1 == 200)
+                    {
+                        return this.Result(ResponseStatus.Error, null, "Unable to save appointment.");
                     }
                     else if (result.Item1 == 409)
                     {

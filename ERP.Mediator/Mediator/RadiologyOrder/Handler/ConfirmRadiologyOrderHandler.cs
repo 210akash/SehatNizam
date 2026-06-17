@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using ERP.Core.Provider;
@@ -22,14 +22,14 @@ namespace ERP.Mediator.Mediator.RadiologyOrder.Handler
 
         public async Task<bool> Handle(ConfirmRadiologyOrderCommand request, CancellationToken cancellationToken)
         {
-            var RadiologyOrder = await unitOfWork.Repository<Entities.Models.RadiologyOrder>().GetFirstAsNoTrackingAsync(y => y.Id == request.Id,null,null, "RadiologyOrderType,RadiologyOrderType.Service");
+            var RadiologyOrder = await unitOfWork.Repository<Entities.Models.RadiologyOrder>().GetFirstAsNoTrackingAsync(y => y.Id == request.Id,null,null, "RadiologyType,RadiologyType.Service");
             RadiologyOrder.StatusId = 5;
             RadiologyOrder.ModifiedDate = DateTime.Now;
             RadiologyOrder.ModifiedById = sessionProvider.Session.LoggedInUserId;
             unitOfWork.Repository<Entities.Models.RadiologyOrder>().Update(RadiologyOrder);
             var payment = new AppointmentPayment
             {
-                AppointmentId = RadiologyOrder.Id,
+                AppointmentId = RadiologyOrder.AppointmentId ?? 0,
                 VisitFee = RadiologyOrder.RadiologyType.Service.BasePrice,
                 Discount = request.Discount,
                 TotalPayable = RadiologyOrder.RadiologyType.Service.BasePrice - request.Discount,

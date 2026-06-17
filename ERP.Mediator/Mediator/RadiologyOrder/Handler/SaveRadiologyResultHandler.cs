@@ -1,8 +1,9 @@
+using ERP.BusinessModels.ParameterVM;
 using ERP.Core.Provider;
 using ERP.Entities.Models;
-using ERP.Mediator.Mediator.LabOrder.Command;
 using ERP.Mediator.Mediator.RadiologyOrder.Command;
 using ERP.Repositories.UnitOfWork;
+using ERP.Services.Interfaces;
 using MediatR;
 using System;
 using System.Linq;
@@ -15,13 +16,16 @@ namespace ERP.Mediator.Mediator.RadiologyOrder.Handler
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly SessionProvider sessionProvider;
-        public SaveRadiologyResultHandler(IUnitOfWork unitOfWork, SessionProvider sessionProvider)
+        private readonly IBlobService blobService;
+
+        public SaveRadiologyResultHandler(IUnitOfWork unitOfWork, SessionProvider sessionProvider, IBlobService blobService)
         {
             this.unitOfWork = unitOfWork;
             this.sessionProvider = sessionProvider;
+            this.blobService = blobService;
         }
 
-        public async Task<long> Handle( SaveRadiologyStudyResultCommand request, CancellationToken cancellationToken)
+        public async Task<long> Handle(SaveRadiologyStudyResultCommand request, CancellationToken cancellationToken)
         {
             var order = await unitOfWork.Repository<Entities.Models.RadiologyOrder>().GetFirstAsync(x => x.Id == request.RadiologyOrderId);
 
@@ -30,9 +34,6 @@ namespace ERP.Mediator.Mediator.RadiologyOrder.Handler
 
             RadiologyStudyResult result;
 
-            // =========================
-            // INSERT OR UPDATE RESULT
-            // =========================
             if (request.Id > 0)
             {
                 result = await unitOfWork
@@ -42,7 +43,8 @@ namespace ERP.Mediator.Mediator.RadiologyOrder.Handler
                 if (result == null)
                     return 0;
 
-                result.PerformedById = request.PerformedById;
+                result.PerformedById = request.PerformedById ?? sessionProvider.Session.LoggedInUserId;
+                result.ReportedById = request.ReportedById ?? sessionProvider.Session.LoggedInUserId;
                 result.PerformedDate = request.PerformedDate;
                 result.ClinicalHistory = request.ClinicalHistory;
                 result.Findings = request.Findings;
@@ -59,8 +61,8 @@ namespace ERP.Mediator.Mediator.RadiologyOrder.Handler
                 result = new RadiologyStudyResult
                 {
                     RadiologyOrderId = request.RadiologyOrderId,
-                    PerformedById = request.PerformedById,
-                    ReportedById = request.ReportedById,
+                    PerformedById = request.PerformedById ?? sessionProvider.Session.LoggedInUserId,
+                    ReportedById = request.ReportedById ?? sessionProvider.Session.LoggedInUserId,
                     PerformedDate = request.PerformedDate,
                     ClinicalHistory = request.ClinicalHistory,
                     Findings = request.Findings,
@@ -76,9 +78,6 @@ namespace ERP.Mediator.Mediator.RadiologyOrder.Handler
                 await unitOfWork.SaveChangesAsync();
             }
 
-            // =========================
-            // SAVE / SYNC IMAGES
-            // =========================
             if (request.Images != null)
             {
                 var dbImages = await unitOfWork
@@ -87,7 +86,6 @@ namespace ERP.Mediator.Mediator.RadiologyOrder.Handler
 
                 var existingImages = dbImages.ToList();
 
-                // DELETE removed images
                 foreach (var dbImg in existingImages)
                 {
                     var existsInRequest = request.Images.Any(x => x.Id == dbImg.Id);
@@ -98,9 +96,10 @@ namespace ERP.Mediator.Mediator.RadiologyOrder.Handler
                     }
                 }
 
-                // ADD / UPDATE images
                 foreach (var img in request.Images)
                 {
+                    var imageUrl = await ResolveImageUrlAsync(img);
+
                     if (img.Id > 0)
                     {
                         var existing = existingImages
@@ -108,7 +107,7 @@ namespace ERP.Mediator.Mediator.RadiologyOrder.Handler
 
                         if (existing != null)
                         {
-                            existing.ImageUrl = img.ImageUrl;
+                            existing.ImageUrl = imageUrl;
                             existing.SequenceNo = img.SequenceNo;
                             existing.Remarks = img.Remarks;
 
@@ -124,7 +123,7 @@ namespace ERP.Mediator.Mediator.RadiologyOrder.Handler
                             new RadiologyStudyImage
                             {
                                 RadiologyStudyResultId = result.Id,
-                                ImageUrl = img.ImageUrl,
+                                ImageUrl = imageUrl,
                                 SequenceNo = img.SequenceNo,
                                 Remarks = img.Remarks,
 
@@ -135,21 +134,34 @@ namespace ERP.Mediator.Mediator.RadiologyOrder.Handler
                 }
             }
 
-            // =========================
-            // UPDATE ORDER STATUS
-            // =========================
-            order.StatusId = 15; // Reported (or your enum)
+            order.StatusId = 15;
             order.ModifiedById = sessionProvider.Session.LoggedInUserId;
             order.ModifiedDate = DateTime.Now;
 
             unitOfWork.Repository<Entities.Models.RadiologyOrder>().Update(order);
 
-            // =========================
-            // SAVE ALL CHANGES
-            // =========================
             await unitOfWork.SaveChangesAsync();
 
             return result.Id;
+        }
+
+        private async Task<string> ResolveImageUrlAsync(SaveRadiologyStudyImageCommand img)
+        {
+            if (string.IsNullOrWhiteSpace(img.ImageUrl))
+                return img.ImageUrl;
+
+            if (!img.ImageUrl.StartsWith("data:", StringComparison.OrdinalIgnoreCase))
+                return img.ImageUrl;
+
+            var extension = string.IsNullOrWhiteSpace(img.Extension) ? "png" : img.Extension.TrimStart('.');
+            var blobModel = new BlobImageUploadModel
+            {
+                File = img.ImageUrl,
+                FileName = string.IsNullOrWhiteSpace(img.FileName) ? $"radiology-{Guid.NewGuid()}" : img.FileName,
+                FolderName = "assets/Files/Radiology"
+            };
+
+            return "/assets/Files/Radiology/" + await blobService.UploadBase64FileToBlobAsync(blobModel, extension);
         }
     }
 }

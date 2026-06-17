@@ -20,8 +20,7 @@ export class ViewRadiologyTypeComponent implements OnInit {
 
   ngOnInit(): void {
     this.form = this.fb.group({
-      name: [''],
-      serviceId: ['']
+      name: ['']
     });
     this.constantService.LoadData(this.data.element, this.form);
   }

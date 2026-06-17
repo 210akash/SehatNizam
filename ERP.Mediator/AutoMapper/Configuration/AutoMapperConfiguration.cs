@@ -624,6 +624,8 @@ namespace ERP.Mediator.AutoMapper.Configuration
                 //.ForMember(d => d.City, o => o.MapFrom(s => s.PatientMaster != null ? s.PatientMaster.City : null));
             this.CreateMap<AppointmentPayment, GetAppointmentPayment>().ReverseMap();
             this.CreateMap<RadiologyOrder, GetRadiologyOrder>().ReverseMap();
+            this.CreateMap<RadiologyStudyResult, GetRadiologyStudyResult>().ReverseMap();
+            this.CreateMap<RadiologyStudyImage, GetRadiologyStudyImage>().ReverseMap();
             this.CreateMap<LabOrder, GetLabOrder>().ReverseMap();
             this.CreateMap<AppointmentAttachment, GetAppointmentAttachment>().ReverseMap();
             this.CreateMap<Prescription, GetPrescription>().ReverseMap();

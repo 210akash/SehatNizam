@@ -1,71 +1,66 @@
 <!-- view-radiology-order.component.html -->
 <div class="print-container">
-  <!-- Buttons - hidden when printing -->
   <div class="no-print button-bar">
-     <button mat-raised-button color="primary" *ngIf="this.data.element?.statusId == 1 || this.data.element?.statusId == 2" (click)="confirmRadiologyOrder()">
+    <button mat-raised-button color="primary" *ngIf="this.data.element?.statusId == 1 || this.data.element?.statusId == 2" (click)="confirmRadiologyOrder()">
       <mat-icon>check_circle</mat-icon> Confirm / Payment Paid
     </button>
-      <button mat-raised-button color="accent" (click)="printDocument()">
-   <mat-icon>print</mat-icon> Print
- </button>
+    <button mat-raised-button color="accent" (click)="printDocument()">
+      <mat-icon>print</mat-icon> Print
+    </button>
     <button mat-raised-button [mat-dialog-close]="true">
       <mat-icon>close</mat-icon> Close
     </button>
   </div>
 
-  <!-- Printable Content -->
   <div id="printDoc">
     <div class="radiology-order-slip">
-      
-      <!-- Header -->
+
       <div class="header">
         <div class="hospital-icon">
           <div class="cross"></div>
         </div>
         <div class="hospital-details">
-          <h1>LABORATORY ORDER FORM</h1>
-          <p>Diagnostic Radiologyoratory Services</p>
+          <h1>RADIOLOGY ORDER FORM</h1>
+          <p>Diagnostic Radiology Services</p>
         </div>
       </div>
 
       <div class="divider"></div>
 
-      <!-- Patient Information -->
       <div class="info-section">
         <div class="section-title">Patient Information</div>
         <div class="info-grid">
           <div class="info-row">
             <span class="radiologyel">Patient Name:</span>
-            <span class="value">{{ data.element?.appointment?.patient?.name || '-' }}</span>
+            <span class="value">{{ getPatientName() }}</span>
           </div>
           <div class="info-row">
             <span class="radiologyel">MRN:</span>
-            <span class="value">{{ data.element?.appointment?.patient?.mrn || '-' }}</span>
+            <span class="value">{{ getPatientMrn() }}</span>
           </div>
           <div class="info-row">
             <span class="radiologyel">Age:</span>
-            <span class="value">{{ data.element?.appointment?.patient?.age || '-' }} years</span>
+            <span class="value">{{ getPatientAge() }}</span>
           </div>
           <div class="info-row">
             <span class="radiologyel">Gender:</span>
-            <span class="value">{{ (data.element?.appointment?.patient?.gender || '-') | titlecase }}</span>
+            <span class="value">{{ getPatientGender() | titlecase }}</span>
           </div>
           <div class="info-row">
             <span class="radiologyel">Phone:</span>
-            <span class="value">{{ data.element?.appointment?.patient?.phoneNo || '-' }}</span>
+            <span class="value">{{ getPatientPhone() }}</span>
           </div>
           <div class="info-row">
             <span class="radiologyel">CNIC:</span>
-            <span class="value">{{ data.element?.appointment?.patient?.cnic || '-' }}</span>
+            <span class="value">{{ getPatientCnic() }}</span>
           </div>
           <div class="info-row full-width">
             <span class="radiologyel">Address:</span>
-            <span class="value">{{ data.element?.appointment?.patient?.address || '-' }}</span>
+            <span class="value">{{ getPatientAddress() }}</span>
           </div>
         </div>
       </div>
 
-      <!-- Radiology Order Information -->
       <div class="info-section">
         <div class="section-title">Radiology Order Details</div>
         <div class="info-grid">
@@ -79,15 +74,15 @@
           </div>
           <div class="info-row">
             <span class="radiologyel">Test Name:</span>
-            <span class="value">{{ data.element?.radiologyOrderType?.name || '-' }}</span>
+            <span class="value">{{ getTestName() }}</span>
           </div>
           <div class="info-row">
             <span class="radiologyel">Service ID:</span>
-            <span class="value">{{ data.element?.radiologyOrderType?.serviceId || '-' }}</span>
+            <span class="value">{{ getTestServiceId() }}</span>
           </div>
           <div class="info-row full-width">
             <span class="radiologyel">Description:</span>
-            <span class="value">{{ data.element?.radiologyOrderType?.description || '-' }}</span>
+            <span class="value">{{ getTestDescription() }}</span>
           </div>
           <div class="info-row full-width">
             <span class="radiologyel">Clinical Notes:</span>
@@ -100,42 +95,6 @@
         </div>
       </div>
 
-      <!-- Appointment Information -->
-      <!-- <div class="info-section">
-        <div class="section-title">Appointment Information</div>
-        <div class="info-grid">
-          <div class="info-row">
-            <span class="radiologyel">Appointment ID:</span>
-            <span class="value">{{ data.element?.appointment?.id || '-' }}</span>
-          </div>
-          <div class="info-row">
-            <span class="radiologyel">Token Number:</span>
-            <span class="value token">{{ data.element?.appointment?.tokenNumber || '-' }}</span>
-          </div>
-          <div class="info-row">
-            <span class="radiologyel">Appointment Date:</span>
-            <span class="value">{{ (data.element?.appointment?.appointmentDate | date:'mediumDate') || '-' }}</span>
-          </div>
-          <div class="info-row">
-            <span class="radiologyel">Visit Type:</span>
-            <span class="value">{{ data.element?.appointment?.visitTypeId || '-' }}</span>
-          </div>
-          <div class="info-row">
-            <span class="radiologyel">Confirmed Date:</span>
-            <span class="value">{{ (data.element?.appointment?.confirmedDate | date:'medium') || '-' }}</span>
-          </div>
-          <div class="info-row">
-            <span class="radiologyel">Status:</span>
-            <span class="value">{{ getStatusName(data.element?.appointment?.appointmentStatusId) || '-' }}</span>
-          </div>
-          <div class="info-row full-width">
-            <span class="radiologyel">Reason:</span>
-            <span class="value">{{ data.element?.appointment?.reason || 'No reason provided' }}</span>
-          </div>
-        </div>
-      </div> -->
-
-      <!-- Token Section -->
       <div class="token-section">
         <div class="token-box">
           <span class="token-radiologyel">TOKEN NUMBER</span>
@@ -143,7 +102,6 @@
         </div>
       </div>
 
-      <!-- Footer -->
       <div class="footer">
         <div class="divider"></div>
         <div class="footer-text">

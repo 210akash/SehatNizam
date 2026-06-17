@@ -9,19 +9,112 @@
     <mat-card-content>
       <input type="hidden" formControlName="id" />
       <div class="row justify-content-center">
-        <div class="col-md-2">
+        <div class="col-md-3">
           <mat-form-field class="form-field">
             <mat-label>Discharge Date.</mat-label>
-            <input matInput [matDatepicker]="date" formControlName="dischargeDate" tabindex="-1">
-            <mat-datepicker-toggle matIconSuffix [for]="date"></mat-datepicker-toggle>
-            <mat-datepicker #date></mat-datepicker>
+            <input matInput [matDatepicker]="dischargeDatePicker" formControlName="dischargeDateTime" tabindex="-1">
+            <mat-datepicker-toggle matIconSuffix [for]="dischargeDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #dischargeDatePicker></mat-datepicker>
           </mat-form-field>
         </div>
+        <div class="col-md-3">
+          <mat-form-field class="form-field">
+            <mat-label>Operation/Delivery Date Time.</mat-label>
+            <input matInput [matDatepicker]="operationDatePicker" formControlName="operationDeliveryDateTime" tabindex="-1">
+            <mat-datepicker-toggle matIconSuffix [for]="operationDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #operationDatePicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field>
+            <mat-label>Diagnosis</mat-label>
+            <textarea matInput formControlName="diagnosis"></textarea>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <mat-form-field>
+            <mat-label>H.O.P.I.</mat-label>
+            <textarea matInput formControlName="hopi"></textarea>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field>
+            <mat-label>Examination And Findings</mat-label>
+            <textarea matInput formControlName="examinationAndFindings"></textarea>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <mat-form-field>
+            <mat-label>Investigations Results</mat-label>
+            <textarea matInput formControlName="investigationsResults"></textarea>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field>
+            <mat-label>Procedure</mat-label>
+            <textarea matInput formControlName="procedure"></textarea>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <mat-form-field>
+            <mat-label>Surgeon Name</mat-label>
+            <input matInput formControlName="surgeonName" />
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field>
+            <mat-label>Operative Findings</mat-label>
+            <textarea matInput formControlName="operativeFindings"></textarea>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <mat-form-field>
+            <mat-label>Operation Notes</mat-label>
+            <textarea matInput formControlName="operationNotes"></textarea>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field>
+            <mat-label>Condition At Discharge</mat-label>
+            <textarea matInput formControlName="conditionAtDischarge"></textarea>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <mat-form-field>
+            <mat-label>Treatment Advised At Discharge</mat-label>
+            <textarea matInput formControlName="treatmentAdvisedAtDischarge"></textarea>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field class="form-field">
+            <mat-label>Proposed Follow Up Date Time.</mat-label>
+            <input matInput [matDatepicker]="followUpDatePicker" formControlName="proposedFollowUpDateTime" tabindex="-1">
+            <mat-datepicker-toggle matIconSuffix [for]="followUpDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #followUpDatePicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field>
+            <mat-label>Discharge Doctor</mat-label>
+            <input matInput formControlName="dischargeDoctorId" />
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row justify-content-center">
         <div class="col-md-12">
           <mat-form-field>
-            <mat-label>Discharge Summary.</mat-label>
-            <textarea matInput formControlName="dischargeSummary" type="text">
-            </textarea>
+            <mat-label>Diet And Instructions</mat-label>
+            <textarea matInput formControlName="dietAndInstructions"></textarea>
           </mat-form-field>
         </div>
       </div>
@@ -65,7 +158,7 @@
   <mat-card>
     <mat-card-header>
       <div class="header-container">
-        <mat-card-title>Voucher Documents</mat-card-title>
+        <mat-card-title>Discharge Documents</mat-card-title>
       </div>
       <div class="button-container">
         <button mat-mini-fab color="danger" [mat-dialog-close]="true">
@@ -85,5 +178,3 @@
     </mat-card-content>
   </mat-card>
 </ng-template>
-
-

@@ -15,6 +15,7 @@ namespace ERP.Entities.Models
         public string DischargeSummary { get; set; }
 
         public AdmissionPackageMaster AdmissionPackageMaster { get; set; }
+        public DischargeCertificate DischargeCertificate { get; set; }
         public AppointmentStatus Status { get; set; }
         public long StatusId { get; set; }
         public ICollection<AdmissionRound> AdmissionRounds { get; set; }

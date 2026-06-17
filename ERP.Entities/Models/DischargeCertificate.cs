@@ -1,12 +1,10 @@
-﻿using MediatR;
-using System;
-
-namespace ERP.Mediator.Mediator.IPD.Admission.Command
+﻿using System;
+namespace ERP.Entities.Models
 {
-    public class SaveDischargeCommand : IRequest<long>
+    public class DischargeCertificate : BaseEntity
     {
-        public long Id { get; set; }
         public long AdmissionId { get; set; }
+        public Admission Admission { get; set; }
         public DateTime? OperationDeliveryDateTime { get; set; }
         public string Diagnosis { get; set; }
         public string Hopi { get; set; }
@@ -21,6 +19,7 @@ namespace ERP.Mediator.Mediator.IPD.Admission.Command
         public DateTime? ProposedFollowUpDateTime { get; set; }
         public string DietAndInstructions { get; set; }
         public Guid? DischargeDoctorId { get; set; }
+        public AspNetUsers DischargeDoctor { get; set; }
         public DateTime DischargeDateTime { get; set; }
     }
 }

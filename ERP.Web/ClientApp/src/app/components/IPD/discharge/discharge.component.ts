@@ -15,29 +15,13 @@ import { AdmissionService } from '../admission/admission.service';
   standalone: false,
 })
 export class AddDischargeComponent {
-  dischargeForm!: FormGroup;
-  accountSearchForm!: FormGroup;
-  isLoading = false;
-  isEditMode: boolean = false;
-  indentTypeList: any;
-  storeList: any;
-  dischargeTypeList: any;
-  accountList: any[] = [];
-  accountGroupList: any[] = [];
-  isdataload: boolean = false;
-  departmentList: any;
-  projectList: any;
-  tDebit = 0;
-  tCredit = 0;
-  urlSafe: SafeResourceUrl | undefined;
-  dialogRef: any;
-  uploadedMedia: Array<any> = [];
-  documents: any[] = [];
-  categoryList: any;
-  subcategoryList: any;
-  accountTypeList: any;
-  accountSearchList: any;
-  selectedIndexSearch: number = 0;
+   dischargeForm!: FormGroup;
+   isLoading = false;
+   urlSafe: SafeResourceUrl | undefined;
+   dialogRef: any;
+   uploadedMedia: Array<any> = [];
+   documents: any[] = [];
+   selectedIndexSearch: number = 0;
 
   constructor(
     private dialog: MatDialog,
@@ -52,10 +36,24 @@ export class AddDischargeComponent {
 
   ngOnInit(): void {
     this.dischargeForm = this.formBuilder.group({
+      id: [0],
       admissionId: [this.data.element.id],
-      dischargeDate: [new Date(), Validators.required],
-      dischargeSummary: ['', Validators.required], // Validation
-      files : []
+      operationDeliveryDateTime: [null],
+      diagnosis: ['', Validators.required],
+      hopi: [''],
+      examinationAndFindings: [''],
+      investigationsResults: [''],
+      procedure: [''],
+      surgeonName: [''],
+      operativeFindings: [''],
+      operationNotes: [''],
+      conditionAtDischarge: [''],
+      treatmentAdvisedAtDischarge: [''],
+      proposedFollowUpDateTime: [null],
+      dietAndInstructions: [''],
+      dischargeDoctorId: [null],
+      dischargeDateTime: [new Date(), Validators.required],
+      files: []
     });
   }
 
@@ -69,23 +67,28 @@ export class AddDischargeComponent {
       return;
     }
 
-    if (this.tDebit != this.tCredit) {
-      this.notificationsService.showNotification(
-        'Debit is not equal to credit.',
-        'snack-bar-danger'
-      );
-      return;
-    }
-
     this.isLoading = true;
-    let _dischargeForm: any = {};
-    _dischargeForm = Object.assign(
-      _dischargeForm,
-      this.dischargeForm.value
-    );
-    let date = new Date(this.dischargeForm.get('date')?.value);
-    _dischargeForm['date'] = date.toLocaleDateString();
-    _dischargeForm['files'] = this.documents;
+    const formValue = this.dischargeForm.value;
+    let _dischargeForm: any = {
+      Id: formValue.id,
+      AdmissionId: formValue.admissionId,
+      OperationDeliveryDateTime: formValue.operationDeliveryDateTime,
+      Diagnosis: formValue.diagnosis,
+      Hopi: formValue.hopi,
+      ExaminationAndFindings: formValue.examinationAndFindings,
+      InvestigationsResults: formValue.investigationsResults,
+      Procedure: formValue.procedure,
+      SurgeonName: formValue.surgeonName,
+      OperativeFindings: formValue.operativeFindings,
+      OperationNotes: formValue.operationNotes,
+      ConditionAtDischarge: formValue.conditionAtDischarge,
+      TreatmentAdvisedAtDischarge: formValue.treatmentAdvisedAtDischarge,
+      ProposedFollowUpDateTime: formValue.proposedFollowUpDateTime,
+      DietAndInstructions: formValue.dietAndInstructions,
+      DischargeDoctorId: formValue.dischargeDoctorId,
+      DischargeDateTime: formValue.dischargeDateTime,
+      files: this.documents
+    };
 
     this.admissionService.saveDischarge(_dischargeForm).subscribe({
       next: (data: { Status: number; Data: string;Message: string; }) => {

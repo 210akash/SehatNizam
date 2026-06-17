@@ -1,7 +1,6 @@
-﻿using ERP.BusinessModels.ParameterVM;
+﻿using AutoMapper;
 using ERP.Core.Provider;
 using ERP.Entities.Models;
-using ERP.Mediator.Mediator.Appointment.Command;
 using ERP.Mediator.Mediator.IPD.Admission.Command;
 using ERP.Repositories.UnitOfWork;
 using ERP.Services.Interfaces;
@@ -14,12 +13,14 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
 {
     public class SaveDischargeHandler : IRequestHandler<SaveDischargeCommand, long>
     {
+        private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
         private readonly SessionProvider sessionProvider;
         private readonly IBlobService blobService;
 
-        public SaveDischargeHandler(IUnitOfWork unitOfWork, SessionProvider sessionProvider, IBlobService blobService)
+        public SaveDischargeHandler(IMapper mapper, IUnitOfWork unitOfWork, SessionProvider sessionProvider, IBlobService blobService)
         {
+            this.mapper = mapper;
             this.unitOfWork = unitOfWork;
             this.sessionProvider = sessionProvider;
             this.blobService = blobService;
@@ -34,37 +35,32 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
         {
             try
             {
-                SaveAppointmentAttachmentCommand command = new SaveAppointmentAttachmentCommand();
-
                 // 2️⃣ Check if admission exists
                 var admission = await unitOfWork.Repository<Admission>()
                     .GetFirstAsync(x => x.Id == request.AdmissionId);
                 if (admission != null)
                 {
-                    foreach (var item in request.Files)
+                    var DischargeCertificate = await unitOfWork.Repository<DischargeCertificate>()
+                        .GetFirstAsNoTrackingAsync(x => x.Id == request.Id);
+                    if(DischargeCertificate == null)
                     {
-                        AppointmentAttachment attachment = new AppointmentAttachment();
-                        attachment.CreatedDate = DateTime.Now;
-                        attachment.CreatedById = sessionProvider.Session.LoggedInUserId;
-                        attachment.AppointmentId = admission.AppointmentId;
-
-                        BlobImageUploadModel blobModel = new()
-                        {
-                            File = item.FileSource,
-                            FileName = item.ImageName,
-                            FolderName = "assets/Files"
-                        };
-
-                        attachment.Attachment = "/assets/Files/" + await blobService.UploadBase64FileToBlobAsync(blobModel, item.Extension);
-                        await unitOfWork.Repository<AppointmentAttachment>().AddAsync(attachment);
+                        var _DischargeCertificate = mapper.Map<DischargeCertificate>(request);
+                        _DischargeCertificate.DischargeDateTime = request.DischargeDateTime;
+                        unitOfWork.Repository<DischargeCertificate>().Add(_DischargeCertificate);
+                        unitOfWork.SaveChanges();
+                        return 200;
                     }
-
-                    admission.DischargeDate =  request.DischargeDate;
-                    admission.DischargeSummary =  request.DischargeSummary;
-                    admission.StatusId = 32;
-                    unitOfWork.Repository<Admission>().Update(admission);
-                    unitOfWork.SaveChanges();
-                    return 200;
+                    else
+                    {
+                        var _DischargeCertificate = mapper.Map<DischargeCertificate>(request);
+                        _DischargeCertificate.CreatedById = DischargeCertificate.CreatedById;
+                        _DischargeCertificate.CreatedDate = DischargeCertificate.CreatedDate;
+                        _DischargeCertificate.ModifiedById = sessionProvider.Session.LoggedInUserId;
+                        _DischargeCertificate.ModifiedDate = DateTime.Now;
+                        unitOfWork.Repository<DischargeCertificate>().Update(_DischargeCertificate);
+                        SaveChanges();
+                    }
+                  
                 }
                 else
                 {

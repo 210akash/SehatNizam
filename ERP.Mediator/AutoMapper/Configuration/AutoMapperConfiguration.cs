@@ -60,6 +60,7 @@ namespace ERP.Mediator.AutoMapper.Configuration
     using ERP.Mediator.Mediator.IndentType.Command;
     using ERP.Mediator.Mediator.Inspection.Command;
     using ERP.Mediator.Mediator.Interview.Command;
+    using ERP.Mediator.Mediator.IPD.Admission.Command;
     using ERP.Mediator.Mediator.IPD.AdmissionBed.Command;
     using ERP.Mediator.Mediator.IPD.AdmissionPackage.Command;
     using ERP.Mediator.Mediator.IPD.Bed.Command;
@@ -764,6 +765,7 @@ namespace ERP.Mediator.AutoMapper.Configuration
             CreateMap<BloodIssue, GetBloodIssue>().ReverseMap();
             CreateMap<AdvancePayment, SaveAdvancePaymentsCommand>().ReverseMap();
             CreateMap<AdvancePayment, GetAdvancePayment>().ReverseMap();
+            CreateMap<DischargeCertificate, SaveDischargeCommand>().ReverseMap();
 
         }
     }

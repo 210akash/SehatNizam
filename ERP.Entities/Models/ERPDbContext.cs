@@ -230,6 +230,7 @@ namespace ERP.Entities.Models
         public virtual DbSet<AdvancePayment> AdvancePayment { get; set; }
         public virtual DbSet<AdmissionPackageMaster> AdmissionPackageMaster { get; set; }
         public virtual DbSet<AdmissionPackageDetail> AdmissionPackageDetail { get; set; }
+        public virtual DbSet<DischargeCertificate> DischargeCertificate { get; set; }
         #endregion
 
         #region Blood Bank

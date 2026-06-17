@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -47,7 +48,8 @@ namespace ERP.Mediator.Mediator.IPD.Admission.Handler
                 x => x.Appointment.VisitType,
                 x => x.Appointment.AppointmentStatus,
                 x => x.Appointment.Referrer,
-                x => x.Appointment.AppointmentPayments
+                x => x.Appointment.AppointmentPayments,
+                x => x.DischargeCertificate
             };
 
             List<string> thenIncludes = new()
@@ -71,8 +73,6 @@ namespace ERP.Mediator.Mediator.IPD.Admission.Handler
              && (request.MRN == null || request.MRN == "" || x.Appointment.Patient.MRN.Contains(request.MRN))
              && (request.PatientName == null || request.PatientName == "" || x.Appointment.Patient.PatientMaster.Name.ToLower().Trim().Contains(request.PatientName.ToLower().Trim()))
              && (request.StatusId == null || x.StatusId == request.StatusId.Value);
-            // && (request.DepartmentId == null || x.DepartmentId == request.DepartmentId.Value)
-            // && (request.BookingFormType == 1 || request.BookingFormType == 5 && x.AppointmentStatusId != 1);
 
             Expression<Func<Entities.Models.Admission, object>> OrderBy = null;
             Expression<Func<Entities.Models.Admission, object>> OrderByDesc = x => x.Id;

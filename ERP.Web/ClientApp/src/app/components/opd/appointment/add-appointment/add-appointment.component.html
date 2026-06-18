@@ -1,11 +1,7 @@
-<form *ngIf="appointmentForm" [formGroup]="appointmentForm" class="modern-form">
+<form *ngIf="appointmentForm" [formGroup]="appointmentForm" class="modern-form compact-form">
   <mat-card class="modern-card">
-    <mat-card-header>
-      <div>
-        <mat-card-title class="title">New Patient Appointment</mat-card-title>
-        <mat-card-subtitle class="subtitle">Create or update an appointment with patient details, schedule, and
-          billing.</mat-card-subtitle>
-      </div>
+    <mat-card-header class="compact-header">
+      <mat-card-title class="title">New Patient Appointment</mat-card-title>
     </mat-card-header>
     <mat-divider></mat-divider>
 
@@ -14,28 +10,23 @@
       <section class="section">
         <div class="section-head">
           <mat-icon fontIcon="person" class="icon"></mat-icon>
-          <div>
-            <div class="section-title">Patient Information</div>
-            <div class="section-sub">Identity and contact</div>
-          </div>
+          <div class="section-title">Patient Information</div>
         </div>
 
-        <div class="grid-2">
-          <mat-form-field appearance="outline" class="span-2">
+        <div class="grid-6">
+          <mat-form-field appearance="outline" class="span-2" subscriptSizing="dynamic">
             <mat-label>Search Patient</mat-label>
             <input matInput [formControl]="patientSearchCtrl" [matAutocomplete]="patientAuto"
-              (input)="onPatientSearchInput($event)" type="search" placeholder="Type name , phone number or Cnic" />
+              (input)="onPatientSearchInput($event)" type="search" placeholder="Name, phone or CNIC" />
             <mat-autocomplete #patientAuto="matAutocomplete" [displayWith]="displayPatient"
               (optionSelected)="onPatientSelected($event.option.value)">
               <mat-option *ngFor="let patient of filteredPatients$ | async" [value]="patient">
-                {{ patient.patientMaster?.name }} - {{ patient.patientMaster?.phoneNo }}  - {{ patient.patientMaster.cnic }}
+                {{ patient.patientMaster?.name }} - {{ patient.patientMaster?.phoneNo }} - {{ patient.patientMaster.cnic }}
               </mat-option>
             </mat-autocomplete>
           </mat-form-field>
-        </div>
 
-        <div class="grid-2">
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
             <mat-label>Appointment For</mat-label>
             <mat-select formControlName="appointmentTypeId">
               <mat-option *ngFor="let appointmentType of appointmentTypeList" [value]="appointmentType.id">{{
@@ -43,14 +34,15 @@
             </mat-select>
           </mat-form-field>
         </div>
+
         <div formGroupName="patient">
-          <div class="grid-4">
-            <mat-form-field appearance="outline">
+          <div class="grid-6 patient-fields">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
               <mat-label>Full Name</mat-label>
               <input matInput formControlName="name" />
             </mat-form-field>
 
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
               <mat-label>Gender</mat-label>
               <mat-select formControlName="gender">
                 <mat-option value="male">Male</mat-option>
@@ -58,50 +50,48 @@
               </mat-select>
             </mat-form-field>
 
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
               <mat-label>Date of Birth</mat-label>
               <input matInput [matDatepicker]="dobPicker" formControlName="dateOfBirth" />
               <mat-datepicker-toggle matIconSuffix [for]="dobPicker"></mat-datepicker-toggle>
               <mat-datepicker #dobPicker></mat-datepicker>
             </mat-form-field>
 
-            <mat-form-field appearance="outline">
-              <mat-label>Age (Years)</mat-label>
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Age</mat-label>
               <input type="number" matInput formControlName="age" min="0.1" />
             </mat-form-field>
 
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
               <mat-label>CNIC</mat-label>
               <input matInput [inputMask]="cnicInputMask" placeholder="00000-0000000-0" formControlName="cnic" />
             </mat-form-field>
 
-            <mat-form-field appearance="outline">
-              <mat-label>Phone Number</mat-label>
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Phone</mat-label>
               <input matInput [inputMask]="phoneNoInputMask" formControlName="phoneNo" />
             </mat-form-field>
 
-            <mat-form-field appearance="outline">
-              <mat-label>Alternate Contact</mat-label>
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Alt. Contact</mat-label>
               <input matInput [inputMask]="phoneNoInputMask" formControlName="secondaryPhoneNo" />
             </mat-form-field>
 
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
               <mat-label>Email</mat-label>
               <input matInput formControlName="email" [inputMask]="emailInputMask" />
             </mat-form-field>
 
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
               <mat-label>City</mat-label>
               <mat-select formControlName="cityId">
                 <mat-option *ngFor="let city of cityList" [value]="city.id">{{ city.name }}</mat-option>
               </mat-select>
             </mat-form-field>
 
-          </div>
-          <div class="grid-12">
-            <mat-form-field appearance="outline" class="span-2">
+            <mat-form-field appearance="outline" class="span-2" subscriptSizing="dynamic">
               <mat-label>Address</mat-label>
-              <textarea matInput rows="2" formControlName="address"></textarea>
+              <input matInput formControlName="address" />
             </mat-form-field>
           </div>
         </div>
@@ -111,57 +101,48 @@
       <section class="section">
         <div class="section-head">
           <mat-icon fontIcon="event" class="icon"></mat-icon>
-          <div>
-            <div class="section-title">Appointment Details</div>
-            <div class="section-sub">Schedule and provider</div>
-          </div>
+          <div class="section-title">Appointment Details</div>
         </div>
 
-        <div class="grid-4">
-          <mat-form-field appearance="outline">
+        <div class="grid-6 align-row">
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
             <mat-label>Date</mat-label>
             <input matInput [matDatepicker]="appDate" formControlName="appointmentDate" [min]="minDate" />
             <mat-datepicker-toggle matIconSuffix [for]="appDate"></mat-datepicker-toggle>
             <mat-datepicker #appDate></mat-datepicker>
           </mat-form-field>
 
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
             <mat-label>Time</mat-label>
             <input matInput type="time" formControlName="appointmentTime" />
           </mat-form-field>
 
-          <div class="span-2">
-            <label class="text-sm label-inline">Priority Level</label>
+          <div class="radio-field span-2">
             <mat-radio-group formControlName="priorityLevelId" class="priority-radio">
+              <span class="radio-group-label">Priority</span>
               <mat-radio-button *ngFor="let p of priorityLevelList" [value]="p.id">{{ p.name }}</mat-radio-button>
             </mat-radio-group>
           </div>
 
-          <mat-form-field appearance="outline">
-            <mat-label>Referrer</mat-label>
-            <input matInput formControlName="referrerName" [matAutocomplete]="auto" (keyup)="getReferrerList($event);"
-              class="form-control" (input)="onReferrerInputCleared($event)" type="search"
-              [matTooltip]="this.appointmentForm.get('referrer')?.value ? this.appointmentForm.get('referrer')?.value.hrCode  + ' ' +
-              this.appointmentForm.get('referrer')?.value.name + ' ' + this.appointmentForm.get('referrer')?.value.hospital : 'No Referrer Selected'" />
-            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionReferrerSelected($event)">
-              <mat-option *ngFor="let referrer of referrerList" [value]="referrer">
-                {{ referrer?.name }} : {{ referrer?.hospital }}
-              </mat-option>
-            </mat-autocomplete>
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-label>Visit Type</mat-label>
+            <mat-select formControlName="visitTypeId">
+              <mat-option *ngFor="let visitType of visitTypesList" [value]="visitType.id">{{ visitType.name }}</mat-option>
+            </mat-select>
           </mat-form-field>
 
-          <mat-form-field appearance="outline">
-            <mat-label>Department / Specialty</mat-label>
+          <mat-form-field appearance="outline" class="span-2" subscriptSizing="dynamic">
+            <mat-label>Department</mat-label>
             <mat-select formControlName="departmentId" (selectionChange)="getOPDServiceByDepartment()">
               <mat-option [value]="null">Select Department</mat-option>
               <mat-option *ngFor="let dept of departments" [value]="dept.id">{{ dept.name }}</mat-option>
             </mat-select>
           </mat-form-field>
 
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="outline" class="span-2" subscriptSizing="dynamic">
             <mat-label>Doctor</mat-label>
             <input matInput formControlName="doctorName" [matAutocomplete]="doctorAuto" (keyup)="getDoctorList($event);"
-              class="form-control" (input)="onDoctorInputCleared($event)" type="search"
+              (input)="onDoctorInputCleared($event)" type="search"
               [matTooltip]="this.appointmentForm.get('doctor')?.value ? this.appointmentForm.get('doctor')?.value.hrCode  + ' ' +
               this.appointmentForm.get('doctor')?.value.firstName + ' ' + this.appointmentForm.get('doctor')?.value.lastName : 'No Doctor Selected'" />
             <mat-autocomplete #doctorAuto="matAutocomplete" (optionSelected)="onOptionSelected($event)">
@@ -171,29 +152,29 @@
             </mat-autocomplete>
           </mat-form-field>
 
-          <mat-form-field appearance="outline">
-            <mat-label>Visit Type</mat-label>
-            <mat-select formControlName="visitTypeId">
-              <mat-option *ngFor="let visitType of visitTypesList" [value]="visitType.id">{{ visitType.name
-                }}</mat-option>
-            </mat-select>
+          <mat-form-field appearance="outline" class="span-2" subscriptSizing="dynamic">
+            <mat-label>Referrer</mat-label>
+            <input matInput formControlName="referrerName" [matAutocomplete]="auto" (keyup)="getReferrerList($event);"
+              (input)="onReferrerInputCleared($event)" type="search"
+              [matTooltip]="this.appointmentForm.get('referrer')?.value ? this.appointmentForm.get('referrer')?.value.hrCode  + ' ' +
+              this.appointmentForm.get('referrer')?.value.name + ' ' + this.appointmentForm.get('referrer')?.value.hospital : 'No Referrer Selected'" />
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionReferrerSelected($event)">
+              <mat-option *ngFor="let referrer of referrerList" [value]="referrer">
+                {{ referrer?.name }} : {{ referrer?.hospital }}
+              </mat-option>
+            </mat-autocomplete>
           </mat-form-field>
 
-          <mat-form-field appearance="outline" class="span-2">
-            <mat-label>Reason for Visit / Complaint</mat-label>
-            <input matInput formControlName="reason" placeholder="e.g. Fever, Headache, Checkup" />
+          <mat-form-field appearance="outline" class="span-2" subscriptSizing="dynamic">
+            <mat-label>Reason for Visit</mat-label>
+            <input matInput formControlName="reason" placeholder="e.g. Fever, Headache" />
           </mat-form-field>
 
-          <div class="span-2">
-            <label class="text-sm label-inline">Appointment Status</label>
+          <div class="radio-field span-2">
             <mat-radio-group formControlName="appointmentStatusId" class="priority-radio">
-              <mat-radio-button [value]="1" [disabled]="true">
-                Booked
-              </mat-radio-button>
-
-              <mat-radio-button [value]="5"  [disabled]="true">
-                Confirm
-              </mat-radio-button>
+              <span class="radio-group-label">Status</span>
+              <mat-radio-button [value]="1" [disabled]="true">Booked</mat-radio-button>
+              <mat-radio-button [value]="5" [disabled]="true">Confirm</mat-radio-button>
             </mat-radio-group>
           </div>
         </div>
@@ -204,45 +185,38 @@
         <div [formGroupName]="0">
           <div class="section-head">
             <mat-icon fontIcon="credit_card" class="icon"></mat-icon>
-            <div>
-              <div class="section-title">Payment & Billing</div>
-              <div class="section-sub">Fees, discounts, and status</div>
-            </div>
+            <div class="section-title">Payment & Billing</div>
           </div>
 
           <div class="grid-4">
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
               <mat-label>Visit Fee</mat-label>
               <input matInput type="number" formControlName="visitFee" min="0" step="0.01" />
             </mat-form-field>
 
-            <mat-form-field appearance="outline">
-              <mat-label>Discount / Insurance</mat-label>
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Discount</mat-label>
               <input matInput type="number" formControlName="discount" min="0" step="0.01" />
             </mat-form-field>
 
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
               <mat-label>Total Payable</mat-label>
               <input matInput formControlName="totalPayable" readonly />
             </mat-form-field>
 
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
               <mat-label>Payment Method</mat-label>
-              <mat-select formControlName="paymentModeId" >
-                <mat-option *ngFor="let paymentMode of paymentModesList" [value]="paymentMode.id">{{ paymentMode.name
-                  }}</mat-option>
+              <mat-select formControlName="paymentModeId">
+                <mat-option *ngFor="let paymentMode of paymentModesList" [value]="paymentMode.id">{{ paymentMode.name }}</mat-option>
               </mat-select>
             </mat-form-field>
           </div>
         </div>
       </section>
+
       <div class="button-container">
-        <button mat-flat-button color="success" type="button" (click)="onSubmit()">
-          <span class="mat-button-wrapper">Save</span>
-        </button>
-        <button mat-flat-button color="default" [mat-dialog-close]="true" (click)="onCancel()">
-          <span class="mat-button-wrapper">Close</span>
-        </button>
+        <button mat-flat-button color="success" type="button" (click)="onSubmit()">Save</button>
+        <button mat-flat-button color="default" [mat-dialog-close]="true" (click)="onCancel()">Close</button>
       </div>
     </mat-card-content>
   </mat-card>

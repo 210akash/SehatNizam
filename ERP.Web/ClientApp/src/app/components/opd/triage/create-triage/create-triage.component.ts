@@ -397,7 +397,7 @@ export class CreateTriageComponent implements OnInit {
       return appointment;
     }
 
-    const token = `Booking # ${appointment.tokenNumber}`;
+    const token = `Token/Appoinment # ${appointment.tokenNumber}`;
     const patientName = appointment.patient?.patientMaster?.name ? ` - ${appointment.patient?.patientMaster?.name}` : '';
     return `${token}${patientName}`;
   };

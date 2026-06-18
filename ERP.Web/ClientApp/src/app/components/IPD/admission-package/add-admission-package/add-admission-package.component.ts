@@ -96,7 +96,7 @@ export class AddAdmissionPackageComponent {
 
   // SEARCH API
   searchServices(name: string) {
-    return this.serviceService.getServiceName(name,undefined);
+    return this.serviceService.getServiceName(name,null);
   }
 
   // SELECT SERVICE

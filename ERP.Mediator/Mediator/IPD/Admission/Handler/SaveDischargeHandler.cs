@@ -16,14 +16,12 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
         private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
         private readonly SessionProvider sessionProvider;
-        private readonly IBlobService blobService;
 
-        public SaveDischargeHandler(IMapper mapper, IUnitOfWork unitOfWork, SessionProvider sessionProvider, IBlobService blobService)
+        public SaveDischargeHandler(IMapper mapper, IUnitOfWork unitOfWork, SessionProvider sessionProvider)
         {
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
             this.sessionProvider = sessionProvider;
-            this.blobService = blobService;
         }
 
         public long SaveChanges()
@@ -59,6 +57,7 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                         _DischargeCertificate.ModifiedDate = DateTime.Now;
                         unitOfWork.Repository<DischargeCertificate>().Update(_DischargeCertificate);
                         SaveChanges();
+                        return 200;
                     }
                   
                 }

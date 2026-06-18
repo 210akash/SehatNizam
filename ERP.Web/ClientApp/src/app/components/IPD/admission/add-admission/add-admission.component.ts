@@ -350,6 +350,7 @@ public getIPDService(): void {
     if (!departmentId) {
       this.services = [];
       this.filteredServices = [];
+      this.serviceSearchCtrl.setValue('', { emitEvent: false });
       return;
     }
     const _filterForm = { departmentId: departmentId };
@@ -364,6 +365,9 @@ public getIPDService(): void {
           (s: any) => s.serviceType?.name === 'IPD'
         );
         this.filteredServices = [...this.services];
+        
+        // Reset search control to trigger display of all services
+        this.serviceSearchCtrl.setValue('', { emitEvent: false });
 
         // Optional: if you want to handle the case when no IPD services exist
         if (this.services.length === 0) {
@@ -379,17 +383,23 @@ public getIPDService(): void {
   }
 
   setupServiceAutocomplete(): void {
-    this.serviceSearchCtrl.valueChanges.subscribe((value: string | any) => {
-      const term = (value ?? '').toString().toLowerCase().trim();
-      if (!term) {
-        this.filteredServices = [...this.services];
-        return;
-      }
-      this.filteredServices = this.services.filter((s: any) =>
-        (s?.name ?? '').toString().toLowerCase().includes(term) ||
-        (s?.code ?? '').toString().toLowerCase().includes(term)
-      );
-    });
+    this.serviceSearchCtrl.valueChanges
+      .pipe(
+        startWith(''),
+        debounceTime(300),
+        distinctUntilChanged(),
+      )
+      .subscribe((value: string | any) => {
+        const term = (value ?? '').toString().toLowerCase().trim();
+        if (!term) {
+          this.filteredServices = [...this.services];
+          return;
+        }
+        this.filteredServices = this.services.filter((s: any) =>
+          (s?.name ?? '').toString().toLowerCase().includes(term) ||
+          (s?.code ?? '').toString().toLowerCase().includes(term)
+        );
+      });
   }
 
   getCityList(): void {

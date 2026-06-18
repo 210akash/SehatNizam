@@ -102,7 +102,7 @@ export class AddAppointmentComponent implements OnInit {
     this.getPaymentModesList();
     this.getAllPriorityLevel();
     this.buildForm();
-    this.patchEditData();
+    //this.patchEditData();
     this.setupCalculations();
     this.setupPatientAutocomplete();
     this.setupAppointmentStatusWatcher();

@@ -44,8 +44,9 @@ export class ServiceService extends BaseService<any> {
             .pipe(map((data: any) => data));
     }
 
-    getServiceName(name: string,departmentId?:number | null) {
-        return this.get('?name=' + name + '&departmentId=' +  departmentId, this.endPointControllerName + this.ServiceEndPoints.getServiceName)
+    getServiceName(name: string, departmentId?: number | null) {
+        const params = departmentId != null ? `?name=${name}&departmentId=${departmentId}` : `?name=${name}`;
+        return this.get(params, this.endPointControllerName + this.ServiceEndPoints.getServiceName)
             .pipe(map((data: any) => data));
     }
 }

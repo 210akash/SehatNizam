@@ -156,6 +156,7 @@ export class AddAdmissionComponent implements OnInit {
       id: [0],
       appointmentId: [0],
       visitFee: [0, Validators.min(0)],
+      discountPer: [0, [Validators.min(0), Validators.max(100)]],
       discount: [0, Validators.min(0)],
       totalPayable: [0],
       paymentModeId: [5, Validators.required],
@@ -172,6 +173,22 @@ export class AddAdmissionComponent implements OnInit {
       ?.valueChanges.subscribe((dob) => this.updateAge(dob));
 
     this.admissionForm.get('appointmentPayment')?.valueChanges.subscribe(() => {
+      this.updateTotalPayable();
+    });
+
+    // Setup discountPer value changes to auto-calculate discount
+    this.setupDiscountPercentageCalculation();
+  }
+
+  private setupDiscountPercentageCalculation(): void {
+    const appointmentPayments = this.admissionForm.get('appointmentPayment') as FormArray;
+    appointmentPayments.controls.forEach((control: any) => {
+      control.get('discountPer')?.valueChanges.subscribe(() => {
+        this.calculateDiscountFromPercentage(control);
+      });
+    });
+    // Also watch for new controls added
+    appointmentPayments.valueChanges.subscribe(() => {
       this.updateTotalPayable();
     });
   }
@@ -208,6 +225,7 @@ export class AddAdmissionComponent implements OnInit {
       id: [0],
       appointmentId: [0],
       visitFee: [selectedService.basePrice || 0],
+      discountPer: [0, [Validators.min(0), Validators.max(100)]],
       discount: [0, Validators.min(0)],
       totalPayable: [0],
       paymentModeId: [5, Validators.required],
@@ -229,14 +247,27 @@ export class AddAdmissionComponent implements OnInit {
   }
 
   getServiceName(serviceId: number): string {
-    const service = this.services.find(s => s.id === serviceId);
+    let service = this.services.find(s => s.id === serviceId);
+    if (!service && this.selectedPackageDetails.length > 0) {
+      const detail = this.selectedPackageDetails.find((d: any) => d.service?.id === serviceId);
+      service = detail?.service;
+    }
     return service ? service.name : '';
   }
 
   calculateRowAmount(row: any): number {
     const fee = Number(row.get('visitFee')?.value) || 0;
     const discount = Number(row.get('discount')?.value) || 0;
-    return fee - discount;
+    const rowAmount = fee - discount;
+    return rowAmount > 0 ? rowAmount : 0;
+  }
+
+  calculateDiscountFromPercentage(row: any): void {
+    const fee = Number(row.get('visitFee')?.value) || 0;
+    const discountPer = Number(row.get('discountPer')?.value) || 0;
+    const discount = (fee * discountPer / 100);
+    row.get('discount')?.setValue(Number(discount.toFixed(2)), { emitEvent: false });
+    this.updateTotalPayable();
   }
 
   hasServicesAdded(): boolean {
@@ -430,6 +461,32 @@ getPackageList(): void {
         (sum: number, item: any) => sum + (item.service?.basePrice || 0),
         0
       );
+
+      // Clear existing services
+      while (this.appointmentPayments.length > 0) {
+        this.appointmentPayments.removeAt(0);
+      }
+
+      // Add all services from package to appointmentPayment
+      this.selectedPackageDetails.forEach((detail: any) => {
+        const service = detail.service;
+        if (service) {
+          this.appointmentPayments.push(this.fb.group({
+            id: [0],
+            appointmentId: [0],
+            visitFee: [service.basePrice || 0],
+            discountPer: [0, [Validators.min(0), Validators.max(100)]],
+            discount: [0, Validators.min(0)],
+            totalPayable: [0],
+            paymentModeId: [5, Validators.required],
+            serviceId: [service.id, Validators.required],
+            paymentDate: [this.minDate, Validators.required],
+            paymentStatusId: [1, Validators.required]
+          }));
+        }
+      });
+
+      this.updateTotalPayable();
     } else {
       this.selectedPackageDetails = [];
       this.packageTotal = 0;

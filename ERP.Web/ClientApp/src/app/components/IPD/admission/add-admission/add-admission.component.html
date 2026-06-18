@@ -278,9 +278,10 @@
                 <thead>
                   <tr>
                     <th width="35%">Service</th>
-                    <th width="20%">Rate</th>
-                    <th width="20%">Discount</th>
-                    <th width="20%">Amount</th>
+                    <th width="15%">Rate</th>
+                    <th width="15%">Discount %</th>
+                    <th width="15%">Discount</th>
+                    <th width="15%">Amount</th>
                     <th width="5%">Action</th>
                   </tr>
                 </thead>
@@ -289,7 +290,15 @@
                     <td>{{ getServiceName(row.get('serviceId')?.value) }}</td>
                     <td>{{ row.get('visitFee')?.value | number }}</td>
                     <td>
-                      <input type="number" class="form-control" formControlName="discount" min="0" 
+                      <input type="number" class="form-control" formControlName="discountPer" min="0" max="100"
+                        (blur)="calculateDiscountFromPercentage(row)"
+                        [class.is-invalid]="row.get('discountPer')?.hasError('max') && row.get('discountPer')?.touched" />
+                      <small class="text-danger" *ngIf="row.get('discountPer')?.hasError('max') && row.get('discountPer')?.touched">
+                        Discount % cannot exceed 100
+                      </small>
+                    </td>
+                    <td>
+                      <input type="number" class="form-control" formControlName="discount" min="0"  readonly
                         [class.is-invalid]="row.get('discount')?.hasError('discountExceedsVisitFee') && row.get('discount')?.touched" />
                       <small class="text-danger" *ngIf="row.get('discount')?.hasError('discountExceedsVisitFee') && row.get('discount')?.touched">
                         Discount cannot exceed {{ row.get('visitFee')?.value | number }}
@@ -304,12 +313,12 @@
                     </td>
                   </tr>
                   <tr *ngIf="!hasServicesAdded()">
-                    <td colspan="5" class="text-center text-muted">No services added yet.</td>
+                    <td colspan="6" class="text-center text-muted">No services added yet.</td>
                   </tr>
                 </tbody>
                 <tfoot *ngIf="hasServicesAdded()">
                   <tr>
-                    <td colspan="3"><strong>Total</strong></td>
+                    <td colspan="4"><strong>Total</strong></td>
                     <td colspan="2"><strong>{{ calculateTotalPayable() | number }}</strong></td>
                   </tr>
                 </tfoot>

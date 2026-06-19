@@ -157,7 +157,8 @@ export class AddAppointmentComponent implements OnInit {
       id: [0],
       appointmentId: [0],
       visitFee: [0, Validators.min(0)],
-      discount: [0, Validators.min(0)],
+      discount: [0],
+      discountPer: [0, [Validators.min(0), Validators.max(100)]],
       totalPayable: [{ value: 0, disabled: true }],
       paymentModeId: [5, Validators.required],
       serviceId: [null, Validators.required],
@@ -172,9 +173,26 @@ export class AddAppointmentComponent implements OnInit {
       .get('dateOfBirth')
       ?.valueChanges.subscribe((dob) => this.updateAge(dob));
 
-    // const paymentGroup = this.appointmentForm.get('appointmentPayment') as FormGroup;
-    // paymentGroup.valueChanges.subscribe(() => this.updateTotalPayable());
+    this.paymentGroup.get('discountPer')?.valueChanges.subscribe(() => this.updateDiscountFromPercentage());
+    this.paymentGroup.get('visitFee')?.valueChanges.subscribe((fee) => {
+      this.updateDiscountFromPercentage();
+      const discountPerControl = this.paymentGroup.get('discountPer');
+      if (fee > 0) {
+        discountPerControl?.enable({ emitEvent: false });
+      } else {
+        discountPerControl?.disable({ emitEvent: false });
+      }
+    });
     this.paymentGroup.valueChanges.subscribe(() => this.updateTotalPayable());
+
+    // Initialize discountPer state based on initial visitFee value
+    const initialFee = Number(this.paymentGroup.get('visitFee')?.value) || 0;
+    const discountPerControl = this.paymentGroup.get('discountPer');
+    if (initialFee > 0) {
+      discountPerControl?.enable({ emitEvent: false });
+    } else {
+      discountPerControl?.disable({ emitEvent: false });
+    }
   }
 
   private setupPatientAutocomplete(): void {
@@ -254,6 +272,23 @@ export class AddAppointmentComponent implements OnInit {
     }
 
     this.updateAge(element.patient?.dateOfBirth);
+    
+    // Handle discountPer field state based on visitFee
+    const visitFee = payment.visitFee ?? payment.amount ?? element.appointmentPayment?.visitFee ?? 0;
+    const discountPerControl = this.paymentGroup.get('discountPer');
+    if (visitFee > 0) {
+      discountPerControl?.enable({ emitEvent: false });
+    } else {
+      discountPerControl?.disable({ emitEvent: false });
+    }
+    
+    // Calculate discountPer from discount if not present
+    if (!payment.discountPer && payment.discount > 0 && visitFee > 0) {
+      const calculatedDiscountPer = Number((payment.discount * 100 / visitFee).toFixed(2));
+      this.paymentGroup.get('discountPer')?.setValue(calculatedDiscountPer, { emitEvent: false });
+    }
+    
+    this.updateDiscountFromPercentage();
     this.updateTotalPayable();
   }
 
@@ -607,15 +642,24 @@ export class AddAppointmentComponent implements OnInit {
 
   private updateTotalPayable(): void {
     const total = this.calculateTotalPayable();
-    // const paymentGroup = this.appointmentForm.get('appointmentPayment') as FormGroup;
-    // paymentGroup.get('totalPayable')?.setValue(total, { emitEvent: false });
     this.paymentGroup.get('totalPayable')?.setValue(total, { emitEvent: false });
   }
 
+  private updateDiscountFromPercentage(): void {
+    const fee = Number(this.paymentGroup.get('visitFee')?.value) || 0;
+    if(fee > 0)
+    {
+    const discountPer = Number(this.paymentGroup.get('discountPer')?.value) || 0;
+    const discount = Number((fee * discountPer / 100).toFixed(2));
+    this.paymentGroup.get('discount')?.setValue(discount, { emitEvent: false });
+    }
+    else{
+    this.paymentGroup.get('discountPer')?.setValue(0, { emitEvent: false });
+    this.paymentGroup.get('discount')?.setValue(0, { emitEvent: false });
+    }
+  }
+
   private calculateTotalPayable(): number {
-    // const paymentGroup = this.appointmentForm.get('appointmentPayment') as FormGroup;
-    // const fee = Number(paymentGroup.get('visitFee')?.value) || 0;
-    // const discount = Number(paymentGroup.get('discount')?.value) || 0;
     const fee = Number(this.paymentGroup.get('visitFee')?.value) || 0;
     const discount = Number(this.paymentGroup.get('discount')?.value) || 0;
     const total = fee - discount;
@@ -684,6 +728,7 @@ export class AddAppointmentComponent implements OnInit {
     const consultationFee = Number(selectedValue?.doctorProfile?.consultationFee ?? 0);
     this.paymentGroup.get('visitFee')?.setValue(consultationFee, { emitEvent: true });
     this.paymentGroup.get('visitFee')?.disable({ emitEvent: false });
+    this.paymentGroup.get('discountPer')?.enable({ emitEvent: false });
     this.getOPDServiceByDepartment();
     // paymentGroup.get('visitFee')?.setValue(consultationFee, { emitEvent: true });
     // paymentGroup.get('visitFee')?.disable({ emitEvent: false });
@@ -703,6 +748,7 @@ export class AddAppointmentComponent implements OnInit {
       const paymentGroup = this.appointmentForm.get('appointmentPayment') as FormGroup;
       paymentGroup.get('visitFee')?.enable({ emitEvent: false });
       paymentGroup.get('visitFee')?.setValue(0, { emitEvent: true });
+      paymentGroup.get('discountPer')?.disable({ emitEvent: false });
     }
   }
 

@@ -218,6 +218,8 @@ namespace ERP.Entities.Models
         public virtual DbSet<AppointmentPayment> AppointmentPayment { get; set; }
         public virtual DbSet<RadiologyType> RadiologyType { get; set; }
         public virtual DbSet<Service> Service { get; set; }
+        public virtual DbSet<ServiceAccount> ServiceAccount { get; set; }
+        public virtual DbSet<ServiceAccountHistory> ServiceAccountHistory { get; set; }
         public virtual DbSet<AppointmentService> AppointmentService { get; set; }
 
         #region IPD
@@ -246,7 +248,6 @@ namespace ERP.Entities.Models
         public virtual DbSet<BloodCrossMatch> BloodCrossMatch { get; set; }
         public virtual DbSet<BloodIssue> BloodIssue { get; set; }
         #endregion
-
 
         #endregion
 

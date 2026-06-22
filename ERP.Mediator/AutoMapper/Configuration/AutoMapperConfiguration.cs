@@ -99,6 +99,7 @@ namespace ERP.Mediator.AutoMapper.Configuration
     using ERP.Mediator.Mediator.SalesTarget.Command;
     using ERP.Mediator.Mediator.Section.Command;
     using ERP.Mediator.Mediator.Service.Command;
+    using ERP.Mediator.Mediator.ServiceAccount.Command;
     using ERP.Mediator.Mediator.ServiceType.Command;
     using ERP.Mediator.Mediator.SurgicalOrder.Command;
     using ERP.Mediator.Mediator.ShipmentMode.Command;
@@ -769,6 +770,8 @@ namespace ERP.Mediator.AutoMapper.Configuration
             CreateMap<AdvancePayment, SaveAdvancePaymentsCommand>().ReverseMap();
             CreateMap<AdvancePayment, GetAdvancePayment>().ReverseMap();
             CreateMap<DischargeCertificate, SaveDischargeCommand>().ReverseMap();
+            CreateMap<ServiceAccount, GetServiceAccount>().ReverseMap();
+            CreateMap<ServiceAccountHistory, GetServiceAccountHistory>().ReverseMap();
 
         }
     }

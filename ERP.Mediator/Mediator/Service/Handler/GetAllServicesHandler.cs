@@ -34,11 +34,17 @@ namespace ERP.Mediator.Mediator.Services.Handler
             Expression<Func<Entities.Models.Service, object>>[] includes = {
                 x => x.Department,
                 x => x.ServiceType,
+                x => x.ServiceAccounts
+            };
+
+            List<string> thenIncludes = new()
+            {
+                "ServiceAccounts.ServiceAccountHistory",
             };
 
             Expression<Func<Entities.Models.Service, object>> OrderBy = null;
             Expression<Func<Entities.Models.Service, object>> OrderByDescending = x => x.ModifiedDate ?? x.CreatedDate;
-            var entity = unitOfWork.Repository<Entities.Models.Service>().GetPagingWhereAsNoTrackingAsync(predicate, request.PagingData, OrderBy, OrderByDescending, null, includes);
+            var entity = unitOfWork.Repository<Entities.Models.Service>().GetPagingWhereAsNoTrackingAsync(predicate, request.PagingData, OrderBy, OrderByDescending, thenIncludes, includes);
             var Services = mapper.Map<IEnumerable<GetService>>(entity.Item1.ToList()).ToList();
             return new Tuple<IEnumerable<GetService>, long>(Services, entity.Item2);
         }

@@ -11,6 +11,7 @@ import { ViewServiceComponent } from '../view-service/view-service.component';
 import { DeleteServiceComponent } from '../delete-service/delete-service.component';
 import { DepartmentService } from '../../../department/department.service';
 import { ServiceTypeService } from '../../service-type/service-type.service';
+import { AddServiceAccountComponent } from '../../serviceaccount/add-serviceaccount/add-serviceaccount.component';
 
 @Component({
   selector: 'app-service-list',
@@ -160,4 +161,14 @@ export class ServiceListComponent implements OnInit {
       this.bindData();
     });
   }
+
+     accounts(element: any): void {
+      const dialogRef = this.dialog.open(AddServiceAccountComponent, {
+        data: { element },
+        panelClass: 'cstm_width_800',
+        height: 'auto',
+        disableClose: true
+      });
+      dialogRef.afterClosed().subscribe(() => this.bindData());
+    }
 }

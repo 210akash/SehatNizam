@@ -4,14 +4,16 @@ using ERP.Entities.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ERP.Entities.Migrations
 {
     [DbContext(typeof(ERPDbContext))]
-    partial class ERPDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260622134137_ServiceAccount_History")]
+    partial class ServiceAccount_History
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -10110,9 +10112,6 @@ namespace ERP.Entities.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<long>("ProjectId")
-                        .HasColumnType("bigint");
-
                     b.Property<long>("ServiceId")
                         .HasColumnType("bigint");
 
@@ -10125,8 +10124,6 @@ namespace ERP.Entities.Migrations
                     b.HasIndex("DebitAccountId");
 
                     b.HasIndex("ModifiedById");
-
-                    b.HasIndex("ProjectId");
 
                     b.HasIndex("ServiceId");
 
@@ -17505,12 +17502,6 @@ namespace ERP.Entities.Migrations
                         .WithMany()
                         .HasForeignKey("ModifiedById");
 
-                    b.HasOne("ERP.Entities.Models.Project", "Project")
-                        .WithMany()
-                        .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("ERP.Entities.Models.Service", "Service")
                         .WithMany("ServiceAccounts")
                         .HasForeignKey("ServiceId")
@@ -17524,8 +17515,6 @@ namespace ERP.Entities.Migrations
                     b.Navigation("DebitAccount");
 
                     b.Navigation("ModifiedBy");
-
-                    b.Navigation("Project");
 
                     b.Navigation("Service");
                 });

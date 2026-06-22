@@ -1027,6 +1027,9 @@ import { ViewAdvancePaymentComponent } from './components/opd/advancepayment/vie
 import { AppointmentPaymentListComponent } from './components/opd/appointment-payment/appointment-payment-list/appointment-payment-list.component';
 import { AddDischargeComponent } from './components/IPD/discharge/discharge.component';
 import { MAT_DATE_FORMATS } from '@angular/material/core';
+import { AddServiceAccountComponent } from './components/opd/serviceaccount/add-serviceaccount/add-serviceaccount.component';
+import { ServiceAccountEndPoints } from './components/opd/serviceaccount/serviceaccount.endpoints';
+import { ServiceAccountService } from './components/opd/serviceaccount/serviceaccount.service';
 const matFormFieldDefaults: MatFormFieldDefaultOptions = {
     appearance: 'outline'
     , subscriptSizing: 'dynamic'
@@ -1760,7 +1763,8 @@ export const APP_DATE_FORMATS = {
         ManageAppointmentBillingComponent,
         EditAppointmentPaymentComponent,
         CollectAppointmentPaymentComponent,
-        AddDischargeComponent
+        AddDischargeComponent,
+        AddServiceAccountComponent
 
     ],
     bootstrap: [AppComponent], imports: [
@@ -2104,6 +2108,8 @@ export const APP_DATE_FORMATS = {
         AdvancePaymentEndPoints,
         AppointmentPaymentService,
         AppointmentPaymentEndPoints,
+        ServiceAccountEndPoints,
+        ServiceAccountService,
         { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
         { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },
         AuthenticationService, {

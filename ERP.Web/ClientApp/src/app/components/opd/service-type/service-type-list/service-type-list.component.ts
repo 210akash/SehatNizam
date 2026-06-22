@@ -9,6 +9,7 @@ import { ServiceTypeService } from '../service-type.service';
 import { AddServiceTypeComponent } from '../add-service-type/add-service-type.component';
 import { ViewServiceTypeComponent } from '../view-service-type/view-service-type.component';
 import { DeleteServiceTypeComponent } from '../delete-service-type/delete-service-type.component';
+import { AddServiceAccountComponent } from '../../serviceaccount/add-serviceaccount/add-serviceaccount.component';
 
 @Component({
   selector: 'app-service-type-list',
@@ -103,6 +104,8 @@ export class ServiceTypeListComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(() => this.bindData());
   }
+
+
 
   openView(element: any): void {
     this.dialog.open(ViewServiceTypeComponent, {

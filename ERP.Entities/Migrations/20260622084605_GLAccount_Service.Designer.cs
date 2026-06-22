@@ -4,14 +4,16 @@ using ERP.Entities.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ERP.Entities.Migrations
 {
     [DbContext(typeof(ERPDbContext))]
-    partial class ERPDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260622084605_GLAccount_Service")]
+    partial class GLAccount_Service
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -10020,6 +10022,12 @@ namespace ERP.Entities.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<long?>("AccountGroupId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("AccountId")
+                        .HasColumnType("bigint");
+
                     b.Property<decimal>("BasePrice")
                         .HasColumnType("decimal(18,2)");
 
@@ -10048,6 +10056,9 @@ namespace ERP.Entities.Migrations
                     b.Property<bool>("IsDelete")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsGroup")
+                        .HasColumnType("bit");
+
                     b.Property<Guid?>("ModifiedById")
                         .HasColumnType("uniqueidentifier");
 
@@ -10062,6 +10073,10 @@ namespace ERP.Entities.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AccountGroupId");
+
+                    b.HasIndex("AccountId");
+
                     b.HasIndex("CreatedById");
 
                     b.HasIndex("DepartmentId");
@@ -10071,129 +10086,6 @@ namespace ERP.Entities.Migrations
                     b.HasIndex("ServiceTypeId");
 
                     b.ToTable("Service");
-                });
-
-            modelBuilder.Entity("ERP.Entities.Models.ServiceAccount", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("AccountType")
-                        .HasColumnType("int");
-
-                    b.Property<Guid?>("CreatedById")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long>("CreditAccountId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("DebitAccountId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeleteDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDelete")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid?>("ModifiedById")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long>("ProjectId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("ServiceId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatedById");
-
-                    b.HasIndex("CreditAccountId");
-
-                    b.HasIndex("DebitAccountId");
-
-                    b.HasIndex("ModifiedById");
-
-                    b.HasIndex("ProjectId");
-
-                    b.HasIndex("ServiceId");
-
-                    b.ToTable("ServiceAccount");
-                });
-
-            modelBuilder.Entity("ERP.Entities.Models.ServiceAccountHistory", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("AccountType")
-                        .HasColumnType("int");
-
-                    b.Property<Guid?>("CreatedById")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeleteDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDelete")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid?>("ModifiedById")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("NewCreditAccountId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("NewDebitAccountId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("OldCreditAccountId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("OldDebitAccountId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Reason")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("ServiceAccountId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("ServiceId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatedById");
-
-                    b.HasIndex("ModifiedById");
-
-                    b.HasIndex("ServiceAccountId");
-
-                    b.ToTable("ServiceAccountHistory");
                 });
 
             modelBuilder.Entity("ERP.Entities.Models.ServiceType", b =>
@@ -17456,6 +17348,14 @@ namespace ERP.Entities.Migrations
 
             modelBuilder.Entity("ERP.Entities.Models.Service", b =>
                 {
+                    b.HasOne("ERP.Entities.Models.AccountGroup", "AccountGroup")
+                        .WithMany()
+                        .HasForeignKey("AccountGroupId");
+
+                    b.HasOne("ERP.Entities.Models.Account", "Account")
+                        .WithMany()
+                        .HasForeignKey("AccountId");
+
                     b.HasOne("ERP.Entities.Models.AspNetUsers", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById");
@@ -17474,6 +17374,10 @@ namespace ERP.Entities.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Account");
+
+                    b.Navigation("AccountGroup");
+
                     b.Navigation("CreatedBy");
 
                     b.Navigation("Department");
@@ -17481,76 +17385,6 @@ namespace ERP.Entities.Migrations
                     b.Navigation("ModifiedBy");
 
                     b.Navigation("ServiceType");
-                });
-
-            modelBuilder.Entity("ERP.Entities.Models.ServiceAccount", b =>
-                {
-                    b.HasOne("ERP.Entities.Models.AspNetUsers", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedById");
-
-                    b.HasOne("ERP.Entities.Models.Account", "CreditAccount")
-                        .WithMany()
-                        .HasForeignKey("CreditAccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ERP.Entities.Models.Account", "DebitAccount")
-                        .WithMany()
-                        .HasForeignKey("DebitAccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ERP.Entities.Models.AspNetUsers", "ModifiedBy")
-                        .WithMany()
-                        .HasForeignKey("ModifiedById");
-
-                    b.HasOne("ERP.Entities.Models.Project", "Project")
-                        .WithMany()
-                        .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ERP.Entities.Models.Service", "Service")
-                        .WithMany("ServiceAccounts")
-                        .HasForeignKey("ServiceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CreatedBy");
-
-                    b.Navigation("CreditAccount");
-
-                    b.Navigation("DebitAccount");
-
-                    b.Navigation("ModifiedBy");
-
-                    b.Navigation("Project");
-
-                    b.Navigation("Service");
-                });
-
-            modelBuilder.Entity("ERP.Entities.Models.ServiceAccountHistory", b =>
-                {
-                    b.HasOne("ERP.Entities.Models.AspNetUsers", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedById");
-
-                    b.HasOne("ERP.Entities.Models.AspNetUsers", "ModifiedBy")
-                        .WithMany()
-                        .HasForeignKey("ModifiedById");
-
-                    b.HasOne("ERP.Entities.Models.ServiceAccount", "ServiceAccount")
-                        .WithMany("ServiceAccountHistory")
-                        .HasForeignKey("ServiceAccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CreatedBy");
-
-                    b.Navigation("ModifiedBy");
-
-                    b.Navigation("ServiceAccount");
                 });
 
             modelBuilder.Entity("ERP.Entities.Models.ServiceType", b =>
@@ -19081,16 +18915,6 @@ namespace ERP.Entities.Migrations
             modelBuilder.Entity("ERP.Entities.Models.SaleReturn", b =>
                 {
                     b.Navigation("SaleReturnDetail");
-                });
-
-            modelBuilder.Entity("ERP.Entities.Models.Service", b =>
-                {
-                    b.Navigation("ServiceAccounts");
-                });
-
-            modelBuilder.Entity("ERP.Entities.Models.ServiceAccount", b =>
-                {
-                    b.Navigation("ServiceAccountHistory");
                 });
 
             modelBuilder.Entity("ERP.Entities.Models.Shop", b =>

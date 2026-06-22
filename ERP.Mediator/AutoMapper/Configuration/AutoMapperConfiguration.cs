@@ -100,6 +100,7 @@ namespace ERP.Mediator.AutoMapper.Configuration
     using ERP.Mediator.Mediator.Section.Command;
     using ERP.Mediator.Mediator.Service.Command;
     using ERP.Mediator.Mediator.ServiceType.Command;
+    using ERP.Mediator.Mediator.SurgicalOrder.Command;
     using ERP.Mediator.Mediator.ShipmentMode.Command;
     using ERP.Mediator.Mediator.Shop.Command;
     using ERP.Mediator.Mediator.ShopDispatch.Command;
@@ -672,6 +673,8 @@ namespace ERP.Mediator.AutoMapper.Configuration
             // Service Module Mappings
             this.CreateMap<Entities.Models.Service, GetService>().ReverseMap();
             this.CreateMap<Entities.Models.Service, SaveServiceCommand>().ReverseMap();
+            this.CreateMap<SurgicalOrder, GetSurgicalOrder>().ReverseMap();
+            this.CreateMap<SurgicalOrder, SaveSurgicalOrderCommand>().ReverseMap();
 
             // Payroll Module Mappings
             this.CreateMap<SalaryHead, GetSalaryHead>().ReverseMap();

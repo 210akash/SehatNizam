@@ -1,0 +1,125 @@
+<div class="doctor-plan-page">
+
+  <div class="page-header">
+
+    <div>
+
+      <h2>Doctor's Plan</h2>
+
+      <p class="subtitle">Monthly view shows appointment & surgery pills with counts — click for details</p>
+
+    </div>
+
+    <div class="stats-row" *ngIf="form.value.doctorId">
+
+      <div class="stat-chip appointment">
+
+        <mat-icon>event</mat-icon>
+
+        <span>{{ appointmentCount }} Appointments</span>
+
+      </div>
+
+      <div class="stat-chip surgical">
+
+        <mat-icon>medical_services</mat-icon>
+
+        <span>{{ surgeryCount }} Surgeries</span>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+  <mat-card class="toolbar-card">
+
+    <mat-card-content>
+
+      <form [formGroup]="form" class="toolbar-form">
+
+        <mat-form-field appearance="outline" class="doctor-field">
+
+          <mat-label>Select Doctor</mat-label>
+
+          <mat-select formControlName="doctorId">
+
+            <mat-option [value]="null">Select doctor</mat-option>
+
+            <mat-option *ngFor="let doctor of doctors" [value]="doctor.id">
+
+              {{ getDoctorName(doctor) }}
+
+            </mat-option>
+
+          </mat-select>
+
+        </mat-form-field>
+
+
+
+        <div class="legend">
+
+          <span class="legend-item appointment"><span class="dot"></span> Appointment</span>
+
+          <span class="legend-item surgical"><span class="dot"></span> Surgical Order</span>
+
+        </div>
+
+      </form>
+
+    </mat-card-content>
+
+  </mat-card>
+
+
+
+  <div *ngIf="form.value.doctorId; else selectDoctor">
+
+    <mat-card class="calendar-card">
+
+      <mat-card-content>
+
+        <div class="calendar-caption" *ngIf="getSelectedDoctorName()">
+
+          Schedule for <strong>{{ getSelectedDoctorName() }}</strong>
+
+        </div>
+
+        <div class="loading-overlay" *ngIf="isLoading">
+
+          <mat-spinner diameter="40"></mat-spinner>
+
+        </div>
+
+        <full-calendar [options]="calendarOptions"></full-calendar>
+
+      </mat-card-content>
+
+    </mat-card>
+
+  </div>
+
+
+
+  <ng-template #selectDoctor>
+
+    <mat-card class="empty-card">
+
+      <mat-card-content>
+
+        <mat-icon>person_search</mat-icon>
+
+        <p>Please select a doctor to view the schedule calendar.</p>
+
+      </mat-card-content>
+
+    </mat-card>
+
+  </ng-template>
+
+</div>
+
+

@@ -154,6 +154,8 @@ import { TransfusionListComponent } from './components/blood-bank/transfusion/tr
 import { AdvancePaymentListComponent } from './components/opd/advancepayment/advancepayment-list/advancepayment-list.component';
 import { AppointmentPaymentListComponent } from './components/opd/appointment-payment/appointment-payment-list/appointment-payment-list.component';
 import { RadiologyOrderListComponent } from './components/opd/radiologyorder/radiology-order-list/radiology-order-list.component';
+import { SurgicalOrderListComponent } from './components/opd/surgical-order/surgical-order-list/surgical-order-list.component';
+import { DoctorPlanComponent } from './components/opd/doctor-plan/doctor-plan.component';
 
 const routes: Routes = [
   {
@@ -279,6 +281,8 @@ const routes: Routes = [
       { path: 'triagelist', component: TriageListComponent, canActivate: [AuthGuard], data: {roles: ["receptionist"] } },
        { path: 'triage', component: CreateTriageComponent, canActivate: [AuthGuard] },
        { path: 'laborder', component: LabOrderListComponent, canActivate: [AuthGuard] },
+       { path: 'surgicalorder', component: SurgicalOrderListComponent, canActivate: [AuthGuard] },
+       { path: 'doctorplan', component: DoctorPlanComponent, canActivate: [AuthGuard] },
        { path: 'radiologyorder', component: RadiologyTypeListComponent, canActivate: [AuthGuard] },
        { path: 'newlaborder', component: AddLabOrderComponent, canActivate: [AuthGuard] },
        { path: 'newradiologyorder', component: AddRadiologyOrderComponent, canActivate: [AuthGuard] },

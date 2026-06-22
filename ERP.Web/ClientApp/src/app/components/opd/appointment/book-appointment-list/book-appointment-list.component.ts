@@ -11,6 +11,7 @@ import { ConfirmAppointmentComponent } from '../confirm-appointment/confirm-appo
 import { MatDialog } from '@angular/material/dialog';
 import { PrintReceiptAppoinmentComponent } from '../print-receipt-appoinment/print-receipt-appoinment.component';
 import { DepartmentService } from '../../../department/department.service';
+import { ManageSurgicalOrderComponent } from '../../surgical-order/manage-surgical-order/manage-surgical-order.component';
 
 @Component({
   selector: 'app-book-appointment-list',
@@ -193,6 +194,15 @@ export class BookAppointmentListComponent {
       if (confirmed) {
         this.bindData();
       }
+    });
+  }
+
+  openSurgicalOrderDialog(element: any): void {
+    this.dialog.open(ManageSurgicalOrderComponent, {
+      panelClass: 'cstm_width_1100',
+      maxHeight: '95vh',
+      disableClose: true,
+      data: { element }
     });
   }
 

@@ -1,0 +1,133 @@
+<div class="header-container" *ngIf="!embeddedMode">
+  <h2>Surgical Orders</h2>
+</div>
+
+<div class="body-container" [class.embedded]="embeddedMode">
+  <div class="filter-section" [formGroup]="form" *ngIf="!embeddedMode">
+    <div class="row">
+      <div class="col-lg-2 col-md-4 col-sm-6 col-12">
+        <mat-form-field class="filter-field" appearance="outline">
+          <mat-label>From Date</mat-label>
+          <input matInput [matDatepicker]="fromPicker" formControlName="fDate" (dateChange)="filterData()" />
+          <mat-datepicker-toggle matIconSuffix [for]="fromPicker"></mat-datepicker-toggle>
+          <mat-datepicker #fromPicker></mat-datepicker>
+        </mat-form-field>
+      </div>
+      <div class="col-lg-2 col-md-4 col-sm-6 col-12">
+        <mat-form-field class="filter-field" appearance="outline">
+          <mat-label>To Date</mat-label>
+          <input matInput [matDatepicker]="toPicker" formControlName="tDate" (dateChange)="filterData()" />
+          <mat-datepicker-toggle matIconSuffix [for]="toPicker"></mat-datepicker-toggle>
+          <mat-datepicker #toPicker></mat-datepicker>
+        </mat-form-field>
+      </div>
+      <div class="col-lg-2 col-md-3 col-sm-6 col-12">
+        <mat-form-field class="filter-field" appearance="outline">
+          <mat-label>Booking #</mat-label>
+          <input matInput formControlName="tokenNo" (keyup)="filterData()" />
+        </mat-form-field>
+      </div>
+      <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+        <mat-form-field class="filter-field" appearance="outline">
+          <mat-label>Patient Name</mat-label>
+          <input matInput formControlName="name" (keyup)="filterData()" />
+        </mat-form-field>
+      </div>
+      <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+        <mat-form-field class="filter-field" appearance="outline">
+          <mat-label>Doctor</mat-label>
+          <mat-select formControlName="surgeonId" (selectionChange)="filterData()">
+            <mat-option [value]="null">All Doctors</mat-option>
+            <mat-option *ngFor="let doctor of doctors" [value]="doctor.id">
+              {{ getDoctorName(doctor) }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+        <mat-form-field class="filter-field" appearance="outline">
+          <mat-label>Surgical Service</mat-label>
+          <mat-select formControlName="serviceId" (selectionChange)="filterData()">
+            <mat-option [value]="null">All Services</mat-option>
+            <mat-option *ngFor="let service of surgicalServices" [value]="service.id">
+              {{ service.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col-lg-2 col-md-3 col-sm-6 col-12">
+        <mat-form-field class="filter-field" appearance="outline">
+          <mat-label>Status</mat-label>
+          <mat-select formControlName="statusId" (selectionChange)="filterData()">
+            <mat-option [value]="null">All</mat-option>
+            <mat-option [value]="1">Scheduled</mat-option>
+            <mat-option [value]="15">Completed</mat-option>
+            <mat-option [value]="16">Cancelled</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+
+  <div class="mat-elevation-z8 table-responsive">
+    <table mat-table [dataSource]="dataSource">
+      <ng-container matColumnDef="bookingNumber">
+        <th mat-header-cell *matHeaderCellDef>Booking #</th>
+        <td mat-cell *matCellDef="let e">{{ e.appointmentId }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="patientName">
+        <th mat-header-cell *matHeaderCellDef>Patient</th>
+        <td mat-cell *matCellDef="let e">{{ getPatientName(e) }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="service">
+        <th mat-header-cell *matHeaderCellDef>Service</th>
+        <td mat-cell *matCellDef="let e">{{ e.service?.name || '-' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="surgeon">
+        <th mat-header-cell *matHeaderCellDef>Surgeon</th>
+        <td mat-cell *matCellDef="let e">{{ getDoctorName(e.surgeon) }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="scheduledDateTime">
+        <th mat-header-cell *matHeaderCellDef>Scheduled</th>
+        <td mat-cell *matCellDef="let e">{{ e.scheduledDateTime | date:'dd/MM/yyyy HH:mm' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Status</th>
+        <td mat-cell *matCellDef="let e">{{ e.status?.title || '-' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="notes">
+        <th mat-header-cell *matHeaderCellDef>Notes</th>
+        <td mat-cell *matCellDef="let e">{{ e.clinicalNotes || '-' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let e">
+          <button mat-mini-fab color="warn" matTooltip="Delete" (click)="deleteOrder(e)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <div class="empty" *ngIf="!isLoading && dataSource.data.length === 0">No surgical orders found</div>
+
+    <mat-paginator
+      *ngIf="!embeddedMode"
+      [length]="totalRecords"
+      [pageIndex]="currentPage"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="[5, 10, 25, 50]"
+      (page)="pageChanged($event)">
+    </mat-paginator>
+  </div>
+</div>

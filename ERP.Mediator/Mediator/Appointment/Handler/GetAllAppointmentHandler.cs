@@ -65,6 +65,7 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
              && (request.PatientName == null || request.PatientName == "" || x.Patient.PatientMaster.Name.ToLower().Trim().Contains(request.PatientName.ToLower().Trim()))
              && (request.StatusId == null || x.AppointmentStatusId == request.StatusId.Value)
              && (request.DepartmentId == null || x.DepartmentId == request.DepartmentId.Value)
+             && (request.DoctorId == null || x.DoctorId == request.DoctorId.Value)
              && (request.BookingFormType == 1 || request.BookingFormType == 5 && x.AppointmentStatusId != 1);
 
             Expression<Func<Entities.Models.Appointment, object>> OrderBy = null;

@@ -13,5 +13,6 @@ namespace ERP.BusinessModels.ResponseVM
         public GetServiceType ServiceType { get; set; }
         public GetDepartment Department { get; set; }
         public bool IsActive { get; set; }
+        public bool? IsSurgical { get; set; }
     }
 }

@@ -423,6 +423,8 @@ export class SidemenuComponent implements OnDestroy {
   private readonly submenuIconMap: Record<string, string> = {
     '/doctorappointment': 'fa-calendar-check',
     '/bookappointment': 'fa-calendar-plus',
+    '/surgicalorder': 'fa-procedures',
+    '/doctorplan': 'fa-calendar-alt',
     '/appointment': 'fa-user-plus',
     '/patient': 'fa-user-injured',
     '/referrer': 'fa-user-md',

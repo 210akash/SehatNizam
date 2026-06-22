@@ -19,7 +19,7 @@ export class ServiceService extends BaseService<any> {
         );
     }
 
-    getAllServices(query: { departmentId?: number }) {
+    getAllServices(query: { departmentId?: number; serviceTypeId?: number; name?: string; isSurgical?: boolean; pagingData?: any }) {
         return this.post(query, this.endPointControllerName + this.ServiceEndPoints.getAllService)
             .pipe(map((data: any) => data));
     }

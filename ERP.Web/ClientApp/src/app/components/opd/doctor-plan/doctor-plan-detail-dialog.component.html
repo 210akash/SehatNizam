@@ -1,0 +1,50 @@
+<div class="detail-dialog" [class.appointment]="data.type === 'appointment'" [class.surgical]="data.type === 'surgical'">
+  <div class="dialog-header">
+    <div class="header-icon-wrap">
+      <mat-icon>{{ data.type === 'appointment' ? 'event' : 'medical_services' }}</mat-icon>
+    </div>
+    <div class="header-text">
+      <span class="type-chip">{{ typeLabel }}</span>
+      <h2>{{ data.patientName }}</h2>
+      <p>{{ data.start | date:'dd/MM/yyyy' }} &middot; {{ data.start | date:'HH:mm' }} – {{ data.end | date:'HH:mm' }}</p>
+    </div>
+    <button mat-icon-button class="close-btn" (click)="close()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div class="dialog-body">
+    <div class="info-tile">
+      <mat-icon>confirmation_number</mat-icon>
+      <div>
+        <label>Booking #</label>
+        <span>{{ data.bookingNumber }}</span>
+      </div>
+    </div>
+    <div class="info-tile">
+      <mat-icon>{{ data.type === 'appointment' ? 'domain' : 'healing' }}</mat-icon>
+      <div>
+        <label>{{ deptLabel }}</label>
+        <span>{{ data.serviceOrDept }}</span>
+      </div>
+    </div>
+    <div class="info-tile">
+      <mat-icon>info</mat-icon>
+      <div>
+        <label>Status</label>
+        <span class="status-pill">{{ data.status }}</span>
+      </div>
+    </div>
+    <div class="info-tile notes-tile" *ngIf="data.notes && data.notes !== '-'">
+      <mat-icon>notes</mat-icon>
+      <div>
+        <label>Notes</label>
+        <span>{{ data.notes }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="dialog-actions">
+    <button mat-flat-button color="primary" (click)="close()">Close</button>
+  </div>
+</div>

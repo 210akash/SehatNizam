@@ -212,6 +212,7 @@ namespace ERP.Entities.Models
         public virtual DbSet<LabTestVariableOption> LabTestVariableOption { get; set; }
         public virtual DbSet<LabResult> LabResult { get; set; }
         public virtual DbSet<RadiologyOrder> RadiologyOrder { get; set; }
+        public virtual DbSet<SurgicalOrder> SurgicalOrder { get; set; }
         public virtual DbSet<RadiologyStudyResult> RadiologyStudyResult { get; set; }
         public virtual DbSet<RadiologyStudyImage> RadiologyStudyImage { get; set; }
         public virtual DbSet<AppointmentPayment> AppointmentPayment { get; set; }
@@ -1104,6 +1105,30 @@ namespace ERP.Entities.Models
     .WithOne(x => x.RadiologyOrder)
     .HasForeignKey<RadiologyStudyResult>(x => x.RadiologyOrderId)
     .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<SurgicalOrder>()
+                .HasOne(x => x.Appointment)
+                .WithMany(x => x.SurgicalOrders)
+                .HasForeignKey(x => x.AppointmentId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<SurgicalOrder>()
+                .HasOne(x => x.Status)
+                .WithMany()
+                .HasForeignKey(x => x.StatusId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<SurgicalOrder>()
+                .HasOne(x => x.Service)
+                .WithMany()
+                .HasForeignKey(x => x.ServiceId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<SurgicalOrder>()
+                .HasOne(x => x.Surgeon)
+                .WithMany()
+                .HasForeignKey(x => x.SurgeonId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             #endregion
 

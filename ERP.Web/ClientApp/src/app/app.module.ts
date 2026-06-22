@@ -868,6 +868,14 @@ import { ViewLabOrderComponent } from './components/opd/lab-order/view-lab-order
 import { DeleteLabOrderComponent } from './components/opd/lab-order/delete-lab-order/delete-lab-order.component';
 import { LabOrderService } from './components/opd/lab-order/lab-order.service';
 import { LabOrderEndPoints } from './components/opd/lab-order/lab-order.endpoints';
+import { SurgicalOrderListComponent } from './components/opd/surgical-order/surgical-order-list/surgical-order-list.component';
+import { ManageSurgicalOrderComponent } from './components/opd/surgical-order/manage-surgical-order/manage-surgical-order.component';
+import { SurgicalOrderService } from './components/opd/surgical-order/surgical-order.service';
+import { SurgicalOrderEndPoints } from './components/opd/surgical-order/surgical-order.endpoints';
+import { DoctorPlanComponent } from './components/opd/doctor-plan/doctor-plan.component';
+import { DoctorPlanDetailDialogComponent } from './components/opd/doctor-plan/doctor-plan-detail-dialog.component';
+import { DoctorPlanListDialogComponent } from './components/opd/doctor-plan/doctor-plan-list-dialog.component';
+import { FullCalendarModule } from '@fullcalendar/angular';
 import { RadiologyTypeService } from './components/opd/radiologytype/radiologytype.service';
 import { RadiologyTypeEndPoints } from './components/opd/radiologytype/radiologytype.endpoints';
 import { AddRadiologyTypeComponent } from './components/opd/radiologytype/add-radiologytype/add-radiologytype.component';
@@ -1649,6 +1657,11 @@ export const APP_DATE_FORMATS = {
         LabOrderListComponent,
         AddLabOrderComponent,
         DeleteLabOrderComponent,
+        SurgicalOrderListComponent,
+        ManageSurgicalOrderComponent,
+        DoctorPlanComponent,
+        DoctorPlanDetailDialogComponent,
+        DoctorPlanListDialogComponent,
         ServiceListComponent,
         AddServiceComponent,
         DeleteServiceComponent,
@@ -1796,6 +1809,7 @@ export const APP_DATE_FORMATS = {
         MatTimepickerModule,
         MatDatepickerModule,
         MatChipsModule,
+        FullCalendarModule,
         HasRoleDirective,
         HomeLayoutComponent,
         LoginLayoutComponent,
@@ -2038,6 +2052,8 @@ export const APP_DATE_FORMATS = {
         LabOrderTypeService,
         LabOrderService,
         LabOrderEndPoints,
+        SurgicalOrderService,
+        SurgicalOrderEndPoints,
         ServiceService,
         ServiceEndPoints,
         PrescriptionEndPoints,

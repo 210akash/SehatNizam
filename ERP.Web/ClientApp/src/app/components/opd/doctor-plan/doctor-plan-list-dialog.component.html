@@ -1,0 +1,20 @@
+<div class="list-dialog" [class.appointment]="data.type === 'appointment'" [class.surgical]="data.type === 'surgical'">
+  <div class="list-header">
+    <h2>{{ title }} ({{ data.items.length }})</h2>
+    <button mat-icon-button (click)="close()"><mat-icon>close</mat-icon></button>
+  </div>
+  <div class="list-body">
+    <button
+      type="button"
+      class="list-item"
+      *ngFor="let item of data.items"
+      (click)="select(item)">
+      <div class="item-main">
+        <span class="patient">{{ item.patientName }}</span>
+        <span class="time">{{ item.start | date:'dd/MM/yyyy HH:mm' }}</span>
+      </div>
+      <span class="meta">{{ item.serviceOrDept }}</span>
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+  </div>
+</div>

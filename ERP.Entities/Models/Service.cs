@@ -13,5 +13,6 @@ namespace ERP.Entities.Models
         public Department Department { get; set; }
         public long ServiceTypeId { get; set; }
         public ServiceType ServiceType { get; set; }
+        public bool? IsSurgical { get; set; }
     }
 }

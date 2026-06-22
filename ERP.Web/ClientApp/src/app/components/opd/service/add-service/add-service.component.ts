@@ -39,7 +39,8 @@ export class AddServiceComponent implements OnInit {
       description: ['', Validators.required],
       basePrice: [ 0, [Validators.required, Validators.min(0)]],
       departmentId: ['', Validators.required],
-      serviceTypeId: ['', Validators.required]
+      serviceTypeId: ['', Validators.required],
+      isSurgical: [false]
     });
     this.loadServiceType();
     this.loadDepartments();
@@ -50,6 +51,7 @@ export class AddServiceComponent implements OnInit {
     if (element != null) {
       this.isEdit = true;
       this.constantService.LoadData(element, this.form);
+      this.form.patchValue({ isSurgical: element.isSurgical === true });
     }
     else   
      this.getServiceCode();

@@ -40,6 +40,7 @@ namespace ERP.Entities.Models
         public ICollection<AppointmentAttachment> Attachments { get; set; } = new List<AppointmentAttachment>();
         public ICollection<LabOrder> LabOrders { get; set; } = new List<LabOrder>();
         public ICollection<RadiologyOrder> RadiologyOrders { get; set; } = new List<RadiologyOrder>();
+        public ICollection<SurgicalOrder> SurgicalOrders { get; set; } = new List<SurgicalOrder>();
         public ICollection<AppointmentPayment> AppointmentPayments { get; set; } = new List<AppointmentPayment>();
         public ICollection<AdvancePayment> AdvancePayments { get; set; } = new List<AdvancePayment>();
         public ICollection<BloodDonation> BloodDonations { get; set; } = new List<BloodDonation>();

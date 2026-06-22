@@ -1,0 +1,310 @@
+.doctor-plan-page {
+  padding: 16px 20px 24px;
+}
+
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+
+.page-header h2 {
+  margin: 0 0 4px;
+  font-weight: 600;
+}
+
+.subtitle {
+  margin: 0 0 8px;
+  color: #666;
+  font-size: 14px;
+}
+
+.stats-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.stat-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.stat-chip mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.stat-chip.appointment {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+.stat-chip.surgical {
+  background: #fff3e0;
+  color: #e65100;
+}
+
+.toolbar-card,
+.calendar-card,
+.empty-card {
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.toolbar-form {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.doctor-field {
+  min-width: 280px;
+}
+
+.legend {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #444;
+}
+
+.legend-item .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.legend-item.appointment .dot {
+  background: #1565c0;
+}
+
+.legend-item.surgical .dot {
+  background: #e65100;
+}
+
+.calendar-card {
+  position: relative;
+  margin-top: 16px;
+  min-height: 700px;
+}
+
+.calendar-caption {
+  padding: 4px 4px 12px;
+  font-size: 14px;
+  color: #555;
+}
+
+.loading-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  border-radius: 12px;
+}
+
+.empty-card mat-card-content {
+  text-align: center;
+  padding: 48px 24px;
+  color: #777;
+  margin-top: 16px;
+}
+
+.empty-card mat-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 12px;
+  color: #bbb;
+}
+
+:host ::ng-deep .fc {
+  --fc-border-color: #eceff1;
+  --fc-today-bg-color: #f5f9ff;
+  --fc-button-bg-color: #1565c0;
+  --fc-button-border-color: #1565c0;
+  --fc-button-hover-bg-color: #0d47a1;
+  --fc-button-hover-border-color: #0d47a1;
+  --fc-button-active-bg-color: #0d47a1;
+  --fc-button-active-border-color: #0d47a1;
+  --fc-event-border-color: transparent;
+  --fc-event-bg-color: transparent;
+  font-size: 13px;
+}
+
+:host ::ng-deep .fc .fc-toolbar-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+:host ::ng-deep .fc .fc-daygrid-day-frame {
+  min-height: 100px;
+}
+
+:host ::ng-deep .fc .fc-daygrid-day-events {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-content: flex-start;
+  padding: 2px 4px 4px;
+}
+
+:host ::ng-deep .fc .schedule-summary {
+  width: 100% !important;
+}
+
+:host ::ng-deep .fc .schedule-summary:hover {
+  transform: none;
+}
+
+:host ::ng-deep .schedule-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  width: 100%;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.2;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+:host ::ng-deep .schedule-pill.appointment {
+  background: #e3f2fd;
+  color: #1565c0;
+  border: 1px solid #90caf9;
+}
+
+:host ::ng-deep .schedule-pill.surgical {
+  background: #fff3e0;
+  color: #e65100;
+  border: 1px solid #ffcc80;
+}
+
+:host ::ng-deep .schedule-pill .pill-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+:host ::ng-deep .schedule-pill.appointment .pill-count {
+  background: #1565c0;
+  color: #fff;
+}
+
+:host ::ng-deep .schedule-pill.surgical .pill-count {
+  background: #e65100;
+  color: #fff;
+}
+
+:host ::ng-deep .fc .schedule-event:hover {
+  transform: scale(1.02);
+  z-index: 3;
+}
+
+:host ::ng-deep .fc .schedule-event .fc-event-main {
+  padding: 0;
+}
+
+:host ::ng-deep .schedule-bullet {
+  display: block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+:host ::ng-deep .schedule-bullet.appointment {
+  background: #1565c0;
+  box-shadow: 0 0 0 2px rgba(21, 101, 192, 0.2);
+}
+
+:host ::ng-deep .schedule-bullet.surgical {
+  background: #e65100;
+  box-shadow: 0 0 0 2px rgba(230, 81, 0, 0.2);
+}
+
+:host ::ng-deep .fc .fc-timegrid-event {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+:host ::ng-deep .schedule-time-marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  min-height: 18px;
+  border-radius: 6px;
+  border-left: 3px solid transparent;
+}
+
+:host ::ng-deep .schedule-time-marker.appointment {
+  background: rgba(21, 101, 192, 0.12);
+  border-left-color: #1565c0;
+}
+
+:host ::ng-deep .schedule-time-marker.surgical {
+  background: rgba(230, 81, 0, 0.12);
+  border-left-color: #e65100;
+}
+
+:host ::ng-deep .schedule-time-marker .schedule-bullet {
+  width: 8px;
+  height: 8px;
+}
+
+:host ::ng-deep .fc .fc-more-link {
+  font-size: 11px;
+  color: #1565c0;
+  font-weight: 500;
+}
+
+:host ::ng-deep .fc .schedule-event {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+:host ::ng-deep .doctor-plan-detail-panel .mat-mdc-dialog-container {
+  padding: 0;
+  border-radius: 14px;
+  overflow: hidden;
+}

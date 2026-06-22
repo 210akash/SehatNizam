@@ -16,6 +16,7 @@ namespace ERP.Mediator.Mediator.Appointment.Query
         public string MRN { get; set; }
         public long? StatusId { get; set; }
         public long? DepartmentId { get; set; }
+        public Guid? DoctorId { get; set; }
         public long BookingFormType { get; set; }
         public PagingData PagingData { get; set; }
     }

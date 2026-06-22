@@ -59,6 +59,8 @@
           <a routerLink="/patient"     *ngIf="hasRequiredRole(['admin','receptionist'])" class="submenu-link"  [class.active-link]="isActive('/patient')"><i class="fas submenu-item-icon" [ngClass]="getSubmenuIcon('/patient')"></i><span>Patients</span></a>
           <a routerLink="/referrer"     *ngIf="hasRequiredRole(['admin','receptionist'])" class="submenu-link"  [class.active-link]="isActive('/referrer')"><i class="fas submenu-item-icon" [ngClass]="getSubmenuIcon('/referrer')"></i><span>Referrer</span></a>
           <a routerLink="/triage"      *ngIf="hasRequiredRole(['admin','receptionist'])" class="submenu-link"  [class.active-link]="isActive('/triage')"><i class="fas submenu-item-icon" [ngClass]="getSubmenuIcon('/triage')"></i><span>Triage</span></a>
+          <a routerLink="/surgicalorder" *ngIf="hasRequiredRole(['admin','doctor','receptionist'])" class="submenu-link" [class.active-link]="isActive('/surgicalorder')"><i class="fas submenu-item-icon" [ngClass]="getSubmenuIcon('/surgicalorder')"></i><span>Surgical Orders</span></a>
+          <a routerLink="/doctorplan" *ngIf="hasRequiredRole(['admin','doctor','receptionist'])" class="submenu-link" [class.active-link]="isActive('/doctorplan')"><i class="fas submenu-item-icon" [ngClass]="getSubmenuIcon('/doctorplan')"></i><span>Doctor's Plan</span></a>
         </div>
       </div>
 

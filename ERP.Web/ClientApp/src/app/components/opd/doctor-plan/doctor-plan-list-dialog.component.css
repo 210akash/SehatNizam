@@ -1,0 +1,84 @@
+.list-dialog {
+  min-width: 320px;
+  max-width: 420px;
+}
+
+.list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 16px 8px;
+  border-bottom: 1px solid #eee;
+}
+
+.list-header h2 {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.list-dialog.appointment .list-header h2 {
+  color: #1565c0;
+}
+
+.list-dialog.surgical .list-header h2 {
+  color: #e65100;
+}
+
+.list-body {
+  padding: 8px;
+  max-height: 360px;
+  overflow-y: auto;
+}
+
+.list-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  margin-bottom: 6px;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  background: #fafafa;
+  cursor: pointer;
+  text-align: left;
+}
+
+.list-item:hover {
+  background: #f0f4ff;
+  border-color: #c5cae9;
+}
+
+.item-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.patient {
+  font-weight: 500;
+  font-size: 14px;
+  color: #333;
+}
+
+.time {
+  font-size: 12px;
+  color: #777;
+}
+
+.meta {
+  font-size: 12px;
+  color: #999;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.list-item mat-icon {
+  color: #bbb;
+  flex-shrink: 0;
+}

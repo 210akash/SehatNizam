@@ -47,6 +47,7 @@ namespace ERP.Mediator.Mediator.Service.Handler
                 }
 
                 mapper.Map(request, service);
+                service.IsSurgical = request.IsSurgical == true;
                 service.ModifiedById = this.sessionProvider.Session.LoggedInUserId;
                 service.ModifiedDate = DateTime.Now;
 
@@ -67,6 +68,7 @@ namespace ERP.Mediator.Mediator.Service.Handler
 
                 // Create new
                 service = mapper.Map<Entities.Models.Service>(request);
+                service.IsSurgical = request.IsSurgical == true;
                 service.CreatedById = this.sessionProvider.Session.LoggedInUserId;
                 service.IsActive = true;
 

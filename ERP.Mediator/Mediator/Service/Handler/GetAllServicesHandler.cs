@@ -28,6 +28,7 @@ namespace ERP.Mediator.Mediator.Services.Handler
             Expression<Func<Entities.Models.Service, bool>> predicate = x => x.IsActive == true
             && (request.DepartmentId  == null || x.DepartmentId  == request.DepartmentId)
             && (request.ServiceTypeId == null || x.ServiceTypeId == request.ServiceTypeId)
+            && (request.IsSurgical == null || x.IsSurgical == request.IsSurgical)
             && (string.IsNullOrEmpty(request.Name) || x.Name.ToLower().Contains(request.Name.ToLower()));
 
             Expression<Func<Entities.Models.Service, object>>[] includes = {

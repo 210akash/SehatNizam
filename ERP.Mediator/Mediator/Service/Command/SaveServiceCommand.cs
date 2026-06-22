@@ -11,5 +11,6 @@ namespace ERP.Mediator.Mediator.Service.Command
         public decimal BasePrice { get; set; }
         public long? DepartmentId { get; set; }
         public long ServiceTypeId { get; set; }
+        public bool? IsSurgical { get; set; }
     }
 }

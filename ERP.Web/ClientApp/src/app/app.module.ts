@@ -1791,6 +1791,7 @@ export const APP_DATE_FORMATS = {
         MatCardModule,
         MatTableModule,
         MatDialogModule,
+        FullCalendarModule,
         MatPaginatorModule,
         MatCardModule,
         MatProgressSpinnerModule,

@@ -237,9 +237,17 @@ save(): void {
 
     this.isLoading = true;
 
+    const projects = this.form.value.projects;
+    const serviceAccounts = projects.flatMap((p: any) =>
+      p.serviceAccounts.filter((sa: any) =>
+        sa.creditAccountId > 0 && sa.creditAccountId !== null &&
+        sa.debitAccountId > 0 && sa.debitAccountId !== null
+      )
+    );
+
     const command = {
       serviceId: this.form.value.serviceId,
-      serviceAccounts: this.form.value.projects
+      serviceAccounts: serviceAccounts
     };
 
     this.serviceAccountService.saveServiceAccount(command)

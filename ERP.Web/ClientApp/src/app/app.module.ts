@@ -1813,7 +1813,6 @@ export const APP_DATE_FORMATS = {
         MatTimepickerModule,
         MatDatepickerModule,
         MatChipsModule,
-        FullCalendarModule,
         HasRoleDirective,
         HomeLayoutComponent,
         LoginLayoutComponent,

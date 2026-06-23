@@ -1,7 +1,8 @@
-﻿using MediatR;
-using System.Collections.Generic;
+﻿using ERP.BusinessModels.ResponseVM;
+using ERP.Entities.Models;
+using MediatR;
 using System;
-using ERP.BusinessModels.ResponseVM;
+using System.Collections.Generic;
 
 namespace ERP.Mediator.Mediator.Transaction.Command
 {
@@ -37,6 +38,11 @@ namespace ERP.Mediator.Mediator.Transaction.Command
 
         #endregion
 
+        #region Service/Appoinments Payments Vouchers
+        public long AppoinmentsPayments { get; set; }
+
+        #endregion
+
         public virtual List<SaveTransactionDetailCommand> TransactionDetails { get; set; }
         public virtual List<SaveTransactionDocumentCommand> TransactionDocuments { get; set; }
     }
@@ -49,6 +55,7 @@ namespace ERP.Mediator.Mediator.Transaction.Command
         public long? AccountGroupId { get; set; }
         public long DepartmentId { get; set; }
         public long? ProjectId { get; set; }
+        public long? AppointmentPaymentId { get; set; }
         public bool IsGroup { get; set; }
         public decimal Quantity { get; set; }
         public decimal DebitAmount { get; set; }

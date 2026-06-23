@@ -25,11 +25,8 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
             int check = 0;
 
             // Fetch the appointment with status 1
-            var appointment = await unitOfWork
-                .Repository<Entities.Models.Appointment>()
-                .GetFirstAsync(
-                    y => y.Id == request.Id && y.AppointmentStatusId == 1,
-                    null, null, null);
+            var appointment = await unitOfWork.Repository<Entities.Models.Appointment>()
+                .GetFirstAsync(y => y.Id == request.Id && y.AppointmentStatusId == 1, null, null, null);
 
             if (appointment != null)
             {

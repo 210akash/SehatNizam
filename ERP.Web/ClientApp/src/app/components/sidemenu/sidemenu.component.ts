@@ -39,15 +39,19 @@ export class SidemenuComponent implements OnDestroy {
   profile: any;
   breadcrumbCurrent : any;
   isWarehouseDropdownOpen = false;
+  isMobile = false;
+
   constructor(private dialog: MatDialog, location: Location,
-    private observer: BreakpointObserver,
     private router: Router,
     private authenticationService: AuthenticationService,
     private userService: UserService,
+    private breakpointObserver: BreakpointObserver,
     private route: ActivatedRoute) {
     this.location = location;
     this.reportsUrl = environment.reports_uri;
   }
+
+
 
   private ngUnsubscribe = new Subject<void>();
 
@@ -93,6 +97,10 @@ export class SidemenuComponent implements OnDestroy {
 
   }
 
+  checkScreenSize() {
+  this.isMobile = window.innerWidth <= 800;
+}
+
   onWarehouseSelect(selectedId: any) {
     const currentUser = JSON.parse(localStorage.getItem("currentUser") || '{}');
     currentUser.selectedWarehouseId = selectedId;
@@ -121,42 +129,28 @@ export class SidemenuComponent implements OnDestroy {
     });
   }
 
-  ngAfterViewInit() {
-    this.observer
-    // .observe(['(max-width: 800px)'])
-    // .pipe(delay(1), takeUntil(this.ngUnsubscribe))
-    // .subscribe((res) => {
-    //   if (res.matches) {
-    //     console.log(`Viewport matches max-width: 801px?`, res.matches);
-    //     this.sidenav.mode = 'over';
-    //     this.sidenav.open();
-    //   } else {
-    //     console.log(`Viewport matches max-width: 799px?`, res.matches);
-    //     this.sidenav.mode = 'side';
-    //     this.sidenav.close();
-    //   }
-    // });
+ngAfterViewInit() {
+  this.breakpointObserver
+    .observe(['(max-width: 800px)'])
+    .subscribe(result => {
+      this.isMobile = result.matches;
 
-    this.router.events
-      .pipe(
-        filter((e: Event) => e instanceof NavigationEnd),
-        takeUntil(this.ngUnsubscribe)
-      )
-      .subscribe(() => {
-        if (this.sidenav.mode === 'over') {
-          this.sidenav.close();
-        }
-      });
-  }
-
-
+      if (result.matches) {
+        this.isSidebarOpen = false; // ✅ close sidebar on mobile
+        this.openSubMenus.clear();
+      } else {
+        this.isSidebarOpen = true; // optional default desktop open
+      }
+    });
+}
   
-  toggleSidebar() {
-    this.isSidebarOpen = !this.isSidebarOpen;
-    if (!this.isSidebarOpen) {
-      this.openSubMenus.clear();
-    }
+toggleSidebar() {
+  this.isSidebarOpen = !this.isSidebarOpen;
+
+  if (!this.isSidebarOpen) {
+    this.openSubMenus.clear();
   }
+}
 
   toggleSubMenu(menuKey: string): void {
     if (!this.isSidebarOpen) {

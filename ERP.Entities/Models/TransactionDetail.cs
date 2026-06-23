@@ -16,6 +16,10 @@
 
         public long? ProjectId { get; set; }
         public virtual Project Project { get; set; }
+
+        public long? AppointmentPaymentId { get; set; }
+        public virtual AppointmentPayment AppointmentPayment { get; set; }
+
         public bool IsGroup { get; set; }
         public decimal Quantity { get; set; }
         public decimal DebitAmount { get; set; }

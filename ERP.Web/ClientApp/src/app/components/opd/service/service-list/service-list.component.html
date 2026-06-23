@@ -80,14 +80,14 @@
       <th mat-header-cell *matHeaderCellDef style="width: 15%;">Actions</th>
       <td mat-cell *matCellDef="let e">
         <div class="action_btns">
-               <button mat-mini-fab matTooltip="Accounts" color="accent" (click)="accounts(e)">
+             <button mat-mini-fab matTooltip="Edit" color="accent" (click)="openService(e)">
             <mat-icon aria-label="Edit">edit</mat-icon>
           </button>
-          <button mat-mini-fab matTooltip="View" color="primary" (click)="viewServiceDialog(e)">
+               <button mat-mini-fab matTooltip="GL Accounts Mapping" color="accent" (click)="accounts(e)">
+              <i class="fas fa-code-branch"></i>
+          </button>
+            <button mat-mini-fab matTooltip="View" color="primary" (click)="viewServiceDialog(e)">
             <mat-icon aria-label="View">visibility</mat-icon>
-          </button>
-          <button mat-mini-fab matTooltip="Edit" color="accent" (click)="openService(e)">
-            <mat-icon aria-label="Edit">edit</mat-icon>
           </button>
           <button mat-mini-fab matTooltip="Delete" color="warn" (click)="deleteServiceDialog(e)">
             <mat-icon aria-label="Delete">delete</mat-icon>

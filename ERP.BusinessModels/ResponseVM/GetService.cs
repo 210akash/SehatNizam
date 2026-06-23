@@ -1,4 +1,4 @@
-
+using System.Collections.Generic;
 namespace ERP.BusinessModels.ResponseVM
 {
     public class GetService
@@ -14,5 +14,6 @@ namespace ERP.BusinessModels.ResponseVM
         public GetDepartment Department { get; set; }
         public bool IsActive { get; set; }
         public bool? IsSurgical { get; set; }
+        public virtual List<GetServiceAccount> ServiceAccounts { get; set; }
     }
 }

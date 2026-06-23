@@ -1,6 +1,8 @@
 <mat-card>
   <mat-card-header>
-    <mat-card-title>View Service</mat-card-title>
+    <mat-card-title>
+         <mat-icon aria-label="View">visibility</mat-icon>
+      View Service</mat-card-title>
   </mat-card-header>
   <mat-divider></mat-divider>
   <mat-card-content>
@@ -52,7 +54,11 @@
       </div>
       <mat-divider></mat-divider>
       <div class="button-container">
-        <button mat-flat-button [mat-dialog-close]="true">Cancel</button>
+         <button mat-stroked-button
+                [mat-dialog-close]="true"
+                type="button">
+          <i class="fas fa-times"></i> Cancel
+        </button>
       </div>
     </form>
   </mat-card-content>

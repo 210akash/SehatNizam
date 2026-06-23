@@ -1,6 +1,8 @@
 <mat-card>
   <mat-card-header>
-    <mat-card-title>Delete Service</mat-card-title>
+    <mat-card-title>
+        <mat-icon aria-label="Delete">delete</mat-icon>
+      Delete Service</mat-card-title>
   </mat-card-header>
   <mat-divider></mat-divider>
   <mat-card-content>
@@ -48,10 +50,19 @@
       </div>
       <mat-divider></mat-divider>
       <div class="button-container">
-          <button mat-flat-button color="danger" type="button" (click)="delete()">
-          <span class="mat-button-wrapper">Delete</span>
+          <button mat-stroked-button
+              (click)="delete()"
+               color="danger"
+                [mat-dialog-close]="true"
+                type="button">
+          <i class="fas fa-trash"></i> Delete
         </button>
-        <button mat-flat-button [mat-dialog-close]="true">Cancel</button>
+
+           <button mat-stroked-button
+                [mat-dialog-close]="true"
+                type="button">
+          <i class="fas fa-times"></i> Cancel
+        </button>
       </div>
   </mat-card-content>
 </mat-card>

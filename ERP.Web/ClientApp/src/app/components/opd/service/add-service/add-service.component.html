@@ -1,6 +1,11 @@
 <mat-card>
   <mat-card-header>
-    <mat-card-title>{{ isEdit ? 'Edit Service' : 'Add Service' }}</mat-card-title>
+   <mat-card-title>
+  <mat-icon [attr.aria-label]="isEdit ? 'Edit' : 'Save'">
+    {{ isEdit ? 'edit' : 'save' }}
+  </mat-icon>
+  {{ isEdit ? 'Edit Service' : 'Add Service' }}
+</mat-card-title>
   </mat-card-header>
   <mat-divider></mat-divider>
   <mat-card-content>
@@ -58,10 +63,22 @@
       </div>
       <mat-divider></mat-divider>
       <div class="button-container">
-        <button mat-flat-button color="primary" type="button" (click)="save()" [disabled]="isLoading || form.invalid">
-          {{ isEdit ? 'Update' : 'Save' }}
+         <button mat-raised-button
+                color="primary"
+                type="button"
+                (click)="save()"
+                [disabled]="isLoading || form.invalid">
+          <i class="fas fa-save" style="margin-right: 6px;"></i>
+          {{ isLoading ? 'Saving...' : 'Save' }}
+          <mat-spinner diameter="20" *ngIf="isLoading" style="display:inline-block; margin-left:8px;"></mat-spinner>
         </button>
-        <button mat-flat-button [mat-dialog-close]="true">Cancel</button>
+
+
+        <button mat-stroked-button
+                [mat-dialog-close]="true"
+                type="button">
+          <i class="fas fa-times"></i> Cancel
+        </button>
       </div>
     </form>
   </mat-card-content>

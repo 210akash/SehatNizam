@@ -40,6 +40,9 @@ namespace ERP.Mediator.Mediator.Services.Handler
             List<string> thenIncludes = new()
             {
                 "ServiceAccounts.ServiceAccountHistory",
+                "ServiceAccounts.DebitAccount",
+                "ServiceAccounts.CreditAccount",
+                "ServiceAccounts.Project",
             };
 
             Expression<Func<Entities.Models.Service, object>> OrderBy = null;

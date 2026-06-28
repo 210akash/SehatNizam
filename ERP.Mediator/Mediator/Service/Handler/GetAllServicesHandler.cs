@@ -43,6 +43,7 @@ namespace ERP.Mediator.Mediator.Services.Handler
                 "ServiceAccounts.DebitAccount",
                 "ServiceAccounts.CreditAccount",
                 "ServiceAccounts.Project",
+                "ServiceAccounts.PaymentMode",
             };
 
             Expression<Func<Entities.Models.Service, object>> OrderBy = null;

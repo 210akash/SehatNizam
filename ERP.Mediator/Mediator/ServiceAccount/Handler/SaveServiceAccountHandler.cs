@@ -75,6 +75,7 @@ namespace ERP.Mediator.Mediator.ServiceAccount.Handler
                     {
                         // Update all fields
                         existing.ProjectId = item.ProjectId;
+                        existing.PaymentModeId = item.PaymentModeId;
                         existing.AccountType = item.AccountType;
                         existing.DebitAccountId = item.DebitAccountId;
                         existing.CreditAccountId = item.CreditAccountId;
@@ -90,6 +91,7 @@ namespace ERP.Mediator.Mediator.ServiceAccount.Handler
                         {
                             ServiceId = request.ServiceId,
                             ProjectId = item.ProjectId,
+                            PaymentModeId = item.PaymentModeId,
                             AccountType = item.AccountType,
                             DebitAccountId = item.DebitAccountId,
                             CreditAccountId = item.CreditAccountId,
@@ -108,6 +110,7 @@ namespace ERP.Mediator.Mediator.ServiceAccount.Handler
                     {
                         ServiceId = request.ServiceId,
                         ProjectId = item.ProjectId,
+                        PaymentModeId = item.PaymentModeId,
                         AccountType = item.AccountType,
                         DebitAccountId = item.DebitAccountId,
                         CreditAccountId = item.CreditAccountId,

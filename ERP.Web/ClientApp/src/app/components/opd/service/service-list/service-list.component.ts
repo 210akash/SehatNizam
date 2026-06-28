@@ -165,7 +165,7 @@ export class ServiceListComponent implements OnInit {
      accounts(element: any): void {
       const dialogRef = this.dialog.open(AddServiceAccountComponent, {
         data: { element },
-        panelClass: 'cstm_width_800',
+        panelClass: 'cstm_width_1000',
         height: 'auto',
         disableClose: true
       });

@@ -8,6 +8,8 @@ namespace ERP.Entities.Models
         public Project Project { get; set; }
         public long ServiceId { get; set; }
         public Service Service { get; set; }
+        public long PaymentModeId { get; set; }
+        public PaymentMode PaymentMode { get; set; }
         public long DebitAccountId { get; set; }
         public virtual Account DebitAccount { get; set; }
         public long CreditAccountId { get; set; }

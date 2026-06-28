@@ -1,6 +1,5 @@
 
 using ERP.Entities.Models;
-using System.Collections.Generic;
 
 namespace ERP.BusinessModels.ResponseVM
 {
@@ -8,6 +7,8 @@ namespace ERP.BusinessModels.ResponseVM
     {
         public long Id { get; set; }
         public long ProjectId { get; set; }
+        public long PaymentModeId { get; set; }
+        public GetPaymentMode PaymentMode { get; set; }
         public GetProject Project { get; set; }
         public long ServiceId { get; set; }
         public GetService Service { get; set; }

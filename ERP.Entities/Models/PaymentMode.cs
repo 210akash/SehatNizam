@@ -3,6 +3,8 @@
     public class PaymentMode : BaseEntity
     {
         public string Name { get; set; }
+        public long? VoucherTypeId { get; set; }
+        public virtual VoucherType VoucherType { get; set; }
         public long? CompanyId { get; set; }
         public virtual Company Company { get; set; }
     }

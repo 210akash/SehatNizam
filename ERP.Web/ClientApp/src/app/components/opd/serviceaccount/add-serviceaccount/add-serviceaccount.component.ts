@@ -6,9 +6,8 @@ import { ServiceAccountService } from '../serviceaccount.service';
 import { NotificationsService } from '../../../../Service/notification.service';
 import { ConstantService } from '../../../../Service/constant.service';
 import { AccountService } from '../../../account/account.service';
-import { ServiceService } from '../../service/service.service';
 import { DepartmentService } from '../../../department/department.service';
-import { ServiceTypeService } from '../../service-type/service-type.service';
+import { PaymentModeService } from '../../../paymentmode/paymentmode.service';
 
 // ✅ Custom validator: both accounts must be filled OR both empty
 export function validateAccounts(group: AbstractControl): ValidationErrors | null {
@@ -23,6 +22,26 @@ export function validateAccounts(group: AbstractControl): ValidationErrors | nul
     return { missingDebit: true };
   }
   return null; // both filled or both empty → valid
+}
+
+// ✅ Custom validator: unique paymentModeId per accountType within a project
+export function validateUniquePaymentModePerAccountType(group: AbstractControl): ValidationErrors | null {
+  const serviceAccounts = group.get('serviceAccounts') as FormArray;
+  if (!serviceAccounts) return null;
+
+  const seen = new Map<string, number>();
+  for (const control of serviceAccounts.controls) {
+    const pmId = control.get('paymentModeId')?.value;
+    const accType = control.get('accountType')?.value;
+    if (pmId && pmId > 0) {
+      const key = `${accType}-${pmId}`;
+      if (seen.has(key)) {
+        return { duplicatePaymentModeForAccountType: true };
+      }
+      seen.set(key, 1);
+    }
+  }
+  return null;
 }
 
 @Component({
@@ -41,7 +60,7 @@ export class AddServiceAccountComponent implements OnInit {
   accountList: any[] = [];
   serviceInfo: any;
   departments: any[] = [];
-  serviceTypes: any[] = [];
+  paymentModeList: any;
 
   constructor(
     private fb: FormBuilder,
@@ -51,9 +70,8 @@ export class AddServiceAccountComponent implements OnInit {
     private accountService: AccountService,
     private notifications: NotificationsService,
     private constantService: ConstantService,
-    private serviceService: ServiceService,
     private departmentService: DepartmentService,
-    private serviceTypeService: ServiceTypeService,
+    private paymentModeService: PaymentModeService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
 
@@ -65,6 +83,7 @@ export class AddServiceAccountComponent implements OnInit {
 
     this.loadDepartments();
     this.loadProjects();
+    this.getpaymentModesList();
     this.serviceInfo = this.data.element;
   }
 
@@ -110,6 +129,14 @@ export class AddServiceAccountComponent implements OnInit {
       }
     });
   }
+  // ================= LOAD PaymentModes =================
+
+  getpaymentModesList() {
+    let _paymentModesFilter: any = {};
+    this.paymentModeService.getAllPaymentModes(_paymentModesFilter).subscribe((data: any) => {
+      this.paymentModeList = data.item1;
+    });
+  }
 
   // ================= INIT PROJECTS =================
   initProjects(projects: any[], existing: any[]): void {
@@ -122,14 +149,23 @@ export class AddServiceAccountComponent implements OnInit {
 
   // ================= PROJECT GROUP =================
   createProjectGroup(project: any, existingRows: any[]): FormGroup {
-    return this.fb.group({
+    const serviceAccountsFA = this.fb.array([
+      this.createRow(project, 1, existingRows.find(x => x.accountType === 1)), // Payable
+      this.createRow(project, 2, existingRows.find(x => x.accountType === 2))  // Discount
+    ]);
+
+    const projectGroup = this.fb.group({
       projectId: [project.id],
       projectName: [project.name],
-      serviceAccounts: this.fb.array([
-        this.createRow(project, 1, existingRows.find(x => x.accountType === 1)), // Payable
-        this.createRow(project, 2, existingRows.find(x => x.accountType === 2))  // Discount
-      ])
+      serviceAccounts: serviceAccountsFA
+    }, { validators: validateUniquePaymentModePerAccountType });
+
+    // Update project validity when serviceAccounts change
+    serviceAccountsFA.valueChanges.subscribe(() => {
+      projectGroup.updateValueAndValidity();
     });
+
+    return projectGroup;
   }
 
   // ================= ROW (PROJECT + TYPE) =================
@@ -146,6 +182,7 @@ export class AddServiceAccountComponent implements OnInit {
     return this.fb.group({
       id: [item?.id || 0],
       projectId: [project.id],
+      paymentModeId: [item?.paymentModeId || 0, isRequired ? Validators.required : null],
       accountType: [type],
       debitAccountId: [
         item?.debitAccountId || 0,
@@ -167,6 +204,34 @@ export class AddServiceAccountComponent implements OnInit {
       .subscribe((data: any) => {
         this.accountList = data;
       });
+  }
+
+  // ================= ADD ACCOUNT ROW =================
+  addAccount(pIndex: number, rIndex: number): void {
+    const serviceAccounts = this.getServiceAccounts(pIndex);
+    const maxType = Math.max(...serviceAccounts.controls.map(c => c.get('accountType')?.value || 0), 0);
+    const nextType = maxType + 1;
+    const project = this.projectsFA.at(pIndex);
+    const projectData = { id: project.get('projectId')?.value, name: project.get('projectName')?.value };
+    serviceAccounts.insert(rIndex + 1, this.createRow(projectData, nextType, null));
+    this.projectsFA.at(pIndex).updateValueAndValidity();
+  }
+
+  // ================= REMOVE ACCOUNT ROW =================
+  removeAccount(pIndex: number, rIndex: number): void {
+    const serviceAccounts = this.getServiceAccounts(pIndex);
+    if (serviceAccounts.length > 1) {
+      serviceAccounts.removeAt(rIndex);
+    } else {
+      serviceAccounts.at(0).patchValue({
+        id: 0,
+        debitAccountId: 0,
+        debitAccountName: '',
+        creditAccountId: 0,
+        creditAccountName: ''
+      });
+    }
+    this.projectsFA.at(pIndex).updateValueAndValidity();
   }
 
   // ================= SELECT DEBIT =================
@@ -202,6 +267,11 @@ export class AddServiceAccountComponent implements OnInit {
       }
       row.updateValueAndValidity();
     }
+  }
+
+  // ================= PAYMENT MODE CHANGE =================
+  onPaymentModeChange(pIndex: number): void {
+    this.projectsFA.at(pIndex).updateValueAndValidity();
   }
 
   // ================= SAVE =================

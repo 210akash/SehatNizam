@@ -33,6 +33,7 @@ namespace ERP.Mediator.Mediator.PaymentMode.Handler
 
             Expression<Func<Entities.Models.PaymentMode, object>>[] includes = {
                 x => x.CreatedBy,
+                x => x.VoucherType,
                 x => x.Company
             };
 

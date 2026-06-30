@@ -282,6 +282,7 @@ namespace ERP.Mediator.AutoMapper.Configuration
             this.CreateMap<TransactionDetail, GetTransactionDetail>().ReverseMap();
             this.CreateMap<TransactionDocument, GetTransactionDocument>().ReverseMap();
             this.CreateMap<Transaction, SaveTransactionCommand>().ReverseMap();
+            this.CreateMap<Transaction, SaveServiceTransactionCommand>().ReverseMap();
             this.CreateMap<TransactionDetail, SaveTransactionDetailCommand>().ReverseMap();
             this.CreateMap<TransactionDocument, SaveTransactionDocumentCommand>().ReverseMap();
 
@@ -772,6 +773,7 @@ namespace ERP.Mediator.AutoMapper.Configuration
             CreateMap<DischargeCertificate, SaveDischargeCommand>().ReverseMap();
             CreateMap<ServiceAccount, GetServiceAccount>().ReverseMap();
             CreateMap<ServiceAccountHistory, GetServiceAccountHistory>().ReverseMap();
+            CreateMap<VoucherType, GetVoucherType>().ReverseMap();
 
         }
     }

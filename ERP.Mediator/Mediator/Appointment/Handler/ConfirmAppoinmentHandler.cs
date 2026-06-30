@@ -35,6 +35,9 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
 
             if (appointment != null)
             {
+                // Begin transaction
+                await using var transaction = await unitOfWork.BeginTransactionAsync();
+
                 // Update appointment status
                 var updateAppointment = unitOfWork.Repository<Entities.Models.Appointment>().GetFirst(y => y.Id == appointment.Id);
                 updateAppointment.AppointmentStatusId = 5;
@@ -60,12 +63,9 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                     .Find(x => x.AppointmentId == appointment.Id);
 
                 var serviceAccounts = await unitOfWork.Repository<Entities.Models.ServiceAccount>()
-                .GetAsync(x => x.PaymentModeId == payment.PaymentModeId 
+                .GetAsync(x => x.PaymentModeId == payment.PaymentModeId
                 && x.ServiceId == payment.ServiceId
-                && x.ProjectId == sessionProvider.Session.SelectedWarehouseId,null,null, "PaymentMode", null,null);
-
-                var payableAccount = serviceAccounts.FirstOrDefault(x => x.AccountType == ServiceAccountType.Payable);
-                var discountAccount = serviceAccounts.FirstOrDefault(x => x.AccountType == ServiceAccountType.Discount);
+                && x.ProjectId == sessionProvider.Session.SelectedWarehouseId, null, null, "PaymentMode", null, null);
 
                 if (payment != null)
                 {
@@ -75,41 +75,24 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                     payment.ModifiedById = sessionProvider.Session.LoggedInUserId;
                     payment.ModifiedDate = DateTime.Now;
                     unitOfWork.Repository<AppointmentPayment>().Update(payment);
-                    var transactionCommand = await GetAppointmentVoucherCommandAsync(
+
+                    var transactionCommand = GetAppointmentVoucherCommandAsync(
                         updateAppointment,
                         payment,
                         serviceAccounts.ToList(),
                         request.Discount);
 
                     await mediator.Send(transactionCommand, cancellationToken);
-
-                    var createdTransaction = await unitOfWork.Repository<Entities.Models.Transaction>()
-                        .GetFirstAsync(
-                            x => x.ReferenceNumber == updateAppointment.TokenNumber
-                                 && x.VoucherTypeId == transactionCommand.VoucherTypeId
-                                 && x.IsActive,
-                            q => q.OrderByDescending(x => x.Id),
-                            null,
-                            null);
-
-                    if (createdTransaction != null)
-                    {
-                        await mediator.Send(new ProcessTransactionQuery(createdTransaction.Id), cancellationToken);
-                    }
                 }
 
-                check = await unitOfWork.SaveChangesAsync();
+                await unitOfWork.SaveChangesAsync();
 
-            }
-
-            if (check > 0)
-            {
+                // 6. Commit transaction
+                await transaction.CommitAsync();
                 return new Tuple<long, string>(200, "Appointment Confirmed Successfully!");
             }
-            else
-            {
-                return new Tuple<long, string>(500, "Error Confirming, Please contact system admin!");
-            }
+
+            return new Tuple<long, string>(500, "Error Confirming, Please contact system admin!");
         }
 
         private async Task<string> GenerateMrnAsync()
@@ -160,20 +143,24 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
             return nextNumber.ToString("D7");
         }
 
-        private async Task<SaveTransactionCommand> GetAppointmentVoucherCommandAsync(Entities.Models.Appointment appointment, AppointmentPayment payment, List<Entities.Models.ServiceAccount> serviceAccounts,
-    decimal discount)
+        private SaveServiceTransactionCommand GetAppointmentVoucherCommandAsync(Entities.Models.Appointment appointment, AppointmentPayment payment, List<Entities.Models.ServiceAccount> serviceAccounts, decimal discount)
         {
             var payable = serviceAccounts.First(x => x.AccountType == ServiceAccountType.Payable);
 
-            var command = new SaveTransactionCommand
+            var currentuser = unitOfWork.Repository<AspNetUsers>()
+            .GetFirst(x => x.Id == sessionProvider.Session.LoggedInUserId);
+
+            var command = new SaveServiceTransactionCommand
             {
                 Date = appointment.AppointmentDate,
                 ReferenceNumber = appointment.TokenNumber,
                 VoucherTypeId = payable.PaymentMode.VoucherTypeId.Value,
-                Remarks = $"Appointment Payment - {appointment.TokenNumber}",
-                StatusId = 1,
+                Remarks = $"Appointment Payment Against Token - {appointment.TokenNumber}",
+                PaidReceiveBy = $"Receive By -  {currentuser.FirstName + " " + currentuser.LastName}",
+                StatusId = 3,
                 AppoinmentsPayments = payment.Id,
-                TransactionDetails = new List<SaveTransactionDetailCommand>()
+                TransactionDetails = new List<SaveTransactionDetailCommand>(),
+                TransactionDocuments = null
             };
 
             // Debit (Cash/Bank)
@@ -224,7 +211,6 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                 });
             }
 
-            await mediator.Send(command);
             return command;
         }
     }

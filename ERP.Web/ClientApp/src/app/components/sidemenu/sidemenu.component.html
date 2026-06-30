@@ -114,7 +114,7 @@
           <a routerLink="/appointmentpayment"
              *ngIf="hasRequiredRole(['admin','blood bank technician','lab technician'])"
              class="submenu-link"
-             [class.active-link]="isActive('/appointmentpayment')"><i class="fas submenu-item-icon" [ngClass]="getSubmenuIcon('/appointmentpayment')"></i><span>Appointment Payment</span></a>
+             [class.active-link]="isActive('/appointmentpayment')"><i class="fas submenu-item-icon" [ngClass]="getSubmenuIcon('/appointmentpayment')"></i><span>Patient Billing</span></a>
              <a routerLink="/advancepayment"
              *ngIf="hasRequiredRole(['admin','blood bank technician','lab technician'])"
              class="submenu-link"

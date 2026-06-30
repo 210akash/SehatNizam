@@ -36,7 +36,8 @@
       <!-- Left Column: Patient Info -->
       <div class="patient-info" style="line-height: 1.6;">
         <div><strong>Patient Name:</strong> {{ data.element?.patient?.patientMaster?.name || '-' }}</div>
-          <div><strong>MRN:</strong> {{ data.element?.patient?.mrn || '-' }}</div>
+          <div><strong>Group #:</strong>  {{ data.element?.department?.company?.code || '-' }}-{{ data.element?.patient?.patientMaster?.id || '-' }}</div>
+          <div><strong>MRN #:</strong> {{ data.element?.patient?.mrn || data.element?.patient?.mRN  || '-' }}</div>
         <div><strong>Token #:</strong> {{ data.element?.tokenNumber || '-' }}</div>
         <div><strong>Age / Gender:</strong> {{ getPatientAgeGender() }}</div>
       </div>

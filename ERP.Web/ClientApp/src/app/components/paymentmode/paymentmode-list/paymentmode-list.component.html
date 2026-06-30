@@ -31,9 +31,9 @@
         <td mat-cell *matCellDef="let element" class="tbl_created"> {{ element.createdBy?.firstName + ' ' + element.createdBy?.lastName }} </td>
       </ng-container>
 
-      <ng-container matColumnDef="company">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Company </th>
-        <td mat-cell *matCellDef="let element" class="tbl_compny"> {{ element.company?.name }} </td>
+      <ng-container matColumnDef="vouchertype">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Voucher Type </th>
+        <td mat-cell *matCellDef="let element" class="tbl_compny"> {{ element.vouchertype?.name }} </td>
       </ng-container>
 
       <!-- Actions column definition -->

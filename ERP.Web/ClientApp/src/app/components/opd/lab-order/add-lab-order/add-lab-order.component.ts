@@ -57,7 +57,7 @@ export class AddLabOrderComponent implements OnInit, OnDestroy {
   paymentStatusList: Array<{ id: number; name: string }> = [];
   visitTypeList: Array<{ id: number; name: string }> = [];
   labDepartmentId: number | null = null;
-
+  private selectedPatientId: number | null = null;
   currentProjectId = 1; // TODO: inject ProjectService
   private labOrderSubscriptions: Subscription[] = [];
   referrerList : any[] = [];
@@ -124,8 +124,8 @@ export class AddLabOrderComponent implements OnInit, OnDestroy {
         phoneNo: ['', Validators.required],
         secondaryPhoneNo: [''],
         gender: ['male', Validators.required],
-        age: [{ value: null, disabled: true }],
-        dateOfBirth: [null, Validators.required],
+        age: [0, Validators.required],
+        dateOfBirth: [null],
         cnic: [''],
         address: [''],
         cityId: [1, Validators.required],
@@ -304,24 +304,34 @@ getCityList(): void {
   }
 
   onPatientSelected(patient: any): void {
-    if (!patient) return;
-    this.patientSearchCtrl.setValue(patient, { emitEvent: false });
-    this.form.patchValue({ patientId: patient.id });
+    if (!patient) {
+      return;
+    }
+
+    this.patientSearchCtrl.setValue(patient.patientMaster, { emitEvent: false });
+
+    this.selectedPatientId = patient.id ?? null;
 
     const patientGroup = this.form.get('patient') as FormGroup;
     patientGroup.patchValue({
-      name: patient.name,
-      phoneNo: patient.phoneNo,
-      secondaryPhoneNo: patient.secondaryPhoneNo,
-      gender: patient.gender || 'male',
-      dateOfBirth: patient.dateOfBirth ? this.toInputDate(patient.dateOfBirth) : null,
-      age: patient.age,
-      cnic: patient.cnic,
-      address: patient.address,
-      cityId: patient.cityId ?? 1,
-      email: patient.email
+      name: patient.patientMaster?.name,
+      phoneNo: patient.patientMaster?.phoneNo,
+      secondaryPhoneNo: patient.patientMaster?.secondaryPhoneNo,
+      address: patient.patientMaster?.address,
+      cnic: patient.patientMaster?.cnic,
+      gender: patient.patientMaster?.gender || 'male',
+      email: patient.patientMaster?.email,
+      dateOfBirth: patient.patientMaster?.dateOfBirth ? this.toInputDate(patient.patientMaster.dateOfBirth) : null,
+      age: patient.patientMaster?.age,
+      cityId: patient.patientMaster?.cityId,
+      projectId: patient.projectId ?? 0
     });
-    this.updateAge(patient.dateOfBirth);
+
+    this.form.patchValue({
+      patientId: patient.id
+    });
+
+    // this.updateAge(patient.dateOfBirth);
   }
 
   calculateTotals(): void {
@@ -395,7 +405,7 @@ getCityList(): void {
       confirmedDate: raw.confirmedDate || new Date().toISOString(),
       appointmentStatusId: raw.appointmentStatusId,
       patientId: raw.patientId,
-      patient: raw.patientId ? null : {
+      patient: {
         name: raw.patient.name,
         phoneNo: raw.patient.phoneNo,
         secondaryPhoneNo: raw.patient.secondaryPhoneNo,

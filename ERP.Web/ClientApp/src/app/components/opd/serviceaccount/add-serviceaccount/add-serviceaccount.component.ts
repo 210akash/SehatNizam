@@ -138,7 +138,7 @@ export class AddServiceAccountComponent implements OnInit {
     });
   }
 
-  // ================= INIT PROJECTS =================
+// ================= INIT PROJECTS =================
   initProjects(projects: any[], existing: any[]): void {
     this.projectsFA.clear();
     projects.forEach(p => {
@@ -149,10 +149,14 @@ export class AddServiceAccountComponent implements OnInit {
 
   // ================= PROJECT GROUP =================
   createProjectGroup(project: any, existingRows: any[]): FormGroup {
-    const serviceAccountsFA = this.fb.array([
-      this.createRow(project, 1, existingRows.find(x => x.accountType === 1)), // Payable
-      this.createRow(project, 2, existingRows.find(x => x.accountType === 2))  // Discount
-    ]);
+    const serviceAccountsFA = this.fb.array(
+      existingRows.length > 0
+        ? existingRows.map(row => this.createRow(project, row.accountType, row))
+        : [
+            this.createRow(project, 1, null), // Payable
+            this.createRow(project, 2, null)  // Discount
+          ]
+    );
 
     const projectGroup = this.fb.group({
       projectId: [project.id],
@@ -207,13 +211,11 @@ export class AddServiceAccountComponent implements OnInit {
   }
 
   // ================= ADD ACCOUNT ROW =================
-  addAccount(pIndex: number, rIndex: number): void {
+  addAccount(pIndex: number, rIndex: number,type:number): void {
     const serviceAccounts = this.getServiceAccounts(pIndex);
-    const maxType = Math.max(...serviceAccounts.controls.map(c => c.get('accountType')?.value || 0), 0);
-    const nextType = maxType + 1;
     const project = this.projectsFA.at(pIndex);
     const projectData = { id: project.get('projectId')?.value, name: project.get('projectName')?.value };
-    serviceAccounts.insert(rIndex + 1, this.createRow(projectData, nextType, null));
+    serviceAccounts.insert(rIndex + 1, this.createRow(projectData, type, null));
     this.projectsFA.at(pIndex).updateValueAndValidity();
   }
 

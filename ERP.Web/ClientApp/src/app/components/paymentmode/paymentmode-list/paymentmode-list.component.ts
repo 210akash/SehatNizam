@@ -23,7 +23,7 @@ export class PaymentModeListComponent {
   currentPage = 0;
   pageSize = 0;
   pageSizeOptions: number[] = [5, 10, 25, 100];
-  displayedColumns: string[] = ['name', 'createdBy','company', 'actions'];
+  displayedColumns: string[] = ['name', 'createdBy','vouchertype', 'actions'];
   dataSource: any;
   take = 5;
   totalRows = 0;

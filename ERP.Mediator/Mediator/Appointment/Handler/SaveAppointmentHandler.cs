@@ -5,6 +5,7 @@ using ERP.Core.Provider;
 using ERP.Entities.Migrations;
 using ERP.Entities.Models;
 using ERP.Mediator.Mediator.Appointment.Command;
+using ERP.Mediator.Mediator.Transaction.Command;
 using ERP.Repositories.UnitOfWork;
 using MediatR;
 using System;
@@ -12,21 +13,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Twilio.Http;
 
 namespace ERP.Mediator.Mediator.Appointment.Handler
 {
-    public class SaveAppointmentHandler : IRequestHandler<SaveAppointmentCommand, Tuple<long,long?>>
+    public class SaveAppointmentHandler : IRequestHandler<SaveAppointmentCommand, Tuple<long, long?>>
     {
         private const long FamilyMemberAppointmentTypeId = 2;
 
         private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
         private readonly SessionProvider sessionProvider;
-        public SaveAppointmentHandler(IMapper mapper, IUnitOfWork unitOfWork, SessionProvider sessionProvider)
+        private readonly IMediator mediator;
+        public SaveAppointmentHandler(IMapper mapper, IUnitOfWork unitOfWork, SessionProvider sessionProvider, IMediator mediator)
         {
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
             this.sessionProvider = sessionProvider;
+            this.mediator = mediator;
         }
 
         public long SaveChanges()
@@ -56,6 +60,11 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                         cancellationToken);
                 }
 
+                if (request.AppointmentStatusId == 5 && result.Item2.HasValue)
+                {
+                    await SaveVouchersAgainstServices(result.Item2.Value);
+                }
+
                 await transaction.CommitAsync(cancellationToken);
                 return result;
             }
@@ -67,7 +76,7 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
             }
         }
 
-        private async Task<Tuple<long,long?>> CreateAppointmentAsync(SaveAppointmentCommand request, CancellationToken cancellationToken)
+        private async Task<Tuple<long, long?>> CreateAppointmentAsync(SaveAppointmentCommand request, CancellationToken cancellationToken)
         {
 
             try
@@ -144,6 +153,9 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
 
                         await unitOfWork.Repository<AppointmentPayment>()
                             .AddAsync(payment);
+
+
+
                     }
                 }
 
@@ -207,7 +219,7 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
             }
             catch
             {
-                return new Tuple<long, long?>(200, null);
+                return new Tuple<long, long?>(500, null);
                 throw;
             }
         }
@@ -711,5 +723,105 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
 
             return nextNumber.ToString("D7");
         }
+
+        private async Task<long> SaveVouchersAgainstServices(long AppoinmentId)
+        {
+            var appointment =
+             await unitOfWork.Repository<Entities.Models.Appointment>()
+             .GetFirstAsync(x => x.Id == AppoinmentId,null,null, "AppointmentPayments");
+            if (appointment != null)
+            {
+                foreach (var item in appointment.AppointmentPayments)
+                {
+                    var serviceAccounts = await unitOfWork.Repository<Entities.Models.ServiceAccount>()
+                    .GetAsync(x => x.PaymentModeId == item.PaymentModeId
+                    && x.ServiceId == item.ServiceId
+                    && x.ProjectId == sessionProvider.Session.SelectedWarehouseId, null, null, "PaymentMode", null, null);
+
+                    var transactionCommand = GetAppointmentVoucherCommandAsync(
+                               appointment,
+                               item,
+                               serviceAccounts.ToList(),
+                               item.Discount);
+
+                    await mediator.Send(transactionCommand);
+                }
+
+                return 200;
+            }
+            return 400;
+        }
+
+        private SaveServiceTransactionCommand GetAppointmentVoucherCommandAsync(Entities.Models.Appointment appointment, Entities.Models.AppointmentPayment payment, List<Entities.Models.ServiceAccount> serviceAccounts, decimal discount)
+        {
+            var payable = serviceAccounts.First(x => x.AccountType == ServiceAccountType.Payable);
+
+            var currentuser = unitOfWork.Repository<AspNetUsers>()
+            .GetFirst(x => x.Id == sessionProvider.Session.LoggedInUserId);
+
+            var command = new SaveServiceTransactionCommand
+            {
+                Date = appointment.AppointmentDate,
+                ReferenceNumber = appointment.TokenNumber,
+                VoucherTypeId = payable.PaymentMode.VoucherTypeId.Value,
+                Remarks = $"Appointment Payment Against Token - {appointment.TokenNumber}",
+                PaidReceiveBy = $"Receive By -  {currentuser.FirstName + " " + currentuser.LastName}",
+                StatusId = 3,
+                AppoinmentsPayments = payment.Id,
+                TransactionDetails = new List<SaveTransactionDetailCommand>(),
+                TransactionDocuments = null
+            };
+
+            // Debit (Cash/Bank)
+            command.TransactionDetails.Add(new SaveTransactionDetailCommand
+            {
+                AccountId = payable.DebitAccountId,
+                DepartmentId = appointment.DepartmentId,
+                ProjectId = sessionProvider.Session.SelectedWarehouseId,
+                AppointmentPaymentId = payment.Id,
+                DebitAmount = payment.TotalPayable,
+                CreditAmount = 0
+            });
+
+            // Credit (Income)
+            command.TransactionDetails.Add(new SaveTransactionDetailCommand
+            {
+                AccountId = payable.CreditAccountId,
+                DepartmentId = appointment.DepartmentId,
+                ProjectId = sessionProvider.Session.SelectedWarehouseId,
+                AppointmentPaymentId = payment.Id,
+                DebitAmount = 0,
+                CreditAmount = payment.TotalPayable
+            });
+            var discountAccount = serviceAccounts.First(x => x.AccountType == ServiceAccountType.Discount);
+
+            if (discount > 0 && discountAccount != null)
+            {
+                // Debit Discount
+                command.TransactionDetails.Add(new SaveTransactionDetailCommand
+                {
+                    AccountId = discountAccount.DebitAccountId,
+                    DepartmentId = appointment.DepartmentId,
+                    ProjectId = sessionProvider.Session.SelectedWarehouseId,
+                    AppointmentPaymentId = payment.Id,
+                    DebitAmount = discount,
+                    CreditAmount = 0
+                });
+
+                // Credit Discount Offset
+                command.TransactionDetails.Add(new SaveTransactionDetailCommand
+                {
+                    AccountId = discountAccount.CreditAccountId,
+                    DepartmentId = appointment.DepartmentId,
+                    ProjectId = sessionProvider.Session.SelectedWarehouseId,
+                    AppointmentPaymentId = payment.Id,
+                    DebitAmount = 0,
+                    CreditAmount = discount
+                });
+            }
+
+            return command;
+        }
+
     }
 }

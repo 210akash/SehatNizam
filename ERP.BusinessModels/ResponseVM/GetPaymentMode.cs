@@ -4,6 +4,8 @@
     {
         public long Id { get; set; }
         public string Name { get; set; }
+        public long VoucherTypeId { get; set; }
+        public GetVoucherType VoucherType { get; set; }
         public long CompanyId { get; set; }
         public GetCompany Company { get; set; }
         public GetUser CreatedBy { get; set; }

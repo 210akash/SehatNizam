@@ -6,6 +6,7 @@ namespace ERP.Mediator.Mediator.PaymentMode.Command
     {
         public long Id { get; set; }
         public long CompanyId { get; set; }
+        public long? VoucherTypeId { get; set; }
         public string Name { get; set; }
     }
 }

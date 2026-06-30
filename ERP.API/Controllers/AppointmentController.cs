@@ -126,6 +126,48 @@ namespace ERP.API.Controllers
 
 
         [HttpPost]
+        [Route("SaveAppointmentLab")]
+        public async Task<IActionResult> SaveLab(SaveAppointmentLabCommand command)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return this.Result(ResponseStatus.Error, null, this.GetModelValidationErrors(this.ModelState));
+                }
+                else
+                {
+                    var result = await this.mediator.Send(command);
+                    if (result == 200 )
+                    {
+                        return this.Result(ResponseStatus.OK, null, "Appointment Saved!");
+                    }
+                    else if (result == 200)
+                    {
+                        return this.Result(ResponseStatus.Error, null, "Unable to save appointment.");
+                    }
+                    else if (result == 409)
+                    {
+                        return this.Result(ResponseStatus.Conflict, null, "Name Already Exists!");
+                    }
+                    else if (result == 404)
+                    {
+                        return this.Result(ResponseStatus.RecordNotFound, null, "Record Not Found!");
+                    }
+                    else
+                    {
+                        return this.Result(ResponseStatus.Error, "There is some error!", null);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return this.Result(ResponseStatus.Error, null, ex.Message);
+            }
+        }
+
+
+        [HttpPost]
         [Route("SaveConsultation")]
         public async Task<IActionResult> SaveConsultation(SaveConsultationCommand command)
         {

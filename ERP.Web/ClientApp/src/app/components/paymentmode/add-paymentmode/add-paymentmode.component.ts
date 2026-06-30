@@ -6,6 +6,7 @@ import { NotificationsService } from '../../../Service/notification.service';
 import { PaymentModeService } from '../paymentmode.service';
 import { CategoryService } from '../../category/category.service';
 import { SubcategoryService } from '../../subcategory/subcategory.service';
+import { VoucherTypeService } from '../../vouchertype/vouchertype.service';
 
 @Component({
     selector: 'app-add-paymentmode',
@@ -18,20 +19,20 @@ export class AddPaymentModeComponent {
   paymentmodeForm!: FormGroup;
   isLoading = false;
   isEditMode: boolean = false;
-  categoryList :any;
-  subcategoryList :any;
+  voucherTypes :any;
 
 
-  constructor(private dialog: MatDialog, private notificationsService: NotificationsService, private formBuilder: FormBuilder, private paymentmodeService: PaymentModeService, private subcategoryService: SubcategoryService, private categoryService: CategoryService, private constantService: ConstantService, @Inject(MAT_DIALOG_DATA) public data: { element: any }) { }
+  constructor(private dialog: MatDialog, private voucherTypeService: VoucherTypeService,private notificationsService: NotificationsService, private formBuilder: FormBuilder, private paymentmodeService: PaymentModeService, private subcategoryService: SubcategoryService, private categoryService: CategoryService, private constantService: ConstantService, @Inject(MAT_DIALOG_DATA) public data: { element: any }) { }
 
   ngOnInit(): void {
     this.paymentmodeForm = this.formBuilder.group({
       id: [0],
       name: ['', Validators.required],
-      companyId: [0],
+      voucherTypeId: [0],
     });
     
     this.LoadData(this.data.element);
+    this.getVoucherTypeList();
   }
 
   LoadData(element: any) {
@@ -41,6 +42,12 @@ export class AddPaymentModeComponent {
     }
     // else   
     //  this.getPaymentModeCode();
+  }
+
+   async getVoucherTypeList() {
+    (await this.voucherTypeService.getAllVoucherTypes({})).subscribe((data:any) => {
+     this.voucherTypes = data.item1;
+    });
   }
 
   SaveData() {

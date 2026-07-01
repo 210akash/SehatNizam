@@ -8,7 +8,7 @@
     <OverwriteDataSources>False</OverwriteDataSources>
     <TargetServerVersion>SSRS2008R2</TargetServerVersion>
     <Platform>Win32</Platform>
-    <TargetReportFolder>HMS</TargetReportFolder>
+    <TargetReportFolder>SehatNizam</TargetReportFolder>
     <TargetDatasetFolder>Datasets</TargetDatasetFolder>
     <TargetDatasourceFolder>Shared Data Sources</TargetDatasourceFolder>
     <TargetReportPartFolder>Report Parts</TargetReportPartFolder>

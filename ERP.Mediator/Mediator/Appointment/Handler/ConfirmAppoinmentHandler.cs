@@ -59,12 +59,12 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                 }
 
                 // Update related AppointmentPayments
-                var payment = unitOfWork.Repository<AppointmentPayment>()
-                    .Find(x => x.AppointmentId == appointment.Id);
+                var payment = await unitOfWork.Repository<AppointmentPayment>()
+                    .GetFirstAsNoTrackingAsync(x => x.AppointmentId == appointment.Id, null, null, "Service");
 
                 var serviceAccounts = await unitOfWork.Repository<Entities.Models.ServiceAccount>()
                 .GetAsync(x => x.PaymentModeId == payment.PaymentModeId
-                && x.ServiceId == payment.ServiceId
+                && x.ServiceTypeId == payment.Service.ServiceTypeId
                 && x.ProjectId == sessionProvider.Session.SelectedWarehouseId, null, null, "PaymentMode", null, null);
 
                 if (payment != null)
@@ -184,7 +184,7 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                 DebitAmount = 0,
                 CreditAmount = payment.TotalPayable
             });
-            var discountAccount = serviceAccounts.First(x => x.AccountType == ServiceAccountType.Discount);
+            var discountAccount = serviceAccounts.FirstOrDefault(x => x.AccountType == ServiceAccountType.Discount);
 
             if (discount > 0 && discountAccount != null)
             {

@@ -125,4 +125,14 @@ export class ServiceTypeListComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(() => this.bindData());
   }
+
+    accounts(element: any): void {
+      const dialogRef = this.dialog.open(AddServiceAccountComponent, {
+        data: { element },
+        panelClass: 'cstm_width_1000',
+        height: 'auto',
+        disableClose: true
+      });
+      dialogRef.afterClosed().subscribe(() => this.bindData());
+    }
 }

@@ -284,6 +284,8 @@
               [class.active-link]="isActive('/accountgroup')"><i class="fas submenu-item-icon" [ngClass]="getSubmenuIcon('/accountgroup')"></i><span>Account Group</span></a>
             <a routerLink="/accountchart" *ngIf="hasRequiredRole(['admin','accounts manager','accounts assistant'])"
               class="nested-link" [class.active-link]="isActive('/accountchart')"><i class="fas submenu-item-icon" [ngClass]="getSubmenuIcon('/accountchart')"></i><span>Account Chart</span></a>
+                 <a routerLink="/paymentmode" *ngIf="hasRequiredRole(['admin','accounts manager'])"
+              class="nested-link" [class.active-link]="isActive('/paymentmode')"><i class="fas submenu-item-icon" [ngClass]="getSubmenuIcon('/paymentmode')"></i><span>Payment Mode</span></a>
           </div>
 
           <!-- Vouchers -->

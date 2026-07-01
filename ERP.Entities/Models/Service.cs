@@ -15,6 +15,5 @@ namespace ERP.Entities.Models
         public long ServiceTypeId { get; set; }
         public ServiceType ServiceType { get; set; }
         public bool? IsSurgical { get; set; }
-        public virtual List<ServiceAccount> ServiceAccounts { get; set; }
     }
 }

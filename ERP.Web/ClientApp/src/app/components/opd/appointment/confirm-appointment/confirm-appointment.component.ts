@@ -79,16 +79,14 @@ export class ConfirmAppointmentComponent {
       next: (data: any) => {
         this.isSubmitting = false;
         if (data.Status === 200) {
-          this.notifications.showNotification(
-            data.Message || 'appoinment confirmed successfully!',
+          this.notifications.showNotification('appoinment confirmed successfully!',
             'snack-bar-success'
           );
           this.dialogRef.close(true);
     const camelCaseData = this.toCamelCaseObject(data.Data);
             this.printrecreiptAppoinmnetDialog(camelCaseData);
         } else {
-          this.notifications.showNotification(
-             data.Message || 'Failed to confirm appoinment.',
+          this.notifications.showNotification('Failed to confirm appoinment.',
             'snack-bar-danger'
           );
         }

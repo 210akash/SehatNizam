@@ -22,9 +22,9 @@ namespace ERP.Mediator.Mediator.ServiceAccount.Handler
 
         public async Task<int> Handle(SaveServiceAccountCommand request, CancellationToken cancellationToken)
         {
-            // 1. Fetch all currently active records for this ServiceId
+            // 1. Fetch all currently active records for this ServiceTypeId
             var existingRecords = await unitOfWork.Repository<Entities.Models.ServiceAccount>()
-                .FindAllAsync(x => x.ServiceId == request.ServiceId && x.IsActive == true);
+                .FindAllAsync(x => x.ServiceTypeId == request.ServiceTypeId && x.IsActive == true);
 
             // 2. If no items are sent, soft-delete everything and return
             if (request.ServiceAccounts == null || !request.ServiceAccounts.Any())
@@ -89,7 +89,7 @@ namespace ERP.Mediator.Mediator.ServiceAccount.Handler
                         // ID not found – treat as new (fallback)
                         var entity = new Entities.Models.ServiceAccount
                         {
-                            ServiceId = request.ServiceId,
+                            ServiceTypeId = request.ServiceTypeId,
                             ProjectId = item.ProjectId,
                             PaymentModeId = item.PaymentModeId,
                             AccountType = item.AccountType,
@@ -108,7 +108,7 @@ namespace ERP.Mediator.Mediator.ServiceAccount.Handler
                     // Insert new record
                     var entity = new Entities.Models.ServiceAccount
                     {
-                        ServiceId = request.ServiceId,
+                        ServiceTypeId = request.ServiceTypeId,
                         ProjectId = item.ProjectId,
                         PaymentModeId = item.PaymentModeId,
                         AccountType = item.AccountType,

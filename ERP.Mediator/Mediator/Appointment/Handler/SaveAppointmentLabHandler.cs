@@ -657,19 +657,18 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
             return nextNumber.ToString("D7");
         }
 
-
         private async Task<long> SaveVouchersAgainstServices(long AppoinmentId)
         {
             var appointment =
              await unitOfWork.Repository<Entities.Models.Appointment>()
-             .GetFirstAsync(x => x.Id == AppoinmentId, null, null, "AppointmentPayments");
+             .GetFirstAsync(x => x.Id == AppoinmentId, null, null, "AppointmentPayments,AppointmentPayments.Service");
             if (appointment != null)
             {
                 foreach (var item in appointment.AppointmentPayments)
                 {
                     var serviceAccounts = await unitOfWork.Repository<Entities.Models.ServiceAccount>()
                     .GetAsync(x => x.PaymentModeId == item.PaymentModeId
-                    && x.ServiceId == item.ServiceId
+                    && x.ServiceTypeId == item.ServiceId
                     && x.ProjectId == sessionProvider.Session.SelectedWarehouseId, null, null, "PaymentMode", null, null);
 
                     var transactionCommand = GetAppointmentVoucherCommandAsync(
@@ -727,7 +726,7 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                 DebitAmount = 0,
                 CreditAmount = payment.TotalPayable
             });
-            var discountAccount = serviceAccounts.First(x => x.AccountType == ServiceAccountType.Discount);
+            var discountAccount = serviceAccounts.FirstOrDefault(x => x.AccountType == ServiceAccountType.Discount);
 
             if (discount > 0 && discountAccount != null)
             {

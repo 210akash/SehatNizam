@@ -77,7 +77,7 @@ export class AddServiceAccountComponent implements OnInit {
 
   ngOnInit(): void {
     this.form = this.fb.group({
-      serviceId: [this.data.element.id, Validators.required],
+      serviceTypeId: [this.data.element.serviceTypeId || this.data.element.id, Validators.required],
       projects: this.fb.array([])
     });
 
@@ -295,7 +295,7 @@ export class AddServiceAccountComponent implements OnInit {
     );
 
     const command = {
-      serviceId: this.form.value.serviceId,
+      serviceTypeId: this.form.value.serviceTypeId,
       serviceAccounts: serviceAccounts
     };
 

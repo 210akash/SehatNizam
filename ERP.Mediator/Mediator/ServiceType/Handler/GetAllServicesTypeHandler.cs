@@ -28,10 +28,23 @@ namespace ERP.Mediator.Mediator.ServiceTypes.Handler
             Expression<Func<Entities.Models.ServiceType, bool>> predicate = x => x.IsActive == true
             && (string.IsNullOrEmpty(request.Name) || x.Name.ToLower().Contains(request.Name.ToLower()));
 
+            Expression<Func<Entities.Models.ServiceType, object>>[] includes = {
+                x => x.ServiceAccounts
+            };
+
+            List<string> thenIncludes = new()
+            {
+                "ServiceAccounts.ServiceAccountHistory",
+                "ServiceAccounts.DebitAccount",
+                "ServiceAccounts.CreditAccount",
+                "ServiceAccounts.Project",
+                "ServiceAccounts.PaymentMode",
+            };
+
             Expression<Func<Entities.Models.ServiceType, object>> OrderBy = null;
             Expression<Func<Entities.Models.ServiceType, object>> OrderByDescending = x => x.ModifiedDate ?? x.CreatedDate;
 
-            var entity = unitOfWork.Repository<Entities.Models.ServiceType>().GetPagingWhereAsNoTrackingAsync(predicate, request.PagingData, OrderBy, OrderByDescending, null, null);
+            var entity = unitOfWork.Repository<Entities.Models.ServiceType>().GetPagingWhereAsNoTrackingAsync(predicate, request.PagingData, OrderBy, OrderByDescending, thenIncludes, includes);
             var ServiceTypes = mapper.Map<IEnumerable<GetServiceType>>(entity.Item1.ToList()).ToList();
             return new Tuple<IEnumerable<GetServiceType>, long>(ServiceTypes, entity.Item2);
         }

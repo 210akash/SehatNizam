@@ -158,8 +158,8 @@ export class AccountListComponent {
     this.bindData();
   }
 
-  redirectToaccountledger(accountId : any) {
-    const url = ''+this.reportsUrl+'ReportServer/Pages/ReportViewer.aspx?%2FERPReports%2FAccountLedger&rs%3AClearSession=true&rc%3AView=955b82da-9d4c-41a3-8fd2-995b91d5efd8&CompanyId='+ this.currentUser.department.companyId + '&Account=' + accountId;
+    redirectToaccountledger(accountId : any) {
+    const url = '' + this.reportsUrl + 'ReportServer/Pages/ReportViewer.aspx?%2FSehatNizam%2FAccountLedger&rs%3AClearSession=true&rc%3AView=af7578f5-cebd-4b18-ac9f-43c11e11f867&CompanyId=' + this.currentUser.department.companyId + '&Account=' + accountId;
     window.open(url, '_blank');  // Opens the URL in a new tab
   }
 }

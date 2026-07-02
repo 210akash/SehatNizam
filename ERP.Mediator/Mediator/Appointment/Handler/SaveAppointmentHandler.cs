@@ -145,11 +145,18 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                             ServiceId = item.ServiceId,
                             PaymentDate = DateTime.Now,
                             PaymentStatusId = item.PaymentStatusId,
+                        
                             CreatedById = sessionProvider.Session.LoggedInUserId,
                             CreatedDate = DateTime.Now,
                             IsActive = true,
                             IsDelete = false
                         };
+
+                        if(request.AppointmentStatusId  == 5)
+                        {
+                            payment.ApprovedById = sessionProvider.Session.LoggedInUserId;
+                            payment.ApprovedDate = DateTime.Now;
+                        }
 
                         await unitOfWork.Repository<AppointmentPayment>()
                             .AddAsync(payment);

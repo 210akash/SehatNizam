@@ -141,6 +141,12 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                             IsDelete = false
                         };
 
+                        if (request.AppointmentStatusId == 5)
+                        {
+                            payment.ApprovedById = sessionProvider.Session.LoggedInUserId;
+                            payment.ApprovedDate = DateTime.Now;
+                        }
+
                         await unitOfWork.Repository<AppointmentPayment>()
                             .AddAsync(payment);
                     }

@@ -1,7 +1,7 @@
 ﻿using System;
 namespace ERP.Entities.Models
 {
-    public class AppointmentPayment : BaseEntity
+    public class AppointmentPayment : BaseEntityHistory
     {
         public long AppointmentId { get; set; }
         public Appointment Appointment { get; set; }

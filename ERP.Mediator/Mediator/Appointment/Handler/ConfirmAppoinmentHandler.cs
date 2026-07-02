@@ -74,6 +74,8 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                     payment.PaymentStatusId = 3; // Set status to 3
                     payment.ModifiedById = sessionProvider.Session.LoggedInUserId;
                     payment.ModifiedDate = DateTime.Now;
+                    payment.ApprovedById = sessionProvider.Session.LoggedInUserId;
+                    payment.ApprovedDate = DateTime.Now;
                     unitOfWork.Repository<AppointmentPayment>().Update(payment);
 
                     var transactionCommand = GetAppointmentVoucherCommandAsync(

@@ -414,6 +414,11 @@ toggleSidebar() {
     window.open(url, '_blank');  // Opens the URL in a new tab
   }
 
+     redirectToRevenue() {
+    const url = '' + this.reportsUrl + 'ReportServer/Pages/ReportViewer.aspx?%2FSehatNizam%2FRevenue&rs%3AClearSession=true&rc%3AView=af7578f5-cebd-4b18-ac9f-43c11e11f867&CompanyId=' + this.currentUser.department.companyId;
+    window.open(url, '_blank');  // Opens the URL in a new tab
+  }
+
   private readonly submenuIconMap: Record<string, string> = {
     '/doctorappointment': 'fa-calendar-check',
     '/bookappointment': 'fa-calendar-plus',

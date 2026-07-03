@@ -6,7 +6,6 @@ import { ServiceAccountService } from '../serviceaccount.service';
 import { NotificationsService } from '../../../../Service/notification.service';
 import { ConstantService } from '../../../../Service/constant.service';
 import { AccountService } from '../../../account/account.service';
-import { DepartmentService } from '../../../department/department.service';
 import { PaymentModeService } from '../../../paymentmode/paymentmode.service';
 
 // ✅ Custom validator: both accounts must be filled OR both empty
@@ -59,7 +58,6 @@ export class AddServiceAccountComponent implements OnInit {
   projects: any[] = [];
   accountList: any[] = [];
   serviceInfo: any;
-  departments: any[] = [];
   paymentModeList: any;
 
   constructor(
@@ -70,7 +68,6 @@ export class AddServiceAccountComponent implements OnInit {
     private accountService: AccountService,
     private notifications: NotificationsService,
     private constantService: ConstantService,
-    private departmentService: DepartmentService,
     private paymentModeService: PaymentModeService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
@@ -81,21 +78,9 @@ export class AddServiceAccountComponent implements OnInit {
       projects: this.fb.array([])
     });
 
-    this.loadDepartments();
     this.loadProjects();
     this.getpaymentModesList();
     this.serviceInfo = this.data.element;
-  }
-
-  loadDepartments(): void {
-    this.departmentService.getClinicalDepartment().subscribe({
-      next: (res: any) => {
-        this.departments = res?.item1 ?? res ?? [];
-      },
-      error: () => {
-        this.departments = [];
-      }
-    });
   }
 
   // ================= PROJECT FORM ARRAY =================
@@ -139,102 +124,126 @@ export class AddServiceAccountComponent implements OnInit {
   }
 
 // ================= INIT PROJECTS =================
-  initProjects(projects: any[], existing: any[]): void {
-    this.projectsFA.clear();
-    projects.forEach(p => {
-      const projectRows = existing.filter(x => Number(x.projectId) === Number(p.id));
-      this.projectsFA.push(this.createProjectGroup(p, projectRows));
-    });
-  }
+   initProjects(projects: any[], existing: any[]): void {
+     this.projectsFA.clear();
+     projects.forEach(p => {
+       const projectRows = existing.filter(x => Number(x.projectId) === Number(p.id));
+       this.projectsFA.push(this.createProjectGroup(p, projectRows));
+     });
+     this.ensureAllAccountTypesHaveRows();
+   }
 
-  // ================= PROJECT GROUP =================
-  createProjectGroup(project: any, existingRows: any[]): FormGroup {
-    const serviceAccountsFA = this.fb.array(
-      existingRows.length > 0
-        ? existingRows.map(row => this.createRow(project, row.accountType, row))
-        : [
-            this.createRow(project, 1, null), // Payable
-            this.createRow(project, 2, null)  // Discount
-          ]
-    );
+   // ================= PROJECT GROUP =================
+   createProjectGroup(project: any, existingRows: any[]): FormGroup {
+     const serviceAccountsFA = this.fb.array(
+       existingRows.length > 0
+         ? existingRows.map(row => this.createRow(project, row.accountType, row))
+         : [
+             this.createRow(project, 1, null), // Payable
+             this.createRow(project, 2, null)  // Discount
+           ]
+     );
 
-    const projectGroup = this.fb.group({
-      projectId: [project.id],
-      projectName: [project.name],
-      serviceAccounts: serviceAccountsFA
-    }, { validators: validateUniquePaymentModePerAccountType });
+     const projectGroup = this.fb.group({
+       projectId: [project.id],
+       projectName: [project.name],
+       serviceAccounts: serviceAccountsFA
+     }, { validators: validateUniquePaymentModePerAccountType });
 
-    // Update project validity when serviceAccounts change
-    serviceAccountsFA.valueChanges.subscribe(() => {
-      projectGroup.updateValueAndValidity();
-    });
+     // Update project validity when serviceAccounts change
+     serviceAccountsFA.valueChanges.subscribe(() => {
+       projectGroup.updateValueAndValidity();
+     });
 
-    return projectGroup;
-  }
+     return projectGroup;
+   }
 
-  // ================= ROW (PROJECT + TYPE) =================
-  createRow(project: any, type: number, item: any): FormGroup {
-    const isRequired = type === 1;
+   // ================= ROW (PROJECT + TYPE) =================
+   createRow(project: any, type: number, item: any): FormGroup {
+     const isRequired = type === 1;
 
-    let debitName = '';
-    let creditName = '';
-    if (item) {
-      debitName = item.debitAccount ? `${item.debitAccount.code} : ${item.debitAccount.name}` : '';
-      creditName = item.creditAccount ? `${item.creditAccount.code} : ${item.creditAccount.name}` : '';
-    }
+     let debitName = '';
+     let creditName = '';
+     if (item) {
+       debitName = item.debitAccount ? `${item.debitAccount.code} : ${item.debitAccount.name}` : '';
+       creditName = item.creditAccount ? `${item.creditAccount.code} : ${item.creditAccount.name}` : '';
+     }
 
-    return this.fb.group({
-      id: [item?.id || 0],
-      projectId: [project.id],
-      paymentModeId: [item?.paymentModeId || 0, isRequired ? Validators.required : null],
-      accountType: [type],
-      debitAccountId: [
-        item?.debitAccountId || 0,
-        isRequired ? Validators.required : null
-      ],
-      debitAccountName: [debitName],
-      creditAccountId: [
-        item?.creditAccountId || 0,
-        isRequired ? Validators.required : null
-      ],
-      creditAccountName: [creditName]
-    }, { validators: validateAccounts }); // ✅ Cross-field validation
-  }
+     return this.fb.group({
+       id: [item?.id || 0],
+       projectId: [project.id],
+       paymentModeId: [item?.paymentModeId || 0, isRequired ? Validators.required : null],
+       accountType: [type],
+       debitAccountId: [
+         item?.debitAccountId || 0,
+         isRequired ? Validators.required : null
+       ],
+       debitAccountName: [debitName],
+       creditAccountId: [
+         item?.creditAccountId || 0,
+         isRequired ? Validators.required : null
+       ],
+       creditAccountName: [creditName]
+     }, { validators: validateAccounts }); // ✅ Cross-field validation
+   }
 
-  // ================= ACCOUNT SEARCH =================
-  getAccountList(event: any): void {
-    const filter = event.target.value;
-    this.accountService.getAccountByName(filter, [''])
-      .subscribe((data: any) => {
-        this.accountList = data;
-      });
-  }
+   // ================= ACCOUNT SEARCH =================
+   getAccountList(event: any): void {
+     const filter = event.target.value;
+     this.accountService.getAccountByName(filter, [''])
+       .subscribe((data: any) => {
+         this.accountList = data;
+       });
+   }
 
-  // ================= ADD ACCOUNT ROW =================
-  addAccount(pIndex: number, rIndex: number,type:number): void {
-    const serviceAccounts = this.getServiceAccounts(pIndex);
-    const project = this.projectsFA.at(pIndex);
-    const projectData = { id: project.get('projectId')?.value, name: project.get('projectName')?.value };
-    serviceAccounts.insert(rIndex + 1, this.createRow(projectData, type, null));
-    this.projectsFA.at(pIndex).updateValueAndValidity();
-  }
+   // ================= ADD ACCOUNT ROW =================
+   addAccount(pIndex: number, rIndex: number,type:number): void {
+     const serviceAccounts = this.getServiceAccounts(pIndex);
+     const project = this.projectsFA.at(pIndex);
+     const projectData = { id: project.get('projectId')?.value, name: project.get('projectName')?.value };
+     serviceAccounts.insert(rIndex + 1, this.createRow(projectData, type, null));
+     this.projectsFA.at(pIndex).updateValueAndValidity();
+   }
 
-  // ================= REMOVE ACCOUNT ROW =================
-  removeAccount(pIndex: number, rIndex: number): void {
-    const serviceAccounts = this.getServiceAccounts(pIndex);
-    if (serviceAccounts.length > 1) {
-      serviceAccounts.removeAt(rIndex);
-    } else {
-      serviceAccounts.at(0).patchValue({
-        id: 0,
-        debitAccountId: 0,
-        debitAccountName: '',
-        creditAccountId: 0,
-        creditAccountName: ''
-      });
-    }
-    this.projectsFA.at(pIndex).updateValueAndValidity();
-  }
+   // ================= ENSURE ALL ACCOUNT TYPES HAVE ROWS =================
+   ensureAllAccountTypesHaveRows(): void {
+     const requiredAccountTypes = [1, 2]; // Payable and Discount
+     this.projectsFA.controls.forEach((projectGroup: any) => {
+       const serviceAccounts = projectGroup.get('serviceAccounts') as FormArray;
+       const existingTypes = serviceAccounts.controls.map((c: any) => c.get('accountType')?.value);
+       
+       requiredAccountTypes.forEach(accType => {
+         if (!existingTypes.includes(accType)) {
+           const project = { id: projectGroup.get('projectId')?.value, name: projectGroup.get('projectName')?.value };
+           serviceAccounts.push(this.createRow(project, accType, null));
+         }
+       });
+     });
+   }
+
+   // ================= REMOVE ACCOUNT ROW =================
+   removeAccount(pIndex: number, rIndex: number): void {
+     const serviceAccounts = this.getServiceAccounts(pIndex);
+     const rowToRemove = serviceAccounts.at(rIndex);
+     const accountTypeToRemove = rowToRemove.get('accountType')?.value;
+     
+     const hasOtherOfType = serviceAccounts.controls.some((c: any, idx: number) => 
+       idx !== rIndex && c.get('accountType')?.value === accountTypeToRemove
+     );
+     
+     if (hasOtherOfType) {
+       serviceAccounts.removeAt(rIndex);
+     } else {
+       rowToRemove.patchValue({
+         id: 0,
+         debitAccountId: 0,
+         debitAccountName: '',
+         creditAccountId: 0,
+         creditAccountName: ''
+       });
+     }
+     this.projectsFA.at(pIndex).updateValueAndValidity();
+   }
 
   // ================= SELECT DEBIT =================
   onDebitSelected(event: any, pIndex: number, rIndex: number): void {

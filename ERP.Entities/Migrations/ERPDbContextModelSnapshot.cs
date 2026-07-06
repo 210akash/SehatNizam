@@ -1000,6 +1000,12 @@ namespace ERP.Entities.Migrations
                     b.Property<long>("AppointmentId")
                         .HasColumnType("bigint");
 
+                    b.Property<Guid?>("ApprovedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ApprovedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<Guid?>("CreatedById")
                         .HasColumnType("uniqueidentifier");
 
@@ -1033,6 +1039,12 @@ namespace ERP.Entities.Migrations
                     b.Property<long>("PaymentStatusId")
                         .HasColumnType("bigint");
 
+                    b.Property<Guid?>("ProcessedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ProcessedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<long>("ServiceId")
                         .HasColumnType("bigint");
 
@@ -1046,6 +1058,8 @@ namespace ERP.Entities.Migrations
 
                     b.HasIndex("AppointmentId");
 
+                    b.HasIndex("ApprovedById");
+
                     b.HasIndex("CreatedById");
 
                     b.HasIndex("ModifiedById");
@@ -1053,6 +1067,8 @@ namespace ERP.Entities.Migrations
                     b.HasIndex("PaymentModeId");
 
                     b.HasIndex("PaymentStatusId");
+
+                    b.HasIndex("ProcessedById");
 
                     b.HasIndex("ServiceId");
 
@@ -10124,7 +10140,7 @@ namespace ERP.Entities.Migrations
                     b.Property<long>("ProjectId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("ServiceTypeId")
+                    b.Property<long>("ServiceId")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
@@ -10141,7 +10157,7 @@ namespace ERP.Entities.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.HasIndex("ServiceTypeId");
+                    b.HasIndex("ServiceId");
 
                     b.ToTable("ServiceAccount");
                 });
@@ -12935,6 +12951,10 @@ namespace ERP.Entities.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("ERP.Entities.Models.AspNetUsers", "ApprovedBy")
+                        .WithMany()
+                        .HasForeignKey("ApprovedById");
+
                     b.HasOne("ERP.Entities.Models.AspNetUsers", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById");
@@ -12955,6 +12975,10 @@ namespace ERP.Entities.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("ERP.Entities.Models.AspNetUsers", "ProcessedBy")
+                        .WithMany()
+                        .HasForeignKey("ProcessedById");
+
                     b.HasOne("ERP.Entities.Models.Service", "Service")
                         .WithMany()
                         .HasForeignKey("ServiceId")
@@ -12963,6 +12987,8 @@ namespace ERP.Entities.Migrations
 
                     b.Navigation("Appointment");
 
+                    b.Navigation("ApprovedBy");
+
                     b.Navigation("CreatedBy");
 
                     b.Navigation("ModifiedBy");
@@ -12970,6 +12996,8 @@ namespace ERP.Entities.Migrations
                     b.Navigation("PaymentMode");
 
                     b.Navigation("PaymentStatus");
+
+                    b.Navigation("ProcessedBy");
 
                     b.Navigation("Service");
                 });
@@ -17613,9 +17641,9 @@ namespace ERP.Entities.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ERP.Entities.Models.ServiceType", "ServiceType")
+                    b.HasOne("ERP.Entities.Models.Service", "Service")
                         .WithMany("ServiceAccounts")
-                        .HasForeignKey("ServiceTypeId")
+                        .HasForeignKey("ServiceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -17631,7 +17659,7 @@ namespace ERP.Entities.Migrations
 
                     b.Navigation("Project");
 
-                    b.Navigation("ServiceType");
+                    b.Navigation("Service");
                 });
 
             modelBuilder.Entity("ERP.Entities.Models.ServiceAccountHistory", b =>
@@ -19242,14 +19270,14 @@ namespace ERP.Entities.Migrations
                     b.Navigation("SaleReturnDetail");
                 });
 
+            modelBuilder.Entity("ERP.Entities.Models.Service", b =>
+                {
+                    b.Navigation("ServiceAccounts");
+                });
+
             modelBuilder.Entity("ERP.Entities.Models.ServiceAccount", b =>
                 {
                     b.Navigation("ServiceAccountHistory");
-                });
-
-            modelBuilder.Entity("ERP.Entities.Models.ServiceType", b =>
-                {
-                    b.Navigation("ServiceAccounts");
                 });
 
             modelBuilder.Entity("ERP.Entities.Models.Shop", b =>

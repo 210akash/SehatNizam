@@ -67,6 +67,42 @@
         <mat-slide-toggle color="primary" formControlName="isAvailableForIPD">Available For IPD</mat-slide-toggle>
       </div>
 
+         <div class="row mt-2">
+        <div class="col-md-6">
+             <div class="accountwrap">
+                    <mat-checkbox
+                    class="example-margin"
+                    formControlName="isGroup"
+                    (change)="showOptions($event)"
+                    matTooltip="Group"
+                  >
+                  </mat-checkbox>
+                    <mat-form-field  *ngIf="!this.form.get('isGroup')?.value">
+                      <input matInput formControlName="accountName" [matAutocomplete]="auto"
+                        (keyup)="getAccountList($event);" class="form-control" (input)="onAccountCleared($event)"
+                        type="search"
+                        [matTooltip]="this.form.get('account')?.value ? this.form.get('account')?.value.code + ' : ' + this.form.get('account')?.value.name : 'No Account Selected'" />
+                      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionAccountSelected($event)">
+                        <mat-option *ngFor="let account of accountList" [value]="account">
+                          {{ account?.code }} : {{ account?.name }}
+                        </mat-option>
+                      </mat-autocomplete>
+                    </mat-form-field>
+                    <mat-form-field  *ngIf="this.form.get('isGroup')?.value">
+                      <input matInput formControlName="accountGroupName" [matAutocomplete]="auto"
+                        (keyup)="getAccountGroupList($event);" class="form-control" (input)="onAccountCleared($event)"
+                        type="search"
+                        [matTooltip]="this.form.get('accountGroup')?.value ? this.form.get('accountGroup')?.value.code + ' : ' + this.form.get('accountGroup')?.value.name : 'No Group Account Selected'" />
+                      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionGroupSelected($event)">
+                        <mat-option *ngFor="let account of accountGroupList" [value]="account">
+                          {{ account?.code }} : {{ account?.name }}
+                        </mat-option>
+                      </mat-autocomplete>
+                    </mat-form-field>
+                  </div>
+        </div>
+      </div>
+
       <mat-divider></mat-divider>
 
       <div class="button-container">

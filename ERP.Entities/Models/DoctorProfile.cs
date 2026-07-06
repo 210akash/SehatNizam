@@ -27,6 +27,13 @@ namespace ERP.Entities.Models
 
         public bool IsAvailableForIPD { get; set; } = true;
 
+        public long? AccountId { get; set; }
+        public virtual Account Account { get; set; }
+
+        public long? AccountGroupId { get; set; }
+        public virtual AccountGroup AccountGroup { get; set; }
+        public bool IsGroup { get; set; }
+
         // Dynamic fields - stored as JSON string in database
         public string CustomFieldsJson { get; set; }
 

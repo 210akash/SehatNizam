@@ -16,6 +16,10 @@ namespace ERP.BusinessModels.ResponseVM
         public decimal? HospitalPercentage { get; set; }
         public bool IsAvailableForOPD { get; set; }
         public bool IsAvailableForIPD { get; set; }
+        public virtual GetAccount Account { get; set; }
+        public long? AccountId { get; set; }
+        public virtual GetAccountGroup AccountGroup { get; set; }
+        public long? AccountGroupId { get; set; }
         public string CustomFieldsJson { get; set; }
         public bool IsActive { get; set; }
     }

@@ -32,7 +32,9 @@ namespace ERP.Mediator.Mediator.Referrer.Handler
 
             Expression<Func<Entities.Models.Referrer, object>>[] includes = {
                 x => x.CreatedBy,
-                x => x.Company
+                x => x.Account,
+                x => x.AccountGroup,
+                x => x.Company,
             };
 
             Expression<Func<Entities.Models.Referrer, object>> OrderBy = null;

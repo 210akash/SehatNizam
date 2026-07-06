@@ -21,6 +21,8 @@ namespace ERP.Entities.Models
     public enum ServiceAccountType
     {
         Payable = 1,
-        Discount = 2
+        Discount = 2,
+        DoctorPercentage = 3,
+        ReferrerPercentage = 4
     }
 }

@@ -1,3 +1,4 @@
+
 using MediatR;
 using System;
 
@@ -16,6 +17,9 @@ namespace ERP.Mediator.Mediator.Doctor.Command
         public decimal? HospitalPercentage { get; set; }
         public bool IsAvailableForOPD { get; set; }
         public bool IsAvailableForIPD { get; set; }
+        public bool IsGroup { get; set; }
+        public long? AccountId { get; set; }
+        public long? AccountGroupId { get; set; }
         public string CustomFieldsJson { get; set; }
     }
 }

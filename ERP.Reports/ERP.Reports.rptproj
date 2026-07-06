@@ -78,6 +78,7 @@
     <Report Include="MaterialIssuance.rdl" />
     <Report Include="OrderDetail.rdl" />
     <Report Include="PrimarySale.rdl" />
+    <Report Include="Revenue.rdl" />
     <Report Include="SaleDetail.rdl" />
     <Report Include="SalesTarget.rdl" />
     <Report Include="SalesTargetAchived.rdl" />

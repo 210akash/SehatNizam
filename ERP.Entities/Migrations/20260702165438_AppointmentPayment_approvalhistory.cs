@@ -7,11 +7,11 @@ namespace ERP.Entities.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<long>(
-                name: "VoucherTypeId",
-                table: "PaymentMode",
-                type: "bigint",
-                nullable: true);
+            //migrationBuilder.AddColumn<long>(
+            //    name: "VoucherTypeId",
+            //    table: "PaymentMode",
+            //    type: "bigint",
+            //    nullable: true);
 
             migrationBuilder.AddColumn<Guid>(
                 name: "ApprovedById",
@@ -37,10 +37,10 @@ namespace ERP.Entities.Migrations
                 type: "datetime2",
                 nullable: true);
 
-            migrationBuilder.CreateIndex(
-                name: "IX_PaymentMode_VoucherTypeId",
-                table: "PaymentMode",
-                column: "VoucherTypeId");
+            //migrationBuilder.CreateIndex(
+            //    name: "IX_PaymentMode_VoucherTypeId",
+            //    table: "PaymentMode",
+            //    column: "VoucherTypeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AppointmentPayment_ApprovedById",
@@ -68,13 +68,13 @@ namespace ERP.Entities.Migrations
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_PaymentMode_VoucherType_VoucherTypeId",
-                table: "PaymentMode",
-                column: "VoucherTypeId",
-                principalTable: "VoucherType",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
+            //migrationBuilder.AddForeignKey(
+            //    name: "FK_PaymentMode_VoucherType_VoucherTypeId",
+            //    table: "PaymentMode",
+            //    column: "VoucherTypeId",
+            //    principalTable: "VoucherType",
+            //    principalColumn: "Id",
+            //    onDelete: ReferentialAction.Restrict);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -87,13 +87,13 @@ namespace ERP.Entities.Migrations
                 name: "FK_AppointmentPayment_AspNetUsers_ProcessedById",
                 table: "AppointmentPayment");
 
-            migrationBuilder.DropForeignKey(
-                name: "FK_PaymentMode_VoucherType_VoucherTypeId",
-                table: "PaymentMode");
+            //migrationBuilder.DropForeignKey(
+            //    name: "FK_PaymentMode_VoucherType_VoucherTypeId",
+            //    table: "PaymentMode");
 
-            migrationBuilder.DropIndex(
-                name: "IX_PaymentMode_VoucherTypeId",
-                table: "PaymentMode");
+            //migrationBuilder.DropIndex(
+            //    name: "IX_PaymentMode_VoucherTypeId",
+            //    table: "PaymentMode");
 
             migrationBuilder.DropIndex(
                 name: "IX_AppointmentPayment_ApprovedById",
@@ -103,9 +103,9 @@ namespace ERP.Entities.Migrations
                 name: "IX_AppointmentPayment_ProcessedById",
                 table: "AppointmentPayment");
 
-            migrationBuilder.DropColumn(
-                name: "VoucherTypeId",
-                table: "PaymentMode");
+            //migrationBuilder.DropColumn(
+            //    name: "VoucherTypeId",
+            //    table: "PaymentMode");
 
             migrationBuilder.DropColumn(
                 name: "ApprovedById",

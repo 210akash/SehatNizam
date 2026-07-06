@@ -674,7 +674,7 @@ namespace ERP.Mediator.Mediator.Appointment.Handler
                 {
                     var serviceAccounts = await unitOfWork.Repository<Entities.Models.ServiceAccount>()
                     .GetAsync(x => x.PaymentModeId == item.PaymentModeId
-                    && x.ServiceTypeId == item.ServiceId
+                    && x.ServiceTypeId == item.Service.ServiceTypeId
                     && x.ProjectId == sessionProvider.Session.SelectedWarehouseId, null, null, "PaymentMode", null, null);
 
                     var transactionCommand = GetAppointmentVoucherCommandAsync(

@@ -27,6 +27,8 @@ namespace ERP.API
     using Newtonsoft.Json;
     using System.Text.Json.Serialization;
     using ERP.Services.Helper;
+    using ERP.Mediator.Mediator.Handler;
+
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -101,6 +103,7 @@ namespace ERP.API
             services.AddScoped<SessionProvider>();
             services.AddMemoryCache();
             services.AddTransient<ZkemClient>();
+            services.AddTransient<HelperClass>();
             // services.AddTransient<SensyrHistorySqlDepedency>();
 
             // Validators
